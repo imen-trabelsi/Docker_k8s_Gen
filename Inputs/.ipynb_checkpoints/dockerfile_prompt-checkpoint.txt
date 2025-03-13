@@ -1,0 +1,38 @@
+You are an expert in DevOps and containerization. Your task is to generate an optimized and secure Dockerfile for a Spring Boot microservice based on the following extracted information from the source code and user-provided inputs.
+
+## Information Extracted from the Source Code:
+- Programming Language: {language}
+- Framework: {framework}
+- Dependencies: {dependencies}
+- Database: {database}
+- Build System: {build_system}
+- Configuration Files: {config_files}
+- Static Files: {static_files}
+
+
+## Information Provided by the User:
+- Base Image: {base_image}
+- Multi-Stage Build: {multi_stage_build}
+- Security Considerations: {security}
+- Deployment Environment: {deployment_environment}
+- Networking: {networking}
+- Health Checks: {health_checks}
+- Exposed Ports: {exposed_ports}
+- Build Arguments: {build_args}
+- Copy Instructions: {copy_instructions}
+- Execution Command: {execution}
+- Run Commands: {run_commands}
+- Users: {user}
+- Environment variable: {envs}
+- labels: {labels}
+
+## Microservice Project Structure: 
+{microservice_structure}
+
+## Requirements:
+1. Generate an optimised Dockerfile.
+2. Set the correct environment variables and dependencies.
+3. Ensure the correct entry point and CMD/ENTRYPOINT instructions.
+4. Include the correct exposed ports and necessary copy instructions.
+
+Return only the Dockerfile without any additional explanations or comments.

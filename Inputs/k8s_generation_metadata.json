@@ -1,0 +1,140 @@
+{
+  "metadata": {
+    "name": "visits-service",
+    "namespace": "default",
+    "labels": {
+      "app": "visits-service",
+      "env": "production"
+    },
+    "annotations": {}
+  },
+  "deployment": {
+    "replicaCount": 3,
+    "strategy": {
+      "type": "RollingUpdate",
+      "rollingUpdate": {
+        "maxSurge": "25%",
+        "maxUnavailable": "25%"
+      }
+    },
+    "podAnnotations": {},
+    "podLabels": {},
+    "podSecurityContext": {
+      "fsGroup": 2000
+    },
+    "securityContext": {
+      "runAsNonRoot": true,
+      "runAsUser": 1000,
+      "readOnlyRootFilesystem": true
+    },
+    "nodeSelector": {},
+    "tolerations": [],
+    "affinity": {}
+  },
+  "image": {
+    "repository": "myregistry/visits-service",
+    "tag": "1.0.0",
+    "pullPolicy": "IfNotPresent",
+    "pullSecrets": []
+  },
+  "service": {
+    "type": "ClusterIP",
+    "port": 8082,
+    "targetPort": 8082,
+    "annotations": {},
+    "sessionAffinity": "None"
+  },
+  "exposed_ports": [8082],
+  "ingress": {
+    "enabled": true,
+    "className": "nginx",
+    "annotations": {
+      "kubernetes.io/ingress.class": "nginx"
+    },
+    "hosts": [
+      {
+        "host": "visits-service.example.com",
+        "paths": [
+          {
+            "path": "/",
+            "pathType": "ImplementationSpecific"
+          }
+        ]
+      }
+    ],
+    "tls": [
+      {
+        "secretName": "visits-service-tls",
+        "hosts": ["visits-service.example.com"]
+      }
+    ]
+  },
+  "resources": {
+    "requests": {
+      "cpu": "500m",
+      "memory": "512Mi"
+    },
+    "limits": {
+      "cpu": "1000m",
+      "memory": "1Gi"
+    }
+  },
+  "autoscaling": {
+    "enabled": true,
+    "minReplicas": 1,
+    "maxReplicas": 10,
+    "targetCPUUtilizationPercentage": 80
+  },
+  "serviceAccount": {
+    "create": true,
+    "name": "visits-service-account",
+    "automount": true,
+    "annotations": {}
+  },
+  "volumes": [
+    {
+      "name": "config-volume",
+      "configMap": {
+        "name": "visits-service-config"
+      }
+    }
+  ],
+  "volumeMounts": [
+    {
+      "name": "config-volume",
+      "mountPath": "/app/config",
+      "readOnly": true
+    }
+  ],
+  "environment_variables": {  
+    "SPRING_PROFILES_ACTIVE": "docker"
+  },
+  "livenessProbe": {
+    "httpGet": {
+      "path": "/actuator/health",
+      "port": 8082
+    },
+    "initialDelaySeconds": 30,
+    "periodSeconds": 10
+  },
+  "readinessProbe": {
+    "httpGet": {
+      "path": "/actuator/health",
+      "port": 8082
+    },
+    "initialDelaySeconds": 5,
+    "periodSeconds": 10
+  },
+  "startupProbe": {
+    "httpGet": {
+      "path": "/actuator/health",
+      "port": 8082
+    },
+    "initialDelaySeconds": 10,
+    "periodSeconds": 5
+  },
+  "customScripts": {
+    "preStart": "pre-start.sh",
+    "postStart": "post-start.sh"
+  }
+}

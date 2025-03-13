@@ -1,0 +1,39 @@
+You are an expert in DevOps and Kubernetes. Your task is to generate an optimized and secure Kubernetes Deployment manifest for a microservice based on the following information:
+
+### Microservice Information:
+- Microservice Name: `{microservice_name}` (fallback to `unnamed-microservice` if empty)
+- Base Image: `{image_repository}:{image_tag}` (fallback to `unknown-repo:latest` if empty)
+- Image Pull Policy: `{image_pull_policy}` (fallback to `IfNotPresent` if empty)
+- Replica Count: `{replica_count}` (fallback to `1` if empty)
+- Service Type: `{service_type}` (fallback to `ClusterIP` if empty)
+- Exposed Port: `{service_port}` (fallback to `80` if empty)
+- Liveness Probe Path: `{liveness_probe}` (fallback to `/health` if empty)
+- Readiness Probe Path: `{readiness_probe}` (fallback to `/ready` if empty)
+- Service Account:
+  - Create: `{service_account_create}` (fallback to `true` if empty)
+  - Name: `{service_account_name}` (fallback to `default` if empty)
+- Autoscaling:
+  - Enabled: `{autoscaling_enabled}` (fallback to `false` if empty)
+  - Min Replicas: `{autoscaling_min_replicas}` (fallback to `1` if empty)
+  - Max Replicas: `{autoscaling_max_replicas}` (fallback to `10` if empty)
+  - Target CPU Utilization: `{autoscaling_target_cpu}` (fallback to `80` if empty)
+- Ingress:
+  - Enabled: `{ingress_enabled}` (fallback to `false` if empty)
+  - Host: `{ingress_hosts}` (fallback to `example.com` if empty)
+
+- Volumes: `{volumes}` (fallback to `[]` if empty)
+- Volume Mounts: `{volume_mounts}` (fallback to `[]` if empty)
+- Tolerations: `{tolerations}` (fallback to `[]` if empty)
+---
+
+### Requirements:
+1. Use Kubernetes best practices for security, performance, and scalability.
+2. Set up environment variables and volumes correctly if provided.
+3. Ensure the manifest is optimized for production use.
+4. Include pod annotations and labels if specified in `{pod_annotations}` and `{pod_labels}`.
+5. Configure ingress rules if `{ingress_enabled}` is `true`.
+
+---
+
+### Output Format:
+Return only the Kubernetes Deployment manifest in YAML format without additional explanations.

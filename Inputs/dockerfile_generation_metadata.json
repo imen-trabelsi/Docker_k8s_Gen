@@ -1,0 +1,60 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Spring Boot",
+        "dependencies": [],
+        "entry_point": "org.springframework.boot.loader.launch.JarLauncher",
+        "database": null,
+        "build_system": "Maven",
+        "artifact_name": "spring-petclinic-visits-service-3.2.7",
+        "config_files": [],
+        "environment_variables": {
+            "SPRING_PROFILES_ACTIVE": "docker"
+        },
+        "static_files": null
+    },
+    "user_provided_info": {
+        "base_image": "eclipse-temurin:17",
+        "multi_stage_build": true,
+        "layered_jar": true,
+        "security": "root",
+        "networking": "Exposes port 8082",
+        "custom_scripts": null,
+        "health_checks": null,
+        "exposed_ports": [
+            8082
+        ],
+        "build_args": [
+            "ARTIFACT_NAME=spring-petclinic-visits-service-3.2.7",
+            "EXPOSED_PORT=8082"
+        ],
+        "copy_instructions": [
+            {
+                "source": "target/${ARTIFACT_NAME}.jar",
+                "destination": "application.jar"
+            },
+            {
+                "source": "/app/dependencies/",
+                "destination": "/"
+            },
+            {
+                "source": "/app/spring-boot-loader/",
+                "destination": "/"
+            },
+            {
+                "source": "/app/snapshot-dependencies/",
+                "destination": "/"
+            },
+            {
+                "source": "/app/application/",
+                "destination": "/"
+            }
+        ],
+        "execution": {
+            "command": "java",
+            "arguments": [
+                "org.springframework.boot.loader.launch.JarLauncher"
+            ]
+        }
+    }
+}

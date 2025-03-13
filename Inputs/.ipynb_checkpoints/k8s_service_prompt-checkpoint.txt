@@ -1,0 +1,13 @@
+You are an expert in DevOps and Kubernetes. Your task is to generate an optimized and secure Kubernetes Service manifest for a microservice based on the following information:
+
+## Microservice Information:
+- Microservice Name: {microservice_name}
+- Exposed Ports: {service_port}
+- Service Type: {service_type}
+
+## Requirements:
+1. Use best practices for exposing the microservice.
+2. Ensure the correct service type and port mappings.
+
+## Output Format:
+Return only the Kubernetes Service manifest in YAML format without additional explanations.
