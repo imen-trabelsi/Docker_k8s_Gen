@@ -1,0 +1,39 @@
+{
+    "docker_info": {
+        "base_image": "node:22.2.0-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV NODE_ENV production",
+            "ENV TRUST_PROXY 1"
+        ],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY package.json /app",
+            "COPY package-lock.json /app",
+            "COPY . /app"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"./entrypoint.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && apt-get install -y postgresql-client",
+                ""
+            ],
+            [
+                "npm install",
+                ""
+            ]
+        ]
+    }
+}

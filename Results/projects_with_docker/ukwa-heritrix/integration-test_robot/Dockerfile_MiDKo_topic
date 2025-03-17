@@ -1,0 +1,49 @@
+#Pull the base image
+FROM ukwa/crawl-streams:master
+
+#Set working directory in the container
+WORKDIR /app
+
+#Copy pom.xml and source code to the work directory
+COPY pom.xml .
+COPY src /app/src
+
+#Clone private repo, install dependencies and clean up
+#RUN apk add --update git && \
+#    git clone https://github.com/repo.git && \
+#    pip install -r requirements.txt && \
+#    apk del git
+
+#Build the application using maven
+RUN mvn clean install -DskipTests
+
+#Copy the application's jar file to the root directory
+COPY target/*.jar app.jar
+
+#Copy necessary files and directories
+COPY requirements.txt /tmp/requirements.txt
+COPY tests /tests
+
+#Network settings
+#EXPOSE 8080
+
+#Add necessary environment variables
+#ENV VAR_NAME=value
+
+#Add healthchecks
+#HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "executable" ]
+
+#Run pip install and clean up
+RUN pip install -r /tmp/requirements.txt && rm -rf /tmp/requirements.txt
+
+#Set a volume point
+#VOLUME /vol/development
+
+#Set user to execute the docker commands
+#USER docker
+
+#Set the default entrypoint of the container
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+
+#Additional commands to be executed
+#CMD ["executable"]

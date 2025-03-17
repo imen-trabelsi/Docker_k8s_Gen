@@ -1,0 +1,20 @@
+# Using the official maven image as base image
+FROM maven:3.6.3-jdk-11
+
+# Location of the source files in the docker image
+WORKDIR /app/
+
+# Copying source files to the WORKDIR
+COPY src /app/src
+COPY pom.xml /app
+
+# Building the app by running maven commands
+RUN mvn clean install -DskipTests
+
+# Copy scripts and set permissions
+COPY create-multiple-postgresql-databases.sh /app/
+COPY topics.txt /app/
+RUN chmod +x /app/create-multiple-postgresql-databases.sh
+
+# Entry Point
+ENTRYPOINT ["/app/create-multiple-postgresql-databases.sh"]

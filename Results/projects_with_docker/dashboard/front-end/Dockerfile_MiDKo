@@ -1,0 +1,32 @@
+# setting base image
+FROM node:16-alpine3.13
+
+# upgrade packages and install openssl
+RUN apk update && apk upgrade && \
+
+# setting working directory in the container
+WORKDIR /usr/src/build
+
+# copying package.json and package-lock.json
+COPY package*.json ./
+
+# install dependencies
+RUN yarn install && yarn cache clean && \
+    yarn add @coda-19/coda19-fhir-templates@1.0.6-main-7573265b.0 && \
+    rm -f .yarnrc .npmrc && \
+    npm install -g http-server && \
+
+# copy all files
+COPY . .
+
+# copy env files
+COPY ./${BUILD_ENV}.env ./.env
+
+# openssl run command
+RUN openssl rand -hex 12 > version.txt && rm ./version.txt
+
+# expose port
+EXPOSE 8080
+
+# start app
+CMD [ "http-server", "--port", "8080", "dist" ]

@@ -1,0 +1,38 @@
+# Start with the base image
+FROM elixir:1.10
+USER root
+
+# Update and install dependencies
+RUN apt-get update && apt-get install -y \
+libfreetype6-dev \
+libjpeg62-turbo-dev \
+libmcrypt-dev \
+libpng-dev \
+
+# Set environment variables
+ENV MIX_ENV=prod \
+    PORT=80 \
+    REPLACE_OS_VARS=true \
+    SHELL=/bin/sh
+
+# Install hex and rebar
+RUN mix local.hex --force && \
+
+# Set our working directory
+WORKDIR /app
+
+# copy over all of our application files
+COPY . .
+
+# Run mix deps.get to fetch the projects dependencies
+RUN mix deps.get
+
+# Compile our application
+RUN mix compile
+
+# Expose port 80 for the app to be accessible
+EXPOSE 80
+
+# The command to start our application
+CMD ["mix", "phx.server"]
+

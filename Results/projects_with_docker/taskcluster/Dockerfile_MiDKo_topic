@@ -1,0 +1,53 @@
+# Specify base image
+FROM node:22.13.1 as build
+
+# Set working directory
+WORKDIR /base
+
+# Set environment variables
+ENV HOME=/app
+ENV YARN_CACHE_FOLDER=/base/cache
+
+# Copy essential files
+COPY package.json yarn.lock .yarnrc.yml /base/yarn/
+COPY ui/yarn.lock ui/.yarnrc.yml ui/package.json /base/yarn-ui/
+COPY clients/client/yarn.lock clients/client/.yarnrc.yml clients/client/package.json /base/yarn-client/
+
+# Copy application code
+COPY . /base/app
+
+# Install Dependencies
+RUN mkdir -p /base/cache \
+    && mkdir -p /base/yarn \
+    && mkdir -p /base/yarn-ui \
+    && mkdir -p /base/yarn-client \
+    && corepack enable && yarn workspaces focus --all --production \
+    && cp -r /base/yarn/node_modules /base/app/ \
+    && cp -r /base/yarn-ui/node_modules /base/app/ui/ \
+    && cp -r /base/yarn-client/node_modules /base/app/clients/client/ \
+    && chmod +x /base/app/entrypoint \
+    && if [ -n "${DOCKER_FLOW_VERSION}" ]; then echo "${DOCKER_FLOW_VERSION}" > /base/app/version.json; else echo \{\"version\": \"83.2.4\", \"commit\": \"local\", \"source\": \"https://github.com/taskcluster/taskcluster\", \"build\": \"NONE\"\} > /base/app/version.json; fi \
+    && yarn build \
+    && apk --no-cache add --update nginx bash \
+
+# Deploy Stage
+FROM nginx:alpine
+
+# Set environment variables
+ENV HOME=/app
+
+# Copy Artifact
+COPY /base/app /app
+
+# Set workdir
+WORKDIR /app
+
+# Copy entrypoint
+
+# Chmod
+RUN chmod +x /app/entrypoint
+
+# Expose Container port
+EXPOSE 8080
+ENTRYPOINT ["/app/entrypoint"]
+CMD ["nginx", "-g", "daemon off;"]

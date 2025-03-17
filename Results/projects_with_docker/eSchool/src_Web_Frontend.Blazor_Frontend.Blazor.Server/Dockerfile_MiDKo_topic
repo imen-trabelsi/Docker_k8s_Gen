@@ -1,0 +1,36 @@
+# Base Image
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-env 
+
+# Set working directory
+WORKDIR /src
+
+# Copy projects
+COPY ["src/Web/Frontend.Blazor/Frontend.Blazor.Server/Frontend.Blazor.Server.csproj", "src/Web/Frontend.Blazor/Frontend.Blazor.Server/"]
+COPY ["src/Web/Frontend.Blazor/Frontend.Blazor.Shared/Frontend.Blazor.Shared.csproj", "src/Web/Frontend.Blazor/Frontend.Blazor.Shared/"]
+COPY ["src/Web/Frontend.Blazor/Frontend.Blazor.Client/Frontend.Blazor.Client.csproj", "src/Web/Frontend.Blazor/Frontend.Blazor.Client/"]
+
+# Restore and build the solution (on the base image)
+RUN dotnet restore "src/Web/Frontend.Blazor/Frontend.Blazor.Server/Frontend.Blazor.Server.csproj"
+RUN dotnet build "Frontend.Blazor.Server.csproj" -c Release -o /app/build
+
+# Publish the projects into the publish folder on the base image
+RUN dotnet publish "Frontend.Blazor.Server.csproj" -c Release -o /app/publish
+
+FROM build-env AS publish
+
+# Set final base image
+FROM mcr.microsoft.com/dotnet/aspnet:5.0
+
+# Create and set working directory
+WORKDIR /app
+
+# Copy the published applications from build environment
+
+# Set environment variables
+ENV ASPNETCORE_URLS=http://+:80
+
+# Expose port
+EXPOSE 80
+
+# Set the entrypoint
+ENTRYPOINT ["dotnet", "Frontend.Blazor.Server.dll"]

@@ -1,0 +1,23 @@
+# Use Base Image
+FROM composer:latest
+
+# Work Directory
+WORKDIR /app
+
+# Copy Composer file
+COPY composer.json composer.lock /app/
+
+# Install dependencies
+RUN composer install
+
+# Copy Source Code
+COPY . /app/
+
+# Environment variable
+ENV docker=true
+
+# Expose Port
+EXPOSE 8000
+
+# Execution Command
+CMD [ "php", "-S", "0.0.0.0:8000", "-t", "public" ]

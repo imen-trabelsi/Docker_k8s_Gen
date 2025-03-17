@@ -1,0 +1,53 @@
+{
+    "docker_info": {
+        "base_image": "node:8",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "${user}"
+        ],
+        "labels": [
+            "Description=\"Base"
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV user codefarm",
+            "ENV farmerHome /home/$user",
+            "ENV npmDir ${farmerHome}/npm",
+            "ENV appRoot ${farmerHome}/codefarm",
+            "ENV DISABLE_LINK_LIBS \"npm installation disabled\""
+        ],
+        "copy_instructions": [],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"yarn\",",
+                    "\"run\",",
+                    "\"start-rel\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "groupadd --system $user && useradd --system --create-home --gid $user $user",
+                ""
+            ],
+            [
+                "npm install -g node-gyp",
+                ""
+            ],
+            [
+                "mkdir -p $farmerHome/data && chown -R $user $farmerHome/data -R && chgrp -R $user $farmerHome/data",
+                ""
+            ],
+            [
+                "mkdir -p ${appRoot}/src/app/me",
+                "WORKDIR ${appRoot}/src/app/me"
+            ]
+        ]
+    }
+}

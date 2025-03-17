@@ -1,0 +1,29 @@
+# Use the ruby image from the official Docker Library.
+FROM buildpack-deps:buster-curl
+
+# Enforce UTF-8
+ENV LANG=C.UTF-8 \
+    LANGUAGE=C.UTF-8 \
+
+# Install necessary dependencies using RUN command 
+RUN apt-get update && \
+    curl -sL https://deb.nodesource.com/setup_12.x | bash - &&\
+    apt-get install -y gcc g++ git libxml2 zlib1g-dev libxml2-dev ruby ruby-dev make autoconf nodejs python python-dev &&\
+    gem install bundler &&\
+    apt-get purge -y gcc g++ ruby-dev python-dev &&\
+    apt-get -y autoremove &&\
+
+# Set the working directory to /jekyll to run commands in there
+WORKDIR /jekyll
+
+# Copy the Gemfile and Gemfile.lock to /jekyll directory
+COPY Gemfile Gemfile.lock ./
+
+# Install gems without storing extra gems used for installation.
+RUN bundle install --no-ri --no-rdoc
+
+# Copy the entrypoint.sh to the root directory
+COPY entrypoint.sh /
+
+# Run the entrypoint.sh when the container starts
+ENTRYPOINT ["/entrypoint.sh"]

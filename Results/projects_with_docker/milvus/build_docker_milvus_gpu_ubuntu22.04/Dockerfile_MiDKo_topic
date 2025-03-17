@@ -1,0 +1,48 @@
+# Base Image
+FROM nvidia/cuda:11.8.0-runtime-ubuntu22.04
+
+# Setting Work Directory
+WORKDIR /app
+
+# Ensure the latest packages are installed and remove cache
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl ca-certificates libaio-dev libgomp1 libopenblas-dev && \
+    apt-get remove --purge -y && \
+
+# Get Tini
+RUN curl -L -o /tini https://github.com/krallin/tini/releases/download/v0.19.0/tini-$TARGETARCH && \
+
+# Copying Required Files
+COPY --chown=root:root --chmod=774 ./configs/ /milvus/configs/
+COPY --chown=root:root --chmod=774 ./lib/ /milvus/lib/
+
+# Setting Working Directory
+WORKDIR /milvus
+
+# Copying Milvus binary
+RUN mkdir -p /milvus/bin
+COPY --chown=root:root --chmod=774 ./bin/milvus /milvus/bin/milvus
+
+# Setting the Environment variables
+ENV PATH=/milvus/bin:$PATH
+ENV LD_LIBRARY_PATH=/milvus/lib:$LD_LIBRARY_PATH:/usr/lib
+ENV LD_PRELOAD=/milvus/lib/libjemalloc.so
+ENV MALLOC_CONF=background_thread:true
+
+# Entrypoint
+ENTRYPOINT ["/tini", "--"]
+
+# Copying source code
+COPY . .
+
+# Installing Go Dependencies
+RUN go mod download
+
+# Building the Go application
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
+
+# Exposing the application port
+EXPOSE 8080
+
+# Running the Go application
+CMD ["./main"]

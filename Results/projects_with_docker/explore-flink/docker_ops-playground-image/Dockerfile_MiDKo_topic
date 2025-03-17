@@ -1,0 +1,24 @@
+# Specify the base image
+FROM maven:3.6-jdk-8-slim AS builder
+
+# Set the working directory
+WORKDIR /opt/explore-flink
+
+# Install build dependency
+RUN mvn clean install
+
+# Add the Spring Boot app to the container
+COPY ./java/explore-flink /opt/explore-flink
+# Build the jar file in the builder stage
+WORKDIR /opt/explore-flink
+RUN mvn clean install -DskipTests
+
+# Start a new stage from the builder base
+FROM openjdk:8-jdk-alpine
+WORKDIR /opt/flink/usrlib
+RUN ln -fs /opt/flink/usrlib/explore-flink.jar /opt/flink/lib/explore-flink.jar
+
+# Specify the command to start the app
+ENTRYPOINT java -jar /opt/flink/lib/explore-flink.jar
+EXPOSE 8080
+CMD ["java", "-jar", "/opt/flink/lib/explore-flink.jar"]

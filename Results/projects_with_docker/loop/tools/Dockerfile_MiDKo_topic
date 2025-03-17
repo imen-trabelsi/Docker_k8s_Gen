@@ -1,0 +1,41 @@
+FROM golang:1.23.6
+
+# Copy the local package files to the container's workspace.
+COPY . /go/src/myapp
+
+# Install git to fetch dependencies.
+RUN apt-get update && apt-get install -y git
+
+# Set go cache path
+ENV GOCACHE=/tmp/build/.cache
+ENV GOMODCACHE=/tmp/build/.modcache
+ENV GOFLAGS="-buildvcs=false"
+
+# Prepare the directories to cache dependencies
+RUN mkdir -p /tmp/build/.cache
+RUN mkdir -p /tmp/build/.modcache
+
+# Set working directory
+WORKDIR /tmp/tools
+
+# Fetch golangci-lint and install it
+RUN go install -trimpath github.com/golangci/golangci-lint/cmd/golangci-lint
+
+# Set permissions for the build directory
+RUN chmod -R 777 /tmp/build/
+
+# Build the myapp command inside the container.
+RUN go install myapp
+
+# Set environment variables.
+ENV APP_HOME /go/src/myapp
+WORKDIR $APP_HOME
+
+# Run the myapp command by default when the container starts.
+ENTRYPOINT /go/bin/myapp
+
+# Document that the service listens on port.
+EXPOSE 8080
+
+# Copy application files
+COPY ./ /go/src/myapp

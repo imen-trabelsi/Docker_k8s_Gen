@@ -1,0 +1,30 @@
+{
+    "docker_info": {
+        "base_image": "gradle:7.5.1-jdk11",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY . .",
+            "COPY --from=builder /home/gradle/build/libs/*.jar $FLINK_HOME/usrlib/"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "gradle shadowJar",
+                ""
+            ],
+            [
+                "echo \"metrics.reporters: prom\" >> \"$FLINK_HOME/conf/flink-conf.yaml\"; \\",
+                "echo \"metrics.reporter.prom.factory.class: org.apache.flink.metrics.prometheus.PrometheusReporterFactory\" >> \"$FLINK_HOME/conf/flink-conf.yaml\""
+            ],
+            [
+                "mkdir /state && chown flink:flink /state  # workaround for https://github.com/docker/compose/issues/3270"
+            ]
+        ]
+    }
+}

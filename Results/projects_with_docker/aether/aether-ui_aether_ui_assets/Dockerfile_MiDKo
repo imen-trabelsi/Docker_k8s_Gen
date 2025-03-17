@@ -1,0 +1,32 @@
+# Since there's a contradiction in the requirement (Python/Spring boot vs Node.js) the following Dockerfile makes use of the Node.js as specified by the user.
+
+FROM node:14-alpine
+LABEL description="Spring Boot Microservice"
+
+ENV PATH /code/node_modules/.bin:$PATH
+ARG VERSION=0.0.0
+ARG GIT_REVISION
+
+# Package dependencies
+COPY ./package.json /code/package.json
+
+# Adding project sources
+WORKDIR /code/assets
+COPY ./ /code/assets
+
+# Create necessary files
+RUN mkdir -p /var/tmp && \
+echo $VERSION > /var/tmp/VERSION && \
+
+# Installing dependencies
+RUN apk add -q --no-cache --update bash && \
+npm install -s --no-audit --no-fund --no-package-lock && \
+
+# Set the user to use when running this image
+USER node
+
+# Working directory
+WORKDIR /code/
+
+# Embedded entrypoint
+ENTRYPOINT ["/code/assets/conf/entrypoint.sh"]

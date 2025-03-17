@@ -1,0 +1,51 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.23.6-bookworm",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV GOPATH=/go",
+            "ENV TEST_DB_URL=postgresql://postgres@localhost/postgres \\"
+        ],
+        "copy_instructions": [
+            "COPY --from=golang /usr/local/go /usr/local/go",
+            "COPY --from=golang /go /go",
+            "ADD topsrcdir/.golangci-lint-version ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/bin/bash\",",
+                    "\"--login\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p /builds && \\",
+                "useradd -d /builds/worker -s /bin/bash -m worker &&",
+                "mkdir /builds/worker/artifacts &&",
+                "chown -R worker:worker /builds/worker"
+            ],
+            [
+                "curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | \\",
+                "sh -s -- -b $(go env GOPATH)/bin v$(cat .golangci-lint-version) &&",
+                "apt-get update &&",
+                "apt-get install -y",
+                "ca-certificates",
+                "gnupg",
+                "python3-venv &&",
+                "curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - &&",
+                "echo \"deb http://apt.postgresql.org/pub/repos/apt/ bookworm-pgdg main\" > /etc/apt/sources.list.d/pgdg.list &&",
+                "apt-get update &&",
+                "apt-get install -y postgresql-15 &&",
+                "# add the en_US.UTF8 locale to the system"
+            ]
+        ]
+    }
+}

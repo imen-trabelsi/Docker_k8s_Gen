@@ -1,0 +1,23 @@
+FROM php:8.3-fpm-bookworm
+
+# Set Environment Variables
+ENV IMAGICK_COMMIT_HASH d7d3c24af1b4f599897408f1714600b69a56473b
+ENV PHP_MEMORY_LIMIT 512M
+ENV PHP_UPLOAD_LIMIT 512M
+ENV PHP_OPCACHE_MEMORY_CONSUMPTION 128
+ENV NEXTCLOUD_VERSION 31.0.0
+
+RUN set -ex; \
+apt-get update; \
+apt-get install -y --no-install-recommends busybox-static bzip2 libldap-common libmagickcore-6.q16-6-extra rsync; \
+rm -rf /var/lib/apt/lists/*; \
+mkdir -p /var/spool/cron/crontabs; \
+
+RUN set -ex; \
+apt-get update; \
+
+COPY *.sh upgrade.exclude /
+COPY config/* /usr/src/nextcloud/config/
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["php-fpm"]

@@ -1,0 +1,42 @@
+{
+    "docker_info": {
+        "base_image": "ubuntu:24.04",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "besu"
+        ],
+        "labels": [
+            "org.label-schema.build-date=$BUILD_DATE"
+        ],
+        "health_checks": [],
+        "build_args": [
+            "VERSION=\"dev\"",
+            "BUILD_DATE",
+            "VCS_REF",
+            "VERSION"
+        ],
+        "envs": [
+            "ENV NO_PROXY_CACHE=\"-o Acquire::BrokenProxy=true -o Acquire::http::No-Cache=true -o Acquire::http::Pipeline-Depth=0\"",
+            "ENV PATH=\"/opt/besu-evmtool/bin:${PATH}\""
+        ],
+        "copy_instructions": [
+            "WORKDIR /opt/besu-evmtool",
+            "COPY --chown=besu:besu besu-evmtool /opt/besu-evmtool/"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"evmtool\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update $NO_PROXY_CACHE  && \\",
+                "# $NO_PROXY_CACHE must not be used here or otherwise will trigger a hadolint error"
+            ]
+        ]
+    }
+}

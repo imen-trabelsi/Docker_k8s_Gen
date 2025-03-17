@@ -1,0 +1,32 @@
+# Use official base image of Java Runtime
+FROM openjdk:8-jdk-alpine
+
+# Set the working directory in the container to /app
+WORKDIR /app
+
+# Copy the current directory contents into the container at /app
+COPY . /app
+
+# Install gradle
+RUN apk add --update gradle
+
+# Use gradle to build the application
+RUN gradle build
+
+# Instruct Docker to execute the java application
+ENTRYPOINT [ "java", "-jar", "build/libs/*.jar" ]
+
+# Install necessary packages for postgres client
+RUN apk add --no-cache postgresql-client
+
+# Copy the database initialization script
+COPY init-db.sh /docker-entrypoint-initdb.d/
+
+# Set script permissions
+RUN chmod +x /docker-entrypoint-initdb.d/init-db.sh
+
+# Set the health check for the container
+HEALTHCHECK --interval=10s --timeout=10s --retries=10 CMD psql -c 'select 1' -d payment -U payment
+
+# Set the postgres port to be exposed by the container
+EXPOSE 5432

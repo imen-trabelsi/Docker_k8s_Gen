@@ -1,0 +1,54 @@
+# Use node:14-buster-slim as a base image
+FROM node:14-buster-slim as build
+
+# Set environment variables
+ENV LANGUAGE en_US:en
+ENV LC_ALL C.UTF-8
+ENV TILERATOR_PORT=80
+ENV TILERATOR_OSMDB_HOST=postgres
+ENV TILERATOR_OSMDB_USER=gis
+ENV TILERATOR_OSMDB_PSWD=gis
+ENV TILERATOR_OSMDB_DATABASE=gis
+ENV TILERATOR_CASSANDRA_SERVERS=cassandra
+ENV TILERATOR_CASSANDRA_USER=gis
+ENV TILERATOR_CASSANDRA_PSWD=
+ENV TILERATOR_REDIS_URL=redis://redis:6379
+ENV LANG C.UTF-8
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install the necessary packages for the application
+RUN apt-get update && \
+    apt-get install -y git unzip curl libpq-dev libproj-dev liblua5.2-dev libgeos++-dev nmap netcat redis-tools python3-pip locales python3.6 build-essential && \
+
+RUN npm i npm@8.5.0 -g
+
+RUN python3 -m pip install --upgrade pip && \
+
+RUN mkdir -p /opt/config/imposm && \
+    mkdir -p /opt/config/tilerator && \
+
+RUN git clone https://github.com/Qwant/kartotherian.git /opt/kartotherian && \
+    cd /opt/kartotherian && \
+    git checkout 46dedb6d0c46d0f1dbf6ad4e029d676c63fc5eab && \
+
+WORKDIR /opt/openmaptiles
+
+COPY openmaptiles /opt/openmaptiles
+COPY tilerator/gen_tiles.sh /gen_tiles.sh
+COPY tilerator/sources.yaml /etc/tilerator/
+COPY tilerator/config*.yaml /etc/tilerator/
+COPY tilerator/runserver.sh /runserver.sh
+RUN CONFIG_DIR=/opt/config make qwant
+
+RUN ln -sf /opt/config/tilerator/data_tm2source_base.yml /etc/tilerator && \
+    ln -sf /opt/config/tilerator/data_tm2source_poi.yml /etc/tilerator && \
+
+RUN chmod +x /gen_tiles.sh && \
+    chmod +x /runserver.sh && \
+
+USER node
+
+# Expose ports
+EXPOSE $TILERATOR_PORT
+
+CMD ["/runserver.sh"]

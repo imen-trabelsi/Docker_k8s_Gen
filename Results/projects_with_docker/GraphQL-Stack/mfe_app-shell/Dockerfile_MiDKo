@@ -1,0 +1,24 @@
+# Set the base image
+FROM caddy:2-alpine
+
+# Copy package.json and install dependencies
+COPY package.json ./
+RUN npm install
+
+# Copy source code
+COPY . .
+
+# Copy Caddyfile into the container
+COPY Caddyfile /etc/caddy/Caddyfile
+
+# Copy dist directory into the container
+COPY /dist /usr/share/caddy/dist
+
+# Expose the appropriate ports
+EXPOSE 80 443
+
+# Set the environment variables
+# (fill with actual variables as required)
+
+# Set the default command for the container
+CMD ["caddy", "run", "-config", "/etc/caddy/Caddyfile"]

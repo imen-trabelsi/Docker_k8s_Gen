@@ -1,0 +1,29 @@
+# The base image provided by the user
+FROM node:12.18.2-alpine
+
+# Create app directory
+WORKDIR /code
+
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+COPY package*.json ./
+
+# Install app dependencies
+RUN npm install --silent
+
+# Bundle app source
+COPY . .
+
+# Chmod necessary runtime files
+RUN chmod +x ./node_modules/.bin
+
+# Install psycopg2, required for PostgreSQL
+RUN apk add --no-cache postgresql-client
+
+# Set environment variables provided by the user
+ENV PATH /code/node_modules/.bin:$PATH
+
+# Expose the necessary port
+EXPOSE 8075
+
+# Start command
+CMD [ "npm", "start" ]

@@ -1,0 +1,58 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    component: scheduler
+    name: stork-scheduler
+    tier: control-plane
+  name: stork-scheduler
+  namespace: kube-system
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      name: stork-scheduler
+  template:
+    metadata:
+      labels:
+        component: scheduler
+        name: stork-scheduler
+        tier: control-plane
+      name: stork-scheduler
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: name
+                operator: In
+                values:
+                - stork-scheduler
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - command:
+        - /usr/local/bin/kube-scheduler
+        - --address=0.0.0.0
+        - --leader-elect=true
+        - --scheduler-name=stork
+        - --policy-configmap=stork-config
+        - --policy-configmap-namespace=kube-system
+        - --lock-object-name=stork-scheduler
+        image: gcr.io/google_containers/kube-scheduler-amd64:v1.18.2
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 10251
+          initialDelaySeconds: 15
+        name: stork-scheduler
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 10251
+        resources:
+          requests:
+            cpu: '0.1'
+      hostPID: false
+      serviceAccountName: stork-scheduler-account

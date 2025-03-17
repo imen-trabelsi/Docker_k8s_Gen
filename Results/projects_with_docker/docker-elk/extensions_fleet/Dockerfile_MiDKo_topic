@@ -1,0 +1,35 @@
+# The Dockerfile specified below maximizes efficiency by utilizing a multi-stage build process.
+# This approach reduces image size as build dependencies are not included in the final image.
+
+# step 1: build stage
+FROM maven:3.8.1-openjdk-11 as build
+
+# creating base directory for the application
+RUN mkdir /app
+
+WORKDIR /app
+
+# copying pom.xml file to the docker image
+COPY pom.xml .
+
+# downloading all required dependencies
+RUN mvn dependency:go-offline -B
+
+# copying source files
+COPY src ./src
+
+# building application
+RUN mvn clean install -DskipTests
+
+# step 2: package stage
+FROM openjdk:11-jre-slim as production
+
+EXPOSE 8080
+
+RUN mkdir /app
+
+WORKDIR /app
+
+# copying over the built artifact from the build stage
+
+CMD ["java", "-jar", "app.jar"]

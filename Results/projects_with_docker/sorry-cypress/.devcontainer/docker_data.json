@@ -1,0 +1,28 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/devcontainers/base:${VARIANT}",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "VARIANT=\"bullseye\""
+        ],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \\",
+                "apt-get update &&",
+                "apt-get install -y nodejs &&",
+                "apt-get clean &&",
+                "rm -rf /var/lib/apt/lists/*"
+            ],
+            [
+                "npm install -g corepack"
+            ]
+        ]
+    }
+}

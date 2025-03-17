@@ -1,0 +1,32 @@
+# Use the official Node.js slim image from the Docker library
+FROM public.ecr.aws/docker/library/node:20-bookworm-slim
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json
+COPY package.json ./
+COPY yarn.lock ./
+
+# Install app dependencies
+RUN yarn && yarn cache clean
+
+# Copy source code and static assets
+COPY . .
+
+# Set the correct environment variable
+ENV NODE_ENV production
+
+# Expose the correct port
+EXPOSE 8080
+
+# Set correct entry point and CMD commands
+ENTRYPOINT [ "npm", "start" ]
+
+# Copy the relevant files to the working directory
+WORKDIR /usr/src/app/webapp
+COPY config/tsconfig-base.json /usr/src/config/
+COPY ./webapp /usr/src/app/webapp
+
+# Set the execution command as instructed
+CMD ["true"]

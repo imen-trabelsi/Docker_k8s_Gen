@@ -1,0 +1,28 @@
+# Use the specified image as the base
+FROM openfrontier/gerrit:latest
+
+# Create a directory for the application
+WORKDIR /app
+
+# Copy package.json and package-lock.json for dependency installation
+COPY package*.json ./
+
+# Install application dependencies
+RUN npm install
+
+# If we are in a production environment, only install production dependencies
+# If not, install all dependencies
+ARG NODE_ENV
+RUN if [ "${NODE_ENV}" = "production" ]; then npm ci --only=production; else npm install; fi
+
+# Copy the current directory contents into the container
+COPY . .
+
+# Build the application
+RUN npm run build
+
+# Expose the port the app runs on
+EXPOSE 8080
+
+# Define the command to run the app using CMD which defines your runtime
+CMD [ "npm", "start" ]

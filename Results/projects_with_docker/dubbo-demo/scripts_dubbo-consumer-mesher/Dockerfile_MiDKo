@@ -1,0 +1,27 @@
+# Use base image provided by the user
+FROM ninokop/dubbo-demo-base
+
+# Set working directory in the container
+WORKDIR /app
+
+# Add project directory to container
+COPY . /app
+
+# Execute user's run commands
+RUN cd home/
+RUN mkdir /app
+
+# Copy all packages to the container
+COPY . /app
+
+# Run the build commands
+RUN mvn clean install
+
+# Expose the necessary server port
+EXPOSE 8080
+
+# Cleanup and remove unnecessary files (optimization)
+RUN rm -rf /var/lib/apt/lists/*
+
+# Final Command to be executed
+ENTRYPOINT ["bash","app/mystart.sh"]

@@ -1,0 +1,30 @@
+# Use python3.6-alpine base image
+FROM python:3.6-alpine
+
+# Adding labels
+LABEL maintainer="maintainer@email.com" version="1.0"
+
+# Ensuring the working directory exists
+RUN mkdir -p /app
+
+# Setting the working directory in the Docker image
+WORKDIR /app
+
+# Copying everything in the current directory to the working directory in the Docker image
+COPY . /app
+
+# Install any necessary dependencies
+RUN apk update && apk add --virtual build-deps gcc python3-dev musl-dev && pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+# Setting correct file permissions
+RUN chown -R nobody:nogroup /app
+
+# Switching to non-root user
+USER nobody
+
+# Exposing the necessary port
+EXPOSE 5000
+
+# The command to run when this image is started as a container
+CMD ["python", "app.py"]

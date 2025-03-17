@@ -1,0 +1,35 @@
+# Use base image
+FROM registry.cn-beijing.aliyuncs.com/edas_unified/jct_dw_8_4_4:0.1 AS builder
+
+# Set the working directory
+WORKDIR /app
+
+# Copy pom.xml and Install build dependencies
+COPY pom.xml .
+RUN mvn -B dependency:resolve dependency:resolve-plugins
+
+# Copy source code
+COPY src/ ./src
+
+# Build the project 
+RUN mvn clean install -DskipTests
+
+FROM registry.cn-beijing.aliyuncs.com/edas_unified/jct_dw_8_4_4:0.1
+
+# App directory
+WORKDIR /app
+
+# Copy from builder
+
+# Copy arthas
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+
+# Copy other files
+COPY /paymentservice-provider/target/paymentservice-provider-1.0.0-SNAPSHOT.jar /app
+COPY /start.sh /app
+
+# Expose port
+EXPOSE 8080
+
+# Set start command
+CMD [ "/app/start.sh" ]

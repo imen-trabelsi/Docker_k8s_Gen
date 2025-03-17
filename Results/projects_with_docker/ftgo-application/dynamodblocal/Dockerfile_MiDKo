@@ -1,0 +1,23 @@
+# Start with the base image
+FROM amazon/dynamodb-local:1.18.0
+
+#It's always a best practice not to run our application as root user
+RUN adduser -D myuser
+USER myuser
+
+# Health checks 
+HEALTHCHECK --start-period=5s --interval=5s CMD curl http://localhost:8000 || exit 1
+
+# Copy the project files into the docker image
+COPY . /home/myuser/myapp
+WORKDIR /home/myuser/myapp
+
+# We need to specify the build dependencies and install the required packages
+RUN chmod +x compile-schema-per-service.sh
+RUN ./compile-schema-per-service.sh
+
+# Expose the port on which the app will be run
+EXPOSE 8000
+
+# Define the startup commands
+ENTRYPOINT ["java", "-jar", "DynamoDBLocal.jar", "-inMemory", "-sharedDb", "-port", "8000"]

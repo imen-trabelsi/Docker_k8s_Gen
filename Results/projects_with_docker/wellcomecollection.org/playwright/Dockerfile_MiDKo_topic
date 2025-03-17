@@ -1,0 +1,32 @@
+# Using base image
+FROM mcr.microsoft.com/playwright:v1.46.0
+
+# Create necessary directories
+WORKDIR /usr/src/app/webapp
+
+# Copy necessary files to the correct path
+COPY ./playwright /usr/src/app/webapp/playwright
+
+# Navigate to correct PATH
+WORKDIR /usr/src/app/webapp/playwright
+
+# Install dependencies
+RUN npm install
+
+# Clean Cache
+RUN yarn cache clean
+
+# Expose any necessary ports
+EXPOSE 8080
+
+# Set necessary environment variables
+ENV NODE_ENV=production
+
+# Set the user to root
+USER root
+
+# Set an entry point
+ENTRYPOINT [ "node" ]
+
+# Run application 
+CMD [ "index.js" ]

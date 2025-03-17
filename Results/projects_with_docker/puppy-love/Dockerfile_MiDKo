@@ -1,0 +1,33 @@
+# Start from the latest golang base image
+FROM golang:alpine
+
+# Add Maintainer Info
+LABEL maintainer="Dockerfile Maintainer <maintainer@example.com>"
+
+# Set the Current Working Directory inside the container
+WORKDIR /go/src/github.com/pclubiitk/puppy-love
+
+# Copy go mod and sum files
+COPY Gopkg.toml Gopkg.lock ./
+
+# Download all dependencies
+RUN apk --no-cache add openssl wget git
+ENV GOPATH=/go
+RUN wget -O /usr/local/bin/dep https://github.com/golang/dep/releases/download/v0.4.1/dep-$(go env GOOS)-$(go env GOHOSTARCH) && chmod +x /usr/local/bin/dep
+RUN dep ensure -v -vendor-only
+
+# Copy the source from the current directory to the Working Directory inside the container
+COPY . .
+
+# Build the Go app
+RUN go build
+
+# Expose port 3000 to the outside
+EXPOSE 3000
+
+# Copy the pre-built binary file from the previous stage
+RUN mkdir -p /go/bin
+COPY --from=builder /go/src/github.com/pclubiitk/puppy-love/puppy-love /go/bin
+
+# Command to run the binary
+ENTRYPOINT ["/go/bin/puppy-love"]

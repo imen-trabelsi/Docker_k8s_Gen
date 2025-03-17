@@ -1,0 +1,31 @@
+#fetch base image
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+
+ARG BUILD_CONFIGURATION=Release
+
+WORKDIR /app
+COPY . ./
+
+# Restore the project
+WORKDIR /src/WebApps/Shopping.Web
+RUN dotnet restore "./Shopping.Web.csproj"
+
+# Build the project
+WORKDIR /src/WebApps/Shopping.Web
+RUN dotnet build "./Shopping.Web.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+# publish the project
+RUN dotnet publish "./Shopping.Web.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+#for run stage
+FROM mcr.microsoft.com/dotnet/sdk:8.0
+
+USER app
+
+WORKDIR /app
+
+#expose appropriate ports
+EXPOSE 8080 8081
+
+#run the application
+ENTRYPOINT ["dotnet", "Shopping.Web.dll"]

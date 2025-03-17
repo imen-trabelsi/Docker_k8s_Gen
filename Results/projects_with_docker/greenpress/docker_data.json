@@ -1,0 +1,31 @@
+{
+    "docker_info": {
+        "base_image": "node:16.5",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV NODE_ENV=development"
+        ],
+        "copy_instructions": [
+            "COPY . ."
+        ],
+        "execution": [],
+        "run": [
+            [
+                "npm install --unsafe-perm",
+                "RUN npm run build"
+            ],
+            [
+                "npm run clean",
+                "ENV NODE_ENV=production"
+            ],
+            [
+                "npm run install:prod-only"
+            ]
+        ]
+    }
+}

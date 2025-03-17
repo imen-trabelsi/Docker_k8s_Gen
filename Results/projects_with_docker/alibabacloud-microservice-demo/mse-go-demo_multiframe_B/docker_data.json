@@ -1,0 +1,30 @@
+{
+    "docker_info": {
+        "base_image": "registry-cn-hangzhou.ack.aliyuncs.com/dev/alpine:3.18-update@sha256:f2f97bbc6f3173044292cbf8d306ca31b4356a5f2eb54701fc97f64065b412cf",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /",
+            "COPY B /B"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/B\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --no-cache bash",
+                ""
+            ]
+        ]
+    }
+}

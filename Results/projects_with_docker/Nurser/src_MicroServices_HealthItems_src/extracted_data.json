@@ -1,0 +1,2253 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": ".editorconfig",
+            "type": "blob"
+        },
+        {
+            "path": ".gitattributes",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "LICENSE",
+            "type": "blob"
+        },
+        {
+            "path": "Microservices.YAML",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "coverage-converter.ps1",
+            "type": "blob"
+        },
+        {
+            "path": "sonarqube-create-project-guids.ps1",
+            "type": "blob"
+        },
+        {
+            "path": "src",
+            "type": "tree"
+        },
+        {
+            "path": "src/.editorconfig",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications.YAML",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Dev.OData.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Dev.WebApi.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.Abstraction",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.Abstraction/ICertification.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.Abstraction/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.Abstraction/Models/Certification.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.Abstraction/Models/CertificationInsertDto.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.Abstraction/Models/CertificationUpdateDto.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.Abstraction/NurseCron.Certifications.Abstraction.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.Abstraction/Permissions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.CiCd",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.CiCd/OData.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.CiCd/WebApi.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.DB",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.DB/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.DB/CI.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.DB/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.DB/LocalCompare.scmp",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.DB/LocalPublish.publish.xml",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.DB/NurseCron.Certifications.DB.sqlproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.DB/build.ps1",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.DB/dbo",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.DB/dbo/Tables",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.DB/dbo/Tables/Certifications.sql",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.OData",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.OData/CI.Certifications.OData.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.OData/Configuration",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.OData/Configuration/ODataModelProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.OData/Connected Services",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.OData/Connected Services/Application Insights",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.OData/Connected Services/Application Insights/ConnectedService.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.OData/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.OData/Controllers/V1",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.OData/Controllers/V1/CertificationsController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.OData/Data",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.OData/Data/CertificationsContext.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.OData/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.OData/NurseCron.Certifications.OData.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.OData/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.OData/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.OData/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.OData/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.OData/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.OData/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.OData/build.ps1",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.WebApi",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.WebApi/CI.Certifications.WebApi.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.WebApi/Connected Services",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.WebApi/Connected Services/Application Insights",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.WebApi/Connected Services/Application Insights/ConnectedService.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.WebApi/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.WebApi/Controllers/V1",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.WebApi/Controllers/V1/CertificationsController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.WebApi/Data",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.WebApi/Data/CertificationsContext.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.WebApi/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.WebApi/NurseCron.Certifications.WebApi.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.WebApi/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.WebApi/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.WebApi/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.WebApi/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.WebApi/VersionDefinitions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.WebApi/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.WebApi/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.WebApi/build.ps1",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/NurseCron.Certifications.WebApi/swaggertest.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests/NurseCron.Certifications.OData.Tests",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests/NurseCron.Certifications.OData.Tests/Integration",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests/NurseCron.Certifications.OData.Tests/Integration/IntegrationTestStartup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests/NurseCron.Certifications.OData.Tests/Integration/OData",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests/NurseCron.Certifications.OData.Tests/Integration/OData/CertificationsTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests/NurseCron.Certifications.OData.Tests/NurseCron.Certifications.OData.Tests.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests/NurseCron.Certifications.OData.Tests/Unigration",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests/NurseCron.Certifications.OData.Tests/Unigration/OData",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests/NurseCron.Certifications.OData.Tests/Unigration/OData/CertificationsTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests/NurseCron.Certifications.OData.Tests/Unigration/OData/SwaggerTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests/NurseCron.Certifications.OData.Tests/Unigration/UnigrationODataTestStartup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests/NurseCron.Certifications.OData.Tests/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests/NurseCron.Certifications.OData.Tests/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests/NurseCron.Certifications.WebApi.Tests",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests/NurseCron.Certifications.WebApi.Tests/Integration",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests/NurseCron.Certifications.WebApi.Tests/Integration/Api",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests/NurseCron.Certifications.WebApi.Tests/Integration/Api/CertificationsTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests/NurseCron.Certifications.WebApi.Tests/Integration/IntegrationTestStartup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests/NurseCron.Certifications.WebApi.Tests/NurseCron.Certifications.WebApi.Tests.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests/NurseCron.Certifications.WebApi.Tests/Unigration",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests/NurseCron.Certifications.WebApi.Tests/Unigration/Api",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests/NurseCron.Certifications.WebApi.Tests/Unigration/Api/CertificationsTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests/NurseCron.Certifications.WebApi.Tests/Unigration/Api/SwaggerTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests/NurseCron.Certifications.WebApi.Tests/Unigration/UnigrationWebApiTestStartup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests/NurseCron.Certifications.WebApi.Tests/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/Tests/NurseCron.Certifications.WebApi.Tests/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Certifications/src/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Common_CiCd",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Common_CiCd/restart-web-app.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Common_CiCd/service-bus-queue-publisher-spin-up.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Common_CiCd/service-bus-spin-up.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Communications.YAML",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Communications",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Communications/NurseCron.Communication.SignalR.Tests",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Communications/NurseCron.Communication.SignalR.Tests/HubTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Communications/NurseCron.Communication.SignalR.Tests/NurseCron.Communication.SignalR.Tests.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Communications/NurseCron.Communication.SignalR.Tests/UnigrationTestStartup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Communications/NurseCron.Communications.CiCd",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Communications/NurseCron.Communications.CiCd/signal-r.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Communications/NurseCron.Communications.SignalR",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Communications/NurseCron.Communications.SignalR/CI.Communications.SignalR.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Communications/NurseCron.Communications.SignalR/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Communications/NurseCron.Communications.SignalR/Hubs",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Communications/NurseCron.Communications.SignalR/Hubs/NotificationHub.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Communications/NurseCron.Communications.SignalR/NurseCron.Communications.SignalR.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Communications/NurseCron.Communications.SignalR/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Communications/NurseCron.Communications.SignalR/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Communications/NurseCron.Communications.SignalR/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Communications/NurseCron.Communications.SignalR/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Communications/NurseCron.Communications.SignalR/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Communications/NurseCron.Communications.SignalR/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies.YAML",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Dev.OData.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Dev.WebApi.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.Abstraction",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.Abstraction/ICompetency.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.Abstraction/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.Abstraction/Models/Competency.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.Abstraction/Models/CompetencyInsertDto.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.Abstraction/Models/CompetencyUpdateDto.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.Abstraction/NurseCron.Competencies.Abstraction.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.CiCd",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.CiCd/OData.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.CiCd/WebApi.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.DB",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.DB/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.DB/CI.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.DB/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.DB/LocalCompare.scmp",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.DB/LocalPublish.publish.xml",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.DB/NurseCron.Competencies.DB.sqlproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.DB/build.ps1",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.DB/dbo",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.DB/dbo/Tables",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.DB/dbo/Tables/Competencies.sql",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.OData",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.OData/CI.Competencies.OData.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.OData/Configuration",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.OData/Configuration/ODataModelProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.OData/Connected Services",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.OData/Connected Services/Application Insights",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.OData/Connected Services/Application Insights/ConnectedService.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.OData/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.OData/Controllers/V1",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.OData/Controllers/V1/CompetenciesController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.OData/Data",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.OData/Data/DatabaseContext.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.OData/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.OData/NurseCron.Competencies.OData.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.OData/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.OData/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.OData/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.OData/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.OData/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.OData/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.OData/build.ps1",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.WebApi",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.WebApi/CI.Competencies.WebApi.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.WebApi/Connected Services",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.WebApi/Connected Services/Application Insights",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.WebApi/Connected Services/Application Insights/ConnectedService.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.WebApi/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.WebApi/Controllers/V1",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.WebApi/Controllers/V1/CompetenciesController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.WebApi/Data",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.WebApi/Data/DatabaseContext.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.WebApi/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.WebApi/NurseCron.Competencies.WebApi.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.WebApi/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.WebApi/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.WebApi/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.WebApi/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.WebApi/VersionDefinitions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.WebApi/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.WebApi/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/NurseCron.Competencies.WebApi/build.ps1",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests/NurseCron.Competencies.OData.Tests",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests/NurseCron.Competencies.OData.Tests/Integration",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests/NurseCron.Competencies.OData.Tests/Integration/IntegrationTestStartup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests/NurseCron.Competencies.OData.Tests/Integration/OData",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests/NurseCron.Competencies.OData.Tests/Integration/OData/CompetenciesTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests/NurseCron.Competencies.OData.Tests/NurseCron.Competencies.OData.Tests.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests/NurseCron.Competencies.OData.Tests/Unigration",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests/NurseCron.Competencies.OData.Tests/Unigration/OData",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests/NurseCron.Competencies.OData.Tests/Unigration/OData/CompetenciesTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests/NurseCron.Competencies.OData.Tests/Unigration/SwaggerTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests/NurseCron.Competencies.OData.Tests/Unigration/UnigrationODataTestStartup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests/NurseCron.Competencies.OData.Tests/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests/NurseCron.Competencies.OData.Tests/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests/NurseCron.Competencies.WebApi.Tests",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests/NurseCron.Competencies.WebApi.Tests/Integration",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests/NurseCron.Competencies.WebApi.Tests/Integration/Api",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests/NurseCron.Competencies.WebApi.Tests/Integration/Api/CompetenciesTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests/NurseCron.Competencies.WebApi.Tests/Integration/IntegrationTestStartup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests/NurseCron.Competencies.WebApi.Tests/NurseCron.Competencies.WebApi.Tests.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests/NurseCron.Competencies.WebApi.Tests/Unigration",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests/NurseCron.Competencies.WebApi.Tests/Unigration/Api",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests/NurseCron.Competencies.WebApi.Tests/Unigration/Api/CompetenciesTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests/NurseCron.Competencies.WebApi.Tests/Unigration/Api/SwaggerTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests/NurseCron.Competencies.WebApi.Tests/Unigration/UnigrationWebApiTestStartup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests/NurseCron.Competencies.WebApi.Tests/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/Tests/NurseCron.Competencies.WebApi.Tests/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Competencies/src/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/DB.Ci.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/DB.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees.YAML",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Dev.OData.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Dev.WebApi.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.Abstraction",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.Abstraction/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.Abstraction/Models/Employee.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.Abstraction/Models/Employee.partial.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.Abstraction/Models/EmployeeCertification.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.Abstraction/Models/EmployeeCompetency.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.Abstraction/Models/EmployeeHealthItem.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.Abstraction/Models/EmployeeInsertDto.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.Abstraction/Models/EmployeeUpdateDto.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.Abstraction/Models/IEmployee.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.Abstraction/NurseCron.Employees.Abstraction.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.CiCd",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.CiCd/OData.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.CiCd/WebApi.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.DB",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.DB/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.DB/CI.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.DB/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.DB/LocalCompare.scmp",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.DB/LocalPublish.publish.xml",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.DB/NurseCron.Employees.DB.refactorlog",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.DB/NurseCron.Employees.DB.sqlproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.DB/dbo",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.DB/dbo/Data",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.DB/dbo/Data/Employees.sql",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.DB/dbo/Tables",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.DB/dbo/Tables/EmployeeCertifications.sql",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.DB/dbo/Tables/EmployeeCompetencies.sql",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.DB/dbo/Tables/EmployeeHealthItems.sql",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.DB/dbo/Tables/Employees.sql",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.OData",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.OData/CI.Employees.OData.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.OData/Configuration",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.OData/Configuration/ODataModelProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.OData/Connected Services",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.OData/Connected Services/Application Insights",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.OData/Connected Services/Application Insights/ConnectedService.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.OData/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.OData/Controllers/V1",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.OData/Controllers/V1/EmployeesController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.OData/Data",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.OData/Data/DatabaseContext.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.OData/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.OData/NurseCron.Employees.OData.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.OData/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.OData/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.OData/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.OData/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.OData/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.OData/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.OData/pub.ps1",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.WebApi",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.WebApi/CI.Employees.WebApi.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.WebApi/Connected Services",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.WebApi/Connected Services/Application Insights",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.WebApi/Connected Services/Application Insights/ConnectedService.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.WebApi/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.WebApi/Controllers/EmployeesController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.WebApi/Data",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.WebApi/Data/DatabaseContext.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.WebApi/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.WebApi/NurseCron.Employees.WebApi.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.WebApi/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.WebApi/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.WebApi/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.WebApi/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.WebApi/VersionDefinitions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.WebApi/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.WebApi/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/NurseCron.Employees.WebApi/pub.ps1",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.OData.Tests",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.OData.Tests/Integration",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.OData.Tests/Integration/IntegrationTestStartup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.OData.Tests/Integration/OData",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.OData.Tests/Integration/OData/EmployeesTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.OData.Tests/Integration/OData/MultipleExpandsTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.OData.Tests/NurseCron.Employees.OData.Tests.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.OData.Tests/Unigration",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.OData.Tests/Unigration/OData",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.OData.Tests/Unigration/OData/EmployeesTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.OData.Tests/Unigration/OData/SwaggerTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.OData.Tests/UnigrationODataTestStartup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.OData.Tests/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.OData.Tests/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.WebApi.Tests",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.WebApi.Tests/Integration",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.WebApi.Tests/Integration/Api",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.WebApi.Tests/Integration/Api/EmployeesTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.WebApi.Tests/Integration/IntegrationTestStartup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.WebApi.Tests/NurseCron.Employees.WebApi.Tests.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.WebApi.Tests/Unigration",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.WebApi.Tests/Unigration/Api",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.WebApi.Tests/Unigration/Api/EmployeesTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.WebApi.Tests/Unigration/Api/SwaggerTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.WebApi.Tests/UnigrationWebApiTestStartup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.WebApi.Tests/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/Tests/NurseCron.Employees.WebApi.Tests/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Employees/src/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems.YAML",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Dev.OData.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Dev.WebApi.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.Abstraction",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.Abstraction/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.Abstraction/Models/HealthItem.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.Abstraction/Models/HealthItemInsertDto.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.Abstraction/Models/HealthItemUpdateDto.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.Abstraction/Models/IHealthItem.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.Abstraction/NurseCron.HealthItems.Abstraction.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.CiCd",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.CiCd/OData.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.CiCd/WebApi.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.DB",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.DB/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.DB/CI.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.DB/LocalCompare.scmp",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.DB/LocalPublish.publish.xml",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.DB/NurseCron.HealthItems.DB.sqlproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.DB/build.ps1",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.DB/dbo",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.DB/dbo/Tables",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.DB/dbo/Tables/HealthItems.sql",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.OData",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.OData/CI.HealthItems.OData.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.OData/Configuration",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.OData/Configuration/ODataModelProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.OData/Connected Services",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.OData/Connected Services/Application Insights",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.OData/Connected Services/Application Insights/ConnectedService.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.OData/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.OData/Controllers/V1",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.OData/Controllers/V1/HealthItemsController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.OData/Data",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.OData/Data/DatabaseContext.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.OData/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.OData/NurseCron.HealthItems.OData.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.OData/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.OData/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.OData/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.OData/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.OData/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.OData/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.OData/build.ps1",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.WebApi",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.WebApi/CI.HealthItems.WebApi.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.WebApi/Connected Services",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.WebApi/Connected Services/Application Insights",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.WebApi/Connected Services/Application Insights/ConnectedService.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.WebApi/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.WebApi/Controllers/HealthItemsController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.WebApi/Data",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.WebApi/Data/DatabaseContext.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.WebApi/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.WebApi/NurseCron.HealthItems.WebApi.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.WebApi/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.WebApi/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.WebApi/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.WebApi/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.WebApi/VersionDefinitions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.WebApi/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.WebApi/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/NurseCron.HealthItems.WebApi/build.ps1",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Tests",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Tests/NurseCron.HealthItems.OData.Tests",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Tests/NurseCron.HealthItems.OData.Tests/Integration",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Tests/NurseCron.HealthItems.OData.Tests/Integration/IntegrationTestStartup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Tests/NurseCron.HealthItems.OData.Tests/Integration/OData",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Tests/NurseCron.HealthItems.OData.Tests/Integration/OData/HealthItemsTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Tests/NurseCron.HealthItems.OData.Tests/NurseCron.HealthItems.OData.Tests.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Tests/NurseCron.HealthItems.OData.Tests/Unigration",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Tests/NurseCron.HealthItems.OData.Tests/Unigration/OData",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Tests/NurseCron.HealthItems.OData.Tests/Unigration/OData/HealthItemsTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Tests/NurseCron.HealthItems.OData.Tests/Unigration/OData/SwaggerTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Tests/NurseCron.HealthItems.OData.Tests/Unigration/UnigrationODataTestStartup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Tests/NurseCron.HealthItems.OData.Tests/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Tests/NurseCron.HealthItems.OData.Tests/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Tests/NurseCron.HealthItems.WebApi.Tests",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Tests/NurseCron.HealthItems.WebApi.Tests/Integration",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Tests/NurseCron.HealthItems.WebApi.Tests/Integration/Api",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Tests/NurseCron.HealthItems.WebApi.Tests/Integration/Api/HealthItemsTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Tests/NurseCron.HealthItems.WebApi.Tests/Integration/IntegrationTestStartup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Tests/NurseCron.HealthItems.WebApi.Tests/NurseCron.HealthItems.WebApi.Tests.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Tests/NurseCron.HealthItems.WebApi.Tests/Unigration",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Tests/NurseCron.HealthItems.WebApi.Tests/Unigration/HealthItemsTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Tests/NurseCron.HealthItems.WebApi.Tests/Unigration/SwaggerTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Tests/NurseCron.HealthItems.WebApi.Tests/Unigration/UnigrationTestStartup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Tests/NurseCron.HealthItems.WebApi.Tests/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/Tests/NurseCron.HealthItems.WebApi.Tests/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/HealthItems/src/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules.YAML",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/Dev.OData.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.Abstraction",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.Abstraction/NurseCron.Schedules.Abstraction.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.Abstraction/Schedule.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.CiCd",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.CiCd/OData.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.CiCd/WebApi.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.DB",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.DB/CI.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.DB/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.DB/NurseCron.Schedules.DB.sqlproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.DB/dbo",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.DB/dbo/Tables",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.DB/dbo/Tables/Schedules.sql",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.OData",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.OData/CI.Schedules.OData.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.OData/Configuration",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.OData/Configuration/ODataModelProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.OData/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.OData/Controllers/V1",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.OData/Controllers/V1/SchedulesController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.OData/Data",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.OData/Data/DatabaseContext.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.OData/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.OData/GlobalSuppressions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.OData/NurseCron.Schedules.OData.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.OData/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.OData/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.OData/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.OData/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.OData/VersionDefinitions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.OData/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.OData/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/NurseCron.Schedules.OData/readme.md",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/Tests",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/Tests/NurseCron.Schedules.OData.Tests",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/Tests/NurseCron.Schedules.OData.Tests/Integration",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/Tests/NurseCron.Schedules.OData.Tests/Integration/IntegrationODataTestStartup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/Tests/NurseCron.Schedules.OData.Tests/Integration/ItemsTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/Tests/NurseCron.Schedules.OData.Tests/NurseCron.Schedules.OData.Tests.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/Tests/NurseCron.Schedules.OData.Tests/Unigration",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/Tests/NurseCron.Schedules.OData.Tests/Unigration/ItemsTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/Tests/NurseCron.Schedules.OData.Tests/Unigration/SwaggerTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/Tests/NurseCron.Schedules.OData.Tests/Unigration/UnigrationODataTestStartup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Schedules/src/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units.YAML",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Units/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Units/src/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/Dev.OData.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.Abstraction",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.Abstraction/Building.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.Abstraction/NurseCron.Units.Abstraction.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.Abstraction/Unit.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.CiCd",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.CiCd/OData.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.CiCd/WebApi.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.DB",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.DB/CI.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.DB/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.DB/NurseCron.Units.DB.sqlproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.DB/Script.PostDeployment1.sql",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.DB/dbo",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.DB/dbo/Data",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.DB/dbo/Data/SkillTypes.sql",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.DB/dbo/Tables",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.DB/dbo/Tables/Buildings.sql",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.DB/dbo/Tables/SkillTypes.sql",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.DB/dbo/Tables/StaffingRequirements.sql",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.DB/dbo/Tables/StaffingSkillRequirements.sql",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.DB/dbo/Tables/Units.sql",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.OData",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.OData/.editorconfig",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.OData/CI.Units.OData.Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.OData/Configuration",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.OData/Configuration/ODataModelProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.OData/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.OData/Controllers/V1",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.OData/Controllers/V1/BuildingsController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.OData/Controllers/V1/UnitsController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.OData/Data",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.OData/Data/DatabaseContext.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.OData/GlobalSuppressions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.OData/NurseCron.Units.OData.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.OData/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.OData/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.OData/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.OData/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.OData/VersionDefinitions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.OData/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.OData/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/NurseCron.Units.OData/readme.md",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/Tests",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Units/src/Tests/NurseCron.Units.OData.Tests",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Units/src/Tests/NurseCron.Units.OData.Tests/Integration",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Units/src/Tests/NurseCron.Units.OData.Tests/Integration/IntegrationODataTestStartup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/Tests/NurseCron.Units.OData.Tests/Integration/UnitsTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/Tests/NurseCron.Units.OData.Tests/NurseCron.Units.OData.Tests.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/Tests/NurseCron.Units.OData.Tests/Unigration",
+            "type": "tree"
+        },
+        {
+            "path": "src/MicroServices/Units/src/Tests/NurseCron.Units.OData.Tests/Unigration/BuildingsTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/Tests/NurseCron.Units.OData.Tests/Unigration/SwaggerTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/Tests/NurseCron.Units.OData.Tests/Unigration/UnigrationODataTestStartup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/Tests/NurseCron.Units.OData.Tests/Unigration/UnitsTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/Units/src/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/artifact-ci-cd-scripts.ps1",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/artifact-dacpacs.ps1",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/databases-only.YAML",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/dockerpub.ps1",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/integration_test-cli.ps1",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/pub.db.ps1",
+            "type": "blob"
+        },
+        {
+            "path": "src/MicroServices/test.RunSettings",
+            "type": "blob"
+        },
+        {
+            "path": "src/NurseCron.Databases.slnf",
+            "type": "blob"
+        },
+        {
+            "path": "src/NurseCron.Employees.slnf",
+            "type": "blob"
+        },
+        {
+            "path": "src/NurseCron.Schedules.slnf",
+            "type": "blob"
+        },
+        {
+            "path": "src/NurseCron.Services.sln",
+            "type": "blob"
+        },
+        {
+            "path": "src/NurseCron.Units.slnf",
+            "type": "blob"
+        },
+        {
+            "path": "src/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "src/test.RunSettings",
+            "type": "blob"
+        },
+        {
+            "path": "tools",
+            "type": "tree"
+        },
+        {
+            "path": "tools/DbContext-Scaffolding.txt",
+            "type": "blob"
+        },
+        {
+            "path": "tools/azurecli-sqltools-dev",
+            "type": "tree"
+        },
+        {
+            "path": "tools/azurecli-sqltools-dev/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "tools/azurecli-sqltools-dev/build-and-deploy.ps1",
+            "type": "blob"
+        },
+        {
+            "path": "tools/azurecli-sqltools-dev/devvol",
+            "type": "tree"
+        },
+        {
+            "path": "tools/azurecli-sqltools-dev/devvol/test.sh",
+            "type": "blob"
+        }
+    ]
+}

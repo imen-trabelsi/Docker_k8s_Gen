@@ -1,0 +1,23 @@
+# Start with the user provided base image
+FROM prom/prometheus
+
+# Set working directory as instructed by the user 
+WORKDIR /app
+
+# Copy configuration file from your project to the prometheus directory in the container 
+COPY ./prometheus.yml /etc/prometheus/prometheus.yml
+
+# Continue your Dockerfile as needed based on your source code, environment settings, 
+# security necessities, networking, health checks, and more.
+
+# For instance, if you need to expose a port like 8080, you would include:
+# EXPOSE 8080
+
+# And if the entry point should be a particular file, you would include:
+# ENTRYPOINT ["java","-jar","your-jar-file.jar"]
+
+# Or similarly, if you have a run command, you would include:
+# CMD ["your-command"]
+
+# Depending on your specifics, your Dockerfile will vary a lot from here. 
+# Fill in with appropriate commands and arguments based on your project and environment.

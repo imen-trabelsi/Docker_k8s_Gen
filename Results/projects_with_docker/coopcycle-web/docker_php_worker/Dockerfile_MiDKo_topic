@@ -1,0 +1,25 @@
+# Base Image
+FROM coopcycle/php:8.3
+
+# Environment Variables
+ENV TESTING=true
+
+# Creating app directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# Installing application dependencies
+COPY package.json /usr/src/app
+RUN npm install
+
+# Bundling application source
+COPY . /usr/src/app
+
+# Permissions for app
+RUN chmod -R 755 /usr/src/app
+
+# Expose ports
+EXPOSE 80
+
+# Set entrypoint
+ENTRYPOINT ["sh", "-c", "/var/www/html/bin/console messenger:consume async --limit=100 --time-limit=900 -n"]

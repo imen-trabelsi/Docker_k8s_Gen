@@ -1,0 +1,38 @@
+{
+    "docker_info": {
+        "base_image": "mariadb:10.11.11",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD ./docker/ /"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/phraseanet-entrypoint.sh\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"mysqld\",\"--sql_mode=\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && \\",
+                "apt-get install -y",
+                "gettext",
+                "&& apt-get clean",
+                "&& rm -rf /var/lib/apt/lists/"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,56 @@
+# Base image
+FROM alpine:3.20
+
+# Setting environment variables
+ENV XTABLES_LIBDIR /usr/lib/xtables
+ENV PYTHON_IPTABLES_XTABLES_VERSION 12
+ENV IPTABLES_LIBDIR /usr/lib
+ENV PIP_BREAK_SYSTEM_PACKAGES 1
+
+# Label
+LABEL maintainer=""
+
+# Working directory
+WORKDIR /app
+
+# Copy instructions
+COPY modules /app/modules
+COPY main.py /app/
+COPY ./docker-entrypoint.sh /app/
+COPY composer.json /app/composer.json
+
+# Run commands for installing necessary dependencies and cleaning up afterwards
+RUN apk add --virtual .build-deps \
+    gcc \
+    python3-dev \
+    libffi-dev \
+    openssl-dev \
+    && apk add -U python3 \
+    iptables \
+    iptables-dev \
+    ip6tables \
+    xtables-addons \
+    nftables \
+    tzdata \
+    py3-pip \
+    py3-nftables \
+    musl-dev \
+    && pip3 install --ignore-installed --upgrade pip \
+    jsonschema \
+    python-iptables \
+    redis \
+    ipaddress \
+    dnspython \
+    && apk del .build-deps \
+
+# Install PHP and Composer dependencies
+RUN apk add --no-cache php7 php7-fpm php7-json php7-openssl php7-curl \
+    && php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');" \
+    && php composer-setup.php --install-dir=/bin --filename=composer \
+    && rm -rf composer-setup.php \
+
+# Expose necessary ports
+EXPOSE 
+
+# Define the command to run the service
+CMD ["/bin/sh", "-c", "/app/docker-entrypoint.sh"]

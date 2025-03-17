@@ -1,0 +1,23 @@
+#Base Image
+FROM eclipse-temurin:21
+
+#Set the environment variable
+ENV IZANAMI_CONTAINERIZED=true
+
+#Create a new group and user with the uid and gid 10000 and 10001 respectively 
+RUN mkdir /app && groupadd -g 10001 javauser && useradd -u 10000 -g javauser javauser
+
+#Set the working directory
+WORKDIR /app
+
+#Copy jar
+COPY ./target/izanami.jar /app/izanami.jar
+
+#Change the owner of the app folder to javauser
+RUN chown -R javauser:javauser /app
+
+#Change the current user to javauser
+USER javauser
+
+#Command to execute
+CMD ["java", "-jar", "izanami.jar"]

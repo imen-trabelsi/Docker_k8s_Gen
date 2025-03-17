@@ -1,0 +1,49 @@
+FROM holdenk/jupyter-hub-magicsingleuser-sample:0.10.2
+
+# Update and install dependencies
+RUN apt-get update && \
+    apt-get install -yq graphviz git build-essential && \
+    apt-get clean && \
+
+# Check permissions and create necessary directories
+RUN touch /hello_holden && \
+    mkdir /opt/app && \
+    echo "Jupyter's NB_UID/NB_GID changed, need to update the Dockerfile" && \
+    exit 1; \
+
+# Install conda dependencies
+RUN conda install -c conda-forge --yes mamba && \
+    mamba install --yes python==3.8.6 && \
+    (mamba install --yes aiohttp==3.7.1 || pip install aiohttp==3.7.1 ) && \
+    mamba install --yes \
+        python-blosc \
+        cytoolz \
+        dask==2.30.0 \
+        dask-core==2.30.0 \
+        lz4 \
+-mamba install --yes python==3.8.6 \
+        numpy==1.19.2 \
+        ipywidgets \
+        python-graphviz && \
+    mamba install --yes s3fs gcsfs dropboxdrivefs requests dropbox paramiko adlfs pygit2 pyarrow && \
+    mamba install --yes bokeh numba llvmlite && \
+    (mamba install --yes fastparquet || pip install fastparquet) && \
+    (mamba install --yes  jupyter-server-proxy || pip install  jupyter-server-proxy) && \
+    (mamba install --yes dask-labextension==3.0.0 || pip install dask-labextension==3.0.0) && \
+    jupyter labextension install @jupyter-widgets/jupyterlab-manager dask-labextension@3.0.0 @jupyterlab/server-proxy && \ 
+    jupyter serverextension enable dask-labextension@3.0.0 @jupyterlab/server-proxy && \
+    pip install dask-kubernetes==0.11.0 && \
+    jupyter lab clean && \
+    jlpm cache clean && \
+    npm cache clean --force && \
+    find /opt/conda/ -type f,l -name '*.a' -delete && \
+    find /opt/conda/ -type f,l -name '*.pyc' -delete && \
+    find /opt/conda/ -type f,l -name '*.js.map' -delete && \
+    find /opt/conda/lib/python*/site-packages/bokeh/server/static -type f,l -name '*.js' -not -name '*.min.js' -delete || echo "no bokeh static files to cleanup" && \
+
+# Copy static files
+COPY --chown=1000:100 ./examples/ /home/$NB_USER/examples
+COPY prepare.sh /usr/bin/prepare.sh
+
+# Set entrypoint
+ENTRYPOINT ["tini", "--", "/usr/bin/prepare.sh"]

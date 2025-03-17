@@ -1,0 +1,41 @@
+# Use the base image provided by the user
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+# Set the working directory to /src
+WORKDIR /src
+
+# Copy the dependencies file to the working directory
+COPY ["identity-server/IdentityServer.csproj", "identity-server/"]
+
+# Run the command to restore the dependencies
+RUN dotnet restore "identity-server/IdentityServer.csproj"
+
+# Copy the rest of the code to the working directory
+COPY . .
+
+# Switch to the identity server directory
+WORKDIR "/src/identity-server"
+
+# Run the command to build the application
+RUN dotnet build "IdentityServer.csproj" -c Release -o /app/build
+
+# Start a new build stage from the same base image
+FROM build AS publish
+
+# Run the command to publish the application
+RUN dotnet publish "IdentityServer.csproj" -c Release -o /app/publish
+
+# Start a new stage from the base image to produce a smaller final image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the application from the previous stage to the current stage
+
+# Set the command to run when the container starts
+ENTRYPOINT ["dotnet", "IdentityServer.dll"]
+
+# Expose the necessary ports
+EXPOSE 80
+EXPOSE 443

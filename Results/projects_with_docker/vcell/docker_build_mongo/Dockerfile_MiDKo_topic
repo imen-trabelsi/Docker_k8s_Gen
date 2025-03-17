@@ -1,0 +1,39 @@
+# Using base image
+FROM zcube/bitnami-compat-mongodb:6.0.5 as builder
+
+# Installing Maven
+RUN apk add maven
+
+# Copying the POM and source code files
+COPY pom.xml /usr/local/src/
+COPY src /usr/local/src/src
+
+# Building the project
+WORKDIR /usr/local/src/
+RUN mvn clean package
+
+# Multi-stage build to discard build-context after application was built
+FROM openjdk:8-jre-alpine
+
+# Exposing ports for PostgreSQL and the Spring Boot application
+EXPOSE 5432 8080
+
+# Creating a directory for the jar file
+RUN mkdir -p /opt/app
+
+# Copying jar file from previous stage
+
+# Copy other necessary documents
+COPY docker/build/README.md /opt/readme/
+COPY docker/build/README_Registry.md /opt/readme/
+COPY docker/build/README_buildMachine.md /opt/readme/
+COPY docker/build/batch/README.md /opt/readme/
+COPY docker/build/vcell-admin.log4j.xml /opt/log4j/
+COPY docker/build/vcell-api.log4j.xml /opt/log4j/
+COPY docker/build/vcell-batch.log4j.xml /opt/log4j/
+COPY docker/build/vcell-data.log4j.xml /opt/log4j/
+COPY docker/build/vcell-db.log4j.xml /opt/log4j/
+COPY docker/build/vcell-opt.log4j.xml /opt/log4j/
+
+# Setting the entry point
+ENTRYPOINT ["java","-jar","/opt/app/app.jar"]

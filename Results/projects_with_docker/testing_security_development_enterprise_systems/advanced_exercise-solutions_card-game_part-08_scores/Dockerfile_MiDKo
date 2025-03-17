@@ -1,0 +1,29 @@
+# Set the base image
+FROM adoptopenjdk/openjdk11:alpine
+
+# Copy the Project Object Model file
+COPY pom.xml /tmp/pom.xml
+
+# Install necessary dependencies
+RUN apk update \
+
+# Build the project using Maven
+RUN mvn -f /tmp/pom.xml clean install
+
+# Copy the jar to the container
+COPY target/scores.jar /app.jar
+
+# Set environment variables for database connection
+# Replace ??? with necessary values
+ENV SPRING_DATASOURCE_URL=jdbc:postgresql://???:????/????
+ENV SPRING_DATASOURCE_USERNAME=???
+ENV SPRING_DATASOURCE_PASSWORD=???
+
+# Set active profile to use fake data
+ENV SPRING_PROFILES_ACTIVE=FakeData
+
+# Expose necessary port (replace ??? with necessary values)
+EXPOSE ???
+
+# Define the command to start the application
+CMD ["java", "-Dspring.profiles.active=FakeData", "-jar", "/app.jar"]

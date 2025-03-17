@@ -1,0 +1,28 @@
+#Use SDK Image for build stage
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+
+#COPY csproj and restore packages
+COPY ["src/Services/Catalog/Catalog.csproj", "src/Services/Catalog/"]
+RUN dotnet restore "src/Services/Catalog/Catalog.csproj"
+
+#COPY the rest of the source code
+COPY . .
+
+#Build Application
+WORKDIR "/src/src/Services/Catalog"
+RUN dotnet build "Catalog.csproj" -c Release -o /app/build
+
+#Publish Application
+RUN dotnet publish "Catalog.csproj" -c Release -o /app/publish
+
+#For final stage, use .NET Runtime
+FROM mcr.microsoft.com/dotnet/runtime:6.0
+WORKDIR /app
+
+#Expose Ports
+EXPOSE 80
+EXPOSE 443
+
+#Start Application
+ENTRYPOINT ["dotnet", "Catalog.dll"]

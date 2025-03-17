@@ -1,0 +1,24 @@
+# Use the specified base image
+FROM node:20.0.0
+
+# Create app directory
+RUN mkdir -p /usr/src/app
+
+# Set the work directory
+WORKDIR /usr/src/app
+
+# Bundle app source
+COPY . .
+
+# Install app dependencies
+RUN npm install --force
+
+# Set the environment variable
+ENV NODE_ENV production 
+ENV PORT 3000
+
+# Expose the required port
+EXPOSE 3000
+
+# Run the application 
+CMD [ "npm", "run", "start" ]

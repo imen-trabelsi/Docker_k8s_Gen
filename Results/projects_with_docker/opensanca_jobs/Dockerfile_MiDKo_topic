@@ -1,0 +1,51 @@
+# Use base image as ruby
+FROM ruby:2.7.2-alpine AS base
+
+# Set the maintainer label
+LABEL maintainer="contato@opensanca.com.br"
+
+# Set the environment variables
+ENV SECRET_KEY_BASE=dumb \
+    EXECJS_RUNTIME=Node \
+    PATH="$PATH:/opt/yarn/bin" \
+    BUNDLE_JOBS=4 \
+    RAILS_ENV=$rails_env \
+    BUNDLE_WITHOUT=$bundle_without \
+
+# Install system dependencies
+RUN apk add --update --no-cache \
+    openssl \
+    tar \
+    build-base \
+    tzdata \
+    postgresql-dev \
+    postgresql-client \
+    nodejs \
+    $extra_packages \
+  && wget https://yarnpkg.com/latest.tar.gz \
+  && mkdir -p /opt/yarn \
+  && tar -xf latest.tar.gz -C /opt/yarn --strip 1 \
+
+# Set the working directory
+WORKDIR /var/app
+
+# Copy all the content from root to the working directory
+COPY . /var/app
+
+# Build arguments
+ARG build_without
+ARG rails_env="development"
+ARG to_remove
+ARG extra_packages
+
+# Install application dependencies
+RUN bundle install && yarn && bundle exec rake assets:precompile \
+  && rm -rf /usr/local/bundle/cache/*.gem \
+  && find /usr/local/bundle/gems/ -name "*.c" -delete \
+  && find /usr/local/bundle/gems/ -name "*.o" -delete \
+
+# Expose application port
+EXPOSE 3000
+
+# Start server command
+CMD ["bin/rails", "s", "-b", "0.0.0.0"]

@@ -1,0 +1,36 @@
+# Use an official Python runtime as a parent image
+FROM python:3.8-buster
+
+# Create app directory
+RUN mkdir -p /usr/src/app
+
+# Set environment variables
+ENV PYTHONUNBUFFERED 1
+
+# Set working directory in the container
+WORKDIR /usr/src/app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    mysql-client \
+    gcc \
+    python3-dev \
+
+# Upgrade pip
+RUN pip3 install --upgrade pip
+
+# Add requirements.txt to the runtime container
+COPY ./requirements.txt /usr/src/app/requirements.txt
+
+# Install any needed packages specified in requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+# Bundle app source in Docker image
+COPY . /usr/src/app
+
+# Expose port 80 for the app
+EXPOSE 80
+
+# Run the application:
+ENTRYPOINT ["python"]
+CMD ["-m", "tornado.web"]

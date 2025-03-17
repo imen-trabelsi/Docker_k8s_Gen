@@ -1,0 +1,42 @@
+# Base Image
+FROM mariadb:10.11.11
+
+# Install dependencies and clean up
+RUN apt-get update && apt-get install -y \
+    gettext && \
+    apt-get clean && \
+
+# Copy config files
+COPY .env ./
+COPY docker-compose.yml ./
+COPY docker-compose.override.yml ./
+COPY Dockerfile ./
+
+# Copy Source code
+COPY . .
+
+# Copy static files
+COPY ./resources/README.md ./resources/README.md
+COPY ./resources/examples/topics_sample.xml ./resources/examples/topics_sample.xml
+COPY ./resources/hudson/ant.xml ./resources/hudson/ant.xml
+COPY ./resources/hudson/config.json ./resources/hudson/config.json
+COPY ./resources/www/common/styles/fonts/PhraseanetIcomoon/selection.json ./resources/www/common/styles/fonts/PhraseanetIcomoon/selection.json
+
+# Install dependencies
+RUN npm install
+
+# Expose ports
+EXPOSE 8080
+
+# Set Environment variables
+# add any required env variables here
+
+# Add labels
+# add any user-provided labels here
+
+# Run Commands
+CMD ["sh", "-c", "npm start"]
+
+ENTRYPOINT ["/phraseanet-entrypoint.sh"]
+
+CMD ["mysqld","--sql_mode="]

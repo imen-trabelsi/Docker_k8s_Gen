@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    name: autopilot-service
+  name: autopilot
+  namespace: kube-system
+spec:
+  ports:
+  - name: autopilot
+    port: 9628
+    protocol: TCP
+  selector:
+    name: autopilot
+    tier: control-plane

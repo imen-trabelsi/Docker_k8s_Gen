@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    pmem-csi.intel.com/deployment: lvm-production
+  name: pmem-csi-metrics
+  namespace: default
+spec:
+  ports:
+  - port: 10010
+  selector:
+    app: pmem-csi-controller
+    pmem-csi.intel.com/deployment: lvm-production
+  type: NodePort

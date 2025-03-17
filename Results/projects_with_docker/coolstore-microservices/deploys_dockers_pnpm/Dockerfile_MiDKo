@@ -1,0 +1,23 @@
+# Stage 1: Base Image
+FROM node:alpine
+
+# Install curl
+RUN apk add --no-cache curl
+
+# Install pnpm
+RUN curl -sL https://unpkg.com/@pnpm/self-installer | node
+
+# Set work directory
+WORKDIR /app
+
+# Copy package.json
+COPY package.json .
+
+# Install dependencies
+RUN npm install
+
+# Copy other source code files
+COPY . .
+
+# Default command
+CMD npm start

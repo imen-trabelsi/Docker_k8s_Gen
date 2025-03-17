@@ -1,0 +1,26 @@
+# Use the specified base image
+FROM keybaseio/client
+
+# Set the environment variable as per user input
+ENV KEYBASE_SERVICE=1
+
+# Update and install git
+RUN apt-get update \
+    && apt-get install -y git \
+
+# Copy required files
+COPY docker/keybase-secrets/entrypoint.sh /
+
+# Run npm install
+WORKDIR /usr/app
+COPY package*.json ./
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Grant permissions for the entrypoint script to execute
+RUN chmod +x /entrypoint.sh
+
+# When the container starts, this script will be executed
+ENTRYPOINT ["/entrypoint.sh"]

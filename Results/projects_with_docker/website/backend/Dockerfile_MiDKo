@@ -1,0 +1,25 @@
+# Start with the base Image
+FROM openjdk:11-jre-slim 
+
+# Set the current working directory inside the docker image
+WORKDIR /usr/share/website/backend
+
+# Copy the necessary files to the image
+COPY ./wait-for-it.sh /usr/share/website/wait-for-it.sh
+COPY target/*-exec.jar /usr/share/website/backend/backend-exec.jar
+
+# Set necessary permissions for wait-for-it.sh script
+RUN chmod +x /usr/share/website/wait-for-it.sh
+
+# Create the necessary directory that the application might need
+RUN mkdir -p /usr/share/website/backend/storage
+
+# Expose the necessary port 
+EXPOSE 80
+
+# Set necessary environment variables (if any)
+
+# Set docker labels (if any)
+
+# Set the entrypoint command
+ENTRYPOINT ["/usr/share/website/wait-for-it.sh", "auth.flowant.org:80", "--timeout=0", "--", "java", "-jar", "/usr/share/website/backend/backend-exec.jar"]

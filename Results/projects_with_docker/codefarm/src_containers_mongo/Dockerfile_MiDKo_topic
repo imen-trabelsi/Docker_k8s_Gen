@@ -1,0 +1,23 @@
+# Use base image mongo:3.2
+FROM mongo:3.2 
+
+# Create app directory
+RUN mkdir -p /usr/src/app 
+
+# Use the created directory as the working directory
+WORKDIR /usr/src/app 
+
+# Copy package.json and package-lock.json files into the working directory
+COPY package*.json ./
+
+# Install app dependencies
+RUN npm install 
+
+# Copy local source code into the working directory
+COPY . .
+
+# Exposing the port number for the microservice
+EXPOSE 8080
+
+# Start the application
+CMD [ "npm", "start" ]

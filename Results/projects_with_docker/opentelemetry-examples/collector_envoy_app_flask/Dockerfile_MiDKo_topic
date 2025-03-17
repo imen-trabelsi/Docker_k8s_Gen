@@ -1,0 +1,19 @@
+# Start with Python Base Image
+FROM python:3.10-slim-bullseye
+
+# Create application directory
+RUN mkdir -p /app
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt /tmp/flask-requirements.txt
+RUN pip3 install -r /tmp/flask-requirements.txt
+
+# Copy source code to working directory
+COPY . /app
+
+# Expose port 
+EXPOSE 8080
+
+# Start the application
+ENTRYPOINT ["python3", "/code/service.py"]

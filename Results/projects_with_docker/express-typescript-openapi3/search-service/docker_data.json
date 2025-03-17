@@ -1,0 +1,45 @@
+{
+    "docker_info": {
+        "base_image": "node:10.15.3-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "nupp"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV HOME=/home/nupp"
+        ],
+        "copy_instructions": [
+            "COPY . $HOME/app/",
+            "ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.1/dumb-init_1.1.1_amd64 /usr/local/bin/dumb-init",
+            "WORKDIR $HOME/app"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"dumb-init\",",
+                    "\"npm\",",
+                    "\"run\",",
+                    "\"dev\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "addgroup -S nupp && adduser -S -g nupp nupp",
+                ""
+            ],
+            [
+                "chown -R nupp:nupp $HOME/* /usr/local/ && \\",
+                "chmod +x /usr/local/bin/dumb-init &&",
+                "npm cache clean --force &&",
+                "npm install &&",
+                "chown -R nupp:nupp $HOME/*"
+            ]
+        ]
+    }
+}

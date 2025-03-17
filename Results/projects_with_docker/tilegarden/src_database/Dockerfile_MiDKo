@@ -1,0 +1,27 @@
+# Initial checking of the information provided reveals a bit of inconsistency that Node.js application is running in a postgis-based image.
+# However, assuming that the application has a need to have a special kind of setup, here is the simplified and direct Dockerfile without multistage build.
+
+# Starting with applying user's base image
+FROM quay.io/azavea/postgis:2.3-postgres9.6-slim
+
+# User's RUN commands
+RUN apt-get update \
+  && apt-get install postgis -y \
+
+# Set working directory in the container
+WORKDIR /app
+
+# Copy package.json and lock file before other files to utilitize caching and faster builds
+COPY package*.json ./
+
+# Install npm dependencies
+RUN npm install
+
+# Copy the rest of the application onto the container
+COPY . .
+
+# Exposed Ports information is not provided, assuming 8080 for Spring Boot applications
+EXPOSE 8080
+
+# Execution command also is not provided, defaulting to npm for Node.js project
+CMD ["npm", "start"]

@@ -1,0 +1,47 @@
+# From base image
+FROM php:7.4-apache
+
+WORKDIR /var/www/html
+
+# Copy necessary files and directories
+COPY composer.json ./
+COPY .git/HEAD .git/HEAD
+COPY .git/refs .git/refs
+COPY src ./src
+COPY Gruntfile.js ./
+COPY apache/cache-static.conf /etc/apache2/conf-enabled/cache-static.conf
+
+# Handle arguments
+ARG NO_DEV=1
+ENV NO_DEV=$NO_DEV
+
+# Install the necessary dependencies, modules, and extensions
+RUN apt-get update && apt-get install -y zip unzip libzip-dev libpq-dev \
+    && rm -rf /var/lib/apt/lists/* \
+    && docker-php-ext-configure zip \
+    && docker-php-ext-install pdo_mysql opcache zip \
+    && a2enmod rewrite headers \
+    && if [ "$NO_DEV" = "0" ]; then \
+    docker-php-ext-enable xdebug \
+    && echo "xdebug.output_dir = /tmp/xdebug" > "$PHP_INI_DIR/conf.d/xdebug.ini" \
+    && mkdir /tmp/xdebug; \
+
+# Install composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Install project dependencies
+RUN composer update --no-interaction
+
+# Link directories and set permissions
+RUN rm -rf /var/www/html/ && ln -s "$(pwd)/src/htdocs" /var/www/html
+RUN chown www-data ./src/htdocs/upload
+
+# Configure Apache
+RUN sed -i 's|CustomLog.*|CustomLog /dev/null common|' /etc/apache2/sites-enabled/000-default.conf
+RUN sed -i 's/AllowOverride All/AllowOverride None/g' /etc/apache2/conf-enabled/docker-php.conf
+
+EXPOSE 80
+
+# Start apache
+CMD ["apache2-foreground"]
+

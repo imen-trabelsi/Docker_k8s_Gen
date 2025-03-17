@@ -1,0 +1,32 @@
+# use an official .NET SDK as a build stage image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+# set work directory
+WORKDIR /src
+
+# copy csproj and restore dependencies
+COPY ["eShop-Learn.sln", "./"]
+COPY ["NuGet.config", "./"]
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+COPY ["src/BuildingBlocks/EventBus/EventBus/EventBus.csproj", "src/BuildingBlocks/EventBus/EventBus/"]
+COPY ["src/BuildingBlocks/EventBus/EventBusRabbitMQ/EventBusRabbitMQ.csproj", "src/BuildingBlocks/EventBus/EventBusRabbitMQ/"]
+COPY ["src/BuildingBlocks/EventBus/EventBusServiceBus/EventBusServiceBus.csproj", "src/BuildingBlocks/EventBus/EventBusServiceBus/"]
+COPY ["src/BuildingBlocks/EventBus/IntegrationEventLogEF/IntegrationEventLogEF.csproj", "src/BuildingBlocks/EventBus/IntegrationEventLogEF/"]
+COPY ["src/BuildingBlocks/WebHost/WebHost.Customization/WebHost.Customization.csproj", "src/BuildingBlocks/WebHost/WebHost.Customization/"]
+COPY ["src/Services/Basket/Basket.API/Basket.API.csproj", "src/Services/Basket/Basket.API/"]
+RUN dotnet restore "eShop-Learn.sln"
+
+# copy everything else and build application
+COPY . .
+WORKDIR "/src/src/Services/Basket/Basket.API"
+RUN dotnet publish --no-restore "Basket.API.csproj" -c Release -o /app/publish
+
+# start a new stage from microsoft .NET runtime
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
+WORKDIR /app
+
+# copy the built app to current directory
+
+# Application accessible externally
+EXPOSE 80
+ENTRYPOINT ["dotnet", "Basket.API.dll"]

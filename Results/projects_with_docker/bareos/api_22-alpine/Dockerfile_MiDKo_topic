@@ -1,0 +1,33 @@
+# Use python:3.10-alpine as the base image
+FROM python:3.10-alpine
+
+# Add maintainer
+LABEL maintainer="barcus@tou.nu"
+LABEL org.label-schema.schema-version="1.0" \
+    org.label-schema.build-date=$BUILD_DATE \
+    org.label-schema.name=$NAME \
+    org.label-schema.vcs-ref=$VCS_REF \
+
+#Upgrade pip and install necessary packages
+RUN pip install --no-cache-dir --upgrade pip==22.0.4 && \
+    adduser -D bareos && \
+
+#Copy necessary files
+COPY --chown=bareos docker-entrypoint.sh /docker-entrypoint.sh
+WORKDIR /home/bareos
+
+#Grant necessary permissions to entrypoint script
+RUN chmod a+x /docker-entrypoint.sh
+
+#Set environment variables
+ENV PATH="/home/bareos/.local/bin:${PATH}"
+
+# Switch to the user "bareos"
+USER bareos
+
+#Expose necessary port
+EXPOSE 8000
+
+#Start the application
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["uvicorn", "--log-level", "debug", "--host", "0.0.0.0", "bareos_restapi:app", "--reload"]

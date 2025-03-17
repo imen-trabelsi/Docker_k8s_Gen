@@ -1,0 +1,30 @@
+# The base image
+FROM ubuntu:18.04
+
+# The maintainer
+LABEL maintainer="Omar" \
+      version="1.0" \
+      
+# Set work directories      
+WORKDIR /root
+WORKDIR /root/immunizer-monitor/scripts
+
+# Set locale 
+RUN apt-get clean && apt-get update && apt-get install -y locales && locale-gen "en_US.UTF-8" && /usr/sbin/update-locale LANG=en_US.UTF-8
+ENV LC_ALL en_US.UTF-8
+
+# Installation of other commands and dependencies 
+RUN apt-get install -y --no-install-recommends apt-utils \
+    && apt-get install -qy openjdk-8-jdk \
+    && apt-get install -qy vim \
+    && apt-get install -qy zip unzip \
+    && apt-get install -qy git \
+    && apt-get install -qy curl \
+    && curl -O https://downloads.apache.org/spark/spark-2.4.5/spark-2.4.5-bin-hadoop2.7.tgz \
+    && tar -xvzf spark-2.4.5-bin-hadoop2.7.tgz \
+    && git clone --progress --verbose https://github.com/oiraqi/immunizer-monitor.git \
+    && git clone --progress --verbose https://github.com/oiraqi/immunizer-analyze.git \
+    && ./build.sh \
+
+
+WORKDIR /root

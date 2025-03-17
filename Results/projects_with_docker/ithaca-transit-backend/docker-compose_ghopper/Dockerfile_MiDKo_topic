@@ -1,0 +1,21 @@
+# Used openjdk:8 as a base image as provided by User
+FROM openjdk:8
+
+# Specifies the directory inside the Docker container in which all commands will run
+WORKDIR /usr/src/app
+
+# Adding necessary Run commands
+RUN git clone --single-branch -b tcat-map https://github.com/cuappdev/ithaca-transit-backend.git /usr/src/app
+RUN apt-get update && apt-get -y install maven wget
+RUN git clone --single-branch -b 0.13 https://github.com/graphhopper/graphhopper.git
+RUN wget https://tcat-gtfs.s3.amazonaws.com/tcat-ny-us.zip
+RUN mkdir graphhopper && ./graphhopper.sh build
+
+# Copying the rest of your app's source code from your host to your image filesystem.
+COPY . .
+
+# Exposing Port 8988 for external access
+EXPOSE 8988
+
+# Default command to execute application
+CMD ["java", "-Xmx8g", "-Xms8g"]

@@ -1,0 +1,55 @@
+{
+    "docker_info": {
+        "base_image": "node:16",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /usr/src/app",
+            "COPY package.json ./",
+            "COPY package-lock.json ./",
+            "COPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf",
+            "COPY --from=build /usr/src/app/dist /usr/share/nginx/html",
+            "WORKDIR /usr/share/nginx/html",
+            "ADD .env ./",
+            "ADD entrypoint.sh /var/entrypoint.sh"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/var/entrypoint.sh\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"nginx\",",
+                    "\"-g\",",
+                    "\"daemon",
+                    "off;\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "npm install",
+                "COPY . ./"
+            ],
+            [
+                "npm run build",
+                ""
+            ],
+            [
+                "apk add --no-cache nodejs npm",
+                "RUN npm install -g @beam-australia/react-env@3.1.1"
+            ]
+        ]
+    }
+}

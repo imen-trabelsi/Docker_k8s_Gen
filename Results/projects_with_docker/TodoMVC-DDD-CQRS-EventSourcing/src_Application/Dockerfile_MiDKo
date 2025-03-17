@@ -1,0 +1,14 @@
+# Stage 1: Build Stage
+FROM mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim AS build
+WORKDIR /src
+COPY . .
+RUN dotnet restore "src/Application/Application.csproj"
+WORKDIR /src/Application
+RUN dotnet build "Application.csproj" -c Release -o /app/build
+
+RUN dotnet publish "Application.csproj" -c Release -o /app/publish
+
+# Stage 2: Runtime Stage
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-bullseye-slim AS runtime
+WORKDIR /app
+ENTRYPOINT ["dotnet", "Application.dll"]

@@ -1,0 +1,24 @@
+# Use the official lightweight Node.js 12.18.2 image.
+FROM node:12.18.2-alpine
+
+# Set Node environment variable, it allows certain npm packages such as D3 to compile faster
+ENV NODE_ENV production
+
+# Set work directory
+WORKDIR /code
+
+# Add the current code to the Docker Image under the working directory
+COPY . /code
+
+# Set ENV variable for PATH
+ENV PATH /code/node_modules/.bin:$PATH
+
+# Install application dependencies
+RUN npm install --silent
+RUN npm install react-scripts@1.1.1 -g --silent
+
+# Expose the port the app runs on
+EXPOSE 3000
+
+# The command to start the node server
+CMD [ "npm", "start" ]

@@ -1,0 +1,30 @@
+# Use java 8 with JRE as base image
+FROM java:8-jre
+
+# Add information about the maintainer of this Dockerfile
+LABEL maintainer="abc@example.com"
+
+# Define variables
+ARG JAR_FILE=./target/ts-consign-service-1.0.jar
+ENV APP_DIR=/app
+
+# Create the application directory in the container
+RUN mkdir -p $APP_DIR
+
+# Set TimeZone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Add a volume pointing to /tmp
+VOLUME /tmp
+
+# Copy jar file to the application directory in the container
+COPY $JAR_FILE $APP_DIR/
+
+# Expose the port
+EXPOSE 16111
+
+# Set work directory
+WORKDIR $APP_DIR
+
+# Set the startup command to execute the jar
+CMD ["java", "-Xmx200m", "-jar", "ts-consign-service-1.0.jar"]

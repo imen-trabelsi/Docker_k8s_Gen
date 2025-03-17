@@ -1,0 +1,42 @@
+# Use mikesplain/openvas as base image
+FROM mikesplain/openvas
+
+# Setup environment variable
+ENV DEBIAN_FRONTEND=noninteractive \
+
+# Expose port 443
+EXPOSE 443
+
+# Update packages and install software properties, other dependencies
+RUN apt-get update && \
+    apt-get install software-properties-common --no-install-recommends -yq && \
+    add-apt-repository ppa:mikesplain/openvas -y && \
+    add-apt-repository ppa:mrazavi/openvas -y && \
+    apt-get clean && \
+
+# Copy files and directories
+COPY --from=0 /var/lib/openvas /var/lib/openvas
+COPY config/redis.config /etc/redis/redis.config
+COPY config/sasl_passwd_template /
+COPY config/main.cf_template /
+COPY config/ldapUserSync/* /ldapUserSync/
+COPY start /start
+
+# Setup start command
+CMD ["/start"]
+
+# Additional setup commands
+RUN mkdir -p /var/run/redis && \
+-O /openvas-check-setup && \
+    chmod +x /openvas-check-setup && \
+    sed -i 's/DAEMON_ARGS=""/DAEMON_ARGS="-a 0.0.0.0 --client-watch-interval=0"/' /etc/init.d/openvas-manager && \
+    sed -i 's/DAEMON_ARGS=""/DAEMON_ARGS="--mlisten 127.0.0.1 -m 9390 --gnutls-priorities=SECURE128:-AES-128-CBC:-CAMELLIA-128-CBC:-VERS-SSL3.0:-VERS-TLS1.0"/' /etc/init.d/openvas-gsa && \
+    sed -i '/^\[ -n "$HTTP_STS_MAX_AGE" \]/a[ -n "$PUBLIC_HOSTNAME" ] && DAEMON_ARGS="$DAEMON_ARGS --allow-header-host=$PUBLIC_HOSTNAME"' /etc/init.d/openvas-gsa && \
+    sed -i 's/PORT_NUMBER=4000/PORT_NUMBER=443/' /etc/default/openvas-gsa && \
+    greenbone-nvt-sync > /dev/null && \
+    greenbone-scapdata-sync > /dev/null && \
+    greenbone-certdata-sync > /dev/null && \
+    BUILD=true /start && \
+    service openvas-scanner stop && \
+    service openvas-manager stop && \
+    service openvas-gsa stop && \

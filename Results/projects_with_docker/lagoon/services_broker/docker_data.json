@@ -1,0 +1,56 @@
+{
+    "docker_info": {
+        "base_image": "${UPSTREAM_REPO:-uselagoon}/commons:${UPSTREAM_TAG:-latest}",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "UPSTREAM_REPO",
+            "UPSTREAM_TAG",
+            "LAGOON_VERSION"
+        ],
+        "envs": [
+            "ENV LAGOON_VERSION=$LAGOON_VERSION",
+            "ENV SERVICE_NAME='0.0.0.0' \\"
+        ],
+        "copy_instructions": [
+            "COPY --from=commons /bin/ep /bin/fix-permissions /bin/",
+            "COPY definitions.json enabled_plugins rabbitmq.conf /etc/rabbitmq/",
+            "COPY start-rabbit.sh enable-feature-flags.sh /",
+            "COPY /start-rabbit.sh /cluster-rabbit.sh"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "/start-rabbit.sh"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --no-cache \\",
+                "gojq",
+                "curl"
+            ],
+            [
+                "wget -P /plugins https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/v3.13.0/rabbitmq_delayed_message_exchange-3.13.0.ez \\",
+                "&& chown rabbitmq:rabbitmq /plugins/rabbitmq_delayed_message_exchange-*"
+            ],
+            [
+                "chmod 0777 /var/lib/rabbitmq /etc/rabbitmq /etc/rabbitmq/conf.d /tmp/rabbitmq-ssl /var/log/rabbitmq;",
+                ""
+            ],
+            [
+                "fix-permissions /etc/rabbitmq",
+                ""
+            ],
+            [
+                "fix-permissions start-rabbit.sh enable-feature-flags.sh && chmod +x /start-rabbit.sh /enable-feature-flags.sh",
+                ""
+            ]
+        ]
+    }
+}

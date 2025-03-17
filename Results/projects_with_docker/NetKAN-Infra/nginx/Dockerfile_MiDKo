@@ -1,0 +1,21 @@
+FROM nginx:latest
+
+# Set the workdir in the docker container
+WORKDIR /app
+
+# Copy requirements.txt and install dependency
+COPY .pylintrc /app/.pylintrc
+COPY docker-compose.yml /app/docker-compose.yml
+COPY nginx/Dockerfile /app/nginx/Dockerfile
+COPY nginx/nginx.conf /app/nginx/nginx.conf
+
+RUN pip install -r .pylintrc
+
+# COPY nginx conf to container
+COPY nginx.conf /etc/nginx/
+
+# Expose port 
+EXPOSE 80 443
+
+# CMD to run the programs
+CMD ["nginx", "-g", "daemon off;"]

@@ -1,0 +1,30 @@
+#Base Image
+FROM mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim AS build
+WORKDIR /src
+
+# Restore .net dependencies
+COPY ["src/Domain/Domain.csproj", "src/Domain/"]
+COPY ["src/Application/Application.csproj", "src/Application/"]
+COPY ["src/Infrastructure/Infrastructure.csproj", "src/Infrastructure/"]
+COPY ["src/Language/Language.csproj", "src/Language/"]
+COPY ["src/Test/Test.csproj", "src/Test/"]
+
+# Restore all projects
+RUN dotnet restore "src/Domain/Domain.csproj"
+RUN dotnet restore "src/Application/Application.csproj"
+RUN dotnet restore "src/Infrastructure/Infrastructure.csproj"
+RUN dotnet restore "src/Language/Language.csproj"
+RUN dotnet restore "src/Test/Test.csproj"
+
+# Build the application
+COPY . .
+WORKDIR /src/Domain
+RUN dotnet build "Domain.csproj" -c Release -o /app/build
+RUN dotnet publish "Domain.csproj" -c Release -o /app/publish
+
+# Creating runtime image
+FROM mcr.microsoft.com/dotnet/runtime:6.0-bullseye-slim
+WORKDIR /app
+
+#Setting entry point
+ENTRYPOINT ["dotnet", "Domain.dll"]

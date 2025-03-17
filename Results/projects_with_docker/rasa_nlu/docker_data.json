@@ -1,0 +1,56 @@
+{
+    "docker_info": {
+        "base_image": "${IMAGE_BASE_NAME}:base-builder-${BASE_BUILDER_IMAGE_HASH}",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "5005"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "IMAGE_BASE_NAME",
+            "BASE_IMAGE_HASH",
+            "BASE_BUILDER_IMAGE_HASH"
+        ],
+        "envs": [
+            "ENV PATH=\"/opt/venv/bin:$PATH\"",
+            "ENV HOME=/app"
+        ],
+        "copy_instructions": [
+            "COPY . /build/",
+            "WORKDIR /build",
+            "COPY --from=builder /opt/venv /opt/venv",
+            "WORKDIR /app"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"rasa\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"--help\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "python -m venv /opt/venv && \\",
+                ". /opt/venv/bin/activate &&",
+                "pip install --no-cache-dir -U \"pip==22.*\" -U \"wheel>0.38.0\" &&",
+                "poetry install --no-dev --no-root --no-interaction &&",
+                "poetry build -f wheel -n &&",
+                "pip install --no-deps dist/*.whl &&",
+                "rm -rf dist *.egg-info"
+            ],
+            [
+                "chgrp -R 0 /app && chmod -R g=u /app && chmod o+wr /app",
+                "USER 1001"
+            ]
+        ]
+    }
+}

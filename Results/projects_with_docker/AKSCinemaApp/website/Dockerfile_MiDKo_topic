@@ -1,0 +1,44 @@
+# Use the base image provided by the user
+FROM golang:1.15.6-alpine as builder
+
+# Create appuser
+RUN adduser -D -g '' elf
+
+# Set the Current Working Directory inside the container
+WORKDIR /opt/web/
+
+# Copy go mod and sum files
+COPY go.mod go.sum ./
+
+# Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed
+RUN go mod download && go mod verify
+
+# Copy the source from the current directory to the Working Directory inside the container
+COPY . .
+
+# Build the Go app
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -a -installsuffix cgo -o /go/bin/cinema-website ./cmd/web
+
+# Start a new stage from scratch
+FROM scratch
+
+# Copy necessary system files
+
+# Change to non-root user
+USER elf
+
+# Set the Current Working Directory inside the container
+WORKDIR /opt/web/
+
+# Copy the Pre-built binary file from the previous stage
+
+LABEL language="golang" org.opencontainers.image.source=""
+
+# Copy the rest of your app's source code from your host to your image filesystem.
+COPY ./ui ui
+
+# This container exposes port to the outside world
+EXPOSE 8080
+
+# Run the binary program produced by `go build`
+ENTRYPOINT ["./cinema-website"]

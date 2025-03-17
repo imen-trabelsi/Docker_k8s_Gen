@@ -1,0 +1,36 @@
+# Choose base image
+FROM python:2.7-stretch
+
+# Set environment variables
+ENV VERSION=12.0.3
+
+# Copy necessary files and set permissions
+COPY ./helpers/docker/keystone/keystone.conf /etc/keystone/keystone.conf
+COPY ./helpers/docker/keystone/bootstrap_fn.sh /etc/bootstrap_fn.sh
+COPY ./helpers/docker/keystone/bootstrap.sh /etc/bootstrap.sh
+COPY ./helpers/docker/keystone/create_db.py /etc/create_db.py
+COPY ./helpers/docker/keystone/requirements.txt /etc/requirements.txt
+RUN chmod a+x /etc/bootstrap.sh
+
+# Update system dependencies, install necessary packages and cleanup
+RUN set -x \
+&& apt-get -y update \
+&& apt-get install -y libffi-dev python-dev libssl-dev netcat default-libmysqlclient-dev \
+
+# Download keystone and install dependencies
+RUN curl -fSL https://tarballs.openstack.org/keystone/keystone-${VERSION}.tar.gz -o keystone-${VERSION}.tar.gz \
+&& tar xvf keystone-${VERSION}.tar.gz \
+&& cd keystone-${VERSION} \
+&& pip install -r requirements.txt \
+&& PBR_VERSION=${VERSION} pip install . \
+&& cp -r etc /etc/keystone \
+&& cd - \
+
+# Install project specific dependencies
+RUN pip install -r /etc/requirements.txt \
+
+# Expose required port
+EXPOSE 5000
+
+# Entry point
+ENTRYPOINT ["/etc/bootstrap.sh"]

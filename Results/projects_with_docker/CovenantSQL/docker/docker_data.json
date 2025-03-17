@@ -1,0 +1,43 @@
+{
+    "docker_info": {
+        "base_image": "alpine:3.9",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "4661"
+        ],
+        "user": [],
+        "labels": [
+            "\\"
+        ],
+        "health_checks": [],
+        "build_args": [
+            "COMMIT",
+            "VERSION"
+        ],
+        "envs": [
+            "ENV VERSION=${VERSION}",
+            "ENV COVENANT_ROLE=miner",
+            "ENV COVENANT_CONF=config.yaml"
+        ],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY --from=covenantsql/covenantsql-builder /go/src/github.com/CovenantSQL/CovenantSQL/bin/* /app/"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"./docker-entry.sh\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk --no-cache add ca-certificates icu-libs musl",
+                ""
+            ]
+        ]
+    }
+}

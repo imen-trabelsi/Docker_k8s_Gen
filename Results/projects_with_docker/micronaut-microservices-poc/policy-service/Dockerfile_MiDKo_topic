@@ -1,0 +1,22 @@
+# Start with adoptopenjdk base image
+FROM adoptopenjdk/openjdk14:jre-14.0.2_12-alpine
+
+# Optional: Set working directory in the container
+WORKDIR /app
+
+# Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy pom.xml and source code to the image
+COPY pom.xml .
+COPY src ./src
+
+# Package the application
+RUN ./mvnw package -DskipTests
+
+# Copy the generated JAR file to the image
+COPY target/policy-service*.jar policy-service.jar
+
+# Set the startup command to execute the jar
+CMD ["java","${JAVA_OPTS}", "-jar", "policy-service.jar"]

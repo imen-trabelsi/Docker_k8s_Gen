@@ -1,0 +1,30 @@
+{
+    "docker_info": {
+        "base_image": "alpine:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "${THEME_PROVIDER_USER}"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV THEME_PROVIDER_USER=\"themeprovider\" \\"
+        ],
+        "copy_instructions": [
+            "COPY themes/hmda /themes"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apk update --no-cache",
+                ""
+            ],
+            [
+                "addgroup -g ${THEME_PROVIDER_USER_ID} -S ${THEME_PROVIDER_USER} && \\",
+                "adduser -u ${THEME_PROVIDER_USER_ID} -S ${THEME_PROVIDER_USER} -G ${THEME_PROVIDER_USER}"
+            ]
+        ]
+    }
+}

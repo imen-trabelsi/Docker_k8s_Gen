@@ -1,0 +1,29 @@
+# Base Image
+FROM $REPOSITORY/gs-cloud-base-jre:$TAG
+
+# Build Arguments
+ARG REPOSITORY=geoservercloud
+ARG TAG=latest
+ARG JAR_FILE=target/gs-cloud-*-bin.jar
+
+# Environment Variables
+ENV JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS} -XX:SharedArchiveFile=application.jsa"
+
+# Copy Instructions
+COPY ${JAR_FILE} application.jar
+COPY --from=builder dependencies/ ./
+COPY --from=builder snapshot-dependencies/ ./
+COPY --from=builder spring-boot-loader/ ./
+COPY --from=builder application/ ./
+
+# Run Commands
+RUN mkdir /tmp/tmpdatadir
+RUN java -Djarmode=layertools -jar application.jar extract && \
+    GEOSERVER_DATA_DIR=/tmp/tmpdatadir java -XX:ArchiveClassesAtExit=application.jsa -Dspring.context.exit=onRefreshed -Dspring.profiles.active=standalone,datadir,offline -Dserver.port=0 -Dmanagement.server.port=0 org.springframework.boot.loader.JarLauncher && \
+
+# Expose Ports (Assuming from user input or database connection)
+# Direct ports are not mentioned in the provided information
+# EXPOSE <port>
+
+# Entry Point
+ENTRYPOINT [ "java", "-jar", "/application.jar" ]

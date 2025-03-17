@@ -1,0 +1,13 @@
+FROM nginxproxy/nginx-proxy:alpine
+
+LABEL maintainer="Your Name <your-email@domain.com>"
+
+COPY uploadsize.conf /etc/nginx/conf.d/uploadsize.conf
+
+# check if nginx is running
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD pgrep nginx || exit 1
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

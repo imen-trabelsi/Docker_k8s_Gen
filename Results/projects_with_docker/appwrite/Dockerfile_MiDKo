@@ -1,0 +1,52 @@
+# The first stage of multistage build
+FROM composer:2.0 AS composer
+
+WORKDIR /usr/local/src/
+
+COPY composer.lock .
+COPY composer.json .
+
+RUN composer install --ignore-platform-reqs --optimize-autoloader --no-plugins --no-scripts --prefer-dist
+
+# The second stage
+FROM node:14-alpine AS builder
+
+WORKDIR /usr/src/code/
+COPY . .
+
+# Install app dependencies
+COPY package.json ./
+COPY .env ./
+COPY docker-compose.yml ./
+COPY Dockerfile ./
+RUN npm install
+
+# Bundle app source
+COPY ./app /usr/src/code/app
+COPY ./public /usr/src/code/public
+COPY ./bin /usr/local/bin
+COPY ./docs /usr/src/code/docs
+COPY ./src /usr/src/code/src
+COPY ./dev /usr/src/code/dev
+
+RUN npm run build
+
+# The final stage
+FROM node:14-alpine
+
+LABEL maintainer="team@appwrite.io"
+
+ARG TESTING=false
+ARG VERSION=dev
+ARG DEBUG=false
+
+ENV TESTING=$TESTING
+ENV DEBUG=$DEBUG
+ENV _APP_VERSION=$VERSION
+
+WORKDIR /usr/src/code/
+
+# Expose port
+EXPOSE 80
+
+ENTRYPOINT ["npm", "start"]

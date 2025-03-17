@@ -1,0 +1,55 @@
+# Use the specified base image
+FROM ubuntu:14.04
+
+# Environment variable definitions
+ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+ENV HADOOP_LVERSION 2.7.3
+ENV HADOOP_HOME /usr/local/hadoop
+ENV HADOOP_OPTS -Djava.library.path=/usr/local/hadoop/lib/native
+ENV PATH $PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+ENV SPARK_VERSION 2.1.1
+ENV HADOOP_VERSION 2.7
+ENV ALLUXIO_VERSION 1.5.0
+ENV ALLUXIO_HOME /opt/alluxio
+ENV PATH $PATH:$ALLUXIO_HOME/bin
+ENV SPARK_HOME /opt/spark
+ENV PATH $PATH:$SPARK_HOME/bin
+
+# Run commands to setup the image
+RUN apt-get update -y && apt-get install software-properties-common -y \
+&&  apt-add-repository ppa:webupd8team/java -y \
+&&  apt-get update -y \
+&&  apt-get install -y libzip2 libsnappy1 libssl-dev\
+&&  wget http://archive.apache.org/dist/hadoop/core/hadoop-$HADOOP_LVERSION/hadoop-$HADOOP_LVERSION.tar.gz \
+&&  tar -zxf /hadoop-$HADOOP_LVERSION.tar.gz \
+&&  rm /hadoop-$HADOOP_LVERSION.tar.gz \
+&&  mv hadoop-$HADOOP_LVERSION /usr/local/hadoop \
+&&  mkdir -p /usr/local/hadoop/logs \
+&&  cd / \
+&&  wget http://alluxio.org/downloads/files/${ALLUXIO_VERSION}/alluxio-${ALLUXIO_VERSION}-hadoop-${HADOOP_VERSION}-bin.tar.gz \
+&&  tar xvfz alluxio-${ALLUXIO_VERSION}-hadoop-${HADOOP_VERSION}-bin.tar.gz \
+&&  rm alluxio-${ALLUXIO_VERSION}-hadoop-${HADOOP_VERSION}-bin.tar.gz \
+&&  mv alluxio-${ALLUXIO_VERSION}-hadoop-${HADOOP_VERSION} $ALLUXIO_HOME \
+&&  cd / \
+&&  wget https://d3kbcqa49mib13.cloudfront.net/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz \
+&&  tar -xzf spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz \
+&&  rm spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz \
+&&  mv spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION} $SPARK_HOME \
+&&  apt-get -y install git maven \
+&&  apt-get -y install xterm \
+&&  wget https://artifacts.elastic.co/downloads/elasticsearch-hadoop/elasticsearch-hadoop-6.2.4.zip \
+&&  unzip elasticsearch-hadoop-6.2.4.zip \
+&&  cd elasticsearch-hadoop-6.2.4/dist/ \
+
+# Copy files into the image
+COPY master.conf /opt/conf/master.conf
+COPY slave.conf /opt/conf/slave.conf
+COPY alluxio_conf/* /opt/alluxio/conf/
+COPY hadoop_conf/* /usr/local/hadoop/etc/hadoop/
+COPY spark_conf/* /opt/spark/conf/
+
+# Open the specified ports
+EXPOSE 8080
+
+# Define the execution command
+CMD ["/opt/spark/bin/spark-shell", "--master", "local[*]"]

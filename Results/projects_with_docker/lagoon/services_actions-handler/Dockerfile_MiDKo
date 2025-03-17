@@ -1,0 +1,42 @@
+# using the required base image
+FROM golang:1.23-alpine3.21
+
+# set environment variables
+ENV LAGOON_VERSION=$LAGOON_VERSION
+ENV LAGOON=actions-handler
+ENV JWT_SECRET=super-secret-string
+ENV CGO_ENABLED=0
+ENV GOOS=linux 
+ENV GOARCH=amd64 
+
+# Adding labels for better metadata management
+LABEL version=$LAGOON_VERSION
+LABEL application=$LAGOON
+
+# update and install necessary alpine packages, also add npm and nodejs
+RUN apk update && apk add --no-cache npm nodejs
+
+# set the working directory
+WORKDIR /go/src/github.com/uselagoon/lagoon/services/actions-handler/
+
+# add app
+COPY . .
+
+# build command, creating binary with go
+RUN go build -a -o actions-handler .
+
+# expose ports
+EXPOSE 8080
+
+# set the working directory
+WORKDIR /app/
+
+# copy the necessary file from the first stage build
+COPY --from=builder /go/src/github.com/uselagoon/lagoon/services/actions-handler/actions-handler .
+
+# switching to non-root user
+USER 1001
+
+# start command
+ENTRYPOINT ["/sbin/tini", "--"] 
+CMD ["/app/actions-handler"]

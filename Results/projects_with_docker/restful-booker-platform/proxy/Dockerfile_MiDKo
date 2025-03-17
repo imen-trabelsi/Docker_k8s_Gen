@@ -1,0 +1,33 @@
+# Use nginx:alpine as base image
+FROM nginx:alpine
+
+# Copy project files into the docker image
+COPY . /app
+
+## Add an env var JAVA_HOME pointing to the installed Java
+ENV JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk
+
+# Set the working directory inside the docker image
+WORKDIR /app
+
+# Copy the Nginx configuration file
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Copy the Java based application, its dependencies to the docker image
+COPY pom.xml ./
+COPY src ./src
+
+# Update packages and install maven
+RUN apk update && \
+
+# Use maven to build the spring boot application
+RUN mvn clean install
+
+# Expose the required port
+EXPOSE 8080
+
+# Add a health check command 
+HEALTHCHECK CMD curl --fail http://localhost:8080/actuator/health || exit 1
+
+# execute the jar with exec so the java process is pid 1 in the container (allowing it to receive sigterm signals)
+CMD ["java", "-jar", "target/microservice.jar"]

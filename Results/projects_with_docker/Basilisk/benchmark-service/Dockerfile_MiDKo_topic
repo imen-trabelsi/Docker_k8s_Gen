@@ -1,0 +1,20 @@
+# Start with OpenJDK 17 on Alpine Linux
+FROM openjdk:17-jdk-alpine
+
+# Add necessary commands to run and optimise the image
+RUN apk --no-cache add curl
+
+# Add the ability to reach and unzip IGUANA
+RUN wget https://github.com/dice-group/IGUANA/releases/download/v3.3.0/iguana-3.3.0.zip && \
+
+# Expose port 8080, the standard for Spring Boot applications
+EXPOSE 8080
+
+# Ensure that the shell is not run as root
+USER 1000:1000
+
+# Copy the jar file into the container
+COPY target/benchmark-service-0.1.jar benchmark-service-0.1.jar
+
+# Specify the command to run the microservice
+ENTRYPOINT ["java","-jar","benchmark-service-0.1.jar"]

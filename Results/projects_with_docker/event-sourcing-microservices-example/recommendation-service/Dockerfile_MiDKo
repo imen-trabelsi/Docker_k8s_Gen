@@ -1,0 +1,24 @@
+# Specifying the base image
+FROM openjdk:17-alpine
+
+# Defining a working directory
+WORKDIR /app
+
+# Copying project files to the docker image
+COPY ./pom.xml ./pom.xml
+COPY ./src ./src
+
+# Run maven build to generate the executable
+RUN mvn clean package -DskipTests
+
+# Adding the necessary build arguments
+ARG JAR_FILE
+
+# Copying the compiled artifact from the target to the application folder
+COPY target/${JAR_FILE} /usr/share/myservice/myservice.jar
+
+# Expose the required ports
+EXPOSE 8080
+
+# Setup the entry point
+ENTRYPOINT ["java", "-jar", "/usr/share/myservice/myservice.jar"]

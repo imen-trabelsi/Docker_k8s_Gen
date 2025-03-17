@@ -1,0 +1,53 @@
+# Using multi-stage builds:
+FROM node:14 as frontend
+
+# Set environment variables:
+ENV PYTHONUNBUFFERED=1
+
+# Set working directory and create app directory
+WORKDIR /code/src/os2datascanner/projects/admin/adminapp
+
+# Copying files to working directory
+COPY src/os2datascanner/projects/admin/adminapp/package.json .
+COPY src/os2datascanner/projects/admin/adminapp/package-lock.json .
+
+# Installing all the dependencies for node
+RUN npm ci
+
+# Run the build
+RUN npm run prod
+
+# Python stage
+FROM python:3.7-slim as python
+
+ARG SUPERCRONIC_VERSION
+ARG SUPERCRONIC_SHA1SUM
+
+WORKDIR /code
+
+# Installing app specific dependencies:
+COPY requirements/sys-requirements/sys-requirements-common.txt .
+
+RUN set -ex && \
+
+# Copying rest of the files from source to our new container
+
+# Adding healthcheck Instruction
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD curl -f http://localhost:5000/healthz || exit 1
+
+# Running the application
+CMD ["gunicorn", "--config", "/code/gunicorn-settings.py", "projects.admin:app"]
+
+WORKDIR /code/src/os2datascanner/projects/admin/adminapp/static
+
+# Exposing the necessary port
+EXPOSE 5000
+
+# Adding labels
+LABEL org.opencontainers.image.title="OS2datascanner"
+
+# Create a user
+RUN addgroup os2ds_admin && adduser -G os2ds_admin os2ds_admin
+
+# Switch to the new user
+USER os2ds_admin:os2ds_admin

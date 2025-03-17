@@ -1,0 +1,17 @@
+# Use openjdk:11 as base image
+FROM openjdk:11
+
+# Set working directory in the container
+WORKDIR /usr/src
+
+# Copy the jar file into the container at /usr/src
+COPY ./target/eureka-server-0.0.1-SNAPSHOT.jar /usr/src/eureka-server-0.0.1-SNAPSHOT.jar
+
+# Add a volume pointing to /tmp (Optional)
+VOLUME /tmp
+
+# Expose the port 8080 for application usage
+EXPOSE 8080
+
+# The application's entrypoint
+ENTRYPOINT [ "java", "-jar", "eureka-server-0.0.1-SNAPSHOT.jar" ]

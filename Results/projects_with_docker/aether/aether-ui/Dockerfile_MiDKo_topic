@@ -1,0 +1,36 @@
+# Use the specified base image
+FROM python:3.10-slim
+
+# Setting up labels
+LABEL description="Aether"
+
+# Environment Variables
+ENV VIRTUAL_ENV=/var/run/aether/venv
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+ENV VERSION=0.0.0
+ENV GIT_REVISION=0.0.0
+
+# Create non root user
+RUN adduser -D -g '' aether
+
+# Use newly created user
+USER aether
+
+# Copy files
+COPY --chown=aether:aether ./conf/docker/* /tmp/
+WORKDIR /code
+COPY --chown=aether:aether ./conf/pip /code/conf/pip
+COPY --chown=aether:aether ./ /code
+
+# Setting up the python environment and installing dependencies
+RUN /tmp/setup.sh
+RUN mkdir -p $VIRTUAL_ENV && \
+    python3 -m venv $VIRTUAL_ENV &&\
+    pip install -q --upgrade pip &&\
+
+# App versioning
+RUN mkdir -p /var/tmp && \
+    echo $VERSION > /var/tmp/VERSION &&\
+
+# Startup command
+ENTRYPOINT ["/code/entrypoint.sh"]

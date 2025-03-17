@@ -1,0 +1,32 @@
+# Stage 1: Build the application
+FROM node:18@sha256:f12d34408955b2081f82078e8f96c3299ca0f38d11e76086cb9b9b1b669977e4 as build
+
+# Set working directory in the docker container
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json (if exists)
+COPY package* ./
+
+# Install dependencies
+RUN npm install --only=prod
+
+# Copy all files 
+COPY . .
+
+# Build application
+RUN npm run build
+
+# Stage 2: Qurey Microservice
+FROM node:18@sha256:f12d34408955b2081f82078e8f96c3299ca0f38d11e76086cb9b9b1b669977e4
+
+# Set working directory in the docker container
+WORKDIR /usr/src/app
+
+# Copy build outputs from Stage 1
+
+# Add GATSBY_BUGSNAG_API_KEY as environment variable
+ARG GATSBY_BUGSNAG_API_KEY
+ENV GATSBY_BUGSNAG_API_KEY=${GATSBY_BUGSNAG_API_KEY}
+
+# Run application with node
+CMD ["npm", "run", "serve", "--", "--host", "0.0.0.0"]

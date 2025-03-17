@@ -1,0 +1,37 @@
+# Use Alpine as the base image
+FROM alpine
+
+# Maintainer
+LABEL maintainer="contact@graviteesource.com"
+
+# Gravitee.io version
+ARG GRAVITEEIO_VERSION=0
+
+# Environment Variables
+ENV GRAVITEEIO_HOME /opt/graviteeio-gateway
+
+# Create home directory
+RUN mkdir -p ${GRAVITEEIO_HOME}
+
+# Install necessary packages
+RUN apk add --update zip unzip netcat-openbsd wget python3 py3-pip
+
+# Copy the requirements file and install Python dependencies
+COPY ./requirements.txt .
+RUN pip install -r requirements.txt
+
+# Download, unzip Gravitee.io and clean up
+RUN wget https://download.gravitee.io/graviteeio-apim/distributions/graviteeio-full-${GRAVITEEIO_VERSION}.zip --no-check-certificate -P /tmp/ \
+    && unzip /tmp/graviteeio-full-${GRAVITEEIO_VERSION}.zip -d /tmp/ \
+    && mv /tmp/graviteeio-full-${GRAVITEEIO_VERSION}/graviteeio-gateway* ${GRAVITEEIO_HOME} \
+    && rm -rf /tmp/* \
+    && chgrp -R 0 ${GRAVITEEIO_HOME} \
+
+# Work Directory
+WORKDIR ${GRAVITEEIO_HOME}
+
+# Expose port
+EXPOSE 8082
+
+# Start up Command
+CMD ["./bin/gravitee"]

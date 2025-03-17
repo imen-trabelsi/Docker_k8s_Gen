@@ -1,0 +1,19 @@
+# Use the Python3 alpine base image
+FROM python:3-alpine3.15
+
+# Copy the requirements file into the Docker image and install the Python dependencies
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Add microservice Python files
+COPY test.py /app/test.py
+COPY generate_config.py /app/generate_config.py
+
+# Switch WORKDIR to /app
+WORKDIR /app
+
+# expose ports
+EXPOSE 80 443
+
+# CMD instruction
+CMD ["opentelemetry-instrument", "pytest", "/app/test.py"]

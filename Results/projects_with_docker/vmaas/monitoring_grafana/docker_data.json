@@ -1,0 +1,34 @@
+{
+    "docker_info": {
+        "base_image": "grafana/grafana:11.5.2",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV GF_AUTH_ANONYMOUS_ENABLED=true",
+            "ENV GF_AUTH_ANONYMOUS_ORG_ROLE=Admin",
+            "ENV GF_AUTH_DISABLE_LOGIN_FORM=true"
+        ],
+        "copy_instructions": [
+            "ADD /scripts/extract_dashboard_configmap.py /usr/local/bin",
+            "ADD /monitoring/grafana/datasources.yml /etc/grafana/provisioning/datasources",
+            "ADD /monitoring/grafana/dashboards.yml /etc/grafana/provisioning/dashboards",
+            "ADD /monitoring/grafana/dashboards/grafana-dashboard-clouddot-insights-vmaas.configmap.yml /etc/grafana"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apk add --no-cache python3 py3-yaml",
+                "USER grafana"
+            ],
+            [
+                "extract_dashboard_configmap.py /etc/grafana/grafana-dashboard-clouddot-insights-vmaas.configmap.yml > /etc/grafana/provisioning/dashboards/grafana-dashboard-clouddot-insights-vmaas.json"
+            ]
+        ]
+    }
+}

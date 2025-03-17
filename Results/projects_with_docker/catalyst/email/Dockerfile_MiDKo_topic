@@ -1,0 +1,32 @@
+# Use the official node base image
+FROM node:12-alpine
+
+# Set the working directory
+WORKDIR /app
+
+# Environment Variables
+ENV SUPPORTING_FILES /app
+
+# Copying package.json file to the working directory
+COPY package.json .
+
+# Copying other project files to the working directory
+COPY . $SUPPORTING_FILES
+
+# System Dependencies and Build Tools
+RUN apk update && apk add --update alpine-sdk build-base bash python nano postgresql-client
+
+# Node.js and NPM configurations
+RUN npm i -g pnpm && mkdir -p $SUPPORTING_FILES && mkdir -p /node_modules
+
+# Installing Node.js dependencies
+RUN pnpm install
+
+# Building Application
+RUN npm run build
+
+# Ensure the health checks, networking, ports and security considerations to be managed by 
+# the orchestration platform like Kubernetes which is out of Docker file focus.
+
+# Starting the Node.js application
+CMD [ "node", "your-application-main-file.js" ]

@@ -1,0 +1,22 @@
+#Base Image
+FROM registry.cn-beijing.aliyuncs.com/edas_unified/jct_dw_8_4_4:0.1
+
+#Set Working directory
+WORKDIR /app
+
+#Copy required files
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+COPY /adservice-provider/target/adservice-provider-1.0.0-SNAPSHOT.jar /app
+COPY /start.sh /app
+
+#Expose Ports
+EXPOSE 8080 
+
+#CMD Instruction
+CMD ["/app/start.sh"]
+
+#Set Volume for data persistence
+VOLUME /tmp
+
+#Build JAR file
+RUN mvn package

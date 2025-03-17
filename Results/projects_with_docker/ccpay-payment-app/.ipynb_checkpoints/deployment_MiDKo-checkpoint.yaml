@@ -1,0 +1,45 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: unnamed-microservice
+  labels:
+    app: unnamed-microservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: unnamed-microservice
+  template:
+    metadata:
+      labels:
+        app: unnamed-microservice
+    spec:
+      serviceAccountName: default
+      containers:
+      - name: unnamed-microservice
+        image: hmctspublic.azurecr.io/base/java:21-distroless
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+      tolerations: []
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: unnamed-microservice
+  labels:
+    app: unnamed-microservice
+spec:
+  type: ClusterIP
+  ports:
+    - port: 8080
+  selector:
+    app: unnamed-microservice

@@ -1,0 +1,18 @@
+# Start with a base image containing Java runtime (from User Input)
+FROM adoptopenjdk/openjdk11:alpine
+
+# Add a volume pointing to /tmp
+VOLUME /tmp
+
+# The application's jar file (From user input and somewhat from source code)
+ARG JAR_FILE=target/user-collections.jar
+
+#Add the application's jar to the container
+COPY ${JAR_FILE} user-collections.jar
+
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
+
+# Run the jar file 
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/user-collections.jar"]
+

@@ -1,0 +1,20 @@
+# Python Base Image
+FROM python:3.7-slim
+
+# Copy requirements.txt file
+COPY requirements.txt /tmp/requirements.txt
+
+# Install the application requirements
+RUN pip3 install -U -r /tmp/requirements.txt
+
+# Remove requirements.txt file from /tmp directory
+RUN rm /tmp/requirements.txt
+
+# Set application working directory
+WORKDIR /app
+
+# Copy Python scripts
+COPY *.py ./
+
+# Run the python script on container startup
+CMD ["python3", "./main.py"]

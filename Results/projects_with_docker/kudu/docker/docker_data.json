@@ -1,0 +1,345 @@
+{
+    "docker_info": {
+        "base_image": "dev",
+        "multi_stage_build": true,
+        "exposed_ports": [],
+        "user": [
+            "kudu",
+            "kudu",
+            "kudu",
+            "kudu",
+            "impala"
+        ],
+        "labels": [
+            "org.label-schema.name=\"Apache",
+            "org.label-schema.name=\"Apache",
+            "name=\"Apache",
+            "name=\"Apache",
+            "org.label-schema.name=\"Apache",
+            "name=\"Apache",
+            "name=\"Apache",
+            "name=\"Apache"
+        ],
+        "health_checks": [],
+        "build_args": [
+            "RUNTIME_BASE_OS",
+            "DEV_BASE_OS",
+            "DOCKERFILE",
+            "MAINTAINER",
+            "URL",
+            "VCS_TYPE",
+            "VCS_URL",
+            "VERSION",
+            "DOCKERFILE",
+            "MAINTAINER",
+            "URL",
+            "VCS_TYPE",
+            "VCS_URL",
+            "VERSION",
+            "BUILD_DIR=\"/kudu\"",
+            "DOCKERFILE",
+            "MAINTAINER",
+            "URL",
+            "VCS_REF",
+            "VCS_TYPE",
+            "VCS_URL",
+            "VERSION",
+            "BUILD_DIR=\"/kudu\"",
+            "BUILD_TYPE=release",
+            "LINK_TYPE=static",
+            "STRIP=1",
+            "PARALLEL=4",
+            "VCS_REF",
+            "DOCKERFILE",
+            "MAINTAINER",
+            "URL",
+            "VCS_TYPE",
+            "VCS_URL",
+            "VERSION",
+            "BUILD_DIR=\"/kudu\"",
+            "INSTALL_DIR=\"/opt/kudu\"",
+            "DOCKERFILE",
+            "MAINTAINER",
+            "URL",
+            "VCS_REF",
+            "VCS_TYPE",
+            "VCS_URL",
+            "VERSION",
+            "BUILD_DIR=\"/kudu\"",
+            "INSTALL_DIR=\"/opt/kudu\"",
+            "DATA_DIR=\"/var/lib/kudu\"",
+            "DOCKERFILE",
+            "MAINTAINER",
+            "URL",
+            "VCS_REF",
+            "VCS_TYPE",
+            "VCS_URL",
+            "VERSION",
+            "IMPALA_VERSION=\"3.4.0\"",
+            "DOCKERFILE",
+            "MAINTAINER",
+            "URL",
+            "VCS_REF",
+            "VCS_TYPE",
+            "VCS_URL",
+            "VERSION",
+            "DATA_DIR=\"/var/lib/impala\"",
+            "IMPALA_VERSION=\"3.3.0\"",
+            "DOCKERFILE",
+            "MAINTAINER",
+            "URL",
+            "VCS_REF",
+            "VCS_TYPE",
+            "VCS_URL",
+            "VERSION"
+        ],
+        "envs": [
+            "ENV PATH /usr/lib/ccache:/usr/lib64/ccache/:$PATH",
+            "ENV UID=1000",
+            "ENV GID=1000",
+            "ENV UID=1000",
+            "ENV GID=1000",
+            "ENV GRADLE_FLAGS=\"--build-cache\"",
+            "ENV NO_REBUILD_THIRDPARTY=1",
+            "ENV UID=1000",
+            "ENV GID=1000",
+            "ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/lib64",
+            "ENV UID=1000",
+            "ENV GID=1000",
+            "ENV PATH=$INSTALL_DIR/bin/:$PATH",
+            "ENV UID=1001",
+            "ENV GID=1001",
+            "ENV IMPALA_HOME=\"/opt/impala\"",
+            "ENV HIVE_HOME=\"/opt/hive\"",
+            "ENV HIVE_CONF_DIR=\"/etc/hive/conf\"",
+            "ENV HADOOP_HOME=\"/opt/hadoop\"",
+            "ENV HADOOP_CONF_DIR=\"/etc/hadoop/conf\"",
+            "ENV PATH=$IMPALA_HOME/bin/:$PATH",
+            "ENV PATH=$HIVE_HOME/bin/:$PATH",
+            "ENV PATH=$HADOOP_HOME/bin/:$PATH"
+        ],
+        "copy_instructions": [
+            "COPY ./LICENSE.txt /NOTICES/LICENSE.txt",
+            "COPY ./NOTICE.txt /NOTICES/NOTICE.txt",
+            "COPY ./docker/bootstrap-runtime-env.sh /",
+            "COPY ./LICENSE.txt /NOTICES/LICENSE.txt",
+            "COPY ./NOTICE.txt /NOTICES/NOTICE.txt",
+            "COPY ./docker/bootstrap-dev-env.sh /",
+            "COPY ./docker/bootstrap-java-env.sh /",
+            "COPY ./docker/bootstrap-python-env.sh /",
+            "WORKDIR ${BUILD_DIR}",
+            "COPY --chown=kudu:kudu ./thirdparty thirdparty",
+            "COPY --chown=kudu:kudu ./build-support/enable_devtoolset.sh \\",
+            "COPY --chown=kudu:kudu ./build-support/ccache-clang build-support/ccache-clang",
+            "COPY --chown=kudu:kudu ./build-support/ccache-devtoolset-8 build-support/ccache-devtoolset-8",
+            "WORKDIR ${BUILD_DIR}",
+            "COPY --chown=kudu:kudu ./build-support build-support",
+            "COPY --chown=kudu:kudu ./docs/support docs/support",
+            "COPY --chown=kudu:kudu ./cmake_modules cmake_modules",
+            "COPY --chown=kudu:kudu ./examples/cpp examples/cpp",
+            "COPY --chown=kudu:kudu ./src src",
+            "COPY --chown=kudu:kudu ./CMakeLists.txt ./version.txt ./",
+            "COPY --chown=kudu:kudu ./java ${BUILD_DIR}/java",
+            "WORKDIR ${BUILD_DIR}/build/$BUILD_TYPE",
+            "WORKDIR ${BUILD_DIR}/java",
+            "COPY --chown=kudu:kudu ./python ${BUILD_DIR}/python",
+            "WORKDIR ${BUILD_DIR}/python",
+            "WORKDIR ${BUILD_DIR}",
+            "COPY --chown=kudu:kudu . ${BUILD_DIR}",
+            "COPY ./docker/bootstrap-python-env.sh /",
+            "WORKDIR $INSTALL_DIR/python",
+            "COPY ./python/requirements.txt requirements.txt",
+            "COPY --chown=kudu:kudu --from=build /usr/local/lib/libkudu_client* /usr/local/lib/",
+            "COPY --chown=kudu:kudu --from=build /usr/local/include/kudu /usr/local/include/kudu",
+            "COPY --chown=kudu:kudu --from=build ${BUILD_DIR}/python/dist/kudu-python-*.tar.gz .",
+            "WORKDIR $INSTALL_DIR/bin",
+            "COPY --chown=kudu:kudu --from=build ${BUILD_DIR}/build/latest/bin/kudu ./",
+            "WORKDIR $INSTALL_DIR",
+            "COPY --chown=kudu:kudu --from=build ${BUILD_DIR}/www ./www",
+            "COPY --chown=kudu:kudu ./docker/kudu-entrypoint.sh /",
+            "COPY ./docker/bootstrap-maven-env.sh /",
+            "WORKDIR /impala",
+            "WORKDIR $IMPALA_HOME",
+            "COPY --chown=impala:impala --from=impala-build /opt/impala ./",
+            "WORKDIR $IMPALA_HOME/bin",
+            "WORKDIR $HIVE_HOME",
+            "COPY --chown=impala:impala --from=impala-build /opt/hive ./",
+            "WORKDIR $HADOOP_HOME",
+            "COPY --chown=impala:impala --from=impala-build /opt/hadoop ./",
+            "COPY ./docker/impala/etc /etc",
+            "WORKDIR /",
+            "COPY ./docker/bootstrap-java-env.sh /",
+            "COPY ./docker/bootstrap-python-env.sh /",
+            "WORKDIR $IMPALA_HOME/bin",
+            "COPY --chown=impala:impala ./docker/impala-entrypoint.sh /"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/bin/bash\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/bin/bash\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/bin/bash\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/bin/bash\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"python\"]"
+                ]
+            },
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/kudu-entrypoint.sh\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"help\"]"
+                ]
+            },
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/impala-entrypoint.sh\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"help\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "./bootstrap-runtime-env.sh && rm bootstrap-runtime-env.sh",
+                ""
+            ],
+            [
+                "./bootstrap-dev-env.sh \\",
+                "&& ./bootstrap-java-env.sh",
+                "&& ./bootstrap-python-env.sh",
+                "&& rm bootstrap-dev-env.sh",
+                "&& rm bootstrap-java-env.sh",
+                "&& rm bootstrap-python-env.sh"
+            ],
+            [
+                "groupadd -g ${GID} kudu || groupmod -n kudu $(getent group ${GID} | cut -d: -f1) \\",
+                "&& useradd --shell /bin/bash -u ${UID} -g ${GID} -m kudu",
+                "&& echo 'kudu ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers",
+                "&& mkdir -p ${BUILD_DIR} && chown -R kudu:kudu ${BUILD_DIR}"
+            ],
+            [
+                "--mount=type=cache,id=ccache,uid=1000,gid=1000,target=/home/kudu/.ccache \\",
+                "build-support/enable_devtoolset.sh",
+                "thirdparty/build-if-necessary.sh",
+                "# Remove the files left behind that we don't need."
+            ],
+            [
+                "--mount=type=cache,id=ccache,uid=1000,gid=1000,target=/home/kudu/.ccache \\",
+                "--mount=type=cache,id=gradle-cache,uid=1000,gid=1000,target=/home/kudu/.gradle",
+                "../../build-support/enable_devtoolset.sh",
+                "../../thirdparty/installed/common/bin/cmake",
+                "-DCMAKE_BUILD_TYPE=$BUILD_TYPE",
+                "-DKUDU_LINK=$LINK_TYPE",
+                "-DKUDU_GIT_HASH=$VCS_REF",
+                "# The release build is massive with tests built."
+            ],
+            [
+                "--mount=type=cache,id=gradle-cache,uid=1000,gid=1000,target=/home/kudu/.gradle \\",
+                "./gradlew jar --build-cache"
+            ],
+            [
+                "--mount=type=cache,id=ccache,uid=1000,gid=1000,target=/home/kudu/.ccache \\",
+                "pip install --user -r requirements.txt",
+                "&& python setup.py sdist"
+            ],
+            [
+                "groupadd -g ${GID} kudu || groupmod -n kudu $(getent group ${GID} | cut -d: -f1) \\",
+                "&& useradd --shell /bin/bash -u ${UID} -g ${GID} -m kudu",
+                "&& mkdir -p ${INSTALL_DIR} && chown -R kudu:kudu ${INSTALL_DIR}"
+            ],
+            [
+                "./bootstrap-python-env.sh \\",
+                "&& rm bootstrap-python-env.sh"
+            ],
+            [
+                "pip install --user -r requirements.txt \\",
+                "&& rm -rf requirements.txt",
+                "&& pip install --user kudu-python-*.tar.gz",
+                "&& rm -rf kudu-python-*.tar.gz"
+            ],
+            [
+                "groupadd -g ${GID} kudu || groupmod -n kudu $(getent group ${GID} | cut -d: -f1) \\",
+                "&& useradd --shell /bin/bash -u ${UID} -g ${GID} -m kudu",
+                "&& mkdir -p ${INSTALL_DIR} && chown -R kudu:kudu ${INSTALL_DIR}",
+                "&& mkdir -p ${DATA_DIR} && chown -R kudu:kudu ${DATA_DIR}"
+            ],
+            [
+                "./bootstrap-maven-env.sh \\",
+                "&& rm bootstrap-maven-env.sh"
+            ],
+            [
+                "wget -nv http://archive.apache.org/dist/impala/${IMPALA_VERSION}/apache-impala-${IMPALA_VERSION}.tar.gz -O apache-impala.tar.gz \\",
+                "&& tar -xzf apache-impala.tar.gz --strip-components=1",
+                "&& rm apache-impala.tar.gz"
+            ],
+            [
+                "source bin/impala-config.sh \\",
+                "&& ./buildall.sh -release -noclean -notests",
+                "&& docker/setup_build_context.py"
+            ],
+            [
+                "mkdir /opt/impala \\",
+                "&& cp -Lr /impala/docker/build_context/release/bin /opt/impala/bin",
+                "&& cp -Lr /impala/docker/build_context/release/lib /opt/impala/lib",
+                "&& cp -Lr /impala/docker/build_context/release/www /opt/impala/www",
+                "&& cp -Lr /impala/toolchain/cdh_components-*/hive-* /opt/hive",
+                "&& cp -Lr /impala/toolchain/cdh_components-*/hadoop-* /opt/hadoop"
+            ],
+            [
+                "groupadd -g ${GID} impala || groupmod -n impala $(getent group ${GID} | cut -d: -f1) \\",
+                "&& useradd --shell /bin/bash -u ${UID} -g ${GID} -m impala",
+                "&& mkdir -p ${IMPALA_HOME} && chown -R impala:impala ${IMPALA_HOME}",
+                "&& mkdir -p ${HIVE_HOME} && chown -R impala:impala ${HIVE_HOME}",
+                "&& mkdir -p ${HADOOP_HOME} && chown -R impala:impala ${HADOOP_HOME}",
+                "&& mkdir -p ${DATA_DIR} && chown -R impala:impala ${DATA_DIR}"
+            ],
+            [
+                "ln -s impalad statestored && ln -s impalad catalogd",
+                ""
+            ],
+            [
+                "./bootstrap-java-env.sh \\",
+                "&& rm bootstrap-java-env.sh"
+            ],
+            [
+                "./bootstrap-python-env.sh \\",
+                "&& rm bootstrap-python-env.sh"
+            ],
+            [
+                "pip install impala-shell",
+                ""
+            ]
+        ]
+    }
+}

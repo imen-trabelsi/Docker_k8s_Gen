@@ -1,0 +1,39 @@
+# Use the base image provided by the user
+FROM node:11.2.0-alpine
+
+# Set the working directory in the container
+WORKDIR /usr/app
+
+# Copy package.json into the container
+COPY package.json package-lock.json* ./
+
+# Install dependencies
+RUN npm install
+
+# Create server directory
+RUN mkdir -p /server
+
+# Copy remaining project files into the container
+COPY . /server
+
+# Change the working directory
+WORKDIR /server
+
+# Run npm
+RUN cd /server && npm install
+
+# Setting necessary environment variables
+# Replace the values with the actual values as needed
+ENV MONGO_DB_URL=mongodb://mongo:27017/authentication
+ENV NODE_ENV=production
+ENV PORT=3000
+
+# Expose port
+EXPOSE 3000
+
+# Health check command
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD curl -f http://localhost:3000/ || exit 1
+
+# Start command
+CMD ["node", "/server/src/server.js"]

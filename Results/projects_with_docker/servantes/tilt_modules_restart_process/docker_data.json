@@ -1,0 +1,31 @@
+{
+    "docker_info": {
+        "base_image": "alpine/git",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY --from=0  /usr/local/bin/entr /",
+            "ADD tilt-restart-wrapper /"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apk update && apk add make",
+                "RUN apk add build-base"
+            ],
+            [
+                "git clone https://github.com/eradman/entr.git /entr",
+                "WORKDIR /entr"
+            ],
+            [
+                "git checkout c564e6bdca1dfe2177d1224363cad734158863ad",
+                "RUN ./configure; CFLAGS=\"-static\" make install"
+            ]
+        ]
+    }
+}

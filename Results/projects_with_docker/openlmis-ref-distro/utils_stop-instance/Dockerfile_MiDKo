@@ -1,0 +1,23 @@
+# Base image
+FROM openlmis/awscli
+
+# Set working directory
+WORKDIR /app
+
+# Copy requirements.txt and install dependencies
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
+# Copy source code
+COPY . .
+
+# Copy stop-instance script and give it execution permissions
+COPY stop-instance.sh /stop-instance.sh
+RUN chmod u+x /stop-instance.sh
+
+# Expose the necesary ports
+# ** Notice that no ports have been specified by the user, so an example of port 5000 is used
+EXPOSE 5000
+
+# Specify the command to start the server
+CMD [ "/stop-instance.sh" ]

@@ -1,0 +1,8 @@
+# Use the specified base image
+FROM caddy:latest
+
+# Copy Caddyfile
+COPY router/Caddyfile /etc/caddy/Caddyfile
+
+# Default command
+CMD ["caddy", "run", "--config", "/etc/caddy/Caddyfile", "--adapter", "caddyfile"]

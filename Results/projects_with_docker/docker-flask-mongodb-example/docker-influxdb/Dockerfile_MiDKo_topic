@@ -1,0 +1,17 @@
+FROM influxdb:1.8
+
+WORKDIR /app
+
+# improve container security
+USER 1001
+
+# Copy the source code to the container
+COPY . /app
+
+# copy entrypoint.sh file
+COPY entrypoint.sh ./
+
+# make the entrypoint.sh file executable
+RUN chmod u+x entrypoint.sh
+
+ENTRYPOINT ["/app/entrypoint.sh"]

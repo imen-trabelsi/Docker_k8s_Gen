@@ -1,0 +1,43 @@
+# Dockerfile
+
+# Use the openjdk image as our base image
+FROM openjdk:8-jre as builder
+
+# Set our workdir
+WORKDIR /usr/src/app
+
+# Copy the pom.xml file
+COPY ./pom.xml ./pom.xml
+
+# Install required dependencies
+RUN mvn dependency:go-offline -B
+
+# Copy the rest of our app source code
+COPY ./src ./src
+
+# Build our application
+RUN mvn package
+
+FROM openjdk:8-jre
+
+# Copy the jar file we built in the first stage
+
+# Add the jar file to the container 
+COPY abixen-platform-business-intelligence-service.jar app.jar
+
+# Change the permissions of the entrypoint 
+RUN chmod 755 entrypoint.sh
+
+# Expose the port on which the app runs
+EXPOSE 8080
+
+# Add a health check
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD curl --fail http://localhost:8080/actuator/health || exit 1
+
+# Set profile and eureka uri as environment variables
+ENV SPRING_PROFILES_ACTIVE=docker
+ENV ABIXEN_SERVICES_EUREKA_URI=discovery
+
+# Deploy the microservice
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=docker","-Dabixen.services.eureka.uri=discovery"]
+CMD ["-jar","/app.jar"]

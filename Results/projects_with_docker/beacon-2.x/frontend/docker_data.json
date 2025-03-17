@@ -1,0 +1,28 @@
+{
+    "docker_info": {
+        "base_image": "node:19.0-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV PATH /frontend/node_modules/.bin:$PATH"
+        ],
+        "copy_instructions": [
+            "WORKDIR ./frontend",
+            "COPY package.json .",
+            "COPY yarn.lock .",
+            "COPY public ./public",
+            "COPY src ./src"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "yarn install --production",
+                ""
+            ]
+        ]
+    }
+}

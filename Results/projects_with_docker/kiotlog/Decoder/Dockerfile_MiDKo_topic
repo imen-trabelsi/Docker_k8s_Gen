@@ -1,0 +1,26 @@
+# Start from a base image
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-env
+
+# Set working directory
+WORKDIR /Sln
+
+# Copy everything to the working directory
+COPY . .
+
+# Change directory to /Sln/Decoder
+WORKDIR /Sln/Decoder
+
+# Run commands
+RUN dotnet restore
+RUN dotnet publish -c Release -r linux-x64 -o out
+
+# Start new stage
+FROM mcr.microsoft.com/dotnet/sdk:5.0
+
+# Set another working directory
+WORKDIR /App
+
+# Copy the output of the build stage from the previous image
+
+# Entrypoint
+ENTRYPOINT ["/App/Decoder"]

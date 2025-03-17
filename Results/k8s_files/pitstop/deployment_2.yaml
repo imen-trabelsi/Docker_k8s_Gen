@@ -1,0 +1,39 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: rabbitmq
+    version: v1
+  name: rabbitmq
+  namespace: pitstop
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: rabbitmq
+    spec:
+      containers:
+      - env:
+        - name: RABBITMQ_CONFIG_FILE
+          value: /etc/pitstop/rabbitmq.conf
+        image: rabbitmq:3-management-alpine
+        imagePullPolicy: IfNotPresent
+        name: rabbitmq
+        ports:
+        - containerPort: 15672
+        - containerPort: 5672
+        volumeMounts:
+        - mountPath: /etc/pitstop
+          name: rqconfig
+          readOnly: true
+      restartPolicy: Always
+      volumes:
+      - configMap:
+          name: rqconfigmap
+        name: rqconfig

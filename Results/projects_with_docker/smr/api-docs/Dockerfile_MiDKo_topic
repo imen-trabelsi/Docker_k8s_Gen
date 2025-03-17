@@ -1,0 +1,28 @@
+# Use the specified base image
+FROM php:8.3.8-cli-alpine
+
+# Copy composer.json and install dependencies
+COPY composer.json /var/www/html
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN composer install --no-scripts --no-autoloader --no-interaction
+
+# Download phpDocumentor and make it executable
+RUN curl -L -O https://github.com/phpDocumentor/phpDocumentor/releases/download/v3.7.1/phpDocumentor.phar \
+    && chmod +x phpDocumentor.phar \
+
+# Generate the documentation
+RUN phpdoc
+
+# Set the working directory 
+WORKDIR /smr
+
+# Copy the necessary files
+COPY src/lib src/lib
+COPY phpdoc.dist.xml .
+COPY --from=builder /smr/api-docs/build/ /usr/share/nginx/html/
+                   
+# Exposing default port for streamlit
+EXPOSE 8080
+
+# Start the application
+CMD ["php", "-S", "0.0.0.0:8080", "-t", "/smr"]

@@ -1,0 +1,37 @@
+{
+    "docker_info": {
+        "base_image": "python:3",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "HOME=\"/app/controller\""
+        ],
+        "envs": [
+            "ENV HOST_IP 0.0.0.0",
+            "ENV HOST_PORT 8000",
+            "ENV INDY_GENESIS_PATH \"${HOME}/genesis\""
+        ],
+        "copy_instructions": [
+            "WORKDIR $HOME",
+            "ADD . ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"bash\",",
+                    "\"./docker-entrypoint.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "pip3 install --no-cache-dir -r requirements.txt",
+                ""
+            ]
+        ]
+    }
+}

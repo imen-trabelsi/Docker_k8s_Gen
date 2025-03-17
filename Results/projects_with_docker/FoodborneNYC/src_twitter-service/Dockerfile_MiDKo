@@ -1,0 +1,21 @@
+# Use a lightweight Python image as base
+FROM python:3.6.3-onbuild
+
+# Create a directory for the app
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# Copy the current directory contents into the app directory of the container
+COPY . /usr/src/app
+
+# Install any dependencies specified in requirements.txt
+RUN pip install -r requirements.txt
+
+# Define a command to be run such as python app.py when the container starts
+CMD ["python", "app.py"]
+
+# Set environment variables if any. For example, MongoDB URL
+# ARG DB_URL
+
+# Expose the app on port, For example, 5000
+# EXPOSE 5000

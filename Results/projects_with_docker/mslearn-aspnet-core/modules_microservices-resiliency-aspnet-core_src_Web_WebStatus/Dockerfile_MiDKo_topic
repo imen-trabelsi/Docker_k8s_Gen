@@ -1,0 +1,33 @@
+# Set Base Image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS base
+
+# Set working directory in the image
+WORKDIR /app
+
+# Copy csproj and restore as distinct layers
+COPY ./*.csproj ./
+RUN dotnet restore
+
+# Copy everything else and build
+COPY . ./
+RUN dotnet publish -c Release -o out
+
+# Copy and Build the application
+FROM base AS publish
+WORKDIR /src
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+# Additional COPY steps here for the other csproj files
+
+COPY . .
+RUN dotnet restore "eShop-Learn.sln"
+RUN dotnet publish --no-restore "WebStatus.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+
+# Define the entry point of the Docker image.
+ENTRYPOINT ["dotnet", "WebStatus.dll"]
+
+# Expose ports
+EXPOSE 80
+

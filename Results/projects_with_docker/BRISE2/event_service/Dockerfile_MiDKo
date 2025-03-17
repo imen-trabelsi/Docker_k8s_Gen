@@ -1,0 +1,27 @@
+# use base image provided by user
+FROM brisedev/event-service-dev:2.5.0
+
+# set working directory
+WORKDIR /app
+
+# copy requirements file to the working directory
+COPY requirements.txt ./
+
+# install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# copy the source code to the working directory
+COPY . .
+
+# copy bin files to rabbitmq directory
+COPY ./bin/definitions.json /etc/rabbitmq/
+COPY ./bin/rabbitmq.config /etc/rabbitmq/
+
+# define environment variable
+ENV RABBITMQ_LOGS=/var/log/rabbitmq/warning_log.log
+
+# expose port
+EXPOSE 49153
+
+# command to run on container start
+CMD [ "python", "./intro.py" ]

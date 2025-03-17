@@ -1,0 +1,18 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/mssql-tools",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /src",
+            "COPY Restore/logcorner-edusync-speech-database_Create.sql ./"
+        ],
+        "execution": [],
+        "run": []
+    }
+}

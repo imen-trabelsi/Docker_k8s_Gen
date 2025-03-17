@@ -1,0 +1,31 @@
+# Use the base image passed by the user
+FROM node:12-alpine
+
+# Environment variable
+ENV SUPPORTING_FILES=/app
+
+# Copy package.json
+WORKDIR $SUPPORTING_FILES
+COPY package.json .
+
+# Create node_modules and applications directories
+RUN mkdir -p /node_modules \
+
+# Health Checks, Exposed Ports, Users and Labels can be appended here based on the user's information
+
+# Update the system and installation of necessary tools and dependencies
+RUN apk update \
+&& apk add --update alpine-sdk build-base bash python nano postgresql-client \
+&& npm i -g pnpm \
+
+# Copy the rest of the app
+COPY . $SUPPORTING_FILES
+
+# Run the test scripts
+RUN npm run test
+
+# Run build for the application
+RUN npm run build
+
+# Start the app
+CMD [ "npm", "start" ]

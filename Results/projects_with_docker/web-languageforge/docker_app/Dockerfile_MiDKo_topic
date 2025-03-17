@@ -1,0 +1,67 @@
+# Define an alias for the base image
+FROM sillsdev/web-languageforge:base-php AS base
+
+# Set environment variables
+ENV NPM_BUILD_SUFFIX=prd
+ENV NPM_BUILD_SUFFIX=dev
+ENV COMPOSER_ALLOW_SUPERUSER=1
+ENV BUILD_VERSION=${BUILD_VERSION:-'9.9.9'}
+ENV ENVIRONMENT=${ENVIRONMENT:-'production'}
+
+# Set working directory
+WORKDIR /data
+
+# Install dependencies
+COPY package.json pnpm-lock.yaml ./
+RUN npm install -g corepack@latest && corepack enable
+RUN pnpm install
+
+# Copy application code
+COPY src /var/www/html/
+
+# Build application
+RUN pnpm run build:${NPM_BUILD_SUFFIX}
+
+# Set second stage of multistage build
+FROM base AS composer-builder
+COPY src/composer.json src/composer.lock /composer/
+WORKDIR /composer
+RUN composer install
+
+# Set third stage of multistage build
+FROM base AS ui-builder
+COPY webpack.config.js webpack-dev.config.js webpack-prd.config.js tsconfig.json tslint.json ./
+COPY src/angular-app ./src/angular-app
+COPY src/sass ./src/sass
+COPY src/Site/views/languageforge/theme/default/sass/ ./src/Site/views/languageforge/theme/default/sass
+COPY src/Site/views/shared/*.scss ./src/Site/views/shared/
+RUN pnpm run build
+
+# Set forth stage of multistage build
+FROM base AS final
+
+WORKDIR /var/www/html/
+
+# Copy files from previous stages and file system
+COPY docker/app/run-with-wait.sh /run-with-wait.sh
+COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait
+
+# Run predefined commands
+RUN mkdir -p /data
+RUN rm /usr/local/bin/install-php-extensions /usr/local/bin/composer
+RUN apt-get remove -y gnupg2 git
+RUN mv $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
+RUN install-php-extensions xdebug-^3.1
+COPY docker/app/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d
+RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
+RUN ln -s /var/www/html /var/www/src
+
+# Set permissions
+RUN chown -R www-data:www-data /var/www/html/assets /var/www/html/cache \
+
+# Set version
+RUN echo "${BUILD_VERSION}" > build-version.txt \
+
+# Set entry point and cmd
+ENTRYPOINT ["tini", "-g", "--"]
+CMD ["apache2-foreground"]

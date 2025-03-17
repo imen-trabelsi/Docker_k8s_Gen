@@ -1,0 +1,32 @@
+# Use the official golang image from the Docker Hub
+FROM golang:1.19
+
+# Update system packages
+RUN apt update && apt -y install git
+
+# Set the Current Working Directory inside the container
+WORKDIR /go/prometheus_varnish_exporter
+
+# Copy the source code from the current directory to the Working Directory inside the container
+COPY . .
+
+# Download dependencies
+RUN go mod download
+
+# Clone the prometheus_varnish_exporter repo
+RUN git clone https://github.com/jonnenauha/prometheus_varnish_exporter.git .
+
+# Checkout the 1.6.1 version
+RUN git checkout 1.6.1
+
+# Build the application
+RUN go build
+
+# Copy the pre-built binary from the builder stage
+COPY --from=builder /go/prometheus_varnish_exporter/prometheus_varnish_exporter /usr/local/bin
+
+# Expose port (replace the <port_number> with the actual port)
+# EXPOSE <port_number>
+
+# Command to run the executable
+# ENTRYPOINT ["<executable_name>"]

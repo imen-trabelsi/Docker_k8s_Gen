@@ -1,0 +1,41 @@
+# Extracted from the source code and user-provided inputs:
+FROM openjdk:8-jdk-alpine
+
+# Security Considerations:
+RUN addgroup -S spring && adduser -S spring -G spring
+USER spring:spring
+
+# Base Image
+RUN apk add --no-cache curl tar bash
+ARG MAVEN_VERSION=3.9.6
+RUN mkdir -p /usr/share/maven && \
+    curl -fsSL http://apache.osuosl.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | tar -xzC /usr/share/maven --strip-components=1 && \
+
+# Set environment variables
+ENV MAVEN_HOME /usr/share/maven
+ARG USER_HOME_DIR="/root"
+ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
+ENV MAVEN_OPTS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1"
+
+# Set Labels
+LABEL version="2.0.0"
+
+# Expose Ports
+EXPOSE 8080
+
+# Working Dir
+RUN mkdir -p /usr/src/app /usr/src/timelineobserver
+WORKDIR /usr/src/timelineobserver
+
+# Copy instructions
+COPY pom.xml /usr/src/app
+COPY src/ /usr/src/app/src
+COPY --from=build /usr/src/app/target/TimelineObserver-jar-with-dependencies.jar /usr/src/timelineobserver/TimelineObserver-jar-with-dependencies.jar
+
+# Run commands
+WORKDIR /usr/src/app
+RUN mvn -T 1C install && rm -rf target
+RUN mvn -T 1C install
+
+# Entry point
+ENTRYPOINT ["java", "-jar", "/usr/src/timelineobserver/TimelineObserver-jar-with-dependencies.jar"]

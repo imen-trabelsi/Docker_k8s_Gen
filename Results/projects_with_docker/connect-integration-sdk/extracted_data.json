@@ -1,0 +1,39 @@
+{
+    "source_code_info": {
+        "language": "PHP",
+        "framework": "PHP",
+        "dependencies": {
+            "composer.json": "{\n  \"name\": \"shopgate/connect-integration-sdk-php\",\n  \"description\": \"A PHP framework supporting the integration with the Shopgate Connect Platform.\",\n  \"homepage\": \"https://github.com/shopgate/connect-integration-sdk-php\",\n  \"license\": \"Apache-2.0\",\n  \"authors\": [\n    {\n      \"name\": \"Shopgate\",\n      \"email\": \"interfaces@shopgate.com\"\n    }\n  ],\n  \"scripts\": {\n    \"unit-tests\": \"phpunit --testsuite UnitTests\",\n    \"cover-html\": \"phpunit --testsuite UnitTests --coverage-html build/coverage-html\",\n    \"cover-text\": \"phpunit --testsuite UnitTests --coverage-text\",\n    \"cover-clover\": \"phpunit --testsuite UnitTests --coverage-clover build/clover.xml\",\n    \"cs-fixer\": \"php-cs-fixer fix --config=.php-cs.dist --diff --verbose\",\n    \"cs-fixer-dry\": \"php-cs-fixer fix --config=.php-cs.dist --diff --dry-run --verbose\"\n  },\n  \"require\": {\n    \"php\": \">=5.6\",\n    \"ext-json\": \"*\",\n    \"guzzlehttp/guzzle\": \"^6.0|^7.0\",\n    \"guzzlehttp/psr7\": \"^1.4|^2.0\",\n    \"kamermans/guzzle-oauth2-subscriber\": \"^1.0.6\",\n    \"defuse/php-encryption\": \"^2.2.0\",\n    \"monolog/monolog\": \"^1.24|^2|^3\"\n  },\n  \"require-dev\": {\n    \"phpunit/phpunit\": \"^5.0|^6.0|^7.0|^8.0|^9.0\",\n    \"php-coveralls/php-coveralls\": \"^2.1\",\n    \"squizlabs/php_codesniffer\": \"^3.4\",\n    \"friendsofphp/php-cs-fixer\": \"^2.15\",\n    \"yoast/phpunit-polyfills\": \"^1.0\"\n  },\n  \"autoload\": {\n    \"psr-4\": {\n      \"Shopgate\\\\ConnectSdk\\\\\": \"src/\",\n      \"Shopgate\\\\ConnectSdk\\\\Tests\\\\\": \"tests/\"\n    }\n  }\n}\n"
+        },
+        "database": "PostgreSQL",
+        "build_system": "Composer",
+        "config_files": {
+            "docker-compose.yml": "version: \"2\"\nservices:\n  php5:\n    build:\n      context: .\n      args:\n        BASE_IMAGE: 5.6-cli\n    volumes:\n      - .:/app\n\n  php7:\n    build:\n      context: .\n      args:\n        BASE_IMAGE: 7.4-cli\n    volumes:\n      - .:/app\n\n  php8:\n    build:\n      context: .\n      args:\n        BASE_IMAGE: 8.1-cli\n    volumes:\n      - .:/app\n",
+            "Dockerfile": "ARG BASE_IMAGE=5.6-cli\nFROM php:${BASE_IMAGE}\n\nRUN apt-get update && apt-get install -y git zip nano && \\\n    curl -o /composer-setup.php https://getcomposer.org/installer && \\\n    php composer-setup.php --install-dir=/usr/bin --filename=composer\n\nWORKDIR /app\n\nCMD tail -f /dev/null\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".gitignore",
+            ".htaccess",
+            ".php-cs.dist",
+            "CHANGELOG.md",
+            "Dockerfile",
+            "LICENSE.md",
+            "MIGRATION-GUIDE-2.x.md",
+            "README.md",
+            "composer.json",
+            "docker-compose.yml",
+            "phpunit.xml.dist"
+        ],
+        "folders": [
+            ".github",
+            "build",
+            "docs",
+            "release",
+            "src",
+            "tests"
+        ]
+    }
+}

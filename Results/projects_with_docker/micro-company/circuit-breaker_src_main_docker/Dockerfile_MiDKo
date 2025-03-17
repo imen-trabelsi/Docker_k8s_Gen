@@ -1,0 +1,27 @@
+# Use the provided base image
+FROM eclipse-temurin:11
+
+# Add necessary metadata
+LABEL maintainer="maintainer@example.com"
+
+# Create a directory in the container
+WORKDIR /app
+
+# Add a volume
+VOLUME /tmp
+
+# Add Jar files to the app directory in the container
+COPY *.jar /app.jar
+
+# Add wait-for-it.sh script and provide necessary permissions
+COPY wait-for-it.sh /wait-for-it.sh
+RUN bash -c 'chmod 777 /wait-for-it.sh'
+
+# Create a file in the filesystem
+RUN bash -c 'touch /app.jar'
+
+# Expose the relevant port
+EXPOSE 6161
+
+# Provide the execution command
+CMD ["java","-Dspring.profiles.active=docker","-jar","/app.jar"]

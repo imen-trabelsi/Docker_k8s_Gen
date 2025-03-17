@@ -1,0 +1,20 @@
+# Dockerfile
+FROM python:3.11-slim-bullseye
+
+# Create directory for the app user
+RUN mkdir -p /home/app
+
+# Create the home directory for the new app user
+WORKDIR /home/app
+
+# Copy the source code to the WORKDIR
+COPY . /home/app
+
+# Install the application dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Provide the default command for the container
+CMD [ "python", "app.py" ]
+
+# Expose the application on port 8080
+EXPOSE 8080

@@ -1,0 +1,30 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Flask",
+        "dependencies": {
+            "requirements.txt": "Flask\nRedis\ngunicorn\n"
+        },
+        "database": "Redis",
+        "build_system": "pip",
+        "config_files": {
+            "docker-compose.yml": "# version is now using \"compose spec\"\n# v2 and v3 are now combined!\n# docker-compose v1.27+ required\n\nservices:\n  vote:\n    build: \n      context: ./vote\n      target: dev\n    depends_on:\n      redis:\n        condition: service_healthy\n    healthcheck: \n      test: [\"CMD\", \"curl\", \"-f\", \"http://localhost\"]\n      interval: 15s\n      timeout: 5s\n      retries: 3\n      start_period: 10s\n    volumes:\n     - ./vote:/usr/local/app\n    ports:\n      - \"8080:80\"\n    networks:\n      - front-tier\n      - back-tier\n\n  result:\n    build: ./result\n    # use nodemon rather than node for local dev\n    entrypoint: nodemon --inspect=0.0.0.0 server.js\n    depends_on:\n      db:\n        condition: service_healthy \n    volumes:\n      - ./result:/usr/local/app\n    ports:\n      - \"8081:80\"\n      - \"127.0.0.1:9229:9229\"\n    networks:\n      - front-tier\n      - back-tier\n\n  worker:\n    build:\n      context: ./worker\n    depends_on:\n      redis:\n        condition: service_healthy \n      db:\n        condition: service_healthy \n    networks:\n      - back-tier\n\n  redis:\n    image: redis:alpine\n    volumes:\n      - \"./healthchecks:/healthchecks\"\n    healthcheck:\n      test: /healthchecks/redis.sh\n      interval: \"5s\"\n    networks:\n      - back-tier\n\n  db:\n    image: postgres:15-alpine\n    environment:\n      POSTGRES_USER: \"postgres\"\n      POSTGRES_PASSWORD: \"postgres\"\n    volumes:\n      - \"db-data:/var/lib/postgresql/data\"\n      - \"./healthchecks:/healthchecks\"\n    healthcheck:\n      test: /healthchecks/postgres.sh\n      interval: \"5s\"\n    networks:\n      - back-tier\n\n  # this service runs once to seed the database with votes\n  # it won't run unless you specify the \"seed\" profile\n  # docker compose --profile seed up -d\n  seed:\n    build: ./seed-data\n    profiles: [\"seed\"]\n    depends_on:\n      vote:\n        condition: service_healthy \n    networks:\n      - front-tier\n    restart: \"no\"\n\nvolumes:\n  db-data:\n\nnetworks:\n  front-tier:\n  back-tier:\n",
+            "vote/Dockerfile": "# base defines a base stage that uses the official python runtime base image\nFROM python:3.11-slim AS base\n\n# Add curl for healthcheck\nRUN apt-get update && \\\n    apt-get install -y --no-install-recommends curl && \\\n    rm -rf /var/lib/apt/lists/*\n\n# Set the application directory\nWORKDIR /usr/local/app\n\n# Install our requirements.txt\nCOPY requirements.txt ./requirements.txt\nRUN pip install --no-cache-dir -r requirements.txt\n\n# dev defines a stage for development, where it'll watch for filesystem changes\nFROM base AS dev\nRUN pip install watchdog\nENV FLASK_ENV=development\nCMD [\"python\", \"app.py\"]\n\n# final defines the stage that will bundle the application for production\nFROM base AS final\n\n# Copy our code from the current folder to the working directory inside the container\nCOPY . .\n\n# Make port 80 available for links and/or publish\nEXPOSE 80\n\n# Define our command to be run when launching the container\nCMD [\"gunicorn\", \"app:app\", \"-b\", \"0.0.0.0:80\", \"--log-file\", \"-\", \"--access-logfile\", \"-\", \"--workers\", \"4\", \"--keep-alive\", \"0\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            "Dockerfile",
+            "docker-compose.test.yml",
+            "package-lock.json",
+            "package.json",
+            "server.js"
+        ],
+        "folders": [
+            "tests",
+            "views"
+        ]
+    }
+}

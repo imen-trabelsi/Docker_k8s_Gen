@@ -1,0 +1,22 @@
+# Use slim buster python base image
+FROM python:3.10.7-slim-buster
+
+# Set the working directory in the container to /usr/src/app
+WORKDIR /usr/src/app
+
+# Environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# Copy the project files to the working directory in the container
+COPY . /usr/src/app/
+
+# Update pip, then copy and install python dependencies
+RUN pip install --upgrade pip \
+    && COPY ./requirements.txt /usr/src/app/requirements.txt \
+
+# Expose a specific port for this service (assuming it's 5000)
+EXPOSE 5000
+
+# Set the default command for the container
+CMD ["gunicorn", "-b", ":5000", "collector.gunicorn:app"]

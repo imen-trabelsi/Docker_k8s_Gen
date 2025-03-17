@@ -1,0 +1,14 @@
+FROM python:3.9-slim-buster
+
+# Copy the project files into the docker image
+COPY . /usr/src/oauth2_synchronization_service
+WORKDIR /usr/src/oauth2_synchronization_service
+
+# Install required dependencies
+RUN pip install -r requirements.txt
+
+# Set the container to listen on the specified port at runtime
+EXPOSE 80
+
+# Specify the command to run when the image is used as a base for a new container
+CMD ["/usr/local/bin/gunicorn", "-b", "0.0.0.0:80", "-k", "flask_sockets.worker", "main:app"]

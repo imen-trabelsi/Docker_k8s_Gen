@@ -1,0 +1,40 @@
+# Define base image
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
+
+# Set the working directory
+WORKDIR /ClassifiedAds.Microservices
+
+# Copy projects and restore
+COPY ./Common/ClassifiedAds.Application/ClassifiedAds.Application.csproj ./Common/ClassifiedAds.Application/
+COPY ./Common/ClassifiedAds.CrossCuttingConcerns/ClassifiedAds.CrossCuttingConcerns.csproj ./Common/ClassifiedAds.CrossCuttingConcerns/
+COPY ./Common/ClassifiedAds.Domain/ClassifiedAds.Domain.csproj ./Common/ClassifiedAds.Domain/
+COPY ./Common/ClassifiedAds.Infrastructure/ClassifiedAds.Infrastructure.csproj ./Common/ClassifiedAds.Infrastructure/
+COPY ./Services.Identity/ClassifiedAds.Services.Identity/ClassifiedAds.Services.Identity.csproj ./Services.Identity/ClassifiedAds.Services.Identity/
+COPY ./Services.Identity/ClassifiedAds.Services.Identity.Api/ClassifiedAds.Services.Identity.Api.csproj ./Services.Identity/ClassifiedAds.Services.Identity.Api/
+COPY . ./
+
+# Restore dependencies
+RUN dotnet restore ./Common/ClassifiedAds.Application/ClassifiedAds.Application.csproj
+RUN dotnet restore ./Common/ClassifiedAds.Infrastructure/ClassifiedAds.Infrastructure.csproj
+RUN dotnet restore ./Services.Identity/ClassifiedAds.Services.Identity/ClassifiedAds.Services.Identity.csproj
+RUN dotnet restore ./Services.Identity/ClassifiedAds.Services.Identity.Api/ClassifiedAds.Services.Identity.Api.csproj
+
+# Build the application
+RUN dotnet publish ./Services.Identity/ClassifiedAds.Services.Identity.Api/ClassifiedAds.Services.Identity.Api.csproj -c Release -o out
+
+# Set the base image for runtime
+FROM mcr.microsoft.com/dotnet/aspnet:9.0 AS runtime
+
+# Set the working directory
+WORKDIR /ClassifiedAds.Microservices
+
+# Set environment variables
+# Please set your environment variables here if needed
+
+# Copy the files from build environment
+
+# Expose ports
+# Please set your exposed ports here if needed
+
+# Set the entry point
+ENTRYPOINT ["dotnet", "ClassifiedAds.Services.Identity.Api.dll"]

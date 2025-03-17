@@ -1,0 +1,27 @@
+# Start from golang base image
+FROM golang:1.19
+
+# Maintainer
+LABEL maintainer="youremail@gmail.com"
+
+# Set the Current Working Directory inside the container
+WORKDIR /home
+
+# Run update and install necessary packages
+RUN apt-get update && \
+
+# Copy requirements.txt and importer.py to the working directory
+COPY requirements.txt .
+COPY importer.py .
+
+# Install Python dependencies
+RUN pip3 install -r requirements.txt
+
+# Install go dependecy
+RUN go install github.com/omniscale/imposm3/cmd/imposm@latest
+
+#Expose the application on port 8080
+EXPOSE 8080
+
+# Run the executable
+CMD ["python3", "-u", "importer.py"]

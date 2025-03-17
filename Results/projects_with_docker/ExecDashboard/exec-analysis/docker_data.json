@@ -1,0 +1,32 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:8",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "JAR_FILE"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ${JAR_FILE} /var/app/analysis.jar"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "exec",
+                    "java",
+                    "$JAVA_OPTS",
+                    "-Djava.security.egd=file:/dev/./urandom",
+                    "-jar",
+                    "/var/app/analysis.jar",
+                    "--spring.config.location=/var/app/config/application.properties"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

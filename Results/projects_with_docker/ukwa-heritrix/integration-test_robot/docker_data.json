@@ -1,0 +1,33 @@
+{
+    "docker_info": {
+        "base_image": "ukwa/crawl-streams:master",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY requirements.txt /tmp/requirements.txt",
+            "COPY tests /tests"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"robot\",",
+                    "\"--exitonfailure\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "pip install -r /tmp/requirements.txt",
+                ""
+            ]
+        ]
+    }
+}

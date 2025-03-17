@@ -1,0 +1,42 @@
+# Start from the user-provided base image
+FROM ${UPSTREAM_REPO:-uselagoon}/commons:${UPSTREAM_TAG:-latest}
+
+# Set the working directory in the container to /app
+WORKDIR /app
+
+# Copy package.json and package-lock.json before other files
+# Utilize docker cache layer, dependencies will be redone only if there are changes in package.json
+COPY ./package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy other source code files to workdir /app
+COPY . .
+
+# Set environment variable JWTSECRET
+ENV JWTSECRET=super-secret-string
+
+# Add necessary software packages
+RUN apk add --no-cache \
+bash \
+curl \
+gettext \
+minio-client \
+moreutils \
+py3-jwt \
+
+# Copy app data files
+COPY api-data /home/api-data
+COPY minio-data /home/minio-data
+COPY data-init-push.sh create_jwt.py /home/
+
+# Change permission
+RUN chmod -R +x /home/
+
+# Open up ports for this service
+# REPLACE with your application's default port
+# EXPOSE <port>
+
+# Start up command
+CMD ["/sbin/tini", "--", "/home/data-init-push.sh"]

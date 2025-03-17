@@ -1,0 +1,57 @@
+{
+    "docker_info": {
+        "base_image": "$BASE_CONTAINER",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root",
+            "$NB_UID"
+        ],
+        "labels": [
+            "maintainer=\"Jupyter"
+        ],
+        "health_checks": [],
+        "build_args": [
+            "BASE_CONTAINER=jupyter/pyspark-notebook"
+        ],
+        "envs": [
+            "ENV R_LIBS_USER $SPARK_HOME/R/lib"
+        ],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "fix-permissions $R_LIBS_USER",
+                ""
+            ],
+            [
+                "apt-get update && \\",
+                "apt-get install -y --no-install-recommends",
+                "fonts-dejavu",
+                "gfortran",
+                "gcc &&",
+                "apt-get clean && rm -rf /var/lib/apt/lists/*"
+            ],
+            [
+                "conda install --quiet --yes \\",
+                "'r-base=4.0.3'",
+                "'r-ggplot2=3.3*'",
+                "'r-irkernel=1.1*'",
+                "'r-rcurl=1.98*'",
+                "'r-sparklyr=1.5*'",
+                "&&",
+                "conda clean --all -f -y &&",
+                "fix-permissions \"${CONDA_DIR}\" &&",
+                "fix-permissions \"/home/${NB_USER}\""
+            ],
+            [
+                "conda install --quiet --yes 'spylon-kernel=0.4*' && \\",
+                "conda clean --all -f -y &&",
+                "python -m spylon_kernel install --sys-prefix &&",
+                "rm -rf \"/home/${NB_USER}/.local\" &&",
+                "fix-permissions \"${CONDA_DIR}\" &&",
+                "fix-permissions \"/home/${NB_USER}\""
+            ]
+        ]
+    }
+}

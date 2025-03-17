@@ -1,0 +1,20 @@
+# Use java 8 JRE as base image
+FROM java:8-jre
+
+# Create app directory
+RUN mkdir -p /app
+
+# Working directory
+WORKDIR /app
+
+# Copy jar file to /app 
+COPY ./target/ts-order-service-1.0.jar /app/
+
+# Set timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Expose port 12031
+EXPOSE 12031
+
+# Define command to run the application
+CMD ["java", "-Xmx200m", "-jar", "ts-order-service-1.0.jar"]

@@ -1,0 +1,30 @@
+#Base Image
+FROM elixir:1.6.4
+
+# Set working directory
+WORKDIR /app
+
+# Install hex package manager
+RUN mix local.hex --force
+
+# Install phoenix package
+RUN mix archive.install --force https://github.com/phoenixframework/archives/raw/master/phx_new.ez
+
+# Install rebar (Erlang build tool)
+RUN mix local.rebar --force
+
+# Copy mix files
+COPY mix.exs .
+COPY mix.lock .
+
+# Install dependencies
+RUN mix deps.get
+
+# Copy all the application files 
+COPY . .
+
+# Expose application port
+EXPOSE 4000
+
+# Start the application
+CMD ["mix", "run"]

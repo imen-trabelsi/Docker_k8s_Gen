@@ -1,0 +1,18 @@
+# Use openjdk:8-jre as a base from which to run the jar file
+FROM openjdk:8-jre as builder
+ 
+# The WORKDIR instruction sets the working directory for any RUN, CMD, ENTRYPOINT, COPY and ADD instructions that follow in the Dockerfile.
+WORKDIR /workspace/app
+
+# Copy the pom.xml and code
+COPY . /workspace/app
+
+# Build the jar file using Maven
+RUN mvn package -DskipTests
+
+# Copy .jar file to app.jar
+COPY target/*.jar app.jar
+
+# Configuring the entrypoint and cmd parameters for a Spring boot application.
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=docker","-Dabixen.services.eureka.uri=discovery"]
+CMD ["-jar","/app.jar"]

@@ -1,0 +1,27 @@
+# Set the base image
+FROM openjdk:21-slim-buster
+
+# Set the Working Directory
+WORKDIR /app
+
+# Copy build-deps files to the working directory
+COPY .mvn .mvn
+COPY mvnw .
+COPY pom.xml .
+
+# Copy the application's source code to the working directory
+COPY src src
+
+# Run Maven to download dependencies
+RUN ./mvnw -B dependency:go-offline
+# Compile the application
+RUN ./mvnw -B package
+
+# Copy the packaged jar file built from the previous step to the working directory
+COPY --from=build target/customer-core-0.0.2-SNAPSHOT.jar .
+
+# Expose the application port
+EXPOSE 8110
+
+# Set the start command as an entrypoint so that it gets started automatically on boot
+ENTRYPOINT ["java", "-jar", "customer-core-0.0.2-SNAPSHOT.jar"]

@@ -1,0 +1,32 @@
+# Use the specified base image
+FROM dragonwell-registry.cn-hangzhou.cr.aliyuncs.com/dragonwell/dragonwell:8-extended-ga-centos
+
+# Install Maven
+RUN yum update && yum install -y maven
+WORKDIR /app
+
+# Copy pom.xml and install dependencies first to leverage Docker cache
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# Copy the rest of the application code
+COPY src /app/src
+
+# Build application
+RUN mvn package
+
+# Use arthas for java diagnose
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+
+# Copy the jar file and startup shell script
+COPY /target/frontend-1.0.0-SNAPSHOT.jar /app
+COPY /start.sh /app
+
+# Set execution permissions to the start.sh file
+RUN chmod +x /app/start.sh
+
+# Expose the TCP port 8080 that your application uses
+EXPOSE 8080
+
+# Set entrypoint to the start.sh script
+ENTRYPOINT ["/app/start.sh"]

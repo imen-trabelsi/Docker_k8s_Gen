@@ -1,0 +1,23 @@
+# Build Docker Image
+FROM quay.io/azavea/openjdk-gdal:2.4-jdk8-slim
+
+# Create user
+RUN adduser --system --disabled-password --home /var/lib/rf --shell /sbin/nologin --disabled-password --group rf
+
+# Change owner permissions
+RUN chown -R rf:rf /var/lib/rf
+
+# Switch to new user
+USER rf
+
+# Set Working Directory
+WORKDIR /var/lib/rf
+
+# Copy required files
+COPY ./target/scala-2.12/backsplash-assembly.jar /var/lib/rf/
+
+# Set required environment variables and expose ports
+
+# Execution command
+ENTRYPOINT ["java"]
+CMD ["-XX:+UnlockExperimentalVMOptions", "-XX:+UseCGroupMemoryLimitForHeap", "-jar", "backsplash-assembly.jar"]

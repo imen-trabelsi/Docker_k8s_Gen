@@ -1,0 +1,28 @@
+# Step 1: Start with the base image
+FROM node:20.18-slim
+
+# Step 2: Set working directory
+RUN mkdir -p /usr/src/wallclockservice
+WORKDIR /usr/src/wallclockservice
+
+# Step 3: Copy package definition and install dependencies
+COPY package.json /usr/src/wallclockservice/
+RUN npm install
+
+# Step 4: Copy the application source code
+COPY Gruntfile.js /usr/src/wallclockservice/
+COPY src /usr/src/wallclockservice/src/
+
+# Step 5: Specify the startup command
+CMD ["npm", "start"]
+
+# Step 6: Specify the exposed port
+EXPOSE 80
+
+# Step 7: Specify the metadata
+LABEL version="2.0.0" \
+
+# Step 8: Set environment variables
+# ENV REDIS_URL=redis://hostname:port/dbname
+
+# Note: Environment variables are to be set according to the actual running environment of redis

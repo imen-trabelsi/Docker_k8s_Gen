@@ -1,0 +1,57 @@
+# Use the specified base image
+FROM $LINUX_IMAGE_NAME:$LINUX_IMAGE_TAG
+
+# Set maintaining info
+LABEL maintainer="daos@daos.groups.io"
+
+# Installing dependencies
+RUN dnf clean all && \
+    dnf makecache && \
+    dnf --assumeyes install dnf-plugins-core && \
+    dnf config-manager --save --setopt=assumeyes=True && \
+    dnf config-manager --save --setopt=fastestmirror=True && \
+    dnf config-manager --set-enabled powertools && \
+    dnf install epel-release && \
+    dnf update && \
+
+# Checking necessary arguments
+ARG DAOS_REPOS
+ARG DAOS_GPG_KEYS
+ARG DAOS_VERSION
+ARG DAOS_REPOS_NOAUTH
+ARG DAOS_AUTH
+ARG BUST_CACHE
+
+RUN for it in DAOS_REPOS DAOS_GPG_KEYS DAOS_VERSION ; do                                       \
+    done && \
+    echo "[INFO] Busting cache" && \
+    fi && \
+    echo "[INFO] Adding rpm repository: $repo" && \
+    done && \
+    echo "[INFO] Adding repositories gpg key: $gpg_key" && \
+    done && \
+    echo "[INFO] Disabling authentication for repository: $repo" && \
+    done && \
+    echo "[INFO] Installing DAOS" && \
+    dnf install daos-${DAOS_VERSION} && \
+    dnf clean all && \
+
+# Authentication
+RUN if [ "$DAOS_AUTH" == yes ] ; then
+    echo "[INFO] Generating authentication certificates" && \
+    mkdir -d /etc/daos/certs && \
+    chown root:root /etc/daos/certs && \
+    fi  ; \
+    systemctl mask systemd-remount-fs.service graphical.target kdump.service systemd-logind.service dev-hugepages.mount && \
+    pushd /lib/systemd/system/sysinit.target.wants && \
+        done && \
+        popd && \
+    rm -f /lib/systemd/system/multi-user.target.wants/* && \
+    rm -f /etc/systemd/system/*.wants/* && \
+    rm -f /lib/systemd/system/local-fs.target.wants/* && \
+    rm -f /lib/systemd/system/sockets.target.wants/*udev* && \
+    rm -f /lib/systemd/system/sockets.target.wants/*initctl* && \
+    rm -f /lib/systemd/system/basic.target.wants/* && \
+
+# Set entrypoint
+ENTRYPOINT ["/sbin/init"]

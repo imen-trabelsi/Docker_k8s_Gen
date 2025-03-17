@@ -1,0 +1,32 @@
+# Extracted from the source code and provided by user
+FROM openlmis/awscli
+
+# copying source code to the current docker image directory
+COPY . .
+
+# Set the working directory
+WORKDIR /app
+
+# Install pip dependencies
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# Copy necessary files to image
+COPY .env ./
+COPY docker-compose.yml ./
+COPY docker-compose.override.yml ./
+COPY utils/start-instance/Dockerfile ./
+COPY start-instance.sh /
+RUN chmod u+x /start-instance.sh
+
+# Expose necessary ports, replace PORT_NUMBER
+EXPOSE PORT_NUMBER 
+
+# Environment variables that need to be set, replace VARIABLE=VALUE 
+ENV VARIABLE=VALUE 
+
+# Labels for the image, replace LABEL_NAME=LABEL_VALUE 
+LABEL LABEL_NAME=LABEL_VALUE 
+
+# Start command
+CMD ["/start-instance.sh"]

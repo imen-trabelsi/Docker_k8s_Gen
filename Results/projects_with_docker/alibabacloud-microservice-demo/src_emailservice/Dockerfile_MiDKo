@@ -1,0 +1,22 @@
+# Use base image
+FROM registry.cn-beijing.aliyuncs.com/edas_unified/jct_dw_8_4_4:0.1
+
+WORKDIR /app
+
+# Copy the compiled jar to the image
+COPY /emailservice-provider/target/emailservice-provider-1.0.0-SNAPSHOT.jar /app
+
+# Copy arthas for troubleshooting
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+
+# Copy the start script to the image
+COPY /start.sh /app
+
+# Provide the necessary permissions to the start.sh file
+RUN chmod +x /app/start.sh
+
+# Expose the application on port 8080
+EXPOSE 8080
+
+# Setting up the entry point
+CMD ["/app/start.sh"]

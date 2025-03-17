@@ -1,0 +1,34 @@
+# Set the base Image
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
+
+# Set the working directory
+WORKDIR /src
+
+# Copy csproj and restore dependencies
+COPY ["HostedServices/TrafficInfoApi/TrafficInfoApi.csproj", "HostedServices/TrafficInfoApi/"]
+COPY ["SharedKernel/Contracts/Contracts.csproj", "SharedKernel/Contracts/"]
+RUN dotnet restore "HostedServices/TrafficInfoApi/TrafficInfoApi.csproj"
+
+# Copy everything else and build the project
+COPY . . 
+WORKDIR "/src/HostedServices/TrafficInfoApi"
+RUN dotnet build "TrafficInfoApi.csproj" -c Release -o /app/build
+
+# Publish the project
+FROM build AS publish
+RUN dotnet publish "TrafficInfoApi.csproj" -c Release -o /app/publish
+
+# Get base image for runtime
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the app
+
+# Expose the necessary ports
+EXPOSE 80
+EXPOSE 443
+
+# Run the app
+ENTRYPOINT ["dotnet", "TrafficInfoApi.dll", "--environment=Docker"]

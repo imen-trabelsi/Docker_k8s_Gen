@@ -1,0 +1,38 @@
+# ---------- BUILD STAGE ----------
+# Choose the base image
+FROM node:latest as build-stage
+
+# Set the working directory
+WORKDIR /usr/src/app/serviceoffer
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install the project dependencies
+RUN npm install
+
+# Lint, test, and Build the Project
+RUN npm run lint && npm run test && npm run build
+
+# Copy project files and folders to the current working directory
+COPY . .
+
+# ---------- RUNTIME STAGE ----------
+# Base Image
+FROM node:latest as runtime-stage
+
+# Set the working directory
+WORKDIR /usr/src/app/serviceoffer
+
+# Copy dependencies from build stage
+
+# Copy application from build stage
+
+# Expose the app port
+EXPOSE 4000
+
+# Export env variables (Optional if there is any ENV instruction sent by the user)
+# ENV VAR_NAME VAR_VALUE
+
+# Start the app
+CMD ["npm", "run", "prod"]

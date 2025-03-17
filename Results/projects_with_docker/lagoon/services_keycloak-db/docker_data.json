@@ -1,0 +1,32 @@
+{
+    "docker_info": {
+        "base_image": "${UPSTREAM_REPO:-uselagoon}/mariadb-10.6:${UPSTREAM_TAG:-latest}",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "UPSTREAM_REPO",
+            "UPSTREAM_TAG",
+            "LAGOON_VERSION"
+        ],
+        "envs": [
+            "ENV LAGOON_VERSION=$LAGOON_VERSION",
+            "ENV MARIADB_DATABASE=keycloak \\"
+        ],
+        "copy_instructions": [
+            "COPY my_query-cache.cnf /etc/mysql/conf.d/my_query-cache.cnf",
+            "COPY password-entrypoint.bash /lagoon/entrypoints/55-generate-env.sh"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "fix-permissions /etc/mysql/conf.d/",
+                "USER mysql"
+            ]
+        ]
+    }
+}

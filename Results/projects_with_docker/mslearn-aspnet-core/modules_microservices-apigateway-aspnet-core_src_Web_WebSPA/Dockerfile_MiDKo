@@ -1,0 +1,35 @@
+# Build stage
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /app
+
+# Install node dependencies
+COPY src/Web/WebSPA/Client/package*.json ./
+RUN npm install -g npm@6
+RUN npm install
+RUN npm run build:prod
+
+# Restoring dotnet project packages
+COPY ["NuGet.config", "./"]
+COPY ["docker-compose.dcproj", "./"]
+COPY ["eShop-Learn.sln", "./"]
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+# ... include all other COPY instrcutions for csproj files
+# Copying all source files
+COPY . .
+
+WORKDIR /src/src/Web/WebSPA
+RUN dotnet restore "eShop-Learn.sln"
+RUN dotnet publish --no-restore "WebSPA.csproj" -c Release -o /app/publish
+
+# Final stage
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
+WORKDIR /app
+
+# Environment variables
+ENV ASPNETCORE_ENVIRONMENT="Production"
+
+# Expose the ports for the applications
+EXPOSE 80
+
+# Default command
+ENTRYPOINT ["dotnet", "WebSPA.dll"]

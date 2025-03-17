@@ -1,0 +1,26 @@
+# Base Image
+FROM node:6
+
+# Create app directory
+WORKDIR /app
+
+# App Dependencies
+COPY package.json .
+RUN npm install -g cross-env@5.0.1
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Set permissions
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod +x /docker-entrypoint.sh
+
+# Set Workdir
+WORKDIR /app
+
+# Expose the app port
+EXPOSE 3000
+
+# Start the app
+CMD ["npm", "start"]

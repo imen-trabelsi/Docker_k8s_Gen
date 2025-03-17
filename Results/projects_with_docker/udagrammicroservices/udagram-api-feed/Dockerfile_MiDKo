@@ -1,0 +1,20 @@
+# Base Image
+FROM node:12
+
+# Set Work Directory
+WORKDIR /usr/src/app
+
+# Copy package.json And Install Dependencies
+COPY package*.json ./
+
+# Clean Install Of Dependency Packages
+RUN npm ci
+
+# Copy All Other Source Code To Work Directory
+COPY . ./
+
+# Expose Port 8080 To The Outside World
+EXPOSE 8080
+
+# Run Command
+CMD ["npm","run","prod"]

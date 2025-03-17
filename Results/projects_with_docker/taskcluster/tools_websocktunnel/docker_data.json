@@ -1,0 +1,24 @@
+{
+    "docker_info": {
+        "base_image": "scratch",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY websocktunnel /websocktunnel"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/websocktunnel\"]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

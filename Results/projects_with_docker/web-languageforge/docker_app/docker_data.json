@@ -1,0 +1,123 @@
+{
+    "docker_info": {
+        "base_image": "sillsdev/web-languageforge:base-php",
+        "multi_stage_build": true,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "ENVIRONMENT=${ENVIRONMENT:-'production'}",
+            "BUILD_VERSION=${BUILD_VERSION:-'9.9.9'}"
+        ],
+        "envs": [
+            "ENV NPM_BUILD_SUFFIX=prd",
+            "ENV NPM_BUILD_SUFFIX=dev",
+            "ENV COMPOSER_ALLOW_SUPERUSER=1"
+        ],
+        "copy_instructions": [
+            "COPY package.json pnpm-lock.yaml ./",
+            "COPY typings ./typings/",
+            "COPY webpack.config.js webpack-dev.config.js webpack-prd.config.js tsconfig.json tslint.json ./",
+            "COPY src/angular-app ./src/angular-app",
+            "COPY src/sass ./src/sass",
+            "COPY src/Site/views/languageforge/theme/default/sass/ ./src/Site/views/languageforge/theme/default/sass",
+            "COPY src/Site/views/shared/*.scss ./src/Site/views/shared/",
+            "WORKDIR /composer",
+            "COPY src/composer.json src/composer.lock /composer/",
+            "COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait",
+            "COPY docker/app/run-with-wait.sh /run-with-wait.sh",
+            "COPY src /var/www/html/",
+            "COPY --from=ui-builder /data/src/dist /var/www/html/dist",
+            "COPY --from=composer-builder /composer/vendor /var/www/html/vendor"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"tini\",",
+                    "\"-g\",",
+                    "\"--\"",
+                    "]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"apache2-foreground\"",
+                    "]"
+                ]
+            },
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"tini\",",
+                    "\"-g\",",
+                    "\"--\"",
+                    "]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"apache2-foreground\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p /data",
+                "WORKDIR /data"
+            ],
+            [
+                "npm install -g corepack@latest",
+                "RUN corepack enable"
+            ],
+            [
+                "pnpm install",
+                ""
+            ],
+            [
+                "pnpm run build:${NPM_BUILD_SUFFIX}",
+                ""
+            ],
+            [
+                "composer install",
+                ""
+            ],
+            [
+                "rm /usr/local/bin/install-php-extensions /usr/local/bin/composer",
+                "RUN apt-get remove -y gnupg2 git"
+            ],
+            [
+                "mv $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini",
+                "# had to add /wait into prod image so the prod image could be run through E2E tests."
+            ],
+            [
+                "install-php-extensions xdebug-^3.1",
+                "COPY docker/app/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d"
+            ],
+            [
+                "mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini",
+                "COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait"
+            ],
+            [
+                "ln -s /var/www/html /var/www/src",
+                ""
+            ],
+            [
+                "chown -R www-data:www-data /var/www/html/assets /var/www/html/cache \\",
+                "&& chmod -R g+ws /var/www/html/assets /var/www/html/cache"
+            ],
+            [
+                "echo \"${BUILD_VERSION}\" > build-version.txt \\",
+                "&& sed -i \"s/9.9.9/${BUILD_VERSION}/\" version.php"
+            ]
+        ]
+    }
+}

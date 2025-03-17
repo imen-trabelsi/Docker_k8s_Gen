@@ -1,0 +1,32 @@
+# Start with the base image
+FROM registry.cn-beijing.aliyuncs.com/edas_unified/jct_dw_8_4_4:0.1 AS BUILD_IMAGE
+
+WORKDIR /usr/src/shippingservice
+
+# Copy pom.xml and download all the dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+# Copy source code and build
+COPY src src
+RUN mvn package
+
+# Start with a final image
+FROM registry.cn-beijing.aliyuncs.com/edas_unified/jct_dw_8_4_4:0.1
+
+WORKDIR /app
+
+# Copy start script
+COPY /start.sh /app
+RUN chmod +x /app/start.sh
+
+# Copy from build image
+
+# Expose port
+EXPOSE 8080
+
+# Copy Arthas for Java Diagnostic
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+
+# Run command
+CMD ["/app/start.sh"]

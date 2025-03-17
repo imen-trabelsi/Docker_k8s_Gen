@@ -1,0 +1,44 @@
+# Building maven:3-openjdk-11 as a separate docker layer to cache dependencies for faster builds
+FROM maven:3-openjdk-11 as BUILD
+COPY src /usr/src/app/src
+COPY pom.xml /usr/src/app
+RUN mvn -f /usr/src/app/pom.xml clean package -DskipTests
+
+# Final Stage build
+FROM $REPOSITORY/gs-cloud-base-jre:$TAG
+LABEL maintainer="support@geoservercloud.com"
+
+# Copying the jar file
+
+# Install dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends unzip && \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
+    fonts-dejavu \
+    fonts-dejavu-extra \
+    fonts-deva \
+    fonts-font-awesome \
+    fonts-freefont-ttf \
+    fonts-material-design-icons-iconfont \
+    fonts-materialdesignicons-webfont \
+    fonts-roboto \
+    && apt clean \
+    && apt purge -y \
+    && apt autoremove --purge -y \
+    && rm -rf /var/cache/apt/* \
+
+# Creating data directory and setting permissions 
+RUN mkdir -p /opt/app/data_directory /data/geowebcache \
+
+# Setting workdir
+WORKDIR /opt/app
+
+# Setting environment variables 
+ENV JAVA_TOOL_OPTIONS="${DEFAULT_JAVA_TOOL_OPTIONS}"
+
+# Exposing the port 
+EXPOSE 8080
+
+# Running the jar file 
+CMD ["java","-Djarmode=layertools","-jar","gs-cloud-*-bin.jar"]

@@ -1,0 +1,29 @@
+# Start from the specified base image
+FROM golang:1.22
+
+# Using absolute workdir is preferred
+WORKDIR /go/src/gitlab.com/remp/remp/Beam/go
+
+# Install dependencies
+RUN go install golang.org/x/tools/cmd/goimports@latest
+
+# Create necessary directories
+RUN mkdir -p /src/build
+RUN mkdir -p /go/src/gitlab.com/remp/remp/Beam/go
+
+# By copying over the package.json file and running npm install in separate steps, we can take advantage of cached Docker layers
+COPY package*.json ./
+RUN npm install
+COPY . .
+
+# Add permissions for executing build script
+RUN chmod +x /usr/local/bin/build
+
+# Copy build script into Docker image
+COPY build /usr/local/bin/
+
+# Open desired port for network access
+EXPOSE PortToBeExposed
+
+# Specify the command to run
+ENTRYPOINT ["build"]

@@ -1,0 +1,56 @@
+# Use Chef as base image for build
+FROM chef AS planner
+
+# Set environment variables
+ENV RUST_VERSION=1.84.0 \
+    ALPINE_VERSION=3.20 \
+    CARGO_CHEF_VERSION=0.1.67 \
+    PACKAGE=${PACKAGE} \
+
+# Setup the working directory
+WORKDIR /build
+
+# Copy the necessary files for the build
+COPY rust-toolchain.toml rust-toolchain.toml
+COPY . .
+
+# Install the required dependencies and build the project
+RUN set -xe \
+    && apk add --no-cache musl-dev \
+    && cargo install cargo-chef --locked --version=${CARGO_CHEF_VERSION} \
+    && rm -rf $CARGO_HOME/registry/ \
+    && rustup show \
+
+# Begin new stage of build
+FROM chef AS builder
+
+# Copy the recipe from planner stage
+
+# Build the application
+RUN set -xe \
+    && cargo chef cook --recipe-path recipe.json --bin ${PACKAGE} \
+
+# Install the additional network tools
+RUN apk add --no-cache curl \
+    && apk add --no-cache iptables ip6tables \
+
+# Copy the necessary docker-init scripts
+COPY ./docker-init-gateway.sh ./docker-init.sh
+COPY ./docker-init-relay.sh ./docker-init.sh
+COPY ./docker-init.sh ./docker-init.sh
+
+# Begin new stage for final image
+FROM chef
+
+# Copy the built executable from the builder stage to the final image
+
+# Set the working directory
+WORKDIR /bin
+
+# Copy the init scripts
+COPY ./docker-init-relay.sh ./docker-init.sh
+COPY ${PACKAGE} .
+
+# Set the entrypoint and execution command for the container
+ENTRYPOINT ["docker-init.sh"]
+CMD ${PACKAGE}

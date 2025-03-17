@@ -1,0 +1,23 @@
+# Start with a base image containing Java runtime
+FROM openjdk:11-jre
+LABEL maintainer="your_email@domain.com"
+
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
+
+# Set the app home folder
+ENV APP_HOME /app
+
+# Create app directory
+RUN mkdir $APP_HOME
+
+# Set the working directory
+WORKDIR $APP_HOME
+
+# Copy the application's artifacts and dependencies
+COPY target/cache-service-1.0-SNAPSHOT.jar $APP_HOME/app.jar
+
+# Runtime environment variables
+ENV SPRING_PROFILES_ACTIVE docker
+
+ENTRYPOINT ["java","-Dspring.profiles.active=docker","-jar","app.jar"]

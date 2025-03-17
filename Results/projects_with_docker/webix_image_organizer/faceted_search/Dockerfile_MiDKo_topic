@@ -1,0 +1,27 @@
+# Based on Node.js
+FROM node:16-alpine3.15
+
+# Setting working directory
+WORKDIR /app
+
+# Copy all the files in the current directory to our /app in the container.
+COPY . .
+
+# Create the required directories as part of the Docker build
+RUN mkdir -p upload/archive && \
+    mkdir -p upload/images && \
+    mkdir -p upload/extract && \
+    mkdir -p tmp && \
+    # Install PM2 globally
+    npm install pm2 -g && \
+    # Output the version of NPM for debugging purposes
+    npm -v && \
+    # Install all the project’s dependencies
+    npm ci && \
+    # Build app bundles
+
+# Set the container to listen on the specified port at runtime
+EXPOSE 8000
+
+# Run the command inside your image filesystem
+CMD ["pm2-runtime",, "start",, "pm2.config.js",, "--env=production"]

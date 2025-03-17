@@ -1,0 +1,29 @@
+{
+    "docker_info": {
+        "base_image": "redis",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY start_redis.sh /usr/local/bin/start_redis.sh"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "start_redis.sh"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "( chmod +x /usr/local/bin/start_redis.sh )",
+                ""
+            ]
+        ]
+    }
+}

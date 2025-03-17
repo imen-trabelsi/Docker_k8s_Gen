@@ -1,0 +1,68 @@
+{
+    "docker_info": {
+        "base_image": "node:20.11-alpine3.19",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "4200",
+            "3001"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV NODE_ENV=production",
+            "ENV SERVER_PORT=4200",
+            "ENV API_SERVER_PORT=3001"
+        ],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY package.json .",
+            "COPY package-lock.json .",
+            "COPY . .",
+            "WORKDIR /app",
+            "COPY package.json .",
+            "COPY package-lock.json .",
+            "COPY --from=build ./app/dist/login-demo ./dist",
+            "COPY ./server.js .",
+            "COPY ./api-server.js .",
+            "COPY auth_config.json ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"npm\",",
+                    "\"run\",",
+                    "\"prod\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk update && apk add git",
+                ""
+            ],
+            [
+                "mkdir -p /app",
+                ""
+            ],
+            [
+                "npm install --legacy-peer-deps",
+                ""
+            ],
+            [
+                "npm run build",
+                ""
+            ],
+            [
+                "mkdir -p /app",
+                ""
+            ],
+            [
+                "npm install --production --legacy-peer-deps",
+                ""
+            ]
+        ]
+    }
+}

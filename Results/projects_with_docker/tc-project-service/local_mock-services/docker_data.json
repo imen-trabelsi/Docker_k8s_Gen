@@ -1,0 +1,37 @@
+{
+    "docker_info": {
+        "base_image": "node",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3001"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /json-server",
+            "COPY services.json /json-server/",
+            "COPY package.json /json-server/",
+            "COPY server.js /json-server/",
+            "COPY authMiddleware.js /json-server/"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"npm\",",
+                    "\"run\",",
+                    "\"start\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "npm install",
+                ""
+            ]
+        ]
+    }
+}

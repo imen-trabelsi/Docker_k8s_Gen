@@ -1,0 +1,38 @@
+# Base Image
+FROM registry.access.redhat.com/ubi9/ubi-minimal
+
+# Environment Variables
+ENV LC_ALL=C.utf8
+ENV LANG=C.utf8
+ENV PYTHONPATH=/vmaas
+ENV GOPATH=/vmaas/go
+
+# Copy Instructions
+WORKDIR /vmaas
+COPY pyproject.toml /vmaas/
+COPY poetry.lock    /vmaas/
+COPY /vmaas-go      /vmaas/go/src/vmaas
+COPY entrypoint.sh  /vmaas/
+COPY conf           /vmaas/conf
+COPY /database      /vmaas/database
+COPY /vmaas/webapp  /vmaas/vmaas/webapp
+COPY /vmaas/reposcan/ /vmaas/vmaas/reposcan
+COPY /vmaas/common  /vmaas/vmaas/common
+COPY /vmaas/reposcan/redhatrelease/gen_package_profile.py /usr/local/bin
+
+# Installing Dependencies
+RUN microdnf install -y --setopt=install_weak_deps=0 --setopt=tsflags=nodocs python312 python3.12-pip python3-rpm python3-dnf which nginx rpm-devel git-core shadow-utils diffutils systemd libicu postgresql go-toolset curl
+RUN python3 -m pip install -r requirements.txt 
+
+# Building the app
+RUN go mod download
+RUN go build -v main.go
+
+# User Instructions
+RUN useradd -ms /bin/bash vmaas
+USER vmaas
+
+# Clean Up
+RUN microdnf clean all && \
+
+CMD ["python", "main.py"]

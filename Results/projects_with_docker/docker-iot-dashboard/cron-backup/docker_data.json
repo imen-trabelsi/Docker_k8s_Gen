@@ -1,0 +1,113 @@
+{
+    "docker_info": {
+        "base_image": "mongo:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "AWS_ACCESS_KEY_ID",
+            "AWS_DEFAULT_REGION",
+            "AWS_HOST_BASE",
+            "AWS_HOST_BUCKET",
+            "AWS_SECRET_ACCESS_KEY",
+            "hostname",
+            "relay_ip",
+            "domain"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "COPY --from=mongodb /root/env /root/env",
+            "COPY nodered_backup.sh /bin/nodered_backup.sh",
+            "COPY grafana_backup.sh /bin/grafana_backup.sh",
+            "COPY nginx_backup.sh /bin/nginx_backup.sh",
+            "COPY mqtts_backup.sh /bin/mqtts_backup.sh",
+            "COPY mongodb_backup.sh /bin/mongodb_backup.sh",
+            "COPY postfix.sh /etc/my_init.d/postfix.sh"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "env | grep MON > /root/env",
+                ""
+            ],
+            [
+                "set -x \\",
+                "&& export $(xargs < /root/env)",
+                "&& echo \"deb http://$MONGO_REPO/apt/ubuntu focal/${MONGO_PACKAGE%-unstable}/$MONGO_MAJOR multiverse\" | tee \"/etc/apt/sources.list.d/${MONGO_PACKAGE%-unstable}.list\"",
+                "&& apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B00A0BD1E2C63C11",
+                "&& export DEBIAN_FRONTEND=noninteractive && apt-get update && ln -s /bin/true /usr/local/bin/systemctl && apt-get install -y",
+                "${MONGO_PACKAGE}=$MONGO_VERSION",
+                "${MONGO_PACKAGE}-tools=$MONGO_VERSION"
+            ],
+            [
+                "apt-get update && apt-get install -y \\",
+                "iputils-ping",
+                "net-tools",
+                "debconf-utils",
+                "rsync"
+            ],
+            [
+                "mkdir -p /opt/backup",
+                "WORKDIR \"/opt/backup\""
+            ],
+            [
+                "apt-get update && apt-get install -y python3-pip",
+                "RUN pip3 install s3cmd"
+            ],
+            [
+                "set -x \\",
+                "&& echo \"[default]\\naccess_key = ${AWS_ACCESS_KEY_ID}\\nbucket_location = $AWS_DEFAULT_REGION\\nhost_base = $AWS_HOST_BASE\\nhost_bucket = $AWS_HOST_BUCKET\\nsecret_key = $AWS_SECRET_ACCESS_KEY\" | tee /root/.s3cfg"
+            ],
+            [
+                "echo \"postfix postfix/mailname string $host_name\" | debconf-set-selections",
+                "RUN echo \"postfix postfix/main_mailer_type select Satellite system\" | debconf-set-selections"
+            ],
+            [
+                "apt-get update && apt-get install -y postfix mailutils",
+                "RUN postconf -e relayhost=$relay_ip"
+            ],
+            [
+                "echo \"root@${hostname} backup@${domain}\" > /etc/postfix/generic",
+                "RUN postconf -e smtp_generic_maps=hash:/etc/postfix/generic"
+            ],
+            [
+                "postmap /etc/postfix/generic",
+                ""
+            ],
+            [
+                "chmod +x /bin/nodered_backup.sh",
+                ""
+            ],
+            [
+                "chmod +x /bin/grafana_backup.sh",
+                ""
+            ],
+            [
+                "chmod +x /bin/nginx_backup.sh",
+                ""
+            ],
+            [
+                "chmod +x /bin/mqtts_backup.sh",
+                ""
+            ],
+            [
+                "chmod +x /bin/mongodb_backup.sh",
+                ""
+            ],
+            [
+                "chmod +x /etc/my_init.d/postfix.sh",
+                ""
+            ],
+            [
+                "mkdir -p /etc/my_init.d",
+                "COPY cron.sh /etc/my_init.d/cron.sh"
+            ],
+            [
+                "chmod +x /etc/my_init.d/cron.sh",
+                "# end of file"
+            ]
+        ]
+    }
+}

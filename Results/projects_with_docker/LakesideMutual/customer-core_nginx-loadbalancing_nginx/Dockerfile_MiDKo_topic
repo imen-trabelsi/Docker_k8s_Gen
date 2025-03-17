@@ -1,0 +1,32 @@
+# Use official base image of Java Runtime
+FROM openjdk:8-jdk-alpine
+
+# Sets the working directory
+WORKDIR /app
+
+# Add a volume pointing to /tmp
+VOLUME /tmp
+
+# Make port 8080 available to the outside 
+EXPOSE 8080
+
+# Arguments for build
+ARG JAR_FILE=target/*.jar
+
+# The project's jar file 
+COPY ${JAR_FILE} app.jar
+
+# The application's jar file 
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/app.jar"]
+
+# Start with a base image containing Nginx
+FROM nginx:alpine
+
+# Delete any existing default Nginx configurations
+RUN rm -v /etc/nginx/nginx.conf
+
+# Copy over our own Nginx configuration file
+COPY nginx.conf /etc/nginx/
+
+# Expose ports
+EXPOSE 80 443

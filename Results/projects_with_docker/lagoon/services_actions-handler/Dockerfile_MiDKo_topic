@@ -1,0 +1,26 @@
+# The base image
+FROM golang:1.23-alpine3.21 AS builder
+# Defining build-time variables
+ARG UPSTREAM_REPO
+ARG UPSTREAM_TAG
+ARG LAGOON_VERSION
+ARG ARCH="amd64"
+# Setting environment variables
+ENV LAGOON_VERSION=$LAGOON_VERSION
+ENV LAGOON=actions-handler
+ENV JWT_SECRET=super-secret-string
+# Setting the working directory
+WORKDIR /go/src/github.com/uselagoon/lagoon/services/actions-handler/
+# Copying the project source code to the Docker image 
+COPY . /go/src/github.com/uselagoon/lagoon/services/actions-handler/
+# Installing all the dependencies
+RUN apk add --no-cache git && \
+
+# Start a new stage for a leaner image
+FROM alpine:3.21
+# Changing to the /app directory
+WORKDIR /app/
+# Copying the app binary from the builder stage to the current(image) stage
+# Setting the execution command
+ENTRYPOINT ["/sbin/tini", "--", "/lagoon/entrypoints.sh"]
+CMD ["/app/actions-handler"]

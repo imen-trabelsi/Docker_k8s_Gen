@@ -1,0 +1,25 @@
+# Using provided Microsoft .NET SDK as the base image
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+
+# Setting the work directory in the container to /ClassifiedAds.Microservices
+WORKDIR /ClassifiedAds.Microservices
+
+# Copy the csproj files and restore the respective dependencies
+COPY ./Common/ClassifiedAds.Application/*.csproj ./Common/ClassifiedAds.Application/
+COPY ./Common/ClassifiedAds.CrossCuttingConcerns/*.csproj ./Common/ClassifiedAds.CrossCuttingConcerns/
+COPY ./Common/ClassifiedAds.Domain/*.csproj ./Common/ClassifiedAds.Domain/
+COPY ./Common/ClassifiedAds.Infrastructure/*.csproj ./Common/ClassifiedAds.Infrastructure/
+COPY ./Services.Configuration/ClassifiedAds.Services.Configuration.Api/*.csproj ./Services.Configuration/ClassifiedAds.Services.Configuration.Api/
+RUN dotnet restore ./Common/ClassifiedAds.Application/ClassifiedAds.Application.csproj
+RUN dotnet restore ./Common/ClassifiedAds.Infrastructure/ClassifiedAds.Infrastructure.csproj
+RUN dotnet restore ./Services.Configuration/ClassifiedAds.Services.Configuration.Api/ClassifiedAds.Services.Configuration.Api.csproj
+
+# Copy everything else and build
+COPY . ./
+RUN dotnet publish ./Services.Configuration/ClassifiedAds.Services.Configuration.Api/ClassifiedAds.Services.Configuration.Api.csproj -c Release -o out
+
+# Copy from build stage
+COPY --from=build-env /ClassifiedAds.Microservices/out .
+
+# Entry point to run the microservice, dotnet is the runner, DLL file is the microservice
+ENTRYPOINT ["dotnet", "ClassifiedAds.Services.Configuration.Api.dll"]

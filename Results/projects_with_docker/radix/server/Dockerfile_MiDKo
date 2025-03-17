@@ -1,0 +1,27 @@
+# Define Base Image
+FROM scomm/php5.6-apache
+
+# Setup the Environment variable
+ENV SYMFONY_ENV=prod
+ENV APP_ENV=prod
+
+# Copy application code
+COPY app /var/www/html/app
+COPY bin /var/www/html/bin
+COPY src /var/www/html/src
+COPY var /var/www/html/var
+COPY vendor /var/www/html/vendor
+COPY web /var/www/html/web
+
+# Install dependencies and set permissions
+RUN chmod -R 0755 /var && \
+
+# Use Apache as the HTTP server and run PHP
+COPY . /var/www/html/
+WORKDIR /var/www/html/
+
+# Expose ports
+EXPOSE 80
+
+# Define default command to run on container start
+CMD [ "apache2-foreground" ]

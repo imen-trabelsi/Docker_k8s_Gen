@@ -1,0 +1,25 @@
+# Base image
+FROM node:10-alpine
+
+# Create app directory
+WORKDIR /app
+
+# Install app dependencies
+COPY package*.json ./
+RUN npm install
+
+# Bundle app source
+COPY . /app
+
+# Expose port
+EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD node /app/healthcheck.js || exit 1
+
+# Default command
+CMD [ "node", "index.js" ]
+
+# Labels
+LABEL maintainer="maintainer@yourorganization.com"

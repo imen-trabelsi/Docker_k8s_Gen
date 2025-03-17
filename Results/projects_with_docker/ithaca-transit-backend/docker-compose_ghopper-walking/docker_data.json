@@ -1,0 +1,55 @@
+{
+    "docker_info": {
+        "base_image": "maven:3.6.0-jdk-8-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8987"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /usr/src/app",
+            "WORKDIR /usr/src/app/graphhopper",
+            "COPY config.yml ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "java",
+                    "-Xmx1g",
+                    "-Xms1g",
+                    "-jar",
+                    "web/target/graphhopper-web-*.jar",
+                    "server",
+                    "config.yml"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p /usr/src/app",
+                "RUN apk add git"
+            ],
+            [
+                "git clone --single-branch -b tcat-map https://github.com/cuappdev/ithaca-transit-backend.git /usr/src/app",
+                ""
+            ],
+            [
+                "git clone --single-branch -b 0.12 https://github.com/graphhopper/graphhopper.git",
+                ""
+            ],
+            [
+                "./graphhopper.sh --action build",
+                ""
+            ],
+            [
+                "mv ../map.osm .",
+                ""
+            ]
+        ]
+    }
+}

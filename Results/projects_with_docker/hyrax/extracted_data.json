@@ -1,0 +1,69 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Jasmine",
+        "dependencies": {
+            "package.json": "{\n  \"devDependencies\": {\n    \"dotenv\": \"^16.0.1\",\n    \"jasmine-core\": \"^3.99\",\n    \"karma\": \"^6.3.20\",\n    \"karma-chrome-launcher\": \"^3.1.1\",\n    \"karma-coffee-preprocessor\": \"^1.0.1\",\n    \"karma-jasmine\": \"^4.0.2\",\n    \"karma-selenium-grid-launcher\": \"^0.3.0\",\n    \"karma-spec-reporter\": \"^0.0.34\",\n    \"selenium-webdriver\": \"^4.10.0\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "docker-compose.yml": "include:\n  - docker-compose-dassie.yml\n",
+            "Dockerfile": "ARG ALPINE_VERSION=3.21\nARG RUBY_VERSION=3.3.6\n\nFROM ruby:$RUBY_VERSION-alpine$ALPINE_VERSION AS hyrax-base\n\nARG DATABASE_APK_PACKAGE=\"postgresql-dev\"\nARG EXTRA_APK_PACKAGES=\"git\"\nARG RUBYGEMS_VERSION=\"\"\n\nRUN addgroup -S --gid 101 app && \\\n  adduser -S -G app -u 1001 -s /bin/sh -h /app app\n\nRUN apk --no-cache upgrade && \\\n  apk --no-cache add acl \\\n  build-base \\\n  curl \\\n  gcompat \\\n  imagemagick \\\n  imagemagick-heic \\\n  imagemagick-jpeg \\\n  imagemagick-jxl \\\n  imagemagick-pdf \\\n  imagemagick-svg \\\n  imagemagick-tiff \\\n  imagemagick-webp \\\n  jemalloc \\\n  ruby-grpc \\\n  tzdata \\\n  nodejs \\\n  yarn \\\n  zip \\\n  $DATABASE_APK_PACKAGE \\\n  $EXTRA_APK_PACKAGES\n\nRUN setfacl -d -m o::rwx /usr/local/bundle && \\\n  gem update --silent --system $RUBYGEMS_VERSION\n\nUSER app\n\nRUN mkdir -p /app/samvera/hyrax-webapp\nWORKDIR /app/samvera/hyrax-webapp\n\nCOPY --chown=1001:101 ./bin/*.sh /app/samvera/\nENV PATH=\"/app/samvera:$PATH\" \\\n    RAILS_ROOT=\"/app/samvera/hyrax-webapp\" \\\n    RAILS_SERVE_STATIC_FILES=\"1\" \\\n    LD_PRELOAD=\"/usr/local/lib/libjemalloc.so.2\"\n\nENTRYPOINT [\"hyrax-entrypoint.sh\"]\nCMD [\"bundle\", \"exec\", \"puma\", \"-v\", \"-b\", \"tcp://0.0.0.0:3000\"]\n\n\nFROM hyrax-base AS hyrax\n\nARG APP_PATH=.\nARG BUNDLE_WITHOUT=\"development test\"\n\nONBUILD COPY --chown=1001:101 $APP_PATH /app/samvera/hyrax-webapp\nONBUILD RUN bundle install --jobs \"$(nproc)\"\nONBUILD RUN RAILS_ENV=production SECRET_KEY_BASE=`bin/rake secret` DATABASE_URL='nulldb://nulldb' bundle exec rake assets:precompile\n\n\nFROM hyrax-base AS hyrax-worker-base\n\nUSER root\nRUN apk --no-cache add bash \\\n  ffmpeg \\\n  mediainfo \\\n  openjdk17-jre \\\n  perl\nUSER app\n\nRUN mkdir -p /app/fits && \\\n    cd /app/fits && \\\n    wget https://github.com/harvard-lts/fits/releases/download/1.6.0/fits-1.6.0.zip -O fits.zip && \\\n    unzip fits.zip && \\\n    rm fits.zip tools/mediainfo/linux/libmediainfo.so.0 tools/mediainfo/linux/libzen.so.0 && \\\n    chmod a+x /app/fits/fits.sh && \\\n    sed -i 's/\\(<tool.*TikaTool.*>\\)/<!--\\1-->/' /app/fits/xml/fits.xml\nENV PATH=\"${PATH}:/app/fits\"\n\nCMD [\"bundle\", \"exec\", \"sidekiq\"]\n\n\nFROM hyrax-worker-base AS hyrax-worker\n\nARG APP_PATH=.\nARG BUNDLE_WITHOUT=\"development test\"\n\nONBUILD COPY --chown=1001:101 $APP_PATH /app/samvera/hyrax-webapp\nONBUILD RUN bundle install --jobs \"$(nproc)\"\nONBUILD RUN RAILS_ENV=production SECRET_KEY_BASE=`bin/rake secret` DATABASE_URL='nulldb://nulldb' bundle exec rake assets:precompile\n\n\nFROM hyrax-worker-base AS hyrax-engine-dev\n\nUSER app\nARG BUNDLE_WITHOUT=\nENV HYRAX_ENGINE_PATH=/app/samvera/hyrax-engine\n\nCOPY --chown=1001:101 .dassie /app/samvera/hyrax-webapp\nCOPY --chown=1001:101 . /app/samvera/hyrax-engine\n\nRUN bundle -v && \\\n  BUNDLE_GEMFILE=Gemfile.dassie bundle install --jobs \"$(nproc)\" && yarn && \\\n  cd $HYRAX_ENGINE_PATH && bundle install --jobs \"$(nproc)\" && yarn && \\\n  yarn cache clean\n\nENTRYPOINT [\"dev-entrypoint.sh\"]\nCMD [\"bundle\", \"exec\", \"puma\", \"-v\", \"-b\", \"tcp://0.0.0.0:3000\"]",
+            ".circleci/config.yml": "version: 2.1\n\n# Run a no-op workflow so CircleCI reports as a green check in pull requests.\n# This file is needed until all active hyrax branches have moved off CircleCI\n# and the integration can be deactivated.\njobs:\n  build:\n    docker:\n      - image: cimg/base:current\n    resource_class: small\n    steps:\n      - run: echo \"Hyrax tests have moved to Github Actions.\"\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".codeclimate.yml",
+            ".dockerignore",
+            ".eslintignore",
+            ".eslintrc",
+            ".fcrepo_wrapper",
+            ".gitignore",
+            ".hound.yml",
+            ".regen",
+            ".rspec",
+            ".rubocop.yml",
+            ".rubocop_fixme.yml",
+            ".scss-lint.yml",
+            "CODE_OF_CONDUCT.md",
+            "CONTAINERS.md",
+            "CONTRIBUTING.md",
+            "Dockerfile",
+            "Gemfile",
+            "Gemfile.dassie",
+            "Gemfile.koppie",
+            "LICENSE",
+            "README.md",
+            "Rakefile",
+            "docker-compose-dassie.yml",
+            "docker-compose-koppie.yml",
+            "docker-compose-sirenia.yml",
+            "docker-compose.yml",
+            "hyrax.gemspec",
+            "karma.conf.js",
+            "package.json",
+            "samvera-fall-TM3.svg",
+            "template.rb"
+        ],
+        "folders": [
+            ".circleci",
+            ".dassie",
+            ".github",
+            ".koppie",
+            "app",
+            "artifacts",
+            "bin",
+            "chart",
+            "config",
+            "db",
+            "documentation",
+            "lib",
+            "spec",
+            "tasks",
+            "vendor"
+        ]
+    }
+}

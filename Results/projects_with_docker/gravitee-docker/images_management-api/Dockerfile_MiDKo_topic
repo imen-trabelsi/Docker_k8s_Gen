@@ -1,0 +1,40 @@
+# Use an official Python runtime as a parent image
+FROM python:alpine
+
+# Set maintainer label
+LABEL maintainer="contact@graviteesource.com"
+
+# Set working directory in the container
+WORKDIR /app
+
+# Copy necessary files for building
+COPY requirements.txt /app
+
+# Install Python packages
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy service source
+COPY . .
+
+# Expose the application on port 8083
+EXPOSE 8083
+
+# Adding base alpine image commands and Gravitee.io Management API version
+ARG GRAVITEEIO_VERSION=0
+
+# Set environment variables for Gravitee.io
+ENV GRAVITEEIO_HOME=/opt/graviteeio-management-api
+
+# Installing required softwares
+RUN apk add --update zip unzip netcat-openbsd wget && \
+    wget https://download.gravitee.io/graviteeio-apim/distributions/graviteeio-full-${GRAVITEEIO_VERSION}.zip --no-check-certificate -P /tmp/ && \
+    unzip /tmp/graviteeio-full-${GRAVITEEIO_VERSION}.zip -d /tmp/ && \
+    mv /tmp/graviteeio-full-${GRAVITEEIO_VERSION}/graviteeio-apim-rest-api* ${GRAVITEEIO_HOME} && \
+    rm -rf /tmp/* && \
+    chgrp -R 0 ${GRAVITEEIO_HOME} && \
+
+# Copy Gravitee.io files from build stage
+COPY --from=builder ${GRAVITEEIO_HOME} ${GRAVITEEIO_HOME}
+
+# Run the app when the container launches
+CMD ["./bin/gravitee"]

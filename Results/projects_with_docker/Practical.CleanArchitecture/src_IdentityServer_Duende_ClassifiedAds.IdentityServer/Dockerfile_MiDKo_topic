@@ -1,0 +1,30 @@
+# Set the base image
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
+
+# Create and set working directory
+WORKDIR /ClassifiedAds.IdentityServer
+
+# Copy csproj and restore as distinct layers
+COPY ./ClassifiedAds.Application/*.csproj ./ClassifiedAds.Application/
+COPY ./ClassifiedAds.CrossCuttingConcerns/*.csproj ./ClassifiedAds.CrossCuttingConcerns/
+COPY ./ClassifiedAds.Domain/*.csproj ./ClassifiedAds.Domain/
+COPY ./ClassifiedAds.IdentityServer/*.csproj ./ClassifiedAds.IdentityServer/
+COPY ./ClassifiedAds.Infrastructure/*.csproj ./ClassifiedAds.Infrastructure/
+COPY ./ClassifiedAds.Migrator/*.csproj ./ClassifiedAds.Migrator/
+COPY ./ClassifiedAds.Persistence/*.csproj ./ClassifiedAds.Persistence/
+COPY ./ClassifiedAds.Duende.sln .
+
+# Run restore
+RUN dotnet restore
+
+# Copy everything else and build
+COPY . ./
+RUN dotnet publish ./ClassifiedAds.IdentityServer/ClassifiedAds.IdentityServer.csproj -c Release -o out
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+
+WORKDIR /ClassifiedAds.IdentityServer
+
+# Set the entrypoint
+ENTRYPOINT ["dotnet", "ClassifiedAds.IdentityServer.dll"]

@@ -1,0 +1,14 @@
+# Using specified Base Image
+FROM dragonwell-registry.cn-hangzhou.cr.aliyuncs.com/dragonwell/dragonwell:8-extended-ga-centos
+
+# Copying necessary files and dependencies
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+WORKDIR /app
+COPY /productservice-provider/target/productservice-provider-1.0.0-SNAPSHOT.jar /app
+COPY /start.sh /app
+
+# Expose the port 8080
+EXPOSE 8080
+
+# Defining the entrypoint script
+ENTRYPOINT ["/app/start.sh"]

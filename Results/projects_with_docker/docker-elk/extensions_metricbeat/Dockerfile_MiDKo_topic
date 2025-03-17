@@ -1,0 +1,24 @@
+# Use the Base Image provided by the user
+FROM docker.elastic.co/beats/metricbeat:${ELASTIC_VERSION:-8.17.3}
+
+# Passed as build arguments
+ARG ELASTIC_VERSION
+
+# Set Environment Variables
+ENV ELASTIC_VERSION=$ELASTIC_VERSION
+
+# Expose the application's default port
+EXPOSE 9200
+
+# Copy necessary files and directories from the source code into the docker image
+COPY . .
+
+# Set the working directory inside the container
+WORKDIR /usr/local/src/
+
+# Add user
+RUN useradd -ms /bin/bash newuser
+USER newuser
+
+# Run the application
+CMD ["metricbeat", "-e"]

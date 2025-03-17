@@ -1,0 +1,26 @@
+# Use the base image defined by the user
+FROM pitstop-dotnet-sdk-base:1.0 as base
+
+# Set work directory
+WORKDIR /app
+
+# Copy project files
+COPY *.csproj ./
+COPY . ./
+
+# Run the restore command
+RUN dotnet restore
+
+# Build and publish the project
+RUN dotnet publish -c Release -o out
+
+# Set the work directory
+WORKDIR /app
+
+# Copy the output from the previous stage
+
+# Set the entry point
+ENTRYPOINT ["dotnet", "Pitstop.NotificationService.dll"]
+
+
+

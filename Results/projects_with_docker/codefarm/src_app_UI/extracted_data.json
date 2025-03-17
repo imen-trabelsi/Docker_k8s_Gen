@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"ui\",\n  \"version\": \"0.0.0\",\n  \"description\": \"User Interface Service\",\n  \"main\": \"index.js\",\n  \"scripts\": {\n    \"compile\": \"echo 'No compile needed'\",\n    \"compile-client\": \"NODE_ENV=production webpack --config ./client/webpack.config.js\",\n    \"compile-client-dev\": \"webpack --env.dev --config ./client/webpack.config.js\",\n    \"build\": \"../../bs/build.sh\",\n    \"extract\": \"../../bs/extract.sh\",\n    \"load\": \"../../bs/load.sh\",\n    \"unload\": \"../../bs/unload.sh\",\n    \"shell\": \"../../bs/run_cmd.sh bash\",\n    \"start\": \"../../bs/start.sh --expose 19898 -p 19898:19898 --net=\\\"host\\\" -d\",\n    \"prestart-dev\": \"rm -f client/static/bundle.*\",\n    \"start-dev\": \"node . --bus amqp://localhost/codefarm\",\n    \"start-rel\": \"NODE_ENV=production node . --bus amqp://localhost/codefarm\",\n    \"stop\": \"../../bs/stop.sh\",\n    \"test\": \"mocha --exit --recursive\",\n    \"lint\": \"git ls-files \\\"*.js\\\" | xargs eslint\",\n    \"install\": \"if [ -n \\\"$gitroot\\\" ]; then $gitroot/src/bs/linklibs.sh; else ../../bs/linklibs.sh; fi\",\n    \"deepinstall\": \"if [ -n \\\"$gitroot\\\" ]; then FORCE_INSTALL_LIBS=1 $gitroot/src/bs/linklibs.sh; else FORCE_INSTALL_LIBS=1 ../../bs/linklibs.sh; fi\"\n  },\n  \"author\": \"Marcus Christensson <marcus.christensson@combitech.se>\",\n  \"license\": \"MIT\",\n  \"engines\": {\n    \"node\": \">= 7.0.0\"\n  },\n  \"libraries\": [\n    \"auth\",\n    \"log\",\n    \"service\",\n    \"web\",\n    \"msgbus\",\n    \"misc\",\n    \"servicecom\",\n    \"singleton\",\n    \"loglib\",\n    \"backend\",\n    \"web\"\n  ],\n  \"dependencies\": {\n    \"api.io\": \"^1.0.3\",\n    \"array-to-sentence\": \"^1.1.0\",\n    \"babel-core\": \"^6.24.1\",\n    \"babel-loader\": \"^6.4.1\",\n    \"babel-plugin-transform-async-to-module-method\": \"^6.24.1\",\n    \"babel-polyfill\": \"^6.16.0\",\n    \"babel-preset-es2015\": \"^6.24.1\",\n    \"babel-preset-react\": \"^6.24.1\",\n    \"babel-preset-stage-1\": \"^6.24.1\",\n    \"bluebird\": \"^3.5.0\",\n    \"cheser-icon-theme\": \"https://github.com/Combitech/cheser-icon-theme\",\n    \"classnames\": \"^2.2.5\",\n    \"clone\": \"^2.1.1\",\n    \"cookie\": \"^0.3.1\",\n    \"css-loader\": \"^0.28.0\",\n    \"cytoscape\": \"^3.0.0\",\n    \"domurl\": \"^2.1.7\",\n    \"eslint-plugin-jsx-control-statements\": \"^2.1.1\",\n    \"eslint-plugin-react\": \"^6.10.3\",\n    \"extract-text-webpack-plugin\": \"^2.1.0\",\n    \"file-loader\": \"^0.11.1\",\n    \"flexboxgrid\": \"^6.3.1\",\n    \"font-roboto-local\": \"^1.0.1\",\n    \"fs-extra-promise\": \"^1.0.1\",\n    \"imagemin\": \"5\",\n    \"img-loader\": \"^3.0.1\",\n    \"immutability-helper\": \"^2.1.0\",\n    \"immutable\": \"^3.8.1\",\n    \"jsx-control-statements\": \"^3.1.5\",\n    \"koa-proxies\": \"^0.3.0\",\n    \"koa-webpack-dev-middleware\": \"^1.4.5\",\n    \"material-design-icons\": \"^3.0.1\",\n    \"moment\": \"^2.18.1\",\n    \"node-sass\": \"^4.5.3\",\n    \"prop-types\": \"^15.5.8\",\n    \"react\": \"^15.5.4\",\n    \"react-addons-css-transition-group\": \"^15.5.2\",\n    \"react-addons-transition-group\": \"^15.5.2\",\n    \"react-dom\": \"^15.5.4\",\n    \"react-flexbox-grid\": \"^1.0.2\",\n    \"react-immutable-proptypes\": \"^2.1.0\",\n    \"react-router\": \"3\",\n    \"react-svg-loader\": \"^1.1.1\",\n    \"react-toolbox\": \"^1.3.4\",\n    \"react-transition-group\": \"^1.1.2\",\n    \"recharts\": \"^0.22.3\",\n    \"rxjs\": \"^5.3.0\",\n    \"sass-loader\": \"^6.0.3\",\n    \"sift\": \"^3.3.2\",\n    \"sillyname\": \"^0.1.0\",\n    \"source-map-support\": \"^0.4.14\",\n    \"style-loader\": \"^0.16.1\",\n    \"uglify-js\": \"^2.8.22\",\n    \"url-loader\": \"^0.5.7\",\n    \"webpack\": \"^2.6.1\",\n    \"yargs\": \"^7.1.0\"\n  },\n  \"devDependencies\": {\n    \"babel-eslint\": \"^7.2.2\",\n    \"eslint\": \"^3.19.0\",\n    \"mocha\": \"^6.0.0\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "src/app/UI/Dockerfile": "FROM codefarm/appnodebase:0.0.0\n\nRUN yarn run compile-client -- --env.global_modules_dir ${farmerHome}/.node_modules && \\\n  rm -rf babel_cache\n\nENV NODE_ENV production\nCMD [ \\\n    \"node\", \\\n    \".\", \\\n    \"--bus\", \"amqp://rabbitmq:5672/codefarm\" \\\n]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            "Dockerfile",
+            "package.json",
+            "yarn.lock"
+        ],
+        "folders": []
+    }
+}

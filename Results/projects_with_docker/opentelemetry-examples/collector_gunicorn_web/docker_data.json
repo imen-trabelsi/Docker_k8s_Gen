@@ -1,0 +1,30 @@
+{
+    "docker_info": {
+        "base_image": "python:3.10.7-slim-buster",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV PYTHONDONTWRITEBYTECODE 1",
+            "ENV PYTHONUNBUFFERED 1"
+        ],
+        "copy_instructions": [
+            "WORKDIR /usr/src/app",
+            "COPY . /usr/src/app/"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "pip install --upgrade pip",
+                "COPY ./requirements.txt /usr/src/app/requirements.txt"
+            ],
+            [
+                "pip install -r requirements.txt",
+                ""
+            ]
+        ]
+    }
+}

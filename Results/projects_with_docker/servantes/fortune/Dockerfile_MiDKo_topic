@@ -1,0 +1,26 @@
+FROM golang:1.17
+
+WORKDIR /app
+
+COPY go.mod .
+RUN go mod download
+
+COPY . .
+
+# Copy the build instructions into the container
+COPY . /go/src/github.com/tilt-dev/servantes/fortune
+
+# Apply the software requirements (protobuf-compiler)
+RUN apt update && apt install -y unzip time make protobuf-compiler
+
+# Install Google's Protocol Buffers
+RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@latest
+
+# Build the protobuf
+RUN cd /go/src/github.com/tilt-dev/servantes/fortune && make proto
+
+# Build the binary
+RUN cd /go/src/github.com/tilt-dev/servantes/fortune && go install .
+
+# Execute the binary
+ENTRYPOINT ["/go/bin/fortune"]

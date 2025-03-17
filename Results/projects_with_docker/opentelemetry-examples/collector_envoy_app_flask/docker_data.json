@@ -1,0 +1,30 @@
+{
+    "docker_info": {
+        "base_image": "python:3.10-slim-bullseye",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD requirements.txt /tmp/flask-requirements.txt"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"python3\",",
+                    "\"/code/service.py\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "pip3 install -r /tmp/flask-requirements.txt",
+                "RUN mkdir /code"
+            ]
+        ]
+    }
+}

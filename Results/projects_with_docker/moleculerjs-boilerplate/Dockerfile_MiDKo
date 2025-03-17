@@ -1,0 +1,28 @@
+# BASE IMAGE
+FROM node:10-alpine
+
+# CREATING NEW DIRECTORY
+RUN mkdir -p /app
+
+# SET WORKDIR
+WORKDIR /app
+
+# ENVIRONMENT VARIABLES
+ENV NODE_ENV=production
+
+# DEPENDENCIES
+COPY package*.json ./
+RUN npm ci
+RUN npm run build && npm prune --production
+
+# SOURCE CODE
+COPY . .
+
+# START COMMAND
+CMD ["npm", "start"]
+
+# EXPOSE PORT
+EXPOSE 8080
+
+# METADATA
+LABEL maintainer="admin@example.com"

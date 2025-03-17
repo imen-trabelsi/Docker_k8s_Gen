@@ -1,0 +1,23 @@
+# Use the base image with Python and Telegraf
+FROM telegraf:1.8-alpine@sha256:7f6873f5745fe9b4f610c5dcfaaa73d7cd75adb63bd770bb70c26a7e85c94a2a
+
+# Set the current working directory in the container
+WORKDIR /app
+
+# Copy the dependencies file to the working directory
+COPY pyproject.toml .
+
+# Install dependencies
+RUN pip install poetry && poetry install --no-root --no-dev
+
+# Copy the needed telegraf configuration file
+COPY telegraf/telegraf.conf /etc/telegraf/telegraf.conf
+
+# Copy the rest of the code
+COPY . .
+
+# Set the entrypoint command
+ENTRYPOINT ["poetry", "run"]
+
+# Set the default command
+CMD ["python", "-m", "myapp"]

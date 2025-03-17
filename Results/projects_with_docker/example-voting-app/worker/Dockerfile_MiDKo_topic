@@ -1,0 +1,38 @@
+# Dockerfile
+FROM --platform=${BUILDPLATFORM} python:3.8-alpine
+
+# build arguments
+ARG TARGETPLATFORM
+ARG TARGETARCH
+ARG BUILDPLATFORM
+
+# metadata
+LABEL maintainer="Your Name <your-email@example.com>"
+
+# install dependencies
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# copy source files
+WORKDIR /source
+COPY *.csproj .
+COPY . .
+WORKDIR /app
+COPY --from=build /app .
+
+# environment variables
+ENV LANG=C.UTF-8 \
+    LC_ALL=C.UTF-8 \
+
+# execution command
+ENTRYPOINT ["dotnet", "Worker.dll"]
+
+# run command
+RUN echo "I am running on $BUILDPLATFORM, building for $TARGETPLATFORM" && \
+    dotnet restore -a $TARGETARCH && \
+
+# expose ports
+EXPOSE 8000
+
+# default command
+CMD ["flask", "run"]

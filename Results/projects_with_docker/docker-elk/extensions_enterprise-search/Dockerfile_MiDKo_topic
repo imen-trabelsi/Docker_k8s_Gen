@@ -1,0 +1,13 @@
+FROM docker.elastic.co/enterprise-search/enterprise-search:${ELASTIC_VERSION:-8.17.3}
+
+LABEL maintainer="your@email.com"
+
+ARG ELASTIC_VERSION=8.17.3
+
+ENV ELASTIC_VERSION=${ELASTIC_VERSION}
+
+COPY app.jar app.jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java","-jar","app.jar"]

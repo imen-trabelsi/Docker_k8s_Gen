@@ -1,0 +1,45 @@
+# Start with base image
+FROM postgres:10.6
+
+# Add a work directory
+WORKDIR /opt/backup
+
+# Copy all files to /opt and /opt/backup
+COPY . /opt
+COPY . /opt/backup
+
+# Install necessary packages
+RUN apt-get update -yqq && \
+    apt-get install -y --no-install-recommends inetutils-ping nano net-tools cron gnupg wget apt-transport-https ca-certificates libcurl4-openssl-dev && \
+    wget -qO - http://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add - && \
+    echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.2 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-4.2.list && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends mongodb-org-tools && \
+    chmod -R 755 /opt/backup && \
+    touch /var/log/cron.log && \
+    chmod 777 /var/log/cron.log && \
+    chmod +x /opt/backup.sh && \
+    chmod +x /opt/entrypoint.sh && \
+    chmod 0644 /opt/backup/backup.cron && \
+    cp /opt/backup/backup.cron /etc/cron.d/ && \
+    cp /opt/backup.sh /etc/cron.daily && \
+    cp /opt/backup.sh /etc/cron.hourly && \
+    crontab /etc/cron.d/backup.cron && \
+    chmod 777 /var/run && \
+
+# Copy cron file to the cron.d directory
+COPY backup.cron /etc/cron.d
+
+# Set environment variables
+ENV MONGO_HOST ${MONGO_HOST}
+ENV MONGO_DATABASE ${MONGO_DATABASE}
+ENV PGHOST ${DB_HOST}
+ENV PGPASSWORD ${PGPASSWORD}
+ENV PGUSERNAME ${POSTGRESQL_USERNAME}
+ENV PGDATABASE ${POSTGRESQL_DATABASE}
+
+# Expose given port
+EXPOSE 27017
+
+# Start the application
+CMD [ "/opt/entrypoint.sh" ]

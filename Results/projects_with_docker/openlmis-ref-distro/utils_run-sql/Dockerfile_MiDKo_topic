@@ -1,0 +1,28 @@
+# base image
+FROM openlmis/dev:4
+
+# set working directory
+WORKDIR /
+
+# install dependencies
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# copy entrypoint.sh
+COPY entrypoint.sh /entrypoint.sh
+
+# give permission to execute entrypoint.sh
+RUN chmod u+x /entrypoint.sh
+
+# copy sql folder
+COPY sql /sql
+
+# set environment variable
+ENV FLASK_APP run.py
+ENV FLASK_RUN_HOST 0.0.0.0
+
+# expose ports
+EXPOSE 5000
+
+# run the command when the container launches
+CMD ["./entrypoint.sh"]

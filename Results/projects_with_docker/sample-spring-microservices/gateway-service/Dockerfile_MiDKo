@@ -1,0 +1,14 @@
+# Specify the base image
+FROM openjdk:8-jdk-alpine
+
+# Specify the author/maintainer of the Dockerfile
+LABEL maintainer="your-email@example.com"
+
+# Expose the necessary ports
+EXPOSE 8765
+
+# Copy the built JAR file into the docker image
+COPY target/gateway-service.jar gateway-service.jar
+
+# Set the entry point 
+ENTRYPOINT ["java", "-jar", "/gateway-service.jar"]

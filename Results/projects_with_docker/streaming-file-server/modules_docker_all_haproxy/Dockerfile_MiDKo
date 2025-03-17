@@ -1,0 +1,32 @@
+# Base Image
+FROM haproxy:2.0.9-alpine
+
+# Run Commands
+RUN apk add --update --no-cache curl
+
+# Copy Instructions
+COPY ./pom.xml pom.xml
+COPY ./src src
+COPY ./haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg
+COPY ./modules/docker/all/docker-compose.yml docker-compose.yml
+COPY .env .env
+
+# Set Up Environment Variables
+ENV MAVEN_HOME /usr/share/maven
+ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
+
+# Expose Ports
+EXPOSE 8080
+
+# Build Project with Maven
+RUN mvn -T 1C clean install 
+
+# Run the project
+CMD ["java", "-jar", "target/myproject-0.0.1-SNAPSHOT.jar"]
+
+# Health Checks
+HEALTHCHECK --retries=33 CMD curl --silent --fail http://localhost:8080/health || exit 1
+
+# Labels 
+LABEL version="1.0"
+LABEL description="Docker image for Spring Boot microservice"

@@ -1,0 +1,39 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.13",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8545"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY --from=builder /go/src/github.com/palletone/go-palletone/cmd/gptn/gptn /usr/local/bin/",
+            "WORKDIR /go-palletone"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"gptn\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p src/github.com/palletone \\",
+                "&& cd src/github.com/palletone",
+                "&& git clone -b testnet https://github.com/palletone/go-palletone.git",
+                "&& cd go-palletone/cmd/gptn",
+                "&& go build -mod=vendor -tags mainnet"
+            ],
+            [
+                "mkdir /go-palletone",
+                ""
+            ]
+        ]
+    }
+}

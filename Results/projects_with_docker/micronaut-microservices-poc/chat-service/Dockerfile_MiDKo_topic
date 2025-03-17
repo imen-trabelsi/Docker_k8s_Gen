@@ -1,0 +1,29 @@
+# Start with the base image
+FROM adoptopenjdk/openjdk14:jre-14.0.2_12-alpine as builder
+
+WORKDIR application
+
+# Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy the pom.xml file
+COPY pom.xml .
+
+# Copy project files and build your app
+COPY src ./src
+
+# Build with maven
+RUN chmod +x ./mvnw
+RUN ./mvnw package
+
+# Multi-stage build to create a lighter final image
+FROM adoptopenjdk/openjdk14:jre-14.0.2_12-alpine
+
+WORKDIR /app
+
+# Copy the executable jar
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "/app/chat-service.jar"]

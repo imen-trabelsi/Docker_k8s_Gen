@@ -1,0 +1,29 @@
+# Start with a base image containing JavaScript runtime
+FROM node:14.3.0-alpine3.11
+
+# Set the working directory
+WORKDIR /e2e
+
+# Add a new user to our container to prevent permissions issues
+RUN addgroup app && adduser -G app -g app -s /bin/sh -D app
+
+# Set environment variables
+ENV TBTCJS_VERSION 0.18.0-rc.2
+
+# Copy package.json, and other dependencies to the working directory
+COPY . .
+
+# Install dependencies and packages
+RUN apk add --no-cache \
+jq \
+git \
+python3 \
+build-base && \
+jq '.dependencies."@keep-network/tbtc.js" = env.TBTCJS_VERSION' \
+package.json >package.json.tmp && mv package.json.tmp package.json && \
+
+# Switch to 'app' user
+USER app
+
+# Start the app
+ENTRYPOINT ["node", "--experimental-json-modules", "e2e-test.js"]

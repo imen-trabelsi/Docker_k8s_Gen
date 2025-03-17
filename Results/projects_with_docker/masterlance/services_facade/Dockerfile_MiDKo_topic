@@ -1,0 +1,27 @@
+# Use the official Node image from the Docker Hub
+FROM node:alpine
+
+# Set the working directory in the image
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# Copy the package.json file into our app directory
+COPY package.json .
+
+# Install any needed packages specified in package.json
+RUN npm install
+
+# Copy the rest of our application code into the image
+COPY . .
+
+# Set the debug environment variable
+ENV DEBUG loopback:connector:swagger
+
+# Run the command when the container starts
+CMD ["npm", "run", "start.dev"]
+
+# Expose the application at this port
+EXPOSE 3000
+
+# Health check for the docker container
+HEALTHCHECK --interval=1m --timeout=3s CMD curl --fail http://localhost/vitals/docker || exit 1

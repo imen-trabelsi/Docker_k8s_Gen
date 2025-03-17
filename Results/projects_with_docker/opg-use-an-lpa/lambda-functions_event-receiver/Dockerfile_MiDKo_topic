@@ -1,0 +1,47 @@
+# Start from the base image
+FROM golang:1.23.4-alpine AS base
+
+# Prevent missing dependencies on Alpine by using the virtual command in apk add
+RUN apk --no-cache add --virtual .build-deps gcc musl-dev
+
+# Set the Current Working Directory
+WORKDIR /app
+
+# Download necessary Go modules
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Secure the Docker Image by creating a 'developer' user with less privileges
+RUN adduser -D developer
+
+# Set the user to developer for security purpose
+USER developer
+
+# Copy source directory to Working Directory inside the container
+COPY app/ ./
+COPY internal/ ./internal
+
+# Building the Go binary using the stored Go modules
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /go/bin/main ./
+
+# Start the second stage from scratch for generating a minimal image
+FROM scratch
+WORKDIR /var/task
+
+# Copy the necessary binary and files from previous stage 
+
+# Ensure container listens on the necessary port at runtime for the application to operate
+EXPOSE 8080
+
+# Set the User
+USER developer
+
+# Set necessary Environment variables
+ENV DB_HOST db_host
+ENV DB_USER db_user
+ENV DB_PASS db_pass
+ENV DB_NAME db_name
+ENV DB_PORT db_port
+
+# Command to run the executable
+ENTRYPOINT ["./main"]

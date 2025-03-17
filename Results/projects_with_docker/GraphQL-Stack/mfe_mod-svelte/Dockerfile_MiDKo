@@ -1,0 +1,18 @@
+# Use the specified base image
+FROM caddy:2-alpine
+
+# Copy the Caddyfile into the Docker image
+COPY Caddyfile /etc/caddy/Caddyfile
+
+# Copy the application's build result into the Docker image
+COPY /dist /usr/share/caddy/dist
+
+# Install application's dependencies
+COPY package.json .
+RUN npm install
+
+# Copy the application's source code into the Docker image
+COPY src .
+
+# The command that starts the application
+CMD ["npm", "start"]

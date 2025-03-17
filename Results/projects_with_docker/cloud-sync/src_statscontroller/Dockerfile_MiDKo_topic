@@ -1,0 +1,27 @@
+#Base Image
+FROM node:12.22.12
+
+#Metadata
+LABEL version="2.0.0" \
+
+#Run Commands
+RUN mkdir -p /usr/src/common && \
+    cd /usr/src/common && \
+    npm install && \
+    mkdir -p /usr/src/statscontroller && \
+    npm install grunt-cli -g && \
+    mkdir -p /usr/src/statscontroller/src && \
+    cd /usr/src/statscontroller/src && \
+
+#Copy Instructions
+COPY common/ /usr/src/common
+COPY package.json /usr/src/common/
+COPY statscontroller/Gruntfile.js /usr/src/statscontroller/
+COPY statscontroller/package.json /usr/src/statscontroller/
+COPY statscontroller/src /usr/src/statscontroller/src
+
+#Exposed Ports
+EXPOSE 4001
+
+#Default Command
+CMD ["npm", "start"]

@@ -1,0 +1,40 @@
+# Use an official base image
+FROM node:12.22.12
+
+# Set labels
+LABEL version="2.0.0"
+LABEL description="This is a Node.js microservice container"
+
+# Create common directories
+RUN mkdir -p /usr/src/common
+WORKDIR /usr/src/common
+
+# Copy files into the common directory
+COPY common/ /usr/src/common
+COPY package.json /usr/src/common/
+
+# Install common dependencies
+RUN npm install
+
+# Create synccontroller directories
+RUN mkdir -p /usr/src/synccontroller
+
+# Install Grunt CLI globally
+RUN npm install grunt-cli -g
+
+# Copy all files into synccontroller directory
+WORKDIR /usr/src/synccontroller
+COPY synccontroller/src /usr/src/synccontroller/src
+COPY synccontroller/Gruntfile.js /usr/src/synccontroller/
+COPY synccontroller/package.json /usr/src/synccontroller/
+
+# Install synccontroller dependencies
+WORKDIR /usr/src/synccontroller/src
+RUN npm install
+
+# Build the application
+RUN grunt build_lib
+
+# Expose and define default command for container
+EXPOSE 3002
+CMD [ "npm", "start" ]

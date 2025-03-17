@@ -1,0 +1,45 @@
+FROM node:10-alpine
+
+ARG DISCOVERY_API_URL=https://discovery-31.polkascan.io
+ARG API_URL=https://host-01.polkascan.io/kusama/api/v1
+ARG NETWORK_NAME=Kusama
+ARG NETWORK_ID=kusama
+ARG NETWORK_TYPE=pre
+ARG CHAIN_TYPE=relay
+ARG NETWORK_TOKEN_SYMBOL=KSM
+ARG NETWORK_TOKEN_DECIMALS=12
+ARG NETWORK_COLOR_CODE=d32e79
+
+ENV DISCOVERY_API_URL=$DISCOVERY_API_URL
+ENV API_URL=$API_URL
+ENV NETWORK_NAME=$NETWORK_NAME
+ENV NETWORK_ID=$NETWORK_ID
+ENV NETWORK_TYPE=$NETWORK_TYPE
+ENV CHAIN_TYPE=$CHAIN_TYPE
+ENV NETWORK_TOKEN_SYMBOL=$NETWORK_TOKEN_SYMBOL
+ENV NETWORK_TOKEN_DECIMALS=$NETWORK_TOKEN_DECIMALS
+ENV NETWORK_COLOR_CODE=$NETWORK_COLOR_CODE
+
+COPY package.json package-lock.json ./
+
+RUN npm ci && mkdir /ng-app && mv ./node_modules ./ng-app
+
+WORKDIR /ng-app
+
+COPY . /ng-app/
+
+RUN ls /ng-app/src/
+RUN npm run ng build -- --prod --output-path=dist
+
+# Copy Configuration to nginx
+COPY nginx.conf /etc/nginx/conf.d/
+
+# Remove default nginx config & files
+RUN rm -rf /etc/nginx/conf.d/*
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copy Built Files
+COPY --from=builder /ng-app/dist /usr/share/nginx/html
+
+EXPOSE 80 
+CMD ["nginx", "-g", "daemon off;"]

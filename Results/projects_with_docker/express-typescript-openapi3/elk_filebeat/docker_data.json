@@ -1,0 +1,27 @@
+{
+    "docker_info": {
+        "base_image": "docker.elastic.co/beats/filebeat:7.0.1",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY filebeat.yml /usr/share/filebeat/filebeat.yml"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "mkdir /usr/share/filebeat/dockerlogs",
+                "RUN chown -R root /usr/share/filebeat/"
+            ],
+            [
+                "chmod -R go-w /usr/share/filebeat/"
+            ]
+        ]
+    }
+}

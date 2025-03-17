@@ -1,0 +1,35 @@
+# Set the base image
+FROM $BASE_CONTAINER
+
+# Set environment variable
+ENV TAG="aec555e49be6"
+
+# Set maintainer label
+LABEL maintainer="Jupyter"
+
+# Set the working directory in the container
+WORKDIR $HOME
+
+# Switch to root user
+USER root
+
+# Add Ruby project files
+COPY subrepos/docker-stacks/binder/Dockerfile .
+
+# Install dependencies
+RUN bundle install
+
+# Copy additional files
+COPY binder/README.ipynb .
+
+# Switch back to NB_UID
+USER $NB_UID
+
+# Run commands 
+RUN fix-permissions README.ipynb
+
+# Expose ports from the container
+EXPOSE 
+
+# The command to run when the Docker container starts
+CMD ["ruby", "app.rb"]

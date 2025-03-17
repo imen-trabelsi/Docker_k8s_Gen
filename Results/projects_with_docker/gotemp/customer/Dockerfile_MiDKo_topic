@@ -1,0 +1,40 @@
+# Start from the base Go image
+FROM golang:1.16 as builder
+
+# Add Maintainer Info
+LABEL maintainer="expert@devops.com"
+
+# Set the Current Working Directory inside the container
+WORKDIR /app
+
+# Copy go.mod and go.sum files to the workspace
+COPY go.mod go.sum ./
+
+# Download all the dependencies that are necessary
+RUN go mod download
+
+# Copy the source code into the container
+COPY . .
+
+# Build the Go app
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
+
+### Start a new stage from scratch ###
+FROM alpine:latest  
+
+WORKDIR /root/
+
+# Copy the Pre-built binary file from the previous stage
+
+# Copy static files and configurations
+COPY docker-compose.yml docker-compose.yml
+COPY customer/Dockerfile customer/Dockerfile
+
+# Set necessary environment variables
+ENV SRVNAME=customerServer
+
+# Expose port 2112 to the outside world
+EXPOSE 2112
+
+# Run the executable
+CMD ["./main"]

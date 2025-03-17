@@ -1,0 +1,25 @@
+# Use the specified base image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+
+# Install dependencies
+RUN curl -o- -L https://yarnpkg.com/install.sh | bash
+COPY yarn.lock ./
+RUN yarn
+
+# Copy app files
+COPY . .
+WORKDIR "/src/src/Services/Ordering/Ordering.BackgroundTasks"
+
+#Restore and publish the project
+RUN dotnet restore "../../eShop-Learn.sln"
+RUN dotnet publish "Ordering.BackgroundTasks.csproj" -c Release -o /app/publish
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+WORKDIR /app
+
+# Copy from build stage
+
+# Set the entry point
+ENTRYPOINT ["dotnet", "Ordering.BackgroundTasks.dll"]

@@ -1,0 +1,30 @@
+# The following Dockerfile is based on the extracted information:
+
+FROM 697525377503.dkr.ecr.us-east-1.amazonaws.com/pay-docker-base-images:pagarme-node8.9
+WORKDIR /superbowleto
+
+# Copy package.json and package-lock.json
+COPY package.json /superbowleto/package.json
+COPY package-lock.json /superbowleto/package-lock.json
+
+# Install dependencies using npm
+RUN npm install
+
+# Copy source code
+COPY . .
+
+# Expose desired port for the app to run
+EXPOSE 3000
+
+# The following line should be placed in the Dockerfile if the microservice is listening 
+# to 3000 as the primary port. This'll ensure Docker knows that the microservice running 
+# on the port provided is healthy.
+HEALTHCHECK CMD curl --fail http://localhost:3000 || exit 1
+
+# Execute the application
+CMD [ "npm", "start" ]
+
+# This Dockerfile does not address certain topics the user inputted, 
+# since there were no values provided (such as specific security considerations, 
+# networking details, build arguments, specific run commands, etc). 
+# You may want to add these yourself if they are necessary for your specific use-case.

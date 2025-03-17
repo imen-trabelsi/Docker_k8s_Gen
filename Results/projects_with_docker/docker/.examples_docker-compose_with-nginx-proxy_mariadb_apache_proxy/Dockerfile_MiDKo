@@ -1,0 +1,12 @@
+# Use the specified base image
+FROM nginxproxy/nginx-proxy:alpine
+
+# Copy the provided configuration file to the correct location in the docker image
+COPY uploadsize.conf /etc/nginx/conf.d/uploadsize.conf
+
+# It seems there are no explicit runtime dependencies, environment variables,
+# exposed ports, run commands, users & labels specified in the provided user inputs.
+# Include those details here when they are provided.
+
+# Also, no executable command nor entry point are defined by the user,
+# but as we're using a base NGINX image, it has a default entrypoint and cmd that will start NGINX.

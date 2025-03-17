@@ -1,0 +1,33 @@
+# Use official base image of MySQL
+FROM mysql:8.4
+
+# Metadata
+LABEL maintainer="Reconmap"
+
+# Create Group and User
+RUN groupadd -g ${HOST_GID} reconmappers \
+
+# Copy composer.json and composer.lock
+COPY composer.json composer.lock /var/www/
+
+# Set Workdirectory
+WORKDIR /var/www
+
+# Install dependencies
+RUN composer install
+
+# Copy Existing application directory contents
+COPY . /var/www
+
+# Copy database and overrides configuration 
+COPY database/ /docker-entrypoint-initdb.d/
+COPY docker/mysql/overrides.cnf /etc/mysql/conf.d/overrides.cnf
+
+# Change current user to our new created user
+USER reconmapper
+
+# Expose port 3306 to the outside
+EXPOSE 3306
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["mysqld"]

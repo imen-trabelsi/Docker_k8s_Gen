@@ -1,0 +1,28 @@
+# Use multi-stage build
+FROM composer:2.0 AS build
+
+WORKDIR /app
+
+COPY . /app
+
+RUN composer install
+
+# Base Image
+FROM nginx:alpine
+
+# Setting working directory
+WORKDIR /var/www/html
+
+# Copying necessary directories and files
+COPY conf.d /etc/nginx/conf.d
+
+# Nginx config
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Ownership settings to avoid permission issues
+RUN chown -R www-data:www-data /var/www
+
+# Expose necessary ports
+EXPOSE 80
+
+ENTRYPOINT ["nginx","-g","daemon off;"]

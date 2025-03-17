@@ -1,0 +1,30 @@
+# Use ubuntu:19.04 as the base image
+FROM ubuntu:19.04
+
+# Set work directory to /app
+WORKDIR /app
+
+# Copy dependencies file
+COPY go.mod .
+
+# Install dependencies
+RUN apt-get update && apt-get install -y curl python-dev xz-utils zlib1g libxml2-dev libxslt1-dev bzip2 python-pip && apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Download and extract scancode-toolkit
+RUN curl -sL https://github.com/nexB/scancode-toolkit/releases/download/v3.1.1/scancode-toolkit-3.1.1.tar.bz2 | tar -xj && mv scancode* /app
+RUN ./scancode --version
+
+# Copy rest of the application source code
+COPY . .
+
+# Run go mod command
+RUN go mod download
+RUN go build -o main
+
+# No ports to expose are mentioned
+# No Build Arguments and Execution Commands provided by user
+# No User and Environment variables provided by user
+# No labels provided by user
+
+# Set start command as our go binary file
+CMD ["./main"]

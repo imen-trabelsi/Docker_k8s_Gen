@@ -1,0 +1,20 @@
+# Use base image
+FROM bde2020/hadoop-base:2.0.0-hadoop3.2.1-java8
+
+# Environment Variables
+ENV JAR_FILEPATH="/opt/hadoop/applications/WordCount.jar"
+ENV CLASS_TO_RUN="WordCount"
+ENV PARAMS="/input /output"
+
+# Copy Instructions
+COPY WordCount.jar /opt/hadoop/applications/WordCount.jar
+COPY run.sh /run.sh
+
+# Run Commands
+RUN chmod a+x /run.sh
+
+# Ports
+# Please add ports if required, the information provided does not specify any ports.
+
+# Default execution command
+CMD ["/run.sh"]

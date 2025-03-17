@@ -1,0 +1,31 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:21-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV profile=dev"
+        ],
+        "copy_instructions": [
+            "ADD . /usr/local/assets",
+            "WORKDIR /usr/local/assets",
+            "COPY api/target ./"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "java",
+                    "-jar",
+                    "-Dspring.profiles.active=$profile",
+                    "restful-booker-platform-assets-*.jar"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

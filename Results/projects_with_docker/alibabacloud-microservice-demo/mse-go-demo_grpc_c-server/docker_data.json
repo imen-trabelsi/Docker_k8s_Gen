@@ -1,0 +1,46 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.19-alpine3.16",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "50051"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD . /workspace",
+            "WORKDIR /workspace",
+            "COPY --from=build /workspace/c-server /c-server"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/c-server\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories",
+                ""
+            ],
+            [
+                "apk --update add gcc libc-dev",
+                ""
+            ],
+            [
+                "--mount=type=cache,target=/go \\",
+                "env GOPROXY=https://goproxy.cn,direct",
+                "go build -buildmode=pie -ldflags \"-linkmode external -extldflags -static -w\" -o /workspace"
+            ],
+            [
+                "sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories",
+                ""
+            ]
+        ]
+    }
+}

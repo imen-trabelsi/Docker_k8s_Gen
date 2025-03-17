@@ -1,0 +1,26 @@
+{
+    "docker_info": {
+        "base_image": "$BASE_CONTAINER",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [
+            "maintainer=\"Jupyter"
+        ],
+        "health_checks": [],
+        "build_args": [
+            "BASE_CONTAINER=jupyter/scipy-notebook"
+        ],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "pip install --quiet --no-cache-dir \\",
+                "'tensorflow==2.4.1' &&",
+                "fix-permissions \"${CONDA_DIR}\" &&",
+                "fix-permissions \"/home/${NB_USER}\""
+            ]
+        ]
+    }
+}

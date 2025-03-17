@@ -1,0 +1,17 @@
+# Base Image
+FROM bde2020/hadoop-base:2.0.0-hadoop3.2.1-java8
+
+# Copy run script to root directory
+COPY run.sh /run.sh
+
+# Make the script executable
+RUN chmod a+x /run.sh
+
+# Health Check
+HEALTHCHECK CMD curl -f http://localhost:8042/ || exit 1
+
+# Expose required port
+EXPOSE 8042
+
+# Set entry point
+ENTRYPOINT ["/run.sh"]

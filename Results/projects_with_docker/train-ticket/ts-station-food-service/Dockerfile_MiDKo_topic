@@ -1,0 +1,17 @@
+# Use Java 8 official image
+FROM java:8-jre
+
+# Make port 18855 available to the world outside this container
+EXPOSE 18855
+
+# The application's jar file
+ENV APP_FILE ts-station-food-service-1.0.jar
+
+# Add the application's jar to the container
+COPY ./target/$APP_FILE /app/
+
+# Set timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Run the jar file
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Xmx200m","-jar","/app/ts-station-food-service-1.0.jar"]

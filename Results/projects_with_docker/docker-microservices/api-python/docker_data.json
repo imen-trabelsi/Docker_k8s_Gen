@@ -1,0 +1,29 @@
+{
+    "docker_info": {
+        "base_image": "tiangolo/meinheld-gunicorn-flask:python3.8-alpine3.11",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV PYTHONDONTWRITEBYTECODE 1",
+            "ENV PYTHONUNBUFFERED 1"
+        ],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY ./app/requirements.txt ./"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apk --no-cache add build-base bash postgresql-dev",
+                ""
+            ],
+            [
+                "pip install -U pip && pip install -r requirements.txt"
+            ]
+        ]
+    }
+}

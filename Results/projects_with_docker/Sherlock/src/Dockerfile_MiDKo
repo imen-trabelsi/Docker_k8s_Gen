@@ -1,0 +1,28 @@
+# Base Image
+FROM continuumio/miniconda:4.4.10
+
+# Maintainer
+
+# Set Environment Variables
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+
+# Copy the application requirements file to the container
+COPY requirements.txt /tmp/requirements.txt
+
+# Copy the application source code to /opt/src directory 
+COPY ./ /opt/src
+
+# Set working directory
+WORKDIR /opt/src
+
+# Set up and install necessary packages
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils && \
+    conda install gxx_linux-64 && \
+    apt-get install -y --force-yes default-libmysqlclient-dev mysql-client build-essential && \
+    pip install -qr /tmp/requirements.txt && \
+
+# Expose port
+EXPOSE 5000
+
+# Command to run application
+CMD ["python", "wsgi.py"]

@@ -1,0 +1,21 @@
+# Using the recommended Microsoft ASP.NET Core runtime base image 
+FROM mcr.microsoft.com/dotnet/framework/aspnet:4.7.2
+
+# Metadata indicating the maintainer of the image
+LABEL maintainer="your_email@example.com"
+
+# Set working directory
+WORKDIR /app
+
+# Copy all necessary files to the working directory
+COPY ${source:-obj/Docker/publish} .
+
+# Expose port 80 for the application.
+EXPOSE 80
+
+# Set the ASP.NET Core URLs environment variable
+ENV ASPNETCORE_URLS=http://+:80
+
+# Define the entry point to run the application.
+ENTRYPOINT ["dotnet", "TheNameOfYourApp.dll"]
+

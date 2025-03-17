@@ -1,0 +1,31 @@
+{
+    "docker_info": {
+        "base_image": "${MILVUS_BASE_IMAGE_REPO}:${MILVUS_BASE_IMAGE_TAG}",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "MILVUS_BASE_IMAGE_REPO=\"milvusdb/milvus-base\"",
+            "MILVUS_BASE_IMAGE_TAG=\"gpu-20230822-34f9067\""
+        ],
+        "envs": [
+            "ENV PATH=/milvus/bin:$PATH",
+            "ENV LD_LIBRARY_PATH=/milvus/lib:$LD_LIBRARY_PATH:/usr/lib",
+            "ENV LD_PRELOAD=/milvus/lib/libjemalloc.so",
+            "ENV MALLOC_CONF=background_thread:true"
+        ],
+        "copy_instructions": [
+            "COPY --chown=root:root --chmod=774 ./configs/ /milvus/configs/",
+            "COPY --chown=root:root --chmod=774 ./lib/ /milvus/lib/"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "mkdir -p /milvus/bin",
+                "COPY --chown=root:root --chmod=774 ./bin/milvus /milvus/bin/milvus"
+            ]
+        ]
+    }
+}

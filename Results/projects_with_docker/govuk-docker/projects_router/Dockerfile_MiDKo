@@ -1,0 +1,20 @@
+# Use an official Ruby runtime as a parent image
+FROM ruby:2.7-slim
+
+# Set the home directory to /app inside the docker image
+WORKDIR /app
+
+# Copy the Gemfile into the image
+COPY Gemfile /app
+
+# Install any needed packages specified in Gemfile
+RUN bundle install
+
+# Copy the current directory contents into the WORKDIR
+COPY . /app
+
+# Expose port 3000 to the outside world
+EXPOSE 3000
+
+# Define command to start application
+CMD ["bundle", "exec", "ruby", "app.rb"]

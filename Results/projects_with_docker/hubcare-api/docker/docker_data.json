@@ -1,0 +1,46 @@
+{
+    "docker_info": {
+        "base_image": "python:3-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "NAME",
+            "TOKEN"
+        ],
+        "envs": [
+            "ENV PYTHONUNBUFFERED 1",
+            "ENV NAME=$NAME",
+            "ENV TOKEN=$TOKEN"
+        ],
+        "copy_instructions": [
+            "COPY requirements.txt /code/"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "bash",
+                    "-c",
+                    "\"python3",
+                    "manage.py",
+                    "makemigrations",
+                    "&&",
+                    "\\"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir /code",
+                "WORKDIR /code"
+            ],
+            [
+                "pip install -r requirements.txt && apk add bash",
+                "COPY . /code/"
+            ]
+        ]
+    }
+}

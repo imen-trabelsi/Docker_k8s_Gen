@@ -1,0 +1,50 @@
+# Start with the base image
+FROM php:8.3-fpm-alpine
+
+# Set Working Directory
+WORKDIR /app
+
+# Copy Configuration Files
+COPY etc/infrastructure/php/ /usr/local/etc/php/
+COPY .env docker-compose.yml Dockerfile ./
+
+# Copy Project Files and Folders
+COPY .github/ ./ .github/
+COPY apps/ ./apps/
+COPY etc/ ./etc/
+COPY src/ ./src/
+COPY tests/ ./tests/
+
+# Install dependencies
+RUN apk --update upgrade \
+
+# Install PHP extensions
+RUN pecl install apcu-5.1.23 && pecl install amqp-2.1.1 && pecl install xdebug-3.3.0
+    && docker-php-ext-install -j$(nproc) \
+    bcmath opcache intl zip pdo_mysql \
+
+# Install Symfony
+RUN curl -sS https://get.symfony.com/cli/installer | bash -s - --install-dir /usr/local/bin
+
+# Set permissions
+RUN mkdir -p /opt/home
+RUN chmod 777 /opt/home
+
+# Set Environment variable
+ENV HOME /opt/home
+
+# Copy Composer
+COPY composer.json composer.lock ./
+
+# Run Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
+    composer install --no-interaction --no-plugins --no-scripts --prefer-dist && \
+
+# Clear Cache
+RUN rm -rf /var/cache/apk/*
+
+# Expose Ports
+EXPOSE 80
+
+# Set Entrypoint
+CMD ["php", "-S", "0.0.0.0:80"]

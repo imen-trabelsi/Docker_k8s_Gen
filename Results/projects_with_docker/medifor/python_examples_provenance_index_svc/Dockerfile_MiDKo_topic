@@ -1,0 +1,29 @@
+# Set the base image
+FROM ubuntu:18.04
+
+# Update Ubuntu Software repository
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get -y install python3-pip && \
+    apt-get install -y libopenblas-base libomp5 libomp-dev && \
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the current directory contents into the container at /app
+COPY *.py *.txt ./ 
+
+# Install any needed packages specified in requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+# Install medifor python client library
+RUN pip3 install --no-cache-dir git+https://github.com/mediaforensics/medifor.git@feature/provenance
+
+# Test the faiss installation
+RUN python3 -c 'import faiss'
+
+# Expose port 8080 
+EXPOSE 8080
+
+# Run the command to start uWSGI
+CMD ["python3", "./faisssvc.py", "--index", "/data/index.faiss"]

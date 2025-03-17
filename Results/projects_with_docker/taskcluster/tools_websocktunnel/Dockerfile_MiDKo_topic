@@ -1,0 +1,40 @@
+# Set the Base Image 
+FROM node:14-alpine 
+
+# Create app directory 
+WORKDIR /usr/src/app 
+
+# Install app dependencies 
+COPY package.json . 
+
+RUN npm install && npm cache clean --force
+
+# Bundle app source 
+COPY . .
+
+# Copy Websocket tunnel
+COPY websocktunnel /websocktunnel
+
+# Add user 
+RUN addgroup app && adduser -S -G app app 
+USER app
+
+# Add healthcheck
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD curl -f http://localhost:3000/ || exit 1
+
+# Set environment variables 
+ENV PORT 3000 
+
+# Expose ports
+EXPOSE 3000
+
+# Run app 
+CMD [ "npm", "start" ]
+
+# Set the entrypoint
+ENTRYPOINT ["/websocktunnel"]
+
+# Set Label
+LABEL version="1.0"
+LABEL description="Dockerfile for Spring Boot Microservice"

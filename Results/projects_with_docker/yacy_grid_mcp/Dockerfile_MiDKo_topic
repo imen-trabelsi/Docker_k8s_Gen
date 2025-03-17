@@ -1,0 +1,38 @@
+# Set the Base Image
+FROM eclipse-temurin:8-jdk-focal AS BUILD_IMAGE
+
+# Build Arguments
+ARG default_branch=master
+
+# Maintainer
+LABEL maintainer="Michael"
+
+# Set environment variable
+ENV DEBIAN_FRONTEND noninteractive
+
+# Set working directory in container
+WORKDIR /app
+
+# Copy instructions
+COPY ./ /app
+COPY ./conf /app/conf/
+
+# Install dependencies using gradle
+RUN chmod +x ./gradlew
+RUN ./gradlew clean shadowDistTar
+
+# Check if jar exists and rename if it does
+RUN if [ -e /app/build/libs/app-0.0.1-SNAPSHOT-all.jar ] ; then mv /app/build/libs/app-0.0.1-SNAPSHOT-all.jar /app/build/libs/yacy_grid_mcp-0.0.1-SNAPSHOT-all.jar; fi
+
+FROM eclipse-temurin:8-jdk-focal
+
+# Set the working directory in the application
+WORKDIR /app
+
+# Copy the jar file from builder image
+
+# Expose port
+EXPOSE 8100
+
+# The command to run the application
+CMD ["java", "-Xms320M", "-Xmx2G", "-jar", "/app/build/libs/yacy_grid_mcp-0.0.1-SNAPSHOT-all.jar"]

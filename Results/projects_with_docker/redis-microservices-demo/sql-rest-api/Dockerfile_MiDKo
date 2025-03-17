@@ -1,0 +1,19 @@
+# Fetch base image
+FROM openjdk:8-jdk-alpine
+
+# Expose the service on the following port
+EXPOSE 8081
+
+# Copy the built JAR file into the container
+COPY target/*.jar /app.jar
+
+# Set Environment variables
+ENV SPRING_DATASOURCE_URL=jdbc:mysql://app-mysql:3306/inventory
+ENV SPRING_DATASOURCE_USERNAME=mysqluser
+ENV SPRING_DATASOURCE_PASSWORD=mysqlpw
+
+# Specify a health check
+HEALTHCHECK CMD curl --fail http://localhost:8081/actuator/health || exit 1
+
+# Running the jar
+ENTRYPOINT ["java","-jar","/app.jar","--spring.profiles.active=prod"]

@@ -1,0 +1,20 @@
+# Base Image
+FROM adoptopenjdk/openjdk11:jre-11.0.8_10-alpine
+
+# Set work directory
+WORKDIR /application
+
+# Arguments
+ARG JAR_FILE=build/libs/*.jar
+
+# Copy JAR into target docker image
+COPY ${JAR_FILE} application.jar
+
+# Set entrypoint as spring boot application
+ENTRYPOINT ["java", "-jar", "application.jar"]
+
+# Run command
+CMD [ "java", "-Djarmode=layertools", "-jar", "application.jar", "extract" ]
+
+# Expose the ports
+EXPOSE 8080

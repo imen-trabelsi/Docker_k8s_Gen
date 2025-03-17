@@ -1,0 +1,24 @@
+FROM python:3.6.3-onbuild
+
+WORKDIR /usr/src/app
+
+# Update all packages in the base image
+RUN apt-get update -y
+
+# Install MongoDB
+RUN apt-get install -y mongodb
+
+# Install pip 
+RUN apt-get install -y python-pip
+
+# Copy everything from the current directory (where your Dockerfile is) into the image
+COPY . /usr/src/app
+
+# Install Python dependencies
+RUN pip install -r requirements.txt
+
+# Expose the application on port 8080
+EXPOSE 8080
+
+# Define the command that will be executed when the Docker container starts.
+CMD ["python", "app.py"]

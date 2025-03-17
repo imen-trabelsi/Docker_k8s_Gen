@@ -1,0 +1,29 @@
+{
+    "docker_info": {
+        "base_image": "node:20-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV NODE_PATH=\"/usr/local/lib/node_modules\""
+        ],
+        "copy_instructions": [],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "npm install juice@10.0.1 -g",
+                ""
+            ]
+        ]
+    }
+}

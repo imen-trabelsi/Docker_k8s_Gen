@@ -1,0 +1,52 @@
+# Use a multi-stage build
+# Stage 1: Set up the build environment and install dependencies
+FROM node:14 as build-stage
+
+ARG rails_secret_key
+ARG rails_env
+ARG traitbank_url
+ARG neo4j_driver_url
+ARG neo4j_user
+ARG neo4j_password
+ARG eol_github_email
+ARG eol_github_user
+
+WORKDIR /app
+
+COPY package.json /app
+RUN npm install
+
+COPY . .
+
+# Stage 2: Set up the runtime environment
+FROM encoflife/eol_seabolt_rails:2024.05.09.01
+
+WORKDIR /app
+
+
+RUN ln -s /tmp /app/tmp && \
+    gem install `grep -A 1 'BUNDLED WITH' Gemfile.lock | tail -n 1 | sed 's/^\s\+/bundler:/'` && \
+    bundle config set without 'test development staging' && \
+    bundle install --jobs 10 --retry 1 && \
+    bundle config set --global path /gems && \
+    yarn install && \
+    RAILS_MASTER_KEY=${rails_secret_key} RAILS_ENV=${rails_env}\
+    TRAITBANK_URL=${traitbank_url} NEO4J_DRIVER_URL=${neo4j_driver_url} \
+    NEO4J_USER=${neo4j_user} NEO4J_PASSWORD=${neo4j_password} && \
+    bundle exec rails assets:precompile && \
+    chmod 0755 bin/* && \
+    git config --global user.email ${eol_github_email} && \
+    git config --global user.name ${eol_github_user} && \
+
+COPY --chown=ruby:ruby bin/ ./bin
+COPY config/.vimrc /root/.vimrc
+
+ENV NODE_OPTIONS="--openssl-legacy-provider npm run start"
+
+EXPOSE 3000
+
+STOPSIGNAL SIGINT
+
+ENTRYPOINT ["/app/bin/entrypoint.sh"]
+
+LABEL maintainer="Jeremy"

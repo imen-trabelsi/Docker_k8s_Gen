@@ -1,0 +1,52 @@
+# Use java-base as the base image
+FROM @docker.account@/java-base AS build
+
+# Set the working directory
+WORKDIR /usr/app
+
+# Copy pom.xml and install dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline -B 
+
+# Copy the source code
+COPY src /usr/app/src
+
+# Build the project
+RUN mvn package -DskipTests
+
+# Expose necessary ports
+EXPOSE 8080 8443
+
+# Switch to second stage
+FROM @docker.account@/java-base
+
+# Adding user Jetty
+RUN useradd -u 1000 -g 0 -d '/var/opt/jetty' -s '/sbin/nologin' jetty
+
+# Creating necessary directories
+RUN mkdir -p /opt/jetty /var/opt/jetty/lib/ext /var/opt/jetty/start.d /var/opt/jetty/tls
+
+# Download and setup Jetty
+RUN curl -Ls @jetty.url@ -o /tmp/jetty.tar.gz \
+    && tar --strip=1 -xzf /tmp/jetty.tar.gz -C /opt/jetty \
+    && rm -f /tmp/jetty.tar.gz \
+    && rm -rf /opt/jetty/demo-base \
+    && cd /var/opt/jetty \
+
+# Change Jetty directory owners and permissions
+RUN chown -R 1000:0 /opt/jetty /var/opt/jetty \
+
+# Set the working directory
+WORKDIR /var/opt/jetty
+
+# Copy the jar file from build to this image
+
+# Set the entry point
+COPY maven / 
+ENTRYPOINT ["/var/opt/jetty/run-jetty"]
+
+# Set necessary environment variables
+ENV JAVA_OPTS=""
+
+# Command to run the application
+CMD java $JAVA_OPTS -jar app.jar

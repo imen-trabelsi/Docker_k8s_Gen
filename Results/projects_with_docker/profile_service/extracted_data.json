@@ -1,0 +1,25 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"profile_service\",\n  \"version\": \"1.0.0\",\n  \"description\": \"profile_service\",\n  \"main\": \"src/cluster.js\",\n  \"directories\": {\n    \"test\": \"tests\"\n  },\n  \"scripts\": {\n    \"start\": \"node src/cluster.js\",\n    \"dev\": \"PRISMA_API_ENDPOINT=localhost yarn prisma deploy && NODE_ENV=development node src/index.js\",\n    \"eslint\": \"eslint src/\",\n    \"test\": \"PRISMA_API_ENDPOINT=localhost yarn prisma deploy && NODE_ENV=development jest --runInBand --coverage\"\n  },\n  \"jest\": {\n    \"verbose\": false,\n    \"coveragePathIgnorePatterns\": [\n      \"/postgres\",\n      \"/image-server\",\n      \"/node_modules\",\n      \"/temp_convert\",\n      \"/docker\",\n      \"/coverage\",\n      \"fixtures\",\n      \"package.json\"\n    ],\n    \"watchPathIgnorePatterns\": [\n      \"/postgres\",\n      \"/image-server\",\n      \"/node_modules\",\n      \"/temp_convert\",\n      \"/docker\",\n      \"/coverage\"\n    ]\n  },\n  \"keywords\": [],\n  \"author\": \"Bryan Robitaille - GCTools/OutilsGC\",\n  \"license\": \"AGPL-3.0-or-later\",\n  \"dependencies\": {\n    \"@elastic/elasticsearch\": \"^7.1.0\",\n    \"@okgrow/graphql-scalars\": \"^0.4.5\",\n    \"amqplib\": \"^0.5.3\",\n    \"apollo-server\": \"^2.4.2\",\n    \"cluster\": \"^0.7.7\",\n    \"codacy-coverage\": \"^3.4.0\",\n    \"dotenv\": \"^6.2.0\",\n    \"ejs\": \"^2.6.2\",\n    \"eslint\": \"^5.14.1\",\n    \"express-jwt\": \"^5.3.1\",\n    \"got\": \"^10.7.0\",\n    \"graphql\": \"^14.1.1\",\n    \"graphql-binding\": \"^2.5.0\",\n    \"graphql-middleware\": \"^3.0.2\",\n    \"graphql-type-json\": \"^0.3.2\",\n    \"node-fetch\": \"^2.3.0\",\n    \"parse-svg-path\": \"^0.1.2\",\n    \"prisma\": \"1.26.6\",\n    \"prisma-binding\": \"^2.3.2\",\n    \"request\": \"^2.88.0\",\n    \"sharp\": \"^0.23.2\",\n    \"shortid\": \"^2.2.14\",\n    \"uuid\": \"^3.3.2\"\n  },\n  \"devDependencies\": {\n    \"babel-eslint\": \"^10.0.1\",\n    \"faker\": \"^4.1.0\",\n    \"graphql-request\": \"^1.8.2\",\n    \"jest\": \"^23.6.0\",\n    \"jest-html-reporter\": \"^2.4.4\",\n    \"randomatic\": \"^3.1.1\",\n    \"ts-jest\": \"^23.10.5\"\n  }\n}\n"
+        },
+        "database": "PostgreSQL",
+        "build_system": "npm",
+        "config_files": {
+            "docker-compose.yml": "version: '3'\nservices:\n  image:\n    image: profile-image:latest\n    build: ./image-server\n    volumes:\n      - ./image-server/upload:/usr/share/nginx/html/upload\n    environment:\n      - TITLE=OADW-Image-Server\n      - DOMAIN=https://avatar.gccollab.ca\n      - MASTERDELETECODE=changeME\n      - LOWPROFILE=True\n    ports:\n    - \"8007:80\"\n  apollo:\n    build: ./\n    image: profile-apollo:latest\n    environment: \n      NODE_ENV: \"production\"\n      PRISMA_API_ENDPOINT: 'prisma'\n      client_id: \"change me\"\n      client_secret: \"change me\"\n      MQ_USER: \"change me\"\n      MQ_PASS: \"change me\"\n    ports:\n    - \"4000:4000\"\n    depends_on: \n      - prisma\n  prisma:\n    image: prismagraphql/prisma:1.26\n    environment:\n      PRISMA_CONFIG: |\n        port: 4466\n        # uncomment the next line and provide the env var PRISMA_MANAGEMENT_API_SECRET=my-secret to activate cluster security\n        # managementApiSecret: thehouseisalwaysblue\n        databases:\n          default:\n            connector: postgres\n            host: postgres\n            port: 5432\n            user: prisma\n            password: prisma\n            migrations: true\n    depends_on:\n      - postgres\n\n  postgres:\n    image: postgres:10.6\n    environment:\n      POSTGRES_USER: prisma\n      POSTGRES_PASSWORD: prisma\n    volumes:\n      - ./postgres:/var/lib/postgresql/data\n",
+            "Dockerfile": "FROM node:10\n\n# Create app directory\nWORKDIR /usr/src/app\n\nRUN apt-get update && apt-get -y upgrade\n\n# Install app dependencies\n# A wildcard is used to ensure both package.json AND package-lock.json are copied\n# where available (npm@5+)\n\nCOPY package*.json ./\n\nRUN npm install\n\n# If you are building your code for production\n# RUN npm install --only=production\n\nCOPY . .\n\n# Bundle app source\n\nCOPY ./docker/start.sh /usr/src/app\nRUN chmod +x start.sh\n\nEXPOSE 4000\n\nCMD [ \"./start.sh\" ]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "README.md"
+        ],
+        "folders": [
+            "rootfs"
+        ]
+    }
+}

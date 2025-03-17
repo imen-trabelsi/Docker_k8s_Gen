@@ -1,0 +1,27 @@
+# Base Image
+FROM microsoft/mssql-server-linux:2017-latest
+
+# Set Environment Variables
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+
+# Set Working Directory
+WORKDIR .
+
+# Copy necessary files
+COPY ./deploys/dockers/mssqldb/entrypoint.sh /entrypoint.sh
+COPY ./deploys/dockers/mssqldb/init.sh /init.sh
+
+# Setting Permissions 
+RUN ["/bin/bash", "-c", "chmod +x /entrypoint.sh && chmod +x /init.sh"]
+
+# Health Check
+HEALTHCHECK --interval=15s CMD /opt/mssql-tools/bin/sqlcmd -U sa -P $SA_PASSWORD -Q "select 1" && grep -q "MSSQL SERVER SUCCESSFULLY STARTED" ./var/opt/mssql/log/errorlog
+
+# Set the Default Port
+EXPOSE 1433
+
+# Set execution command
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["tail", "-f", "/dev/null"]

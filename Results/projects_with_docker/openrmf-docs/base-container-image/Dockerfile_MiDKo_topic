@@ -1,0 +1,32 @@
+# Base Image
+FROM docker.io/alpine:3.21.3
+
+# Build Arguments
+ARG BUILD_VERSION
+ARG BUILD_DATE
+ARG VCS_REF
+
+# Copy root certificates
+COPY ./ca-root/ /usr/local/share/ca-certificates/
+
+# Run Commands
+RUN apk update && \
+   apk upgrade && \
+   apk add --no-cache ca-certificates openssh libstdc++ libintl icu \
+   libunwind nghttp2-libs libidn krb5-libs libuuid lttng-ust zlib && \
+
+# Exposed Ports
+EXPOSE 8080
+
+# Default command 
+CMD ["/usr/bin/java", "-jar", "/app.jar"]
+
+# Labels
+LABEL org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.name="Spring Boot Microservice" \
+      org.label-schema.description="Docker container for Spring Boot Microservice" \
+      org.label-schema.url="https://example.com" \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.vcs-url="https://github.com/myorg/myrepo" \
+      org.label-schema.vendor="My Organization" \
+      org.label-schema.version=$BUILD_VERSION \

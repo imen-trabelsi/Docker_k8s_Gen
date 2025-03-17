@@ -1,0 +1,38 @@
+# Start from the base image:
+FROM elixir:1.11.2-alpine
+
+# Setup the work directories:
+WORKDIR /elixir-omg
+
+# Install dependencies:
+RUN apk add --no-cache \
+rust \
+cargo \
+git \
+curl \
+bash \
+maven jq \
+autoconf \
+automake \
+gmp \
+gmp-dev \
+libtool \
+gcc \
+cmake \
+gnupg \
+
+# Copy project files and move to the performance directory:
+COPY . .
+RUN mkdir -p priv/openapitools && \
+curl https://raw.githubusercontent.com/OpenAPITools/openapi-generator/v4.3.1/bin/utils/openapi-generator-cli.sh > priv/openapitools/openapi-generator-cli && \
+chmod u+x priv/openapitools/openapi-generator-cli && \
+priv/openapitools/openapi-generator-cli generate -i https://raw.githubusercontent.com/omgnetwork/omg-childchain-v1/master/apps/omg_child_chain_rpc/priv/swagger/operator_api_specs.yaml -g elixir -o priv/perf/apps/child_chain_api/ && \
+priv/openapitools/openapi-generator-cli generate -i apps/omg_watcher_rpc/priv/swagger/security_critical_api_specs.yaml -g elixir -o priv/perf/apps/watcher_security_critical_api/ && \
+priv/openapitools/openapi-generator-cli generate -i apps/omg_watcher_rpc/priv/swagger/info_api_specs.yaml -g elixir -o priv/perf/apps/watcher_info_api/ && \
+mix local.hex --force && mix local.rebar --force && \
+
+# Inform Docker that the container is listening on the specified port at runtime.
+EXPOSE
+
+# Setting correct entrypoint (could vary upon the project):
+CMD ["mix", "run"]

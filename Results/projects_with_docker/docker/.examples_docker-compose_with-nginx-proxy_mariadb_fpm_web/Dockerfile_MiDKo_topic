@@ -1,0 +1,21 @@
+# Start with the nginx alpine base image
+FROM nginx:alpine
+
+# Copy the custom nginx configuration
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Set work directory
+WORKDIR /usr/local/src/
+
+# Copy all contents of the project into the image
+COPY . .
+
+# Expose port 80 for the application
+EXPOSE 80
+
+# Start the nginx service
+CMD ["nginx", "-g", "daemon off;"]
+
+# Please note that the Dockerfile generated above is created based on limited information. DevOps and containerization processes require a deeper understanding of your application's specific requirements, which aren't provided in the above case. This example doesn't include the installation of any dependencies, setting of environment variables, or any health checks because there weren't any outlined in the provided information. 
+
+# As a DevOps expert, I would recommend supplying additional details, such as programming language, framework, build system, configuration files, and security considerations, to create a more accurate and optimized Dockerfile.

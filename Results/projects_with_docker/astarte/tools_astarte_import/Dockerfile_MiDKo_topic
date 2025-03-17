@@ -1,0 +1,36 @@
+# Base Image
+FROM hexpm/elixir:1.15.7-erlang-25.3.2.7-debian-bullseye-20231009-slim AS builder
+
+# Setting environment variables
+ENV LANG=C.UTF-8
+ENV MIX_ENV=$BUILD_ENV
+ENV BUILD_ENV=prod
+
+# Installing dependencies
+RUN apt-get update --allow-releaseinfo-change -y \
+RUN apt-get clean && rm -f /var/lib/apt/lists/*_*
+RUN apt-get -qq update && apt-get -qq install libssl1.1
+RUN mix local.hex --force && mix local.rebar --force
+RUN mix hex.info
+
+# Project setup
+WORKDIR /app
+COPY mix.exs mix.lock ./
+COPY . .
+
+# Build project
+RUN mix do deps.get, deps.compile
+RUN mix do compile, release
+
+# Setup production image
+FROM debian:bullseye-slim as app
+
+ENV LANG=C.UTF-8
+
+# Install runtime dependencies
+RUN apt-get update \
+&& apt-get install -y --no-install-recommends openssl \
+
+WORKDIR /app
+
+CMD ["sh", "-c", "./bin/astarte_import start ${REALM} ${XML_FILE}"]

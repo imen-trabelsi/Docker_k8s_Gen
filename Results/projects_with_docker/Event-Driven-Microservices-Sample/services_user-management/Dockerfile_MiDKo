@@ -1,0 +1,32 @@
+# Use the official lightweight Node.js 11.2.0 image.
+# https://hub.docker.com/_/node
+FROM node:11.2.0-alpine
+
+# Set labels
+LABEL maintainer="maintainer@user.com"
+
+# Set the working directory
+WORKDIR /usr/app
+
+# Add contents to the server
+COPY . /server
+
+# Change to server directory
+WORKDIR /server
+
+# Install and cache app dependencies using npm
+COPY package.json ./
+RUN npm install
+
+# Copy over the rest of your app's source files
+COPY . ./
+
+# Make sure your app binds to the right port
+EXPOSE 3000
+
+# At the end, set the user to use when running this image
+USER node
+
+# Define command to start your app using CMD. 
+# CMD ["executable","param1","param2"]
+CMD [ "node", "/server/src/server.js" ]

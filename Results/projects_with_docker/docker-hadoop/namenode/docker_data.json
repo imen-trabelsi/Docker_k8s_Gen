@@ -1,0 +1,39 @@
+{
+    "docker_info": {
+        "base_image": "bde2020/hadoop-base:2.0.0-hadoop3.2.1-java8",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "9870"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [
+            "HEALTHCHECK CMD curl -f http://localhost:9870/ || exit 1"
+        ],
+        "build_args": [],
+        "envs": [
+            "ENV HDFS_CONF_dfs_namenode_name_dir=file:///hadoop/dfs/name"
+        ],
+        "copy_instructions": [
+            "ADD run.sh /run.sh"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/run.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p /hadoop/dfs/name",
+                "VOLUME /hadoop/dfs/name"
+            ],
+            [
+                "chmod a+x /run.sh",
+                ""
+            ]
+        ]
+    }
+}

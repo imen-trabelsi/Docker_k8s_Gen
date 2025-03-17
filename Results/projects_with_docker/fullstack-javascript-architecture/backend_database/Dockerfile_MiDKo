@@ -1,0 +1,29 @@
+# Use the official MongoDB image as base
+FROM mongo
+
+# Create the working directory
+RUN mkdir -p /app
+
+# Set it as the working directory 
+WORKDIR /app
+
+# Add user with minimal system permissions
+RUN adduser --disabled-password --gecos '' appuser
+
+# Switch to the appuser
+USER appuser
+
+# All subsequent commands will run as this user
+# And the directory will be owned by this user
+
+# Copy the application files from host machine to the Docker image
+COPY . /app/
+
+# Install the application dependencies from package.json
+RUN npm install
+
+# Expose the necessary ports
+EXPOSE 27017
+
+# Set the command for the Docker image
+CMD ["npm", "start"]

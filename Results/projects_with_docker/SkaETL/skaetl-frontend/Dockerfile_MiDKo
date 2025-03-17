@@ -1,0 +1,23 @@
+# Specify the base image with installed Node
+FROM node:8.8.1
+
+# Create a working directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# Copy configuration files and install app dependencies
+COPY package.json /usr/src/app/
+RUN npm install
+
+# Set the environment variables
+ENV NODE_ENV development
+ENV API_BASE_URL http://localhost:8090
+
+# Add app source
+COPY . /usr/src/app
+
+# Expose the port
+EXPOSE 5555
+
+# Start the app
+CMD [ "npm", "run", "prod" ]

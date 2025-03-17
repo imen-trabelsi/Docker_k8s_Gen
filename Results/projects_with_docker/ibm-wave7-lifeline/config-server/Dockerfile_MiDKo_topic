@@ -1,0 +1,23 @@
+# Use Java 11 base image
+FROM openjdk:11 as builder
+
+# Set the working directory in the container
+WORKDIR /usr/src/config-server/
+
+# Copy pom.xml and source code
+COPY ./pom.xml ./
+COPY ./src ./src
+
+# Build the Spring Boot jar
+RUN mvn clean package -DskipTests
+
+# Start a new stage from openjdk:11
+FROM openjdk:11
+
+# Set the working directory in the container
+WORKDIR /usr/src/config-server/
+
+# Copy the jar file from the build stage
+
+# Set the default command to execute when container starts
+ENTRYPOINT ["java","-jar","config-server-0.0.1-SNAPSHOT.jar"]

@@ -1,0 +1,24 @@
+# Use official base image
+FROM python:3.10-bullseye
+
+# Label maintainer
+LABEL maintainer="maintainer@company.com"
+
+# Set working directory
+WORKDIR /app
+
+# Copy dependency file
+COPY requirements.txt .
+
+# Install dependencies with pip
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy necessary files and folders
+COPY testHarness.py .
+COPY public ./public
+
+# Expose necessary port(s)
+EXPOSE 5000
+
+# Set main command
+CMD ["python", "testHarness.py"]

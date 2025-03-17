@@ -1,0 +1,31 @@
+# Set base image (host OS)
+FROM python:3.10-slim
+
+# Set environment variables
+ENV VIRTUAL_ENV=/var/run/aether/venv
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+ENV VERSION=0.0.0
+ENV GIT_REVISION 
+
+# Set the working directory in the container
+WORKDIR /code
+
+# Copy the dependencies file to the working directory
+COPY ./conf/docker/* /tmp/
+COPY --chown=aether:aether ./conf/pip /code/conf/pip
+COPY --chown=aether:aether ./ /code
+
+# Install any dependencies
+RUN /tmp/setup.sh && \
+    mkdir -p $VIRTUAL_ENV && \
+    python3 -m venv $VIRTUAL_ENV && \
+    pip install -q --upgrade pip && \
+    pip install -q -r /code/conf/pip/requirements.txt && \
+    mkdir -p /var/tmp && \
+    echo $VERSION > /var/tmp/VERSION && \
+
+# Command to run on container start
+ENTRYPOINT ["/code/entrypoint.sh"]
+
+# Meta data
+LABEL description="Aether"

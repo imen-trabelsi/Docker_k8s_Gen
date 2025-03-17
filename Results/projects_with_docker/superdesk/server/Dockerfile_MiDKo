@@ -1,0 +1,32 @@
+# Choose the base image
+FROM ubuntu:22.04
+
+# Set up the environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV VIRTUAL_ENV=/opt/venv
+ENV PYTHONUNBUFFERED=1
+ENV C_FORCE_ROOT=False
+ENV CELERYBEAT_SCHEDULE_FILENAME=/tmp/celerybeatschedule.db
+ENV TZ=Europe/Prague
+
+# Create folder structure for the microservice
+WORKDIR /opt/superdesk/
+
+# Installing required packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+
+# Python virtual environment setup
+RUN python3 -m venv "$VIRTUAL_ENV"
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+RUN python3 -m pip install -U pip wheel setuptools
+
+# Copy requirements and install
+COPY requirements.txt .
+RUN python3 -m pip install -Ur requirements.txt
+
+# Copy Microservice source code
+COPY . .
+
+# Start command
+ENTRYPOINT ["/opt/superdesk/docker/start.sh"]
+CMD ["honcho", "start"]

@@ -1,0 +1,23 @@
+FROM composer:latest AS builder
+
+# Copy composer.lock and composer.json
+COPY composer.json composer.lock /app/
+
+# Set your working directory
+WORKDIR /app
+
+# Install dependencies
+RUN composer install
+
+# Copy app source
+COPY . /app
+
+FROM php:7.4-cli
+
+WORKDIR /app
+
+ENV docker=true
+
+EXPOSE 8000
+
+CMD [ "php", "-S", "0.0.0.0:8000", "-t", "public" ]

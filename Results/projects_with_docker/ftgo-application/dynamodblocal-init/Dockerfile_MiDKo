@@ -1,0 +1,35 @@
+# Based on user-provided base image
+FROM python:2.7.16-alpine3.9
+
+# Sets environment variable
+ENV JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk
+
+# Install required dependencies
+RUN apk add --no-cache openjdk8 gradle && \
+
+# Working directory in the Docker container
+WORKDIR /app
+
+# Copy required files for the build
+COPY build.gradle ./
+COPY ftgo-order-history.json ./
+COPY wait-for-dynamodblocal.sh ./
+COPY create-dynamodb-tables.sh ./
+
+RUN chmod +x *.sh
+
+# Run command final image
+RUN gradle build
+
+# Copy static build files
+COPY . /app
+
+# Run the app. CMD is required to run on Heroku
+# Use -jar to start java application as provided in "user provided execution command"
+CMD /app/wait-for-dynamodblocal.sh && java -jar build/libs/*.jar
+
+# Health Check Command
+HEALTHCHECK --interval=10s --retries=10 --timeout=3s CMD [ -f /tables-created ]
+
+# Docker container listening on the following ports at runtime
+EXPOSE 8080

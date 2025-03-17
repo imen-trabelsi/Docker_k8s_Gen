@@ -1,0 +1,46 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/sdk:6.0",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "80",
+            "443"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "WORKDIR /src",
+            "COPY [\"api-gateway/Gateway.csproj\", \"api-gateway/\"]",
+            "WORKDIR \"/src/api-gateway\"",
+            "WORKDIR /app",
+            "COPY --from=publish /app/publish ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"dotnet\",",
+                    "\"Gateway.dll\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "dotnet restore \"api-gateway/Gateway.csproj\"",
+                "COPY . ."
+            ],
+            [
+                "dotnet build \"Gateway.csproj\" -c Release -o /app/build",
+                ""
+            ],
+            [
+                "dotnet publish \"Gateway.csproj\" -c Release -o /app/publish",
+                ""
+            ]
+        ]
+    }
+}

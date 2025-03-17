@@ -1,0 +1,23 @@
+# Dockerfile
+FROM caddy:2-alpine
+
+# Set working directory in the container
+WORKDIR /app
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install dependencies using npm
+RUN npm install
+
+# Copy source code to work directory
+COPY . . 
+
+# Copy static files and configuration
+COPY Caddyfile /etc/caddy/Caddyfile
+COPY ./dist /usr/share/caddy/dist
+
+# Expose server port 
+EXPOSE 5000
+
+CMD ["npm", "run", "start"]

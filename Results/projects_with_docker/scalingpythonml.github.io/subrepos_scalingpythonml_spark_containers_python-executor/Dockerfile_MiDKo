@@ -1,0 +1,45 @@
+# Using the base image specified by the user
+FROM $base_img
+
+# Setting up user's ID
+ARG spark_uid=185
+
+# Setting user and working directory
+USER ${spark_uid}
+WORKDIR /
+
+# Add necessary labels
+LABEL maintainer="DevOps Team" \
+
+# Copying build files and setting up permissions
+COPY bin/pysetup.sh /pysetup.sh
+ADD https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-aws/3.2.0/hadoop-aws-3.2.0.jar ${SPARK_HOME}/jars/
+ADD https://repo1.maven.org/maven2/com/amazonaws/aws-java-sdk-bundle/1.11.563/aws-java-sdk-bundle-1.11.563.jar ${SPARK_HOME}/jars/
+ADD https://repo1.maven.org/maven2/org/apache/iceberg/iceberg-spark3-runtime/0.11.0/iceberg-spark3-runtime-0.11.0.jar ${SPARK_HOME}/jars/
+ADD https://repo1.maven.org/maven2/org/apache/iceberg/iceberg-spark3-extensions/0.11.0/iceberg-spark3-extensions-0.11.0.jar ${SPARK_HOME}/jars/
+ADD https://repo1.maven.org/maven2/org/apache/iceberg/iceberg-spark3/0.11.0/iceberg-spark3-0.11.0.jar ${SPARK_HOME}/jars/
+COPY python/pyspark ${SPARK_HOME}/python/pyspark
+COPY python/lib ${SPARK_HOME}/python/lib
+WORKDIR /opt/spark/work-dir
+
+# Environment variables
+ENV PATH /opt/conda/bin:$PATH
+
+# Installing dependencies
+RUN mkdir ${SPARK_HOME}/python && \
+    apt-get update --fix-missing && \
+    apt-get install -yq graphviz git build-essential cmake telnet && \
+    apt install -y bash tini libc6 libpam-modules krb5-user libnss3 procps ca-certificates p11-kit wget bzip2 git mercurial subversion && \
+    rm /bin/sh && \
+    ln -sv /bin/bash /bin/sh && \
+    chmod a+x /pysetup.sh && ./pysetup.sh && \
+    conda install -c conda-forge --yes mamba && \
+    mamba install --yes python==3.8.6 && \
+    pip install --upgrade pip setuptools && \
+    mamba install --yes numpy==1.19.2 pandas cytoolz numba lz4 scikit-build python-blosc=1.9.2 && \
+
+# Setting up permissions for Spark jars
+RUN chmod a+rx ${SPARK_HOME}/jars/*.jar
+
+# Setting up entry point
+ENTRYPOINT [ "/opt/entrypoint.sh" ]

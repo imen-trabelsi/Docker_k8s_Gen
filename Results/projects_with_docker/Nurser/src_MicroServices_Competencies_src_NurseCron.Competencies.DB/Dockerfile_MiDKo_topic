@@ -1,0 +1,26 @@
+# Use base image
+FROM ikemtz/sql_dacpac:latest
+
+# Set Environment Variables
+ENV SA_PASSWORD=SqlDockerRocks123!
+ENV SA_PASSWORD=SqlDockerRocks123!
+
+# Labels
+LABEL author="@IkeMtz"
+
+# Copy the dacpac files and temp database files
+COPY /bin/Debug/*.dacpac /dacpac/
+COPY --from=sql-temp /var/opt/mssql/data/*.ldf /var/opt/mssql/data/
+COPY --from=sql-temp /var/opt/mssql/data/*.mdf /var/opt/mssql/data/
+
+# Set the user to root to allow the execution of the RUN command
+USER root
+
+# Setup the database
+RUN /opt/mssql/bin/sqlservr & sleep 20 \
+
+# Change user back to mssql
+USER mssql
+
+# Expose port 1433 for SQL Server
+EXPOSE 1433

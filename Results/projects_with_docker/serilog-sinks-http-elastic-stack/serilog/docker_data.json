@@ -1,0 +1,23 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/sdk:8.0-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /dotnetapp",
+            "COPY . ."
+        ],
+        "execution": [],
+        "run": [
+            [
+                "dotnet publish -c Release -o out",
+                "ENTRYPOINT [\"dotnet\", \"out/serilog-example.dll\"]"
+            ]
+        ]
+    }
+}

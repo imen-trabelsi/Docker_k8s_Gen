@@ -1,0 +1,29 @@
+# Set base image
+FROM python:3.12
+
+# Set work directory
+WORKDIR /data-act/backend
+
+# Copy requirements
+COPY requirements.txt server_requirements.txt .
+
+# Update system
+RUN apt-get -y update && \
+    # Install necessary packages
+    apt-get install -y gcc libpq-dev postgresql-client netcat-openbsd libsqlite3-dev && \
+    # Upgrade pip and install dependencies
+    pip install --upgrade pip==24.0 && \
+    pip install -r requirements.txt && \
+    CPUCOUNT=1 pip install -r server_requirements.txt && \
+    
+# Copy source code
+COPY . .
+
+# Set environment variables
+ENV PYTHONPATH /data-act/backend
+
+# Expose port
+EXPOSE <port number here>
+
+# Run command
+CMD ["/bin/sh"]

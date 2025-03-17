@@ -1,0 +1,22 @@
+# Set the base image
+FROM postgis/postgis:14-3.2-alpine
+
+# Update and install the required dependencies
+RUN apk update && apk add gettext && \
+
+# Copy instructions
+COPY etc/postgresql/14/main/postgresql.conf.dist /conf/
+COPY target/nominatim.so /lgd/nominatim/module/nominatim.so
+COPY start.sh ./start.sh
+
+# Expose ports
+EXPOSE 8080
+
+# Set environment variables
+ENV POSTGRES_DB postgis
+ENV POSTGRES_USER postgis
+ENV POSTGRES_PASSWORD postgis
+
+# Default command when the container starts
+ENTRYPOINT ["./start.sh"]
+CMD ["postgres"]

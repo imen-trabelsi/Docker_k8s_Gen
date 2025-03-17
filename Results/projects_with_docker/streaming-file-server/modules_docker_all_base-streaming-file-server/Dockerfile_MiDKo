@@ -1,0 +1,39 @@
+# Use alpine based openjdk as base image
+FROM openjdk:13-jdk-alpine3.10
+
+# Maintainer
+LABEL MAINTAINER='Maksim'
+
+# Set environment variable for Java Options
+ENV JAVA_OPTS="${JAVA_OPTS} ${JAVA_OPTS_ARGS}"
+
+# Install all the necessary packages
+RUN apk add --no-cache --update bash sudo wget busybox-suid openssh-client && \
+    adduser -h /home/appuser -s /bin/bash -D -u 1025 appuser wheel          && \
+    echo 'appuser ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers                  && \
+    sed -i 's/.*requiretty$/Defaults !requiretty/' /etc/sudoers             && \
+    apk del --no-cache busybox-suid openssh-client                          && \
+
+# Change the user to the newly created appuser
+USER appuser
+
+# Set the working directory in the container
+WORKDIR /home/appuser
+
+# Copy the POM file
+COPY pom.xml .
+
+# Install dependencies
+RUN mvn -f pom.xml clean install
+
+# Copy rest of the application
+COPY . .
+
+# Compile the project
+RUN mvn package
+
+# Expose the application's port
+EXPOSE 8080
+
+# Run the jar file
+ENTRYPOINT ["java", "-jar", "/target/myapp-0.0.1-SNAPSHOT.jar"]

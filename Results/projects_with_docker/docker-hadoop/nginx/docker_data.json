@@ -1,0 +1,19 @@
+{
+    "docker_info": {
+        "base_image": "nginx",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY default.conf /etc/nginx/conf.d/default.conf",
+            "COPY materialize.min.css /data/bde-css/materialize.min.css",
+            "COPY bde-hadoop.css /data/bde-css/bde-hadoop.css"
+        ],
+        "execution": [],
+        "run": []
+    }
+}

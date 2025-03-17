@@ -1,0 +1,48 @@
+# -------------->
+# STAGE 1: Build
+# -------------->
+FROM python:3.9-slim-bullseye as compile-image
+
+LABEL maintainer="Wazo"
+
+WORKDIR /usr/src/wazo-webhookd
+
+# Environment variables
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Creating virtual environment
+RUN python -m venv /opt/venv
+
+# Ensure we are using the virtualenv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Update packages and install gcc for psycopg2 in requirements.txt
+RUN apt-get -q update && \
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# Copy project files
+COPY setup.py /usr/src/wazo-webhookd/
+COPY wazo_webhookd /usr/src/wazo-webhookd/wazo_webhookd
+
+RUN python setup.py install \
+    && adduser --quiet --system --group wazo-webhookd \
+    && mkdir -p /etc/wazo-webhookd/conf.d \
+    && install -o wazo-webhookd -g wazo-webhookd -d /run/wazo-webhookd \
+
+# ---------------->
+# STAGE 2: Runtime
+# ---------------->
+FROM python:3.9-slim-bullseye AS runtime-image
+
+
+# Ensure we are using the virtualenv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Set up working directory and expose port
+WORKDIR /usr/src/wazo-webhookd
+EXPOSE 9300
+
+ENTRYPOINT ["wazo-webhookd"]

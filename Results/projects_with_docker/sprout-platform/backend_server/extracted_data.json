@@ -1,0 +1,34 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Spring Boot",
+        "dependencies": {
+            "build.gradle": "plugins {\n\tid 'org.springframework.boot'\n\tid 'io.spring.dependency-management'\n\tid 'java'\n \tid 'jacoco'\n \tid 'org.sonarqube'\n\tid \"org.owasp.dependencycheck\" version \"7.4.1\"\n}\n\narchivesBaseName = name\ndescription = \"A preconfigured Sprout Server Application\"\n\next {\n\tsonarProjectKey = \"savantly-net_sprout-platform_server\"\n}\n\napply from: \"${rootProject.projectDir}/gradle/sonar.gradle\"\n\njava {\n  toolchain {\n    languageVersion.set(JavaLanguageVersion.of(11))\n  }\n}\n\n// run `./gradlew bootRun -Psuspend=y` to suspend for debugger connection\ndef suspend = project.ext.properties.suspend\nif(!suspend) {\n\tsuspend = 'n'\n}\nbootRun {\n  jvmArgs=[\n  \t\"-agentlib:jdwp=transport=dt_socket,server=y,suspend=$suspend,address=18080\"\n  ]\n}\n\nbootJar {\n    layered()\n\texclude(\"**/application-local.yml\")\n}\n// run `./gradlew :sprout-modules-forms:dev -Psuspend=y` to suspend for debugger connection\ntask dev(type: JavaExec) {\n    group = \"Execution\"\n    description = \"Run the app class with JavaExecTask\"\n    //classpath = sourceSets.test.runtimeClasspath\n    classpath += sourceSets.main.runtimeClasspath\n    main = 'net.savantly.sprout.server.SproutApplication'\n    jvmArgs=[\n  \t  \"-agentlib:jdwp=transport=dt_socket,server=y,suspend=$suspend,address=18080\"\n    ]\n}\n\ntask uploadArchives {\n // Don't publish the example server\n}\n\nconfigurations {\n    developmentOnly\n    runtimeClasspath {\n        extendsFrom developmentOnly\n    }\n}\n\ndependencies {\n\timplementation project(':sprout-spring-boot-starter')\n\t//implementation 'com.h2database:h2'\n\t\n\t//runtimeOnly project(':sprout-admin')\n\t//runtimeOnly project(':web:sprout-web-ui')\n\t//runtimeOnly project(':sprout-modules-content')\n\t//runtimeOnly project(':sprout-modules-openTok')\n\t//runtimeOnly project(':sprout-modules-newsfeed')\n\t//runtimeOnly project(':sprout-modules-forms')\n\truntimeOnly project(':sprout-modules-example-panel')\n\t\n\timplementation 'org.springframework.boot:spring-boot-starter-data-jpa'\n\timplementation 'org.springframework.boot:spring-boot-starter-web'\n\t\n\truntimeOnly \"io.jsonwebtoken:jjwt-impl:${json_web_token_version}\",\n\t\t\"io.jsonwebtoken:jjwt-jackson:${json_web_token_version}\",\n\t\t'org.postgresql:postgresql'\n\n\tcompileOnly 'org.projectlombok:lombok'\n\t\n\tdevelopmentOnly \"org.springframework.boot:spring-boot-devtools\"\n    annotationProcessor 'org.projectlombok:lombok',\n        'org.springframework.boot:spring-boot-configuration-processor'\n        \n\ttestImplementation('org.springframework.boot:spring-boot-starter-test') {\n\t\texclude group: 'org.junit.vintage', module: 'junit-vintage-engine'\n\t}\n}\n\ntest {\n\tuseJUnitPlatform()\n}\n\ndependencyManagement {\n\timports {\n\t\tmavenBom org.springframework.boot.gradle.plugin.SpringBootPlugin.BOM_COORDINATES\n\t}\n}\n\n"
+        },
+        "database": "PostgreSQL",
+        "build_system": "Gradle",
+        "config_files": {
+            "backend/server/docker-compose.yml": "version: \"3\"\nservices:\n  \n  db:\n    image: postgres:12\n    container_name: sprout_db\n    ports:\n      - 5432:5432\n    environment:\n      - POSTGRES_DB=sprout\n      - POSTGRES_PASSWORD=sprout\n      - POSTGRES_USER=sprout",
+            "backend/server/Dockerfile": "FROM adoptopenjdk:11-jre-hotspot as builder\nWORKDIR /build\nCOPY build/libs/sprout-server.jar app.jar\nRUN java -Djarmode=layertools -jar app.jar extract\n\nFROM adoptopenjdk:11-jre-hotspot\nWORKDIR /sprout\nVOLUME [\"/etc/sprout\"]\nCOPY --from=builder build/dependencies/ ./\nCOPY --from=builder build/snapshot-dependencies/ ./\nCOPY --from=builder build/spring-boot-loader/ ./\nCOPY --from=builder build/application/ ./\nCOPY docker/start.sh start.sh\nENV SPROUT_PLUGINS_DIR \"/sprout/plugins\"\nENV SPROUT_OTHER_CLASSES \"/sprout/other\"\nENV PORT=8080\nRUN mkdir /sprout/other\nENTRYPOINT [\"./start.sh\"]"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "Dockerfile.fixme",
+            "README.md",
+            "docker-compose.yml"
+        ],
+        "folders": [
+            "apps",
+            "libs",
+            "plugins-bundled",
+            "proxy",
+            "root",
+            "scripts",
+            "test",
+            "tools"
+        ]
+    }
+}

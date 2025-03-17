@@ -1,0 +1,14 @@
+FROM maven:3.6.0-jdk-8-alpine AS build
+WORKDIR /usr/src/app
+COPY pom.xml ./
+COPY src ./src
+RUN mvn package -DskipTests
+
+FROM openjdk:8-jdk-alpine
+WORKDIR /usr/src/app
+VOLUME /tmp
+EXPOSE 8086
+ENV REDIS_HOST=redis-service
+ENV REDIS_PORT=6379
+ENV REDIS_PASSWORD=
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]

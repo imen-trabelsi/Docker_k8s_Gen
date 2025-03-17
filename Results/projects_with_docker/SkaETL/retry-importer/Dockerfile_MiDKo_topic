@@ -1,0 +1,30 @@
+# Use the Java 8 base image
+FROM openjdk:8u151-jdk as build
+
+WORKDIR /workspace/app
+
+# Copy maven executable to the image
+COPY mvnw ./
+COPY .mvn .mvn
+
+# Copy pom.xml
+COPY pom.xml .
+
+# Copy the source code of the project
+COPY src src
+
+# Build the project and skip tests
+RUN ./mvnw install -DskipTests
+
+# Runtime stage
+FROM openjdk:8u151-jdk
+
+# Copy the .jar file to the container, considering the build argument JAR_FILE defined by the user
+
+# Copy the startup.sh script to the docker container
+
+# Grant permissions for script execution
+RUN chmod +x /usr/bin/startup.sh 
+
+# Run the start-up script
+ENTRYPOINT ["/usr/bin/startup.sh"]

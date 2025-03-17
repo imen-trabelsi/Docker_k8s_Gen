@@ -1,0 +1,35 @@
+# Choose base image
+FROM pitstop-dotnet-sdk-base:1.0 AS build-env
+
+# Set work directory
+WORKDIR /app
+
+# Copy the csproj and restore any dependencies
+COPY *.csproj ./
+RUN dotnet restore
+
+# Copy the rest of the working directory contents
+COPY . ./
+
+# Publish the application
+RUN dotnet publish -c Release -o out
+
+# Start a new stage from an ASp.Net runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:5.0
+
+# Set environment variable for ASP.Net
+ENV ASPNETCORE_URLS=http://*:5000
+
+# Copy from the publish output from build environment
+
+# Change the working directory
+WORKDIR /app
+
+# Start the application
+ENTRYPOINT ["dotnet", "Pitstop.VehicleManagementAPI.dll"]
+
+# Expose the port
+EXPOSE 5000
+
+# Healthcheck URL
+HEALTHCHECK --interval=30s --timeout=3s --retries=1 CMD curl --silent --fail http://localhost:5000/hc || exit 1

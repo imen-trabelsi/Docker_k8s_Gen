@@ -1,0 +1,26 @@
+# Use the base image openjdk:8-alpine as the foundation of our Dockerfile
+FROM openjdk:8-alpine
+
+# Install wget to download necessary files
+RUN apk add wget
+
+# Download dumb-init
+RUN wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_amd64 && \
+
+# Create app directory
+RUN mkdir -p /opt/app
+
+# Set the workdir to /opt/app
+WORKDIR /opt/app
+
+# Copy the jar file into the workdir
+COPY target/event-sourcing-microservices-basics.jar event-sourcing-microservices-basics.jar
+
+# Expose port 8080 for the application
+EXPOSE 8080
+
+# Container start command
+ENTRYPOINT ["/usr/local/bin/dumb-init", "java", "-XX:+UnlockExperimentalVMOptions", "-XX:+UseCGroupMemoryLimitForHeap", "-Xmx256m", "-Djava.security.egd=file:/dev/urandom"]
+
+# Argument to ENTRYPOINT
+CMD ["-jar", "event-sourcing-microservices-basics.jar"]

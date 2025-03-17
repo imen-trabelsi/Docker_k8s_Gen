@@ -1,0 +1,21 @@
+# Build Stage
+FROM ${BUILD_IMAGE} as build
+
+ARG BUILD_CONFIGURATION
+
+WORKDIR C:\temp
+COPY *.sln nuget.config \nuget\
+COPY src\ \temp\
+
+RUN Invoke-Expression 'robocopy C:\temp C:\nuget\src /s /ndl /njh /njs *.csproj *.scproj packages.config'
+RUN nuget restore
+RUN Invoke-Expression 'robocopy C:\build\src C:\out\transforms /s /ndl /njh /njs *.xdt'
+RUN msbuild .\src\Feature\FormsExtensions\code\Feature.FormsExtensions.csproj /p:Configuration=$env:BUILD_CONFIGURATION /p:DeployOnBuild=True /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:PublishProfile=03_Docker /p:PublishUrl=C:\out\website
+RUN msbuild .\src\Project\FormsExtensionsTester\code\Project.FormsExtensionsTester.csproj /p:Configuration=$env:BUILD_CONFIGURATION /p:DeployOnBuild=True /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:PublishProfile=03_Docker /p:PublishUrl=C:\out\website
+
+# Final Stage
+FROM mcr.microsoft.com/windows/nanoserver:latest
+WORKDIR C:\
+
+
+CMD ["cmd", "/C", "<Command-Provided-By-User>", "<Possible-Args-Provided-By-User>"]

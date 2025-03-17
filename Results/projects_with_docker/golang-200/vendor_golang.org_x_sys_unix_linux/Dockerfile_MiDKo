@@ -1,0 +1,37 @@
+# Extend the base Ubuntu Image
+FROM ubuntu:16.04
+
+# Set environment variables
+ENV GOLANG_VERSION 1.8
+ENV GOLANG_DOWNLOAD_URL https://golang.org/dl/go$GOLANG_VERSION.linux-amd64.tar.gz
+ENV GOLANG_DOWNLOAD_SHA256 53ab94104ee3923e228a2cb2116e5e462ad3ebaeea06ff04463479d7f12d27ca
+ENV PATH /usr/local/go/bin:$PATH
+ENV GOLANG_SYS_BUILD docker
+
+# Update system and install dependencies
+RUN echo 'deb http://en.archive.ubuntu.com/ubuntu/ artful main universe' >> /etc/apt/sources.list && \
+    apt-get update && apt-get install -y \
+    curl git gawk make python gcc gcc-multilib \
+    gettext texinfo qemu gcc-aarch64-linux-gnu \
+    gcc-arm-linux-gnueabi gcc-mips-linux-gnu gcc-mips64-linux-gnuabi64 \
+    gcc-mips64el-linux-gnuabi64 gcc-mipsel-linux-gnu gcc-powerpc64-linux-gnu \
+    gcc-powerpc64le-linux-gnu gcc-s390x-linux-gnu gcc-sparc64-linux-gnu \
+
+# Clone repos
+RUN git config --global advice.detachedHead false && \
+    git clone --branch v4.13 --depth 1 https://kernel.googlesource.com/pub/scm/linux/kernel/git/torvalds/linux && \
+
+# Download and install Golang
+RUN curl -fsSL "$GOLANG_DOWNLOAD_URL" -o golang.tar.gz \
+    && echo "$GOLANG_DOWNLOAD_SHA256  golang.tar.gz" | sha256sum -c - \
+    && tar -C /usr/local -xzf golang.tar.gz \
+
+# Set the work directory
+WORKDIR /git
+WORKDIR /build
+
+# Copy application code to container
+COPY . .
+
+# Set entrypoint
+ENTRYPOINT ["go", "run", "linux/mkall.go", "/git/linux", "/git/glibc"]

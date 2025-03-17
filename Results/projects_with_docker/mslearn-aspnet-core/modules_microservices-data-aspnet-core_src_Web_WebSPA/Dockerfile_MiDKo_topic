@@ -1,0 +1,37 @@
+# Base image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+WORKDIR /app
+
+# Install Node.js and Yarn
+RUN curl -sL https://deb.nodesource.com/setup_14.x | bash -
+RUN apt-get install -y nodejs
+RUN npm install -g npm@6
+RUN npm install -g yarn
+
+# Copy csproj and Restore as distinct layers
+COPY *.csproj ./
+RUN dotnet restore
+
+# Copy everything else and Build app
+COPY . ./
+RUN dotnet publish -c Release -o out
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+WORKDIR /app
+
+# Install Node.js dependencies
+COPY src/Web/WebSPA/Client/package*.json ./
+RUN npm install
+
+# Build the app
+COPY src/Web/WebSPA/Client ./
+RUN npm run build:prod
+
+# Copy the remaining source files
+COPY . .
+
+# Expose port and define EntryPoint
+EXPOSE 80
+ENTRYPOINT ["dotnet", "WebSPA.dll"]
+

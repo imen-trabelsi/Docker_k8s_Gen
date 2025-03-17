@@ -1,0 +1,23 @@
+# Step 1: Set the base image
+FROM adoptopenjdk/openjdk11:alpine as build
+WORKDIR /workspace/app
+
+# Step 2: Copy the Maven pom.xml file and download the dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+# Step 3: Copy the rest of the application
+COPY src src
+
+# Step 4: Build the application
+RUN mvn clean package -DskipTests
+
+# Step 5: Package the application
+FROM adoptopenjdk/openjdk11:alpine
+WORKDIR /app
+
+# Step 6: Expose the necessary port
+EXPOSE <replace-with-your-port-number-here>
+
+# Step 7: Entry Point
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app/service.jar"]

@@ -1,0 +1,45 @@
+# Start with a base Node.js image.
+FROM node:lts AS base
+
+# Install dependencies
+WORKDIR /app
+COPY package*.json ./
+RUN npm install
+
+# Build the frontend
+FROM base AS builder
+WORKDIR /builder
+COPY . .
+RUN yarn install
+RUN yarn build
+
+# Stage to build the final image
+FROM base AS final
+WORKDIR /app
+RUN mkdir -p /app/static
+RUN npm run build
+
+# Define environment variables
+ENV APP_MODULE="app:app"
+ENV NODE_ENV=production
+
+# Use a non-root user for added security
+RUN addgroup -g 1001 -S nodejs
+RUN adduser -S nextjs -u 1001
+
+# Change to non-root privilege
+USER nextjs:nodejs
+
+# Expose ports (if any)
+# EXPOSE _your_port_here_
+
+# Set the CMD or ENTRYPOINT
+# CMD ["command", "params", "..."]
+
+# Copy generated files from ~/dist out of builder stage
+
+# Install production dependencies
+RUN npm install --only=production
+
+# Start the application
+CMD [ "node", "server.js" ]

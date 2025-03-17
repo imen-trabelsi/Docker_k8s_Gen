@@ -1,0 +1,22 @@
+# Specify the base image 
+FROM owasp/zap2docker-bare
+
+# Information about the maintainer
+
+# Set the working directory in the container
+WORKDIR /zap
+
+# Copy package.json to the container
+COPY package.json .
+
+# Install the necessary dependencies with the Run Commands
+RUN apk upgrade && apk add python3 py3-pip && rm -rf /var/cache/apk/* && pip3 install --no-cache-dir --upgrade zapcli
+
+# Copy all other application files to the container
+COPY . .
+
+# Expose the application on the specific port
+EXPOSE 
+
+# Start the application
+CMD ["zap-cli", ]

@@ -1,0 +1,52 @@
+# Stage 1
+
+FROM base as builder    
+LABEL maintainer="Yuki"
+USER root
+ENV PNPM_HOME="/root/.local/share/pnpm" 
+ENV optDir=/opt 
+ENV appDir=${optDir}/growi
+
+WORKDIR ${optDir}
+
+# Update apt-get for necessary utilities
+RUN apt-get update 
+RUN apt-get install -y ca-certificates wget curl gosu --no-install-recommends 
+# Install pnpm
+RUN wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" PNPM_VERSION="10.4.1" sh -
+RUN pnpm add turbo --global
+RUN pnpm add node-gyp --global
+COPY package.json .
+
+# Install dependencies
+RUN pnpm install ---frozen-lockfile
+RUN turbo run clean
+RUN turbo run build --filter @growi/app
+RUN pnpm deploy out --prod --filter @growi/app
+RUN rm -rf apps/app/node_modules && mv out/node_modules apps/app/node_modules
+RUN rm -rf apps/app/.next/cache
+RUN tar -zcf packages.tar.gz package.json apps/app/.next apps/app/config apps/app/dist apps/app/public apps/app/resource apps/app/tmp \
+
+# Stage 2
+
+FROM node as production
+
+LABEL maintainer="Yuki"
+ENV optDir=/opt 
+ENV PATH="$PNPM_HOME:$PATH" 
+ENV NODE_ENV="production"
+
+# copy all files from working directory, using specified user
+WORKDIR ${appDir}
+
+# copy the entrypoint script and make it executable
+COPY --chown=node:node --chmod=700 apps/app/docker/docker-entrypoint.sh /
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
+# run commands
+RUN tar -zxf packages.tar.gz && rm packages.tar.gz
+RUN apt-get update; rm -rf /var/lib/apt/lists/*;
+
+EXPOSE 3000
+
+CMD ["npm", "run", "migrate", "&&", "node", "-r", "dotenv-flow/config", "--expose_gc", "dist/server/app.js"]

@@ -1,0 +1,31 @@
+# Using DotNet SDK as the Base Image
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+
+# Setting the Working Directory in the Docker container
+WORKDIR /ClassifiedAds.Microservices
+
+# Copying necessary csproj files
+COPY ./Common/ClassifiedAds.Application/*.csproj ./Common/ClassifiedAds.Application/
+COPY ./Common/ClassifiedAds.CrossCuttingConcerns/*.csproj ./Common/ClassifiedAds.CrossCuttingConcerns/
+COPY ./Common/ClassifiedAds.Domain/*.csproj ./Common/ClassifiedAds.Domain/
+COPY ./Common/ClassifiedAds.Infrastructure/*.csproj ./Common/ClassifiedAds.Infrastructure/
+COPY ./Services.Notification/ClassifiedAds.Services.Notification/*.csproj ./Services.Notification/ClassifiedAds.Services.Notification/
+COPY ./Services.Notification/ClassifiedAds.Services.Notification.Api/*.csproj ./Services.Notification/ClassifiedAds.Services.Notification.Api/
+
+# Copy everything else
+COPY . ./
+
+# Restore the project
+RUN dotnet restore ./Common/ClassifiedAds.Application/ClassifiedAds.Application.csproj
+RUN dotnet restore ./Common/ClassifiedAds.Infrastructure/ClassifiedAds.Infrastructure.csproj
+RUN dotnet restore ./Services.Notification/ClassifiedAds.Services.Notification/ClassifiedAds.Services.Notification.csproj
+RUN dotnet restore ./Services.Notification/ClassifiedAds.Services.Notification.Api/ClassifiedAds.Services.Notification.Api.csproj
+
+# Generate runtime artifacts in the out directory
+RUN dotnet publish ./Services.Notification/ClassifiedAds.Services.Notification.Api/ClassifiedAds.Services.Notification.Api.csproj -c Release -o out
+
+# Copy the out directory from build stage
+COPY --from=build-env /ClassifiedAds.Microservices/out .
+
+# Command to run the application when the docker container starts
+ENTRYPOINT ["dotnet", "ClassifiedAds.Services.Notification.Api.dll"]

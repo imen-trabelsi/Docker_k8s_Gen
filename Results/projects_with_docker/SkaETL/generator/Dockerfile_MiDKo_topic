@@ -1,0 +1,31 @@
+# Use the openjdk image as a base
+FROM openjdk:8u151-jdk as build
+
+# Set the working directory
+WORKDIR /usr
+
+# Copy the source code into the container
+COPY . .
+
+# Compiling the project
+RUN mvn clean package -DskipTests
+
+# Use the openjdk image as a base
+FROM openjdk:8u151-jdk
+
+# Copy the startup file into the container
+COPY startup.sh /usr/bin/startup.sh
+
+# Copy the build jar file into the container
+
+# Add a volume pointing to /tmp
+VOLUME /tmp
+
+# Run command to make the startup script executable
+RUN chmod +x /usr/bin/startup.sh
+
+# Expose the necessary ports
+EXPOSE 8080
+
+# Define default command to start the spring boot application.
+CMD ["/usr/bin/startup.sh"]

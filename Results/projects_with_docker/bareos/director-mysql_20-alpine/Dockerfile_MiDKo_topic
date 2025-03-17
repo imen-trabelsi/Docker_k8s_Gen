@@ -1,0 +1,41 @@
+# For better cache of layer, the first line will download dependencies for the application
+# Base Image 
+FROM alpine:3.15
+
+# Label
+LABEL maintainer="barcus@tou.nu"
+LABEL org.label-schema.schema-version="1.0"
+LABEL org.label-schema.build-date=$BUILD_DATE 
+LABEL org.label-schema.name=$NAME
+LABEL org.label-schema.vcs-ref=$VCS_REF 
+LABEL org.label-schema.version=$VERSION 
+
+# Building Arguments from user
+ARG BUILD_DATE
+ARG NAME
+ARG VCS_REF
+ARG VERSION
+
+# Set Environment variables
+ENV BUILD_DATE=${BUILD_DATE}
+ENV NAME=${NAME}
+ENV VCS_REF=${VCS_REF}
+ENV VERSION=${VERSION}
+
+# Expose the necessary port
+EXPOSE 9101
+
+# Run commands
+RUN apk add --no-cache bareos-mysql mysql-client curl tzdata tar \
+    && tar czf /bareos-dir.tgz /etc/bareos \
+    && mkdir /run/bareos \
+    && chown bareos /run/bareos \
+    && chmod u+x /usr/local/bin/webhook-notify \
+
+# Copy files
+COPY webhook-notify /usr/local/bin/webhook-notify
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+
+# Set the default command to be run on container startup.
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["/usr/sbin/bareos-dir",, "-u",, "bareos",, "-f"]

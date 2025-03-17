@@ -1,0 +1,40 @@
+# Choose base Image
+FROM java:8u45-jre
+
+# Install Necessary Dependencies
+RUN apt-get update && \
+apt-get upgrade -y && \
+apt-get install -y python-setuptools sed && \
+easy_install supervisor && \
+apt-get install -y -t jessie-backports nginx=1.9.4-1~bpo8+1 && \
+mkdir -p /etc/nginx/conf.d/custom && \
+mkdir -p /etc/nginx/conf.d/proxy && \
+
+# Copy Configuration Files
+COPY docker/supervisor /etc/supervisor
+COPY docker/nginx/conf.d /etc/nginx/conf.d
+COPY docker/nginx/nginx.conf /etc/nginx/nginx.conf
+COPY docker/nginx/start.sh /etc/nginx/start.sh
+
+# Make start script executable
+RUN chmod +x /etc/nginx/start.sh
+
+# Set Work Directory
+WORKDIR /app
+
+# Copy pom.xml and native maven wrapper
+COPY pom.xml .
+COPY mvnw .
+COPY .mvn .mvn
+
+# Build the app within Docker container
+RUN ./mvnw clean install
+
+# Copy Project Files into Docker Image
+COPY . .
+
+# Running the app
+CMD ["/usr/local/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
+
+# Expose Ports
+EXPOSE 80 443

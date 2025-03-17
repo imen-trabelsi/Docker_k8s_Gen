@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "Ruby",
+        "framework": "Ruby",
+        "dependencies": {
+            "Gemfile": "source \"https://rubygems.org\"\n# Hello! This is where you manage which Jekyll version is used to run.\n# When you want to use a different version, change it below, save the\n# file and run `bundle install`. Run Jekyll with `bundle exec`, like so:\n# Note: you probably want to set a local bundle path with : /usr/local/bin/bundle config set path 'vendor/bundle'\n#\n#     bundle exec jekyll serve\n#\n# This will help ensure the proper Jekyll version is running.\n# Happy Jekylling!\n# gem \"jekyll\", \"~> 4.0.0\"\n# This is the default theme for new Jekyll sites. You may change this to anything you like.\ngem \"minima\", \"~> 2.5\"\n# To upgrade, run `bundle update github-pages`.\ngem \"github-pages\", group: :jekyll_plugins\n# If you have any plugins, put them here!\ngroup :jekyll_plugins do\n  gem \"jekyll-feed\", \"~> 0.12\"\n  gem 'jekyll-octicons'\nend\n\ngem \"jekyll-github-metadata\"\n\n# Windows and JRuby does not include zoneinfo files, so bundle the tzinfo-data gem\n# and associated library.\ninstall_if -> { RUBY_PLATFORM =~ %r!mingw|mswin|java! } do\n  gem \"tzinfo\", \"~> 1.2\"\n  gem \"tzinfo-data\"\nend\n\n# Performance-booster for watching directories on Windows\ngem \"wdm\", \"~> 0.1.1\", :install_if => Gem.win_platform?\n\ngem \"faraday\", \"< 1.0\"\n\n# I like asciidoc & sitemaps\ngroup :jekyll_plugins do\n  gem 'jekyll-asciidoc'\n  gem 'jekyll-sitemap'\nend\n"
+        },
+        "database": "PostgreSQL",
+        "build_system": "Bundler",
+        "config_files": {
+            "subrepos/scalingpythonml/flink/containers/python-executor/Dockerfile": "#\n# Licensed to the Apache Software Foundation (ASF) under one or more\n# contributor license agreements.  See the NOTICE file distributed with\n# this work for additional information regarding copyright ownership.\n# The ASF licenses this file to You under the Apache License, Version 2.0\n# (the \"License\"); you may not use this file except in compliance with\n# the License.  You may obtain a copy of the License at\n#\n#    http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.\n#\n\nARG base_img\n\nFROM $base_img\nWORKDIR /\n\n# Reset to root to run installation tasks\nUSER 0\n\nENV PATH /opt/conda/bin:$PATH\n\nRUN apt-get update --fix-missing && \\\n    apt-get install -yq graphviz git build-essential cmake telnet && \\\n    apt install -y bash tini libc6 libpam-modules libnss3 procps ca-certificates p11-kit wget bzip2 git mercurial subversion && \\\n    rm /bin/sh && \\\n    ln -sv /bin/bash /bin/sh\n\nCOPY pysetup.sh /pysetup.sh\nRUN chmod a+x /pysetup.sh && ./pysetup.sh\nRUN conda install -c conda-forge --yes mamba && \\\n    mamba install --yes python==3.8.6 && \\\n    pip install --upgrade pip setuptools && \\\n    mamba install --yes numpy==1.19.2 pandas cytoolz numba lz4 scikit-build python-blosc=1.9.2 && \\\n    (mamba install --yes pyarrow ||  pip install -vvv pyarrow)\n\n\n# Specify the User that the actual main process will run as\nARG flink_uid=999\nUSER ${flink_uid}\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "prepare.sh"
+        ],
+        "folders": [
+            "examples"
+        ]
+    }
+}

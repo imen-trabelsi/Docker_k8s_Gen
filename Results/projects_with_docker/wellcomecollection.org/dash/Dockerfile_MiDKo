@@ -1,0 +1,28 @@
+# Use the specified base image
+FROM public.ecr.aws/docker/library/node:20-bookworm-slim
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Install app dependencies
+COPY package.json .
+COPY yarn.lock .
+
+# Setting environment variable
+ENV AWS_PAGER=""
+
+# Run instructed commands
+RUN apt-get update && apt-get install -y awscli && \
+    yarn && \
+    yarn build && \
+
+# Bundle app source
+COPY . .
+
+# Move to webapp directory and copy necessary files
+WORKDIR /usr/src/app/webapp
+COPY dash/webapp /usr/src/app/webapp
+COPY config /usr/src/config
+
+# Provide the default command for the container
+CMD [ "true" ]

@@ -1,0 +1,32 @@
+# Set the base image 
+FROM ninokop/dubbo-demo-java-base
+
+# Create app directory
+RUN mkdir /app
+WORKDIR /app
+
+# Adding source files to the application directory
+COPY . /app
+
+# Installing dependencies with Maven
+RUN mvn install
+
+# Environment variables
+# Setting up environment variable if any, place them over here
+
+# Exposing required ports
+# Provide the port number that needs to be exposed
+# EXPOSE <port>
+
+# Configuring Health Checks
+# If your application supports healthcheck, configure it over here
+
+# Labels
+# If your application requires specific labels, add them over here
+
+# Creating a non-root user for security purposes (recommended)
+# RUN useradd -ms /bin/bash newuser
+# USER newuser
+
+# Start command
+ENTRYPOINT ["bash","app/bin/start.sh"]

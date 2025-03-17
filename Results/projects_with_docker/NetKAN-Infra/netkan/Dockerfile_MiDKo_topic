@@ -1,0 +1,31 @@
+FROM ubuntu:24.04 AS base
+
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PATH="$PATH:/home/netkan/.local/bin"
+ENV PYTHONPATH=/home/netkan/.local/lib/python3.12/site-packages
+
+RUN apt-get update \
+
+RUN curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+rm /usr/lib/python3.12/EXTERNALLY-MANAGED && \
+
+RUN groupmod -n 'netkan' 'ubuntu' && \
+
+COPY .gitconfig .
+COPY . /netkan
+WORKDIR /netkan
+
+RUN chown -R netkan:netkan /netkan
+USER netkan
+
+RUN pip install --user . --no-warn-script-location
+
+RUN chown -R netkan:netkan /home/netkan
+WORKDIR /home/netkan
+
+RUN pip install --user .[test] /home/netkan/.[development]
+
+COPY run_dev.sh /usr/local/bin/
+ENTRYPOINT ["/usr/local/bin/run_dev.sh"]
+
+RUN /home/netkan/.local/bin/pytest -v

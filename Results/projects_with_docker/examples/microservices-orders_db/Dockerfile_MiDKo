@@ -1,0 +1,44 @@
+# Alpine Linux with OpenJDK JRE
+FROM alpine:3.4
+
+# install sqlite
+RUN apk add --update sqlite
+
+# copy sql files
+WORKDIR /db
+COPY customers.sql /db
+COPY customers.table /db
+
+# install maven
+RUN apk update
+RUN apk add maven
+
+# create directory for project
+RUN mkdir -p /usr/src/microservices-orders
+
+# set the location of the microservices-orders
+WORKDIR /usr/src/microservices-orders
+
+# copy the pom.xml file
+COPY microservices-orders/pom.xml .
+
+# build all dependencies for offline use
+RUN mvn dependency:go-offline -B
+
+# copy your other files
+COPY microservices-orders/ .
+
+# build for production
+RUN mvn package
+
+# set the startup command to execute the jar
+CMD ["java", "-jar", "target/microservices-orders.jar"]
+
+# create folder for sqlite DB
+RUN mkdir /db/data
+
+# initialize sqlite DB
+RUN sqlite3 /db/data/microservices.db < /db/customers.sql
+
+# define the command to start the container
+ENTRYPOINT ["sqlite3"]

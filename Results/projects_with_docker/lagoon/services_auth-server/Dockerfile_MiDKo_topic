@@ -1,0 +1,38 @@
+# Set the base image from the provided image repository
+FROM ${IMAGE_REPO:-lagoon}/yarn-workspace-builder AS builder
+
+# Set the environment variables
+ENV LAGOON_VERSION=$LAGOON_VERSION
+ENV NODE_ENV=production
+
+# Switch to a new layer
+RUN apk add --no-cache \
+    curl \
+
+# Copy package.json and package-lock.json to verify the dependencies
+COPY package.json .
+COPY package-lock.json .
+
+# Install the application dependencies
+RUN npm install
+
+# Copy static files
+COPY --from=yarn-workspace-builder /app /app
+WORKDIR /app/services/auth-server/
+COPY --from=yarn-workspace-builder /app/.env.defaults .
+COPY . .
+
+# Build application
+RUN yarn check --verify-tree
+RUN yarn build
+
+# Define the entry point and command
+ENTRYPOINT ["yarn"]
+CMD ["start"]
+
+# Expose port 8080
+EXPOSE 8080
+
+LABEL maintainer="Your Name <your.email@domain.com>"
+LABEL version="$LAGOON_VERSION"
+LABEL description="Docker image for the Spring Boot microservice"

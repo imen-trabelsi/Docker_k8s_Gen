@@ -1,0 +1,43 @@
+# This dockerfile uses the mariadb base image
+FROM mariadb:10.11.11
+
+# Copy project files into the docker image
+COPY . /app
+WORKDIR /app
+
+# Install app dependencies and cleanup unnecessary files
+RUN apt-get update && \
+    apt-get install -y \
+    gettext \
+    && apt-get clean \
+
+# Add application resources
+COPY ./resources/README.md /app/resources/
+COPY ./resources/examples/topics_sample.xml /app/resources/examples/
+COPY ./resources/hudson/ant.xml /app/resources/hudson/
+COPY ./resources/hudson/config.json /app/resources/hudson/
+COPY ./resources/www/common/styles/fonts/PhraseanetIcomoon/selection.json /app/resources/www/common/styles/fonts/PhraseanetIcomoon/
+
+# Copy docker files
+COPY ./docker/ /
+
+# Set permissions for entrypoint script
+RUN chmod +x /phraseanet-entrypoint.sh
+
+# Set entry point and command 
+ENTRYPOINT ["/phraseanet-entrypoint.sh"]
+CMD ["mysqld","--sql_mode="]
+
+# Expose server port
+EXPOSE 3306
+
+# Add labels
+LABEL version="1.0"
+LABEL description="Docker image for Spring Boot microservice"
+
+# Set environment variables
+ENV NODE_ENV production
+
+# Install app dependencies
+COPY package.json /app
+RUN npm install --production

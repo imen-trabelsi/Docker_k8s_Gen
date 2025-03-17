@@ -1,0 +1,30 @@
+# Use the official Python image from Docker Hub
+FROM python:3.9-slim as builder
+
+# Set the working directory
+WORKDIR /root/app
+
+# Copy only necessary files
+COPY ./setup.py .
+COPY ./src ./src
+
+# Set environment variable
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# Install dependencies
+RUN pip install .
+
+# Start a new stage to have a clean image
+FROM python:3.9-slim
+
+WORKDIR /root/app
+
+# Copy necessary files from the builder image
+COPY dcatd.yml /etc/dcatd.yml
+
+# Upgrade pip
+RUN pip install --upgrade pip
+
+# Run the application
+CMD ["python", "src/main.py"]

@@ -1,0 +1,40 @@
+# Base image
+FROM node:16
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Add the package.json and package-lock.json
+COPY package.json ./
+COPY package-lock.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy the source files into the container
+COPY . ./
+
+# Build the application
+RUN npm run build
+
+# Install react-env globally
+RUN npm install -g @beam-australia/react-env@3.1.1
+
+# Copy the result to /usr/share/nginx/html
+COPY --from=build /usr/src/app/build /usr/share/nginx/html
+
+# Modify the nginx configuration
+WORKDIR /usr/share/nginx/html
+COPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf
+
+# Add env variables and scripts
+COPY .env ./
+COPY entrypoint.sh /var/entrypoint.sh
+RUN chmod +x /var/entrypoint.sh
+
+# Expose port 80
+EXPOSE 80
+
+# Set the CMD/ENTRYPOINT
+CMD ["/var/entrypoint.sh"]
+ENTRYPOINT ["nginx", "-g", "daemon off;"]

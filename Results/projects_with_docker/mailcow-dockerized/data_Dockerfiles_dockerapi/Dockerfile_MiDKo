@@ -1,0 +1,37 @@
+# Use the specified base image
+FROM alpine:3.20
+
+# Sets the maintainer label
+LABEL maintainer="email@example.com"
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the necessary files
+COPY docker-entrypoint.sh /app/
+COPY main.py /app/main.py
+COPY modules/ /app/modules/
+
+# Run the necessary commands
+RUN apk add --update --no-cache python3 \
+py3-pip \
+openssl \
+tzdata \
+py3-psutil \
+py3-redis \
+py3-async-timeout \
+&& pip3 install --upgrade pip \
+fastapi \
+uvicorn \
+aiodocker \
+docker \
+
+# Setting the environment variable
+ENV PIP_BREAK_SYSTEM_PACKAGES=1
+
+# Exposing necessary ports
+EXPOSE 80 443
+
+# ENTRYPOINT and CMD instructions
+ENTRYPOINT ["/bin/sh", "/app/docker-entrypoint.sh"]
+CMD ["python", "main.py"]

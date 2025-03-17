@@ -1,0 +1,8 @@
+# Dockerfile
+FROM docker.elastic.co/elasticsearch/elasticsearch:7.17.3
+WORKDIR /usr/share/elasticsearch
+COPY create-indexes.sh .
+COPY elastic-start.sh .
+COPY elasticsearch.yml config/elasticsearch.yml
+RUN chmod +x create-indexes.sh && \
+CMD ["./elastic-start.sh"]

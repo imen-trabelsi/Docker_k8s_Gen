@@ -1,0 +1,101 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".github",
+            "type": "tree"
+        },
+        {
+            "path": ".github/stale.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": ".travis.yml",
+            "type": "blob"
+        },
+        {
+            "path": "9",
+            "type": "tree"
+        },
+        {
+            "path": "9/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "9/ci.sh",
+            "type": "blob"
+        },
+        {
+            "path": "9/config",
+            "type": "tree"
+        },
+        {
+            "path": "9/config/ldapUserSync",
+            "type": "tree"
+        },
+        {
+            "path": "9/config/ldapUserSync/config.py",
+            "type": "blob"
+        },
+        {
+            "path": "9/config/ldapUserSync/ldapUserSync.py",
+            "type": "blob"
+        },
+        {
+            "path": "9/config/main.cf_template",
+            "type": "blob"
+        },
+        {
+            "path": "9/config/redis.config",
+            "type": "blob"
+        },
+        {
+            "path": "9/config/sasl_passwd_template",
+            "type": "blob"
+        },
+        {
+            "path": "9/start",
+            "type": "blob"
+        },
+        {
+            "path": "9/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "LICENSE",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "conf",
+            "type": "tree"
+        },
+        {
+            "path": "conf/nginx.conf",
+            "type": "blob"
+        },
+        {
+            "path": "conf/nginx_ssl.conf",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.yml",
+            "type": "blob"
+        }
+    ]
+}

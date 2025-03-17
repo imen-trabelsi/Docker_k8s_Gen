@@ -1,0 +1,30 @@
+# Start with a base image containing Java runtime
+FROM openjdk:8-jdk-alpine
+
+# The application's jar file
+ARG JAR_FILE=target/customer-service.jar
+
+# Add the application's jar to the container
+COPY ${JAR_FILE} customer-service.jar
+
+# Install required dependencies
+RUN apk add --no-cache curl tar bash
+
+# Change Directory
+WORKDIR /app
+
+# Copy pom.xml and install dependencies
+COPY pom.xml .
+RUN mvn -B dependency:resolve
+
+# Copy project files and folders
+COPY src ./src
+
+# Build application
+RUN mvn -B package
+
+# Port to expose
+EXPOSE 3333
+
+# Run the jar file 
+ENTRYPOINT ["java","-jar","/customer-service.jar"]

@@ -1,0 +1,14 @@
+# Base image
+FROM java:8-jre
+
+# Copy the built JAR file from target
+COPY ./target/ts-config-service-1.0.jar /app/
+
+# Setup Application Timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Expose Application Port
+EXPOSE 15679
+
+# Run the application
+CMD ["java", "-Xmx200m", "-jar", "/app/ts-config-service-1.0.jar"]

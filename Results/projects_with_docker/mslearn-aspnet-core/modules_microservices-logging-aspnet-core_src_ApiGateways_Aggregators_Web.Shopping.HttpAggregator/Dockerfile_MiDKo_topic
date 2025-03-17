@@ -1,0 +1,23 @@
+# Dockerfile
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS base
+WORKDIR /app
+EXPOSE 80
+
+# Restore
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+COPY ["NuGet.config", "./"]
+COPY ["docker-compose.dcproj", "./"]
+COPY ["eShop-Learn.sln", "./"]
+COPY . .
+WORKDIR "/src/src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator"
+RUN dotnet restore "eShop-Learn.sln"
+
+# Build 
+FROM build AS publish
+RUN dotnet publish --no-restore "Web.Shopping.HttpAggregator.csproj" -c Release -o /app/publish
+
+# Final stage/ image
+FROM base AS final
+WORKDIR /app
+ENTRYPOINT ["dotnet", "Web.Shopping.HttpAggregator.dll"]

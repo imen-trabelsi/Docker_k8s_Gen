@@ -1,0 +1,41 @@
+# Use the user specified base image
+FROM brisedev/benchmark-dev:2.5.0
+
+# Set environment variables
+ENV host_uid=$host_uid
+ENV host_gid=$host_gid
+
+# Setup application directory
+RUN groupadd -g $host_gid benchmark_user && \
+    useradd -rm -s /bin/bash -g $host_gid -G sudo -u $host_uid benchmark_user && \
+    usermod -aG sudo benchmark_user && \
+
+# Switch working directory
+WORKDIR /home/benchmark_user
+
+# Copy the application files from local system to the container
+COPY ./main_node/core_entities /home/benchmark_user/core_entities/
+COPY ./main_node/tools /home/benchmark_user/tools/
+COPY ./main_node/logger /home/benchmark_user/logger/
+COPY ./main_node/selection /home/benchmark_user/selection/
+COPY ./benchmark/ /home/benchmark_user/
+COPY ./main_node/Resources/ /home/benchmark_user/Resources/
+
+# Change the ownership of the copied files to the user
+RUN chown --recursive benchmark_user:benchmark_user .
+
+# Change the user to benchmark_user
+USER benchmark_user
+
+# Install the python dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Expose port
+# EXPOSE <port_number>
+
+# Setup entry point 
+# ENTRYPOINT <application_entry_point>
+
+# Set default command 
+CMD ["bash"]

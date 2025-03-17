@@ -1,0 +1,28 @@
+# Start with the base image
+FROM busybox:latest
+
+# Define the working directory
+WORKDIR /opt/app
+
+# Copy our project to the docker Image
+COPY src /opt/app
+
+# Set the path of the pom.xml file
+COPY pom.xml /opt/app
+
+# Define environment variables
+# This can be updated based on your application's needs
+ENV JAVA_OPTS=""
+
+# Copy configuration files and other project-related files
+# You may need to adjust paths or files based on your project's actual structure
+COPY .env /opt/app
+COPY docker-compose.yml /opt/app
+COPY platform-controller/docker/test-image-version-2/Dockerfile /opt/app
+
+# Update the permission of the scripts
+RUN chmod 755 /opt/app
+
+# Execute the Java application
+# Please update this CMD command based on your applications start-up class
+CMD ["java","-cp","app:app/lib/*","com.example.app.AppApplication"]

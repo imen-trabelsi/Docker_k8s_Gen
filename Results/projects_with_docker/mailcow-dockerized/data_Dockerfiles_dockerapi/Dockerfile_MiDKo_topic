@@ -1,0 +1,40 @@
+#Use the custom Base Image
+FROM alpine:3.20
+
+#Declare Maintainer
+LABEL maintainer=""
+
+#Install required packages
+RUN apk add --update --no-cache python3 \
+py3-pip \
+openssl \
+tzdata \
+py3-psutil \
+py3-redis \
+       
+#Set environment variables
+ENV PIP_BREAK_SYSTEM_PACKAGES=1
+
+#Installing the required python libraries
+RUN pip3 install --upgrade pip \
+fastapi \
+uvicorn \
+aiodocker \
+
+#Create necessary directories
+RUN mkdir -p /app/modules
+
+#Setting working directory
+WORKDIR /app
+
+#Copy required files
+COPY docker-entrypoint.sh /app/
+COPY main.py /app/main.py
+COPY modules/ /app/modules/
+
+#Setting permissions for entrypoint.sh
+RUN chmod +x /app/docker-entrypoint.sh
+
+#Execute the application
+ENTRYPOINT ["/bin/sh", "/app/docker-entrypoint.sh"]
+CMD ["python", "main.py"]

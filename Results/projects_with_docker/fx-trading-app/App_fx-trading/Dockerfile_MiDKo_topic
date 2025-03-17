@@ -1,0 +1,37 @@
+# Start with a base image containing Java and Maven
+FROM maven:3.6.2-jdk-11-slim AS MAVEN_TOOL_CHAIN
+
+WORKDIR /tmp
+
+# Copy pom.xml and get all the dependencies
+COPY pom.xml /tmp/
+
+# Copy all other project files and compile the project
+COPY src /tmp/src/
+
+RUN mvn package -Pprod -DskipTests
+
+# Start with a base image containing Java runtime
+FROM openjdk:11-jdk-slim
+
+# Add Maintainer Info
+LABEL maintainer="example@example.com"
+
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
+
+# Set the timezone
+RUN echo "Europe/London" > /etc/timezone
+RUN dpkg-reconfigure -f noninteractive tzdata
+
+# Set the app home folder
+ENV APP_HOME /app
+
+# Create app directory
+RUN mkdir $APP_HOME
+WORKDIR $APP_HOME
+
+# Retrieve the built artifact from the previous stage
+
+# Set the entry point
+ENTRYPOINT ["/usr/local/openjdk-11/bin/java", "-jar", "/trading-service.jar"]

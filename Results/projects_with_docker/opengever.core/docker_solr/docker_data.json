@@ -1,0 +1,21 @@
+{
+    "docker_info": {
+        "base_image": "solr:8.11.4",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV SOLR_OPTS=\"-Dlog4j2.formatMsgNoLookups=true\"",
+            "ENV SOLR_CORES=\"ogsite\""
+        ],
+        "copy_instructions": [
+            "COPY ./solr-conf /opt/solr/server/solr/configsets/ogsite",
+            "COPY ./docker/solr/create_and_update_cores.sh /docker-entrypoint-initdb.d/create_and_update_cores.sh"
+        ],
+        "execution": [],
+        "run": []
+    }
+}

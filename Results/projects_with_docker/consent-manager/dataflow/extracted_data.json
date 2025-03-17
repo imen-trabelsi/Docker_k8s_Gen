@@ -1,0 +1,25 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Spring Boot",
+        "dependencies": {
+            "build.gradle": "buildscript {\n    repositories {\n        mavenCentral()\n    }\n}\n\nplugins {\n    id 'java'\n    id 'org.springframework.boot' version \"${springBoot}\"\n    id 'io.spring.dependency-management' version \"${dependencyManagement}\"\n    id 'com.avast.gradle.docker-compose' version '0.7.1'\n}\n\nallprojects {\n    group = 'in.projecteka'\n    version = '0.0.1-SNAPSHOT'\n    sourceCompatibility = '11'\n}\n\nsubprojects {\n    apply plugin: 'org.springframework.boot'\n    apply plugin: 'io.spring.dependency-management'\n    apply plugin: 'java'\n\n    repositories {\n        mavenCentral()\n    }\n\n    test {\n        useJUnitPlatform()\n    }\n}\n\nproject(':consent') {\n    dependencies {\n        implementation project(':commons')\n    }\n}\n\nproject(':user') {\n    dependencies {\n        implementation project(':commons')\n    }\n}\n\nproject(':dataflow') {\n    dependencies {\n        implementation project(':commons')\n    }\n}\n\nbootJar {\n    enabled = false\n}\n\ndockerCompose {\n    useComposeFiles = ['haproxy/docker-compose.yml']\n}"
+        },
+        "database": null,
+        "build_system": "Gradle",
+        "config_files": {
+            "dataflow/Dockerfile": "FROM adoptopenjdk/openjdk11:jre-11.0.8_10-alpine as builder\nWORKDIR application\nARG JAR_FILE=build/libs/*.jar\nCOPY ${JAR_FILE} application.jar\nRUN java -Djarmode=layertools -jar application.jar extract\n\nFROM adoptopenjdk/openjdk11:jre-11.0.8_10-alpine\nWORKDIR application\nCOPY --from=builder application/dependencies/ ./\nCOPY --from=builder application/snapshot-dependencies/ ./\nCOPY --from=builder application/spring-boot-loader/ ./\nCOPY --from=builder application/application/ ./\nENTRYPOINT [\"java\", \"org.springframework.boot.loader.JarLauncher\"] "
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "build.gradle",
+            "settings.gradle"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

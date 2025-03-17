@@ -1,0 +1,27 @@
+# Using the base image provided by the user
+FROM pyaiot/base:latest
+
+# Adding the maintainer information
+LABEL maintainer="alexandre.abadie@inria.fr"
+
+# Copy the local file "run.sh" into the docker container at location "/run.sh"
+COPY run.sh /run.sh
+
+# Set working directory in the container
+WORKDIR /usr/src/app
+
+# Copy application source code to SRCDIR
+COPY . $SRCDIR
+
+# Install Python and Redis dependencies
+RUN apt-get update && \
+    apt-get install -y python3-tornado python3-redis python3-setuptools && \
+
+# Give permissions for the script to run
+RUN chmod +x /run.sh
+
+# Expose a port to enable networking between the running container and the outside world
+EXPOSE 8000
+
+# Run the command which starts our application
+CMD ["/run.sh"]

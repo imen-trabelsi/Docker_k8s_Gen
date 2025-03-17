@@ -1,0 +1,25 @@
+{
+    "docker_info": {
+        "base_image": "elasticsearch:2.4",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD elasticsearch.yml /usr/share/elasticsearch/config/"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "/usr/share/elasticsearch/bin/plugin install analysis-icu",
+                "RUN /usr/share/elasticsearch/bin/plugin install cloud-aws"
+            ],
+            [
+                "chown elasticsearch:elasticsearch config/elasticsearch.yml"
+            ]
+        ]
+    }
+}

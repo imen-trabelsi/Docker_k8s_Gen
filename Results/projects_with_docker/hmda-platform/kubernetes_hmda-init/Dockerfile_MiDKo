@@ -1,0 +1,39 @@
+# Setting base image
+FROM eclipse-temurin:23.0.1_11-jdk-alpine
+
+# Maintainer info
+LABEL maintainer="youremail@domain.com"
+
+# Update & install dependencies
+RUN apk upgrade --update-cache --available && apk add openssl
+
+# Create a user
+RUN adduser -H -S -G root -h /opt hmda
+
+# Create working directory
+RUN mkdir /opt/docker
+WORKDIR /opt/docker
+
+# Set permissions 
+RUN chmod -R 777 /opt
+RUN chown -R hmda /opt
+
+# Switch to user
+USER hmda
+
+# Copying sbt files and project files
+COPY ./build.sbt ./project ./docker-compose.yml /opt/docker/
+COPY ./kubernetes/hmda-init/Dockerfile /opt/kubernetes/hmda-init/
+COPY . /opt/docker/
+
+# Compile the project
+RUN sbt compile
+
+# Define environmental variables
+# Set your environmental variables here
+
+# Expose port for the application
+# Expose your ports here
+
+# Command to run the application
+# CMD ["your", "command", "here"]

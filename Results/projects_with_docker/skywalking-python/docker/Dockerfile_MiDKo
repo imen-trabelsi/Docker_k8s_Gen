@@ -1,0 +1,26 @@
+# First stage
+FROM ${BUILDER_PYTHON_IMAGE} as builder
+COPY ./ /tmp/
+RUN pip install --upgrade pip
+RUN pip install poetry
+WORKDIR /tmp/
+RUN poetry export -f requirements.txt | poetry run pip wheel --no-cache-dir --no-deps --wheel-dir /tmp/wheels -r -
+RUN make -C /tmp package
+RUN pip wheel "psutil<=5.9.5" -w /tmp/dist/
+
+# Second stage
+FROM ${BASE_PYTHON_IMAGE}
+RUN pip install --upgrade pip
+RUN pip install /tmp/psutil*.whl /tmp/apache_skywalking*.whl
+RUN rm /tmp/apache_skywalking*.whl /tmp/psutil*.whl
+
+# Set up environment variables
+ENV FLASK_APP app.py
+ENV FLASK_RUN_HOST 0.0.0.0
+ENV PYTHONUNBUFFERED 1
+
+# Exposed ports
+EXPOSE 5000
+
+# Final Entry Point and Command
+ENTRYPOINT ["sw-python"]

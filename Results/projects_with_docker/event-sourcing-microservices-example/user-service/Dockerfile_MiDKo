@@ -1,0 +1,14 @@
+# Use the official OpenJDK 17 image from Docker Hub
+FROM openjdk:17-alpine
+
+# Inform Docker that the container listens on the specified network ports at runtime
+EXPOSE 8080
+
+# Set the current working directory inside the container
+WORKDIR /usr/share/myservice
+
+# Copy the jar file into our image
+COPY target/${JAR_FILE} /usr/share/myservice/myservice.jar
+
+# The command that will run when the container starts
+CMD ["java", "-jar", "/usr/share/myservice/myservice.jar"]

@@ -1,0 +1,25 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "requirements.txt": "# This is for netlify\nPyYAML\njinja2\n"
+        },
+        "database": null,
+        "build_system": "pip",
+        "config_files": {
+            "efk/docker-compose.yml": "version: \"2\"\n\nservices:\n  elasticsearch:\n    image: elasticsearch\n    # If you need to access ES directly, just uncomment those lines.\n    #ports:\n    #  - \"9200:9200\"\n    #  - \"9300:9300\"\n\n  fluentd:\n    #build: fluentd\n    image: jpetazzo/fluentd:v0.1\n    ports:\n      - \"127.0.0.1:24224:24224\"\n    depends_on:\n      - elasticsearch\n\n  kibana:\n    image: kibana\n    ports:\n      - \"5601:5601\"\n    environment:\n      ELASTICSEARCH_URL: http://elasticsearch:9200\n",
+            "efk/fluentd/Dockerfile": "FROM ruby\nRUN gem install fluentd\nRUN gem install fluent-plugin-elasticsearch\nCOPY fluentd.conf /fluentd.conf\nCMD [\"fluentd\", \"-c\", \"/fluentd.conf\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "webui.js"
+        ],
+        "folders": [
+            "files"
+        ]
+    }
+}

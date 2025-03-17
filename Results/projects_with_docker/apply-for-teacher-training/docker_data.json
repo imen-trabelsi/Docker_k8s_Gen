@@ -1,0 +1,90 @@
+{
+    "docker_info": {
+        "base_image": "${BASE_RUBY_IMAGE}",
+        "multi_stage_build": true,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "BASE_RUBY_IMAGE=ruby:3.3.5-alpine3.20",
+            "SHA"
+        ],
+        "envs": [
+            "ENV RAILS_ENV=production \\",
+            "ENV LANG=en_GB.UTF-8 \\",
+            "ENV SHA=${SHA}"
+        ],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY Gemfile Gemfile.lock ./",
+            "COPY package.json yarn.lock ./",
+            "COPY . .",
+            "WORKDIR /app",
+            "COPY --from=gems-node-modules /app /app",
+            "COPY --from=gems-node-modules /usr/local/bundle/ /usr/local/bundle/"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "bundle",
+                    "exec",
+                    "rails",
+                    "db:migrate:ignore_concurrent_migration_exceptions",
+                    "&&",
+                    "bundle",
+                    "exec",
+                    "rails",
+                    "server",
+                    "-b",
+                    "0.0.0.0"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk -U upgrade && \\",
+                "apk add --update --no-cache git gcc libc-dev make postgresql-dev build-base",
+                "libxml2-dev libxslt-dev nodejs yarn tzdata libpq libxml2 libxslt graphviz chromium gcompat",
+                "'aom>=3.9.1-r0'"
+            ],
+            [
+                "echo \"Europe/London\" > /etc/timezone && \\",
+                "cp /usr/share/zoneinfo/Europe/London /etc/localtime"
+            ],
+            [
+                "gem update --system && \\",
+                "bundler -v &&",
+                "bundle config set no-cache 'true' &&",
+                "bundle config set no-binstubs 'true' &&",
+                "bundle --retry=5 --jobs=4 --without=development &&",
+                "rm -rf /usr/local/bundle/cache"
+            ],
+            [
+                "yarn install --check-files",
+                ""
+            ],
+            [
+                "bundle exec rake assets:precompile",
+                "RUN rm -rf tmp/* log/* /tmp/*"
+            ],
+            [
+                "apk -U upgrade && \\",
+                "apk add --update --no-cache tzdata libpq libxml2 libxslt graphviz",
+                "ttf-dejavu ttf-droid ttf-liberation libx11 openssl nodejs chromium gcompat",
+                "'aom>=3.9.1-r0' &&",
+                "echo \"Europe/London\" > /etc/timezone &&",
+                "cp /usr/share/zoneinfo/Europe/London /etc/localtime"
+            ],
+            [
+                "echo export PATH=/usr/local/bin:\\$PATH > /root/.ashrc",
+                "ENV ENV=\"/root/.ashrc\""
+            ],
+            [
+                "echo ${SHA} > public/check",
+                ""
+            ]
+        ]
+    }
+}

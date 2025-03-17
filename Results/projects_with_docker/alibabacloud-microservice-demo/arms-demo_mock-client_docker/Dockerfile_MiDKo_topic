@@ -1,0 +1,28 @@
+# Use the provided base image
+FROM reg.docker.alibaba-inc.com/fuyi_docker/arms-baseline:1.0
+
+# Set the working directory
+WORKDIR /home/admin/arms-prometheus-gateway
+
+# Copy the necessary files and directories
+COPY ./server/target/arms-prometheus-gateway /home/admin/arms-prometheus-gateway
+COPY admin /home/admin
+COPY alidata /alidata
+
+# Build the Spring Boot project
+RUN mvn clean install
+
+# Change owner of the directory
+RUN chown -R admin:admin /home/admin/arms-prometheus-gateway
+
+# Expose the necessary ports
+
+# Specify the entrypoint
+ENTRYPOINT ["./bin/app.sh", "start"]
+
+# Set the user
+USER admin
+
+# Set environment variables
+
+# Set labels

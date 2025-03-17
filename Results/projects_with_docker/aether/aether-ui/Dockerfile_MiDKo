@@ -1,0 +1,35 @@
+# Using base image
+FROM python:3.10-slim
+
+# Create a group and user
+RUN addgroup --system aether && adduser --system --group aether
+
+# Set Environment Variables
+ENV VIRTUAL_ENV=/var/run/aether/venv
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+ENV VERSION 0.0.0
+ENV GIT_REVISION
+
+# Copy Files into Container
+COPY ./conf/docker/* /tmp/
+WORKDIR /code
+COPY --chown=aether:aether ./conf/pip /code/conf/pip
+COPY --chown=aether:aether ./ /code
+
+# Change user
+USER aether
+
+# Install dependencies
+RUN /tmp/setup.sh && \
+    mkdir -p $VIRTUAL_ENV && \
+    python3 -m venv $VIRTUAL_ENV && \
+    pip install -q --upgrade pip && \
+    pip install -q -r /code/conf/pip/requirements.txt && \
+    mkdir -p /var/tmp && \
+    echo $VERSION > /var/tmp/VERSION && \
+
+# Labels
+LABEL description="Aether"
+
+# Set EntryPoint
+ENTRYPOINT ["/code/entrypoint.sh"]

@@ -1,0 +1,43 @@
+{
+    "source_code_info": {
+        "language": "PHP",
+        "framework": "Symfony",
+        "dependencies": {
+            "composer.json": "{\n  \"name\": \"codelytv/php-ddd-example\",\n  \"license\": \"MIT\",\n  \"type\": \"project\",\n  \"description\": \"An example project applying Domain-Driven Design, Hexagonal Architecture and CQRS in a Monorepository\",\n  \"require\": {\n    \"php\": \"^8.3\",\n\n    \"ext-amqp\": \"*\",\n    \"ext-apcu\": \"*\",\n    \"ext-json\": \"*\",\n    \"ext-zend-opcache\": \"*\",\n    \"ext-pdo\": \"*\",\n\n    \"symfony/framework-bundle\": \"^7\",\n    \"symfony/messenger\": \"^7\",\n    \"symfony/dotenv\": \"^7\",\n    \"symfony/yaml\": \"^7\",\n    \"symfony/twig-bundle\": \"^7\",\n    \"symfony/validator\": \"^7\",\n    \"symfony/cache\": \"^7\",\n\n    \"lambdish/phunctional\": \"^2\",\n\n    \"ramsey/uuid\": \"^4\",\n\n    \"doctrine/dbal\": \"^3\",\n    \"doctrine/orm\": \"^2\",\n\n    \"ocramius/proxy-manager\": \"^2\",\n    \"laminas/laminas-zendframework-bridge\": \"^1\",\n\n    \"elasticsearch/elasticsearch\": \"^7\",\n    \"monolog/monolog\": \"^3\",\n\n    \"promphp/prometheus_client_php\": \"^2.7.2\"\n  },\n  \"require-dev\": {\n    \"ext-xdebug\": \"*\",\n\n    \"roave/security-advisories\": \"dev-master\",\n\n    \"behat/behat\": \"^3.13\",\n    \"friends-of-behat/mink-extension\": \"2.7.5\",\n    \"friends-of-behat/symfony-extension\": \"2.6.0\",\n    \"behat/mink-browserkit-driver\": \"2.2.0\",\n\n    \"phpunit/phpunit\": \"^9\",\n    \"mockery/mockery\": \"^1\",\n\n    \"fakerphp/faker\": \"^1\",\n\n    \"symfony/error-handler\": \"^7\",\n\n    \"symplify/easy-coding-standard\": \"^12.0\",\n    \"vimeo/psalm\": \"^5.15\",\n    \"rector/rector\": \"^0.18.12\",\n    \"psalm/plugin-mockery\": \"^1.1\",\n    \"psalm/plugin-symfony\": \"^5.0\",\n    \"psalm/plugin-phpunit\": \"^0.18.4\",\n    \"phpstan/phpstan\": \"^1.10\",\n    \"phpat/phpat\": \"^0.10.10\",\n    \"phpmd/phpmd\": \"^2.14\",\n    \"codelytv/coding-style\": \"^1.1\"\n  },\n  \"autoload\": {\n    \"psr-4\": {\n      \"CodelyTv\\\\Apps\\\\Mooc\\\\Backend\\\\\": \"apps/mooc/backend/src\",\n      \"CodelyTv\\\\Apps\\\\Mooc\\\\Frontend\\\\\": \"apps/mooc/frontend/src\",\n\n      \"CodelyTv\\\\Apps\\\\Backoffice\\\\Backend\\\\\": \"apps/backoffice/backend/src\",\n      \"CodelyTv\\\\Apps\\\\Backoffice\\\\Frontend\\\\\": \"apps/backoffice/frontend/src\",\n\n      \"CodelyTv\\\\\": [\"src\"]\n    }\n  },\n  \"autoload-dev\": {\n    \"psr-4\": {\n      \"CodelyTv\\\\Tests\\\\\": [\"tests\"]\n    }\n  },\n  \"minimum-stability\": \"RC\",\n  \"config\": {\n    \"allow-plugins\": {\n      \"ocramius/package-versions\": true\n    }\n  }\n}\n"
+        },
+        "database": "Elasticsearch",
+        "build_system": "Composer",
+        "config_files": {
+            ".env": "### Symfony - framework-bundle\nAPP_ENV=test\nAPP_SECRET=29ac4a5187930cd4b689aa0f3ee7cbc0\n#TRUSTED_PROXIES=127.0.0.1,127.0.0.2\n#TRUSTED_HOSTS='^localhost|example\\.com$'\n\n#              MOOC              #\n#--------------------------------#\n# MySql\nMOOC_DATABASE_DRIVER=pdo_mysql\nMOOC_DATABASE_HOST=codely-php_ddd_skeleton-mooc-mysql\nMOOC_DATABASE_PORT=3306\nMOOC_DATABASE_NAME=mooc\nMOOC_DATABASE_USER=root\nMOOC_DATABASE_PASSWORD=\n\n#           BACKOFFICE           #\n#--------------------------------#\n# MySql\nBACKOFFICE_DATABASE_DRIVER=pdo_mysql\nBACKOFFICE_DATABASE_HOST=codely-php_ddd_skeleton-mooc-mysql\nBACKOFFICE_DATABASE_PORT=3306\nBACKOFFICE_DATABASE_NAME=mooc\nBACKOFFICE_DATABASE_USER=root\nBACKOFFICE_DATABASE_PASSWORD=\n\n# Elasticsearch\nBACKOFFICE_ELASTICSEARCH_HOST=codely-php_ddd_skeleton-backoffice-elastic\nBACKOFFICE_ELASTICSEARCH_INDEX_PREFIX=backoffice\n\n#             COMMON             #\n#--------------------------------#\n# RabbitMQ\nRABBITMQ_HOST=codely-php_ddd_skeleton-rabbitmq\nRABBITMQ_PORT=5672\nRABBITMQ_LOGIN=codely\nRABBITMQ_PASSWORD=c0d3ly\nRABBITMQ_EXCHANGE=domain_events\nRABBITMQ_MAX_RETRIES=5\n# RabbitMQ - Application Specific\nRABBITMQ_MOOC_VHOST=/\n",
+            "docker-compose.yml": "version: '3'\n\nservices:\n  shared_rabbitmq:\n    container_name: codely-php_ddd_skeleton-rabbitmq\n    image: 'rabbitmq:3.10.5-management'\n    restart: unless-stopped\n    ports:\n      - \"5630:5672\"\n      - \"8090:15672\"\n    environment:\n      - RABBITMQ_DEFAULT_USER=codely\n      - RABBITMQ_DEFAULT_PASS=c0d3ly\n\n  shared_prometheus:\n    container_name: codely-php_ddd_skeleton-prometheus\n    image: prom/prometheus:v2.36.1\n    volumes:\n      - ./etc/prometheus/:/etc/prometheus/\n    command:\n      - '--config.file=/etc/prometheus/prometheus.yml'\n      - '--storage.tsdb.path=/prometheus'\n      - '--web.console.libraries=/usr/share/prometheus/console_libraries'\n      - '--web.console.templates=/usr/share/prometheus/consoles'\n    ports:\n      - \"9999:9090\"\n\n  mooc_mysql:\n    container_name: codely-php_ddd_skeleton-mooc-mysql\n    image: mariadb:10.7.4\n    ports:\n      - \"3360:3306\"\n    environment:\n      - MYSQL_ROOT_PASSWORD=\n      - MYSQL_ALLOW_EMPTY_PASSWORD=yes\n    healthcheck:\n      test: [\"CMD\", \"mysqladmin\", \"--user=root\", \"--password=\", \"--host=127.0.0.1\", \"ping\", \"--silent\"]\n      interval: 2s\n      timeout: 10s\n      retries: 10\n    command: [\"--default-authentication-plugin=mysql_native_password\"]\n\n  backoffice_elasticsearch:\n    container_name: codely-php_ddd_skeleton-backoffice-elastic\n    image: docker.elastic.co/elasticsearch/elasticsearch:8.2.3\n    ports:\n      - \"9200:9200\"\n      - \"9300:9300\"\n    environment:\n      - discovery.type=single-node\n      - xpack.security.enabled=false\n      - \"ES_JAVA_OPTS=-Xms512m -Xmx512m\"\n\n  backoffice_backend_php:\n    container_name: codely-php_ddd_skeleton-backoffice_backend-php\n    user: \"${UID}:${GID}\"\n    build:\n      context: .\n      dockerfile: Dockerfile\n    restart: unless-stopped\n    ports:\n      - \"8040:8040\"\n      - \"9040:9001\"\n    volumes:\n      - .:/app:delegated\n    depends_on:\n      - shared_rabbitmq\n      - shared_prometheus\n      - backoffice_elasticsearch\n    command: symfony serve --dir=apps/backoffice/backend/public --port=8040\n\n  backoffice_frontend_php:\n    container_name: codely-php_ddd_skeleton-backoffice_frontend-php\n    user: \"${UID}:${GID}\"\n    build:\n      context: .\n      dockerfile: Dockerfile\n    restart: unless-stopped\n    ports:\n      - \"8041:8041\"\n      - \"9041:9001\"\n    volumes:\n      - .:/app:delegated\n    depends_on:\n      - shared_rabbitmq\n      - shared_prometheus\n      - backoffice_elasticsearch\n      - mooc_mysql\n    command: symfony serve --dir=apps/backoffice/frontend/public --port=8041\n\n  mooc_backend_php:\n    container_name: codely-php_ddd_skeleton-mooc_backend-php\n    user: \"${UID}:${GID}\"\n    build:\n      context: .\n      dockerfile: Dockerfile\n    restart: unless-stopped\n    ports:\n      - \"8030:8030\"\n      - \"9030:9001\"\n    volumes:\n      - .:/app:delegated\n    depends_on:\n      - shared_rabbitmq\n      - shared_prometheus\n      - mooc_mysql\n    command: symfony serve --dir=apps/mooc/backend/public --port=8030\n",
+            "Dockerfile": "FROM php:8.3-fpm-alpine\nWORKDIR /app\n\nRUN apk --update upgrade \\\n    && apk add --no-cache autoconf automake make gcc g++ git bash icu-dev libzip-dev rabbitmq-c rabbitmq-c-dev linux-headers\n\nRUN pecl install apcu-5.1.23 && pecl install amqp-2.1.1 && pecl install xdebug-3.3.0\n\nRUN docker-php-ext-install -j$(nproc) \\\n        bcmath \\\n        opcache \\\n        intl \\\n        zip \\\n        pdo_mysql\n\nRUN docker-php-ext-enable amqp apcu opcache\n\nRUN curl -sS https://get.symfony.com/cli/installer | bash -s - --install-dir /usr/local/bin\n\nCOPY etc/infrastructure/php/ /usr/local/etc/php/\n\n# allow non-root users have home\nRUN mkdir -p /opt/home\nRUN chmod 777 /opt/home\nENV HOME /opt/home\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".env",
+            ".gitignore",
+            "Dockerfile",
+            "Makefile",
+            "README.md",
+            "behat.yml",
+            "composer.json",
+            "composer.lock",
+            "docker-compose.yml",
+            "ecs.php",
+            "phpmd.xml",
+            "phpstan.neon",
+            "phpunit.xml",
+            "psalm.xml",
+            "rector.php"
+        ],
+        "folders": [
+            ".github",
+            "apps",
+            "etc",
+            "src",
+            "tests"
+        ]
+    }
+}

@@ -1,0 +1,32 @@
+# Starting off with the official base image
+FROM golang:1.15.6-alpine as builder
+
+RUN adduser -D -g '' elf
+
+USER elf
+
+WORKDIR /opt/app/
+
+COPY go.mod .
+COPY go.sum .
+
+RUN go mod download
+RUN go mod verify
+
+# Copy the source code into the container 
+COPY . .
+
+# Build the application
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -a -installsuffix cgo -o /go/bin/cinema-movies ./cmd/app
+
+# Creating a minimal runtime image
+FROM scratch
+
+WORKDIR /
+
+
+USER elf
+
+LABEL language="golang" \
+
+ENTRYPOINT ["./cinema-movies"]

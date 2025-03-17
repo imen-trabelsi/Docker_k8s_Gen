@@ -1,0 +1,405 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "DlesPrototypes",
+            "type": "tree"
+        },
+        {
+            "path": "DlesPrototypes/DlesPrototypes.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "DlesPrototypes/Plane.cs",
+            "type": "blob"
+        },
+        {
+            "path": "DlesPrototypes/Types.cs",
+            "type": "blob"
+        },
+        {
+            "path": "DockerCompose",
+            "type": "tree"
+        },
+        {
+            "path": "DockerCompose/docker-compose_docker_hub.yml",
+            "type": "blob"
+        },
+        {
+            "path": "DockerCompose/docker-compose_localhost.yml",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices",
+            "type": "tree"
+        },
+        {
+            "path": "HostedServices/AirportService",
+            "type": "tree"
+        },
+        {
+            "path": "HostedServices/AirportService/AirportBackgroundService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/AirportService/AirportService.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/AirportService/AirportService.csproj.user",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/AirportService/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/AirportService/Domain",
+            "type": "tree"
+        },
+        {
+            "path": "HostedServices/AirportService/Domain/Airport.cs",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/AirportService/Domain/AirportLifetimeManager.cs",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/AirportService/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/AirportService/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "HostedServices/AirportService/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/AirportService/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/AirportService/appsettings.Docker.json",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/AirportService/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/PlaneService",
+            "type": "tree"
+        },
+        {
+            "path": "HostedServices/PlaneService/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/PlaneService/Domain",
+            "type": "tree"
+        },
+        {
+            "path": "HostedServices/PlaneService/Domain/Plane.cs",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/PlaneService/Domain/PlaneLifetimeManager.cs",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/PlaneService/PlaneBackgroundService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/PlaneService/PlaneService.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/PlaneService/PlaneService.csproj.user",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/PlaneService/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/PlaneService/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "HostedServices/PlaneService/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/PlaneService/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/PlaneService/appsettings.Docker.json",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/PlaneService/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/TrafficInfoApi",
+            "type": "tree"
+        },
+        {
+            "path": "HostedServices/TrafficInfoApi/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "HostedServices/TrafficInfoApi/Controllers/TrafficInfoController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/TrafficInfoApi/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/TrafficInfoApi/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/TrafficInfoApi/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "HostedServices/TrafficInfoApi/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/TrafficInfoApi/Services",
+            "type": "tree"
+        },
+        {
+            "path": "HostedServices/TrafficInfoApi/Services/ITrafficInfoService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/TrafficInfoApi/Services/StaticResourcesProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/TrafficInfoApi/Services/TrafficInfoService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/TrafficInfoApi/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/TrafficInfoApi/TrafficInfoApi.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/TrafficInfoApi/TrafficInfoApi.csproj.user",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/TrafficInfoApi/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/TrafficInfoApi/appsettings.Docker.json",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/TrafficInfoApi/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/TrafficInfoApi/worldMap.json",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/TrafficSimulatorService",
+            "type": "tree"
+        },
+        {
+            "path": "HostedServices/TrafficSimulatorService/DomainObjectsDataFactory.cs",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/TrafficSimulatorService/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/TrafficSimulatorService/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "HostedServices/TrafficSimulatorService/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/TrafficSimulatorService/SimulatedTrafficBackgroundService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/TrafficSimulatorService/TrafficSimulatorService.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/TrafficSimulatorService/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "HostedServices/TrafficSimulatorService/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "Planes.sln",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "SharedKernel",
+            "type": "tree"
+        },
+        {
+            "path": "SharedKernel/Contracts",
+            "type": "tree"
+        },
+        {
+            "path": "SharedKernel/Contracts/AirportContract.cs",
+            "type": "blob"
+        },
+        {
+            "path": "SharedKernel/Contracts/AirportContractExtension.cs",
+            "type": "blob"
+        },
+        {
+            "path": "SharedKernel/Contracts/Contracts.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "SharedKernel/Contracts/PlaneContract.cs",
+            "type": "blob"
+        },
+        {
+            "path": "SharedKernel/Contracts/PlaneContractExtension.cs",
+            "type": "blob"
+        },
+        {
+            "path": "SharedKernel/Contracts/TrafficInfoContract.cs",
+            "type": "blob"
+        },
+        {
+            "path": "SharedKernel/Contracts/Type.cs",
+            "type": "blob"
+        },
+        {
+            "path": "SharedKernel/Utils",
+            "type": "tree"
+        },
+        {
+            "path": "SharedKernel/Utils/HostServiceNameSelector.cs",
+            "type": "blob"
+        },
+        {
+            "path": "SharedKernel/Utils/Navigation.cs",
+            "type": "blob"
+        },
+        {
+            "path": "SharedKernel/Utils/TrafficInfoHttpClient.cs",
+            "type": "blob"
+        },
+        {
+            "path": "SharedKernel/Utils/Utils.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "Wiki",
+            "type": "tree"
+        },
+        {
+            "path": "Wiki/BPES with SubDomains.png",
+            "type": "blob"
+        },
+        {
+            "path": "Wiki/BPES.png",
+            "type": "blob"
+        },
+        {
+            "path": "Wiki/C2_Planes.png",
+            "type": "blob"
+        },
+        {
+            "path": "Wiki/DLES - code after.png",
+            "type": "blob"
+        },
+        {
+            "path": "Wiki/DLES.png",
+            "type": "blob"
+        },
+        {
+            "path": "Wiki/Domain and Technical Layers.drawio",
+            "type": "blob"
+        },
+        {
+            "path": "Wiki/Domain and Technical Layers.png",
+            "type": "blob"
+        },
+        {
+            "path": "Wiki/Domain and Technical Layers.svg",
+            "type": "blob"
+        },
+        {
+            "path": "Wiki/PLES.png",
+            "type": "blob"
+        },
+        {
+            "path": "Wiki/Planes code review in DDD context.docx",
+            "type": "blob"
+        },
+        {
+            "path": "Wiki/Planes code review in DDD context.pdf",
+            "type": "blob"
+        },
+        {
+            "path": "Wiki/c2_Planes.drawio",
+            "type": "blob"
+        },
+        {
+            "path": "Wiki/c2_Planes.drawio.svg",
+            "type": "blob"
+        },
+        {
+            "path": "Wiki/demo.png",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "launchLocalhostOnPremises.ps1",
+            "type": "blob"
+        }
+    ]
+}

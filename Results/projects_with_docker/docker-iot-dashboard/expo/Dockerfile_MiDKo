@@ -1,0 +1,28 @@
+# Use phusion/baseimage as base image
+FROM phusion/baseimage:master-amd64
+
+# Install dependencies
+RUN rm -f /etc/service/sshd/down && \
+    /etc/my_init.d/00_regen_ssh_host_keys.sh && \
+    curl -sL https://deb.nodesource.com/setup_16.x | bash - && \
+    apt-get update && apt-get install -y nodejs tmux git && \
+    add-apt-repository ppa:git-core/ppa && \
+    apt-get update && apt-get install -y git && \
+    npm install expo-cli --global && \
+
+# Copy pub keys and append to authorized_keys, then delete
+COPY *.pub /tmp/
+RUN cat /tmp/*.pub >> /root/.ssh/authorized_keys && \
+
+# Copy app files
+COPY dncui/ /expo/dncui/
+COPY expo_start /etc/service/expo_start/run
+
+# Expose ports (fill in the number according to your configuration)
+# EXPOSE <port_number>
+
+# Define command
+# CMD ["your-command"]
+
+# Define entry point if necessary
+# ENTRYPOINT ["your-entry-point"]

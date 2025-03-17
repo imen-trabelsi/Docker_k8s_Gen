@@ -1,0 +1,23 @@
+# Use specified base image
+FROM node:12.18.2-alpine
+
+# Set working directory in the container
+WORKDIR /code
+
+# Updating PATH for node_modules
+ENV PATH /code/node_modules/.bin:$PATH
+
+# Copy only the dependencies configuration to the workspace
+COPY package*.json /code/
+
+# Install dependencies
+RUN npm install --silent
+
+# Bundle the source
+COPY . /code/
+
+# Expose the network port
+EXPOSE 8075
+
+# Configure the startup command
+CMD [ "npm", "start" ]

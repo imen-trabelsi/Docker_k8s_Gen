@@ -1,0 +1,11 @@
+# Using the base image provided:
+FROM redis:6
+
+# Copy configuration file
+COPY redis.conf /usr/local/etc/redis/redis.conf
+
+# Set the entry point
+ENTRYPOINT ["redis-server"]
+
+# Set the command
+CMD ["/usr/local/etc/redis/redis.conf"]

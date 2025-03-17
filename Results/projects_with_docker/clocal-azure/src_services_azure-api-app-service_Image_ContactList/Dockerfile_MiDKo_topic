@@ -1,0 +1,33 @@
+# Base Image
+FROM node:8
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Install app dependencies copied from system
+COPY package*.json ./
+
+# Bundle app source code
+COPY . .
+
+# MySQL Dependencies
+RUN npm install mysql --save
+
+# Install Dependencies - Install NODE dependencies
+RUN npm install 
+RUN npm install -g nodemon
+
+# Ports to be exposed from the docker container
+EXPOSE 9000
+
+# Environment Variables
+ENV MYSQL_HOST=mysql \
+    MYSQL_DATABASE=nodeapp \
+    MYSQL_USER=root \
+
+#Health check – describe how Docker should test the container to check that it is still working.
+HEALTHCHECK --interval=5s --timeout=3s \
+  CMD curl -f http://localhost:9000 || exit 1
+
+# This command will start the service
+CMD [ "npm", "start" ]

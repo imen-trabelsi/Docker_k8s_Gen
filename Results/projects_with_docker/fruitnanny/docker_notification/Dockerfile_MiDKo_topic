@@ -1,0 +1,31 @@
+# Using base image ivadim/fruitnanny-app
+FROM ivadim/fruitnanny-app
+
+# Copy package.json file to the container
+COPY package.json .
+
+# run apt-get update and install necessary dependencies
+RUN apt-get update \
+&& apt-get install -y libgpiod2 \
+&& pip3 install adafruit-circuitpython-lis3dh \
+&& pip3 install adafruit-circuitpython-dht \
+&& pip3 install pushbullet.py \
+&& pip3 install configparser \
+&& pip3 install adafruit-blinka \
+&& apt-get --purge remove -y buildDeps && apt-get --purge -y autoremove \
+&& apt-get clean \
+&& rm -rf /tmp/* \
+
+# Install the application dependencies
+RUN npm install
+
+# Copy the rest of your app's source code from your host to your image filesystem
+COPY . .
+
+# The common practice is to use port 3000 for Node.js apps, 
+# you can use any port you like, just ensure that both in the app 
+# and in the Dockerfile they are the same.
+EXPOSE 3000
+
+# Define the command to run
+CMD ["npm", "start"]

@@ -1,0 +1,27 @@
+# Use the official openjdk image as the base image
+FROM openjdk:8-jre
+
+# Set the working directory in the container
+WORKDIR /zipkin-web
+
+# Copying pom.xml and source code to container
+COPY ./pom.xml ./pom.xml
+COPY ./src ./src
+
+# Building application inside container
+RUN mvn -f pom.xml clean package
+
+# Copy the application's jar file to the work directory
+COPY ./target/zipkin-web-all.jar ./zipkin-web-all.jar
+
+# Set the necessary environment variables
+ENV JAVA_OPTS="-Djava.security.egd=file:/dev/./urandom"
+
+# Expose the necessary port
+EXPOSE 9412
+
+# Set the entry point of the container
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom"]
+
+# Provide default arguments for entrypoint
+CMD ["-jar","/zipkin-web/zipkin-web-all.jar", "-zipkin.web.port=:9412", "-zipkin.web.rootUrl=/", "-zipkin.web.query.dest=zipkin:9411"]

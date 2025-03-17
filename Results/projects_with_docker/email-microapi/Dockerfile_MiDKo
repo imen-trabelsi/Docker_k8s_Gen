@@ -1,0 +1,32 @@
+# Select base image
+FROM python:3.8-slim-buster
+
+# Create directory for application workspace
+WORKDIR /app
+
+# Ste environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# Add requirements.txt
+COPY requirements.txt .
+
+# Install dependencies
+RUN python -m pip install -r requirements.txt
+
+# Add remaining application files
+COPY . /app
+
+# Copy env example
+COPY env.example /app/.env
+
+# Run necessary commands 
+RUN mkdir -p /app/static \
+    && python manage.py collectstatic --noinput \
+    && python manage.py makemigrations \
+
+# Expose port 8000
+EXPOSE 8000
+
+# CMD to start the application
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "send_email_microservice.wsgi"]

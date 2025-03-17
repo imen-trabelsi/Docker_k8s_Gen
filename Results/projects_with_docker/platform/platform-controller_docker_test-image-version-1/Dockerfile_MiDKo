@@ -1,0 +1,27 @@
+# Start with the base image you want
+FROM busybox:latest
+
+# Set the working directory
+WORKDIR /app
+
+# Set the necessary environment variables needed
+# Please replace "your_env_variable" with your actual environment variables
+ENV JAVA_OPTS="-Xmx300m -Xms300m" \
+
+# Copy all the project files to the application directory
+COPY . .
+
+# Copy the POM file and install the dependencies
+COPY pom.xml /app/pom.xml
+RUN mvn clean install
+
+# Copy the actual project to the image
+COPY src /app/src
+
+# Expose the port your app runs on 
+# Replace "your_port" with your real exposed ports
+EXPOSE your_port
+
+# Set the appropriate java command to start your Spring boot application
+# Replace "your_app.jar" with the name of your actual jar
+CMD ["java", "-jar", "your_app.jar"]

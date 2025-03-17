@@ -1,0 +1,20 @@
+# Use the specified base image
+FROM eventuateio/eventuate-examples-docker-images-spring-example-base-image:$baseImageVersion
+
+# Copy the jar file to container
+COPY build/libs/ftgo-delivery-service.jar service.jar
+
+# Set any environment variables
+ENV MYSQL_URL=jdbc:mysql://mysql:3306/database
+ENV MYSQL_USERNAME=username
+ENV MYSQL_PASSWORD=password
+
+# Expose the ports needed
+EXPOSE 8080
+
+# Set volume to mount for database
+VOLUME /tmp
+
+# Define default command.
+CMD ["java", "-Djava.security.egd=file:/dev/./urandom","-jar","service.jar"]
+

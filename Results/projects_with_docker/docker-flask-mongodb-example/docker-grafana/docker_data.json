@@ -1,0 +1,38 @@
+{
+    "docker_info": {
+        "base_image": "grafana/grafana:8.1.5-ubuntu",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /etc/grafana",
+            "COPY datasources ./datasources",
+            "WORKDIR /app",
+            "COPY entrypoint.sh ./"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/app/entrypoint.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && apt-get install -y curl gettext-base && rm -rf /var/lib/apt/lists/*",
+                ""
+            ],
+            [
+                "chmod u+x entrypoint.sh",
+                ""
+            ]
+        ]
+    }
+}

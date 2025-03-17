@@ -1,0 +1,39 @@
+# Base Image
+FROM $base_img
+
+# Build Arguments
+ARG base_img
+ARG flink_uid=999
+
+# Environment Variables
+ENV PATH /opt/conda/bin:$PATH
+ENV LANG C.UTF-8
+
+# Copy Instructions
+WORKDIR /
+COPY Gemfile Gemfile.lock ./
+COPY subrepos/scalingpythonml/flink/containers/python-executor/Dockerfile ./
+COPY pysetup.sh /pysetup.sh
+
+# Run Commands
+RUN apt-get update --fix-missing && \
+    apt-get install -yq graphviz git build-essential cmake telnet && \
+    apt install -y bash tini libc6 libpam-modules libnss3 procps ca-certificates p11-kit wget bzip2 git mercurial subversion && \
+    rm /bin/sh && \
+    ln -sv /bin/bash /bin/sh && \
+    chmod a+x /pysetup.sh && ./pysetup.sh && \
+    conda install -c conda-forge --yes mamba && \
+    mamba install --yes python==3.8.6 && \
+    pip install --upgrade pip setuptools && \
+    mamba install --yes numpy==1.19.2 pandas cytoolz numba lz4 scikit-build python-blosc=1.9.2 && \
+
+# Dependencies
+RUN bundle install
+
+# Users
+USER ${flink_uid}
+
+# Expose Ports
+EXPOSE 8080
+
+ENTRYPOINT ["ruby", "app.rb"]

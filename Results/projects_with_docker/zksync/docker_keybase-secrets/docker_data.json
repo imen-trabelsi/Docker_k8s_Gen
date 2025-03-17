@@ -1,0 +1,32 @@
+{
+    "docker_info": {
+        "base_image": "keybaseio/client",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV KEYBASE_SERVICE=1"
+        ],
+        "copy_instructions": [
+            "COPY docker/keybase-secrets/entrypoint.sh /"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/entrypoint.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update \\",
+                "&& apt-get install -y git",
+                "&& rm -rf /var/lib/apt/lists/*"
+            ]
+        ]
+    }
+}

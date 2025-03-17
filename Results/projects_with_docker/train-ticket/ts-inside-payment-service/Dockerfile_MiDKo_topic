@@ -1,0 +1,31 @@
+# Use the official Maven image as the base image
+FROM maven:3.6.3-jdk-8 as build-stage
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the pom.xml file to the working directory
+COPY pom.xml .
+
+# Download dependencies
+RUN mvn dependency:go-offline -B
+
+# Copy the rest of the source code to the working directory
+COPY src src/
+
+# Build the project
+RUN mvn package -DskipTests
+
+# Start a new stage
+FROM java:8-jre
+
+# Set Timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' > /etc/timezone
+
+# Copy the jar file from the build stage to the deployment stage
+
+# Expose port 18673
+EXPOSE 18673
+
+#Set the entry point command
+ENTRYPOINT ["java", "-Xmx200m",  "-jar", "/app/ts-inside-payment-service-1.0.jar"]

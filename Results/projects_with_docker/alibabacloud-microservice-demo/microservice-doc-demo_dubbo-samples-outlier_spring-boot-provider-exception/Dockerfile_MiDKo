@@ -1,0 +1,33 @@
+# Use the base Image
+FROM openjdk:8-jre-alpine
+
+# Define necessary variables
+ENV APP_HOME /app
+WORKDIR $APP_HOME
+
+# Covert build arguments to environment variables if any
+
+# Copy the jar to the container
+COPY /target/cartservice-provider-1.0.0-SNAPSHOT.jar $APP_HOME
+
+# Expose the port
+EXPOSE 8080
+
+# Run Command if any
+
+# Define User if any
+
+# Set environment variable if any
+
+# Set labels if any
+
+# Set Health Check if any
+
+# Options for java runtime to optimize
+ENV JAVA_OPTS=""
+
+# The entry point
+ENTRYPOINT [ "sh", "-c" ]
+
+# Add the command (This can also be added in ENTRYPOINT)
+CMD [ "java, $JAVA_OPTS, -jar, /app/cartservice-provider-1.0.0-SNAPSHOT.jar" ]

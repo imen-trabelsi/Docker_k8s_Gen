@@ -1,0 +1,50 @@
+# Base image
+FROM ubuntu:latest
+
+# Author
+LABEL maintainer="DevOps Dockerfile Maintainer"
+
+# Update and install required tools, software and packages
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install -y git openjdk-8-jdk software-properties-common wget unzip curl && \
+    add-apt-repository ppa:cwchien/gradle && \
+    apt-get update && \
+    wget https://services.gradle.org/distributions/gradle-3.4.1-bin.zip && \
+    mkdir /opt/gradle && \
+    unzip -d /opt/gradle gradle-3.4.1-bin.zip && \
+    wget http://www-eu.apache.org/dist/mina/ftpserver/1.1.1/dist/apache-ftpserver-1.1.1.tar.gz && \
+    tar xfz apache-ftpserver-1.1.1.tar.gz && \
+    wget https://www.rabbitmq.com/releases/rabbitmq-server/v3.6.6/rabbitmq-server-generic-unix-3.6.6.tar.xz && \
+    tar xf rabbitmq-server-generic-unix-3.6.6.tar.xz && \
+    apt-get install -y erlang && \
+    wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-5.5.0.tar.gz && \
+    sha1sum elasticsearch-5.5.0.tar.gz && \
+
+# Fetch the Source Code
+RUN git clone https://github.com/nikhilrayaprolu/yacy_grid_mcp.git
+
+# Set path for gradle
+ENV GRADLE_HOME=/opt/gradle/gradle-3.4.1
+ENV PATH=$PATH:$GRADLE_HOME/bin
+
+# Working Directory
+WORKDIR /yacy_grid_mcp
+
+# Copy configuration file
+RUN cat docker/config-ftp.properties > ../apache-ftpserver-1.1.1/res/conf/users.properties
+
+# Build the code
+RUN gradle build
+
+# Copy necessary files
+RUN mkdir -p data/mcp-8100/conf/ && \
+    
+# Give execute permissions to start.sh
+RUN chmod +x ./docker/start.sh
+
+# Expose ports
+EXPOSE 2121
+
+# Run the command on container startup
+ENTRYPOINT ["/bin/bash", "./docker/start.sh"]
+

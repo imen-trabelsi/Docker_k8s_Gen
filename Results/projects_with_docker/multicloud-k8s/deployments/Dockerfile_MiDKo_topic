@@ -1,0 +1,52 @@
+# Use the ubuntu 18.04 image
+FROM ubuntu:18.04
+
+RUN groupadd -r onap && useradd -r -g onap onap
+
+WORKDIR /opt/multicloud/k8splugin
+
+# Set environment variables 
+ENV http_proxy $HTTP_PROXY
+ENV https_proxy $HTTPS_PROXY
+ENV no_proxy $NO_PROXY
+
+# Update and Install Go
+RUN apt-get update && \
+    apt-get install -y golang-1.10 git && \
+    rm -rf /var/lib/apt/lists/* && \
+    mkdir /go && \
+    mkdir /go/src && \
+    mkdir /go/pkg && \
+
+ENV GOPATH=/go
+ENV PATH=$GOPATH/bin:/usr/local/go/bin:$PATH
+
+RUN go get -u github.com/golang/dep/cmd/dep
+
+# Copy the local package files to the container’s workspace.
+COPY . /go/src/github.com/user/repository
+
+WORKDIR /go/src/github.com/user/repository
+
+# Install
+RUN dep ensure
+RUN go install
+
+COPY --from=0 ./APP_DIR go mod download
+COPY --from=0 ./APP_DIR .
+
+# Adding source files
+COPY --chown=onap ./k8plugin ./
+COPY --chown=onap ./*.so ./plugins/
+
+# Set folder permissions
+RUN chown onap:onap /opt/multicloud/k8splugin -R
+
+# Install any needed packages specified in go.mod
+RUN go mod download
+
+# Expose the port the app runs in
+EXPOSE 9015
+
+# The command to start the application
+CMD ["./k8plugin"]

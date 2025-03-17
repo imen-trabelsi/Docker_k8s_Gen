@@ -1,0 +1,25 @@
+# Base image
+FROM mesosphere/openjdk-alpine-ammonite:2.0.4-2.13
+
+# Working directory in the container
+WORKDIR /app
+
+# Copy lib, bin and marathon directories into the Docker workspace
+COPY lib/ /lib/
+COPY bin/ /bin/
+COPY marathon/ /marathon/
+
+# Set correct environment variables
+ENV JAVA_OPTS="-Xms256m -Xmx1024m"
+
+# Install dependencies specified in build.sbt file
+RUN sbt update
+
+# Run a command to verify that everything is set up correctly
+RUN amm-2.13 --predef lib/predef.sc --predef-code 'println("it worked"); sys.exit(0)' | grep "it worked"
+
+# Expose application port
+EXPOSE 8080
+
+# Command to start the application
+ENTRYPOINT ["/bin/storage-tool.sh"]

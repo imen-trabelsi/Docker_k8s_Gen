@@ -1,0 +1,34 @@
+{
+    "docker_info": {
+        "base_image": "maven:3.6.2-jdk-11-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY pom.xml /tmp/",
+            "COPY src /tmp/src/",
+            "WORKDIR /tmp/",
+            "COPY --from=MAVEN_TOOL_CHAIN /tmp/target/fx-trading-0.0.1-SNAPSHOT.jar /trading-service.jar"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "/usr/local/openjdk-11/bin/java",
+                    "-jar",
+                    "/trading-service.jar"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mvn package -Pprod -DskipTests",
+                ""
+            ]
+        ]
+    }
+}

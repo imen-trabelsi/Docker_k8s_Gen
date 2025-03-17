@@ -1,0 +1,31 @@
+# Start with base image
+FROM openjdk:8-jre
+
+# Validate inputs and ensure that dependencies are still up-to-date
+RUN apt-get update && apt-get install -y maven
+
+# Copy pom.xml file and download dependencies, then remove pom file
+COPY pom.xml /tmp/pom.xml
+RUN mvn dependency:resolve
+RUN rm /tmp/pom.xml
+
+# Copy local code to the container
+COPY ./abixen-platform-hystrix-dashboard/src/main/java /app
+WORKDIR /app
+
+# Compile the project
+RUN mvn package -DskipTests
+
+# Add JAR file to the container
+COPY target/abixen-platform-hystrix-dashboard.jar app.jar
+
+# Set the necessary environment variables
+ENV PROFILES_ACTIVE=docker
+ENV ABIXEN_SERVICES_EUREKA_URI=discovery
+
+# Expose service on the following port
+EXPOSE 8989
+
+# Start the application
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=docker","-Dabixen.services.eureka.uri=discovery"]
+CMD ["-jar","/app.jar"]

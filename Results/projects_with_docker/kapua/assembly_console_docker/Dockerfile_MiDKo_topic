@@ -1,0 +1,30 @@
+# Fetch Jetty base Image
+FROM @docker.account@/jetty-base
+
+# Set environment variables
+ENV BROKER_ADDR broker
+ENV BROKER_PORT 1883
+ENV DATASTORE_ADDR es:9200
+ENV SQL_DB_ADDR db
+ENV SQL_DB_PORT 3306
+ENV SERVICE_BROKER_ADDR failover:(amqp://events-broker:5672)?jms.sendTimeout=1000
+ENV JOB_ENGINE_BASE_ADDR http://job-engine:8080/v1
+ENV JAVA_OPTS "-Dcommons.db.schema.update=true"
+
+# ADD Maven dependencies (remember to add pom.xml in the same directory than this Dockerfile)
+COPY pom.xml /tmp/pom.xml
+
+# Install maven
+RUN mvn -B -f /tmp/pom.xml -s /usr/share/maven/ref/settings-docker.xml dependency:resolve
+
+# Copy the project
+COPY maven /
+
+# Set permissions
+RUN chown -R 1000:0 /opt/jetty /var/opt/jetty && \
+
+# Set user
+USER 1000
+
+# Set the entrypoint command
+ENTRYPOINT ["/var/opt/jetty/run-console"]

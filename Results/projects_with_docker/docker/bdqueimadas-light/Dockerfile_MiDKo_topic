@@ -1,0 +1,28 @@
+# Set the base image
+FROM ubuntu:16.04
+
+# Set maintainer label
+LABEL maintainer="TerraMA²"
+
+# Set the working directory
+ENV BDQLIGHT_INSTALL_PATH=/opt/bdqueimadas-light
+WORKDIR ${BDQLIGHT_INSTALL_PATH}
+
+# Install required packages
+RUN apt-get update && \
+    apt-get install -y curl git unzip sudo openssh-server gdal-bin && \
+    curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash - && \
+    apt-get install -y nodejs && \
+
+# Copy the necessary files and scripts
+COPY files/install_bdqlight.sh .
+COPY docker-entrypoint.sh /
+
+# Install bdqueimadas-light
+RUN ./install_bdqlight.sh && rm install_bdqlight.sh
+
+# Expose required port
+EXPOSE 39000
+
+# Set the docker entry point
+ENTRYPOINT ["/docker-entrypoint.sh"]

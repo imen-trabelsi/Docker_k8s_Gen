@@ -1,0 +1,29 @@
+# Base image
+FROM debian:buster-slim
+
+# Environment Variables
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+ENV PATH /opt/conda/bin:$PATH
+
+# Set Workdir
+WORKDIR /app
+
+# Copy requirements
+COPY Gemfile /app
+
+# Install system dependencies
+RUN apt-get update --fix-missing && \
+    apt-get install -y wget bzip2 ca-certificates libglib2.0-0 libxext6 libsm6 libxrender1 git mercurial subversion && \
+
+# Install Ruby dependencies
+RUN gem install bundler
+RUN bundle install
+
+# Copy application code
+COPY . /app
+
+# Setup script
+COPY setup.sh /setup.sh
+RUN /setup.sh
+
+CMD [ "/bin/bash" ]

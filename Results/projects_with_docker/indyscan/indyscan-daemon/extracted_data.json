@@ -1,0 +1,30 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"indyscan-daemon\",\n  \"version\": \"4.6.1\",\n  \"author\": \"Patrik Sta\u0161\",\n  \"license\": \"ISC\",\n  \"description\": \"Application scanning Hyperledger Indy blockchain for fetching and processing transactions.\",\n  \"main\": \"src/index.js\",\n  \"scripts\": {\n    \"rmlogs\": \"rimraf ./logs\",\n    \"watchinfo\": \"tail -f ./logs/info/*\",\n    \"watchwarn\": \"tail -f ./logs/warn/*\",\n    \"watcherror\": \"tail -f ./logs/error/*\",\n    \"lint\": \"standard\",\n    \"lint:fix\": \"standard --fix\",\n    \"dev\": \"cross-env NODE_ENV=development nodemon src/index.js\",\n    \"dev:sovrin:staging:builder\": \"cross-env NODE_ENV=development WORKER_CONFIGS=app-configs/sovstaging.json,app-configs/sovbuilder.json nodemon src/index.js\",\n    \"dev:sovrin:builder\": \"cross-env NODE_ENV=development WORKER_CONFIGS=app-configs/sovbuilder.json nodemon src/index.js\",\n    \"dev:sovrin:staging\": \"cross-env NODE_ENV=development WORKER_CONFIGS=app-configs/sovstaging.json nodemon src/index.js\",\n    \"dev:sovrin:sovmain\": \"cross-env NODE_ENV=development WORKER_CONFIGS=app-configs/sovmain.json nodemon src/index.js\",\n    \"dev:sovrin\": \"cross-env NODE_ENV=development WORKER_CONFIGS=app-configs/sovmain.json,app-configs/sovstaging.json,app-configs/sovbuilder.json nodemon src/index.js\",\n    \"start\": \"cross-env NODE_ENV=production node ./src/index.js\",\n    \"start:locahost\": \"cross-env ENVIRONMENT=localhost node ./src/index.js\",\n    \"test:unit\": \"jest test/unit\",\n    \"test:unit:pipeline\": \"jest test/unit/pipelines\",\n    \"test:integration\": \"cross-env CLEAN_HYDRATE_CLEAN=true jest test/integration\",\n    \"networks:list\": \"ls ~/.indy_client/pool\",\n    \"networks:add:localhost\": \"bash genesis/localhost/setup.sh\",\n    \"networks:add:sovrin\": \"bash setup.sh\",\n    \"elastic:delete:sovrin\": \"bash delete-es-indices.sh\",\n    \"kibana-export\": \"elasticdump --input=http://localhost:9200/.kibana_1 --output=kibana-index/esindex.kibana_1.json --type=data && elasticdump --input=http://localhost:9200/.kibana_1 --output=kibana-index/esindex_mapping.kibana_1.json --type=mapping\",\n    \"kibana-import\": \"elasticdump --input=kibana-index/esindex.kibana_1.json --output=http://localhost:9200/.kibana_1 --type=data && elasticdump --input=kibana-index/esindex_mapping.kibana_1.json --output=http://localhost:9200/.kibana_1 --type=mapping\"\n  },\n  \"jest\": {\n    \"testEnvironment\": \"node\"\n  },\n  \"dependencies\": {\n    \"@elastic/elasticsearch\": \"^7.4.0\",\n    \"axios\": \"^0.21.1\",\n    \"body-parser\": \"^1.18.3\",\n    \"cross-env\": \"^5.2.1\",\n    \"dotenv\": \"^7.0.0\",\n    \"express\": \"^4.17.1\",\n    \"express-prettify\": \"^0.1.1\",\n    \"geoip-lite\": \"^1.3.8\",\n    \"vdr-tools\": \"0.8.5\",\n    \"indyscan-storage\": \"file:../indyscan-storage\",\n    \"indyscan-txtype\": \"file:../indyscan-txtype\",\n    \"joi\": \"^14.3.1\",\n    \"mkdirp\": \"^0.5.5\",\n    \"mustache\": \"^4.0.0\",\n    \"sleep-promise\": \"^8.0.1\",\n    \"socket.io\": \"^2.4.1\",\n    \"util\": \"^0.11.1\",\n    \"uuid\": \"^3.4.0\",\n    \"winston\": \"^3.2.1\",\n    \"winston-elasticsearch\": \"^0.8.8\",\n    \"write\": \"^1.0.3\"\n  },\n  \"devDependencies\": {\n    \"canonical-json\": \"0.0.4\",\n    \"elasticdump\": \"^6.25.0\",\n    \"@types/jest\": \"^26.0.23\",\n    \"jest\": \"^27.0.6\",\n    \"jest-cli\": \"^27.0.6\",\n    \"nodemon\": \"^1.19.4\",\n    \"standard\": \"^14.3.4\"\n  }\n}\n"
+        },
+        "database": "Elasticsearch",
+        "build_system": "npm",
+        "config_files": {
+            "indyscan-daemon/.env": "WORKER_CONFIGS=app-configs/HOST_DOCKER_INTERNAL.json\nAUTOSTART=true\nLOG_LEVEL=debug\nSERVER_ENABLED=true\nSERVER_PORT=3709\nLOG_HTTP_REQUESTS=true\nLOG_HTTP_RESPONSES=true\nENABLE_LOGFILES=true\n",
+            "indyscan-daemon/Dockerfile": "FROM ghcr.io/absaoss/vcxagencynode/vcxagency-base:2.5.0-release260-864 as nodejs\n\nRUN apk add --no-cache \\\n        npm \\\n        bash \\\n        g++ \\\n        gcc \\\n        make \\\n        cmake \\\n        python2 \\\n        curl\n\nRUN npm install -g npm@8.7.0\n\nUSER node\n\nUSER root\nARG UID=1002\nARG GID=1002\nRUN addgroup -g $GID indyscan && adduser -u $UID -D -G indyscan indyscan\n\nWORKDIR /home/indyscan/indyscan-txtype\nWORKDIR /home/indyscan/indyscan-storage\nWORKDIR /home/indyscan/indyscan-daemon\nRUN chown -R indyscan:indyscan /home/indyscan\n\nUSER indyscan\n\nWORKDIR /home/indyscan/indyscan-txtype\nCOPY --chown=indyscan:indyscan indyscan-txtype ./\nRUN npm ci --only=prod\n\nWORKDIR /home/indyscan/indyscan-storage\nCOPY --chown=indyscan:indyscan indyscan-storage ./\nRUN npm ci --only=prod\n\nWORKDIR /home/indyscan/indyscan-daemon\nCOPY --chown=indyscan:indyscan indyscan-daemon/package*.json ./\nRUN npm ci --only=prod\nCOPY --chown=indyscan:indyscan indyscan-daemon ./\n\nUSER root\nRUN chown -R indyscan:indyscan /home/indyscan\nUSER indyscan\nRUN mkdir -p /home/indyscan/indyscan-daemon/logs\nRUN mkdir -p /home/indyscan/.indy_client/wallet\nRUN mkdir -p /home/indyscan/.indy_client/pool\n\nLABEL org.label-schema.schema-version=\"1.1.0\"\nLABEL org.label-schema.name=\"indyscan-daemon\"\nLABEL org.label-schema.description=\"Application scanning Hyperledger Indy blockchain for new transactions and further processing.\"\nLABEL org.label-schema.vcs-url=\"https://github.com/Patrik-Stas/indyscan\"\n\nWORKDIR /home/indyscan/indyscan-daemon\n\nCMD npm run start\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".env",
+            "Dockerfile",
+            "README.md",
+            "dockerbuild.sh",
+            "package-lock.json",
+            "package.json"
+        ],
+        "folders": [
+            "public",
+            "src"
+        ]
+    }
+}

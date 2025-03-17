@@ -1,0 +1,25 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "requirements.txt": "pymongo==3.5.1\nschedule==0.4.3\nscikit-learn[alldeps]==0.18.2"
+        },
+        "database": "MongoDB",
+        "build_system": "pip",
+        "config_files": {
+            "src/docker-compose.yml": "version: '3'\n\nservices:\n  flask-app:\n    build: ./flask-app\n    command: gunicorn -w 2 --bind 0.0.0.0:8080 app:app -k gevent -c conf.py\n    expose:\n      - \"8080\"\n    volumes:\n      - ./flask-app:/usr/src/app\n    links:\n      - mongo\n  yelp-service:\n    build: ./yelp-service\n    volumes:\n     - ./yelp-service:/usr/src/app\n    links:\n     - mongo\n  yelp-classify:\n    build: ./yelp-classify\n    volumes:\n     - ./yelp-classify:/usr/src/app\n    links:\n     - mongo\n  twitter-service:\n    build: ./twitter-service\n    volumes:\n     - ./twitter-service:/usr/src/app\n    links:\n     - mongo\n  twitter-classify:\n    build: ./twitter-classify\n    volumes:\n     - ./twitter-classify:/usr/src/app\n    links:\n     - mongo\n  mongo:\n    image: mongo:3\n    volumes:\n     - ./data:/data/db\n  nginx:\n    image: nginx\n    links:\n     - flask-app\n    volumes:\n     - ./nginx/conf.d:/etc/nginx/conf.d\n     - ./nginx/ssl:/etc/ssl\n    ports:\n     - \"443:443\"\n\n\n\n",
+            "src/twitter-classify/Dockerfile": "FROM python:2.7.14-onbuild\nCOPY . /usr/src/app\nCMD [\"python\" , \"app.py\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "app.py",
+            "conf.py",
+            "requirements.txt"
+        ],
+        "folders": []
+    }
+}

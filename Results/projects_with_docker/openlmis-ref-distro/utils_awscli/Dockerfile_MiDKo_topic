@@ -1,0 +1,32 @@
+# Use the base image provided by the user
+FROM openlmis/dev:3
+
+# Install necessary dependencies
+RUN apk -v --update add python py-pip jq \
+&& pip install --upgrade awscli s3cmd python-magic \
+&& apk -v --purge del py-pip \
+
+# Copy the source code into the Docker image
+COPY . .
+RUN chmod u+x /entrypoint.sh
+
+# Set the working directory
+WORKDIR /
+
+# Copy additional files into the Docker image
+COPY entrypoint.sh /entrypoint.sh
+
+# Add user permissions
+RUN adduser -D user
+USER user
+
+# Set the environmental variables
+ARG DATABASE_URL
+ENV DATABASE_URL=$DATABASE_URL
+
+# Set the port number the container should expose
+EXPOSE 80
+
+# Run the application
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["sh"]

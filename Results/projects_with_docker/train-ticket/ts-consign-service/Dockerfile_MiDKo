@@ -1,0 +1,20 @@
+# Base Image
+FROM java:8-jre
+
+# Setting environment
+ENV TZ=Asia/Shanghai
+
+# Setting the working directory in the container
+WORKDIR /app
+
+# ADD necessary files
+COPY ./target/ts-consign-service-1.0.jar /app/
+
+# Setting timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+
+# Exposing the port
+EXPOSE 16111
+
+# The CMD command
+CMD ["java", "-Xmx200m", "-jar", "/app/ts-consign-service-1.0.jar"]

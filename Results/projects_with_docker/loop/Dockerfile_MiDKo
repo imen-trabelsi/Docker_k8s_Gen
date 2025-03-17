@@ -1,0 +1,39 @@
+# Start from the base image
+FROM --platform=${BUILDPLATFORM} AS builder
+
+# Set working directory in the container
+WORKDIR /go/src/github.com/lightningnetwork/loop
+
+# Set Environment variables
+ENV GODEBUG netdns=cgo
+ENV GO111MODULE on
+
+# Install dependencies and tools
+RUN apk add --no-cache --update alpine-sdk \ 
+    git \
+    make && \
+
+# Copy code into the container
+COPY . .
+
+# Build the app
+RUN go mod download && \
+    go build -o loopd . && \
+
+# Start a new stage from base image
+FROM alpine
+
+# Set working directory in the container
+WORKDIR /app
+
+# Install necessary packages
+RUN apk add --no-cache \
+    bash \
+
+# Copy files from the builder
+
+# Expose application port
+EXPOSE 8081
+
+# Run the binary
+CMD ["/bin/loopd"]

@@ -1,0 +1,32 @@
+# Dockerfile
+
+FROM sebp/lighttpd
+
+# Install required dependencies
+RUN apk add --no-cache openssl
+
+# Set the environment variable
+ENV DOCKERIZE_VERSION v0.6.1
+
+# Download and install dockerize
+RUN wget -q https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+  && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install npm dependencies
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Copy static files and build arguments
+COPY hailstorm-web-client/public/manifest.json /var/www/localhost/htdocs/
+COPY BUILD_ID .
+COPY build /var/www/localhost/htdocs
+
+# provide execution command
+CMD ["start.sh"]

@@ -1,0 +1,39 @@
+# Stage one for building from base builder
+FROM ${BASE_BUILDER} as builder
+
+# Install basic dependencies
+RUN apk --no-cache add \
+protobuf \
+python3-dev \
+
+# Update PIp
+RUN wget https://bootstrap.pypa.io/get-pip.py -O get-pip.py && python3 get-pip.py && python3 -m pip install --upgrade pip
+WORKDIR /builder
+COPY common/messages/image_rec.proto .
+
+# Create dist directory and generate python files from protobuf
+RUN mkdir dist && protoc --python_out=dist messages/*.proto
+
+# Copy and install project dependencies
+COPY common/python/requirements.txt common/requirements.txt
+COPY image-rec-auto/requirements.txt .
+RUN python3 -m pip install  -r common/requirements.txt -r requirements.txt
+
+# Fetch hawk eye
+ARG HAWK_EYE_VERSION
+RUN wget https://github.com/uavaustin/hawk-eye/releases/download/v${HAWK_EYE_VERSION}/hawk_eye-${HAWK_EYE_VERSION}-py3-none-any.whl \
+RUN python3 -m pip install hawk_eye-${HAWK_EYE_VERSION}-py3-none-any.whl && rm hawk_eye-${HAWK_EYE_VERSION}-py3-none-any.whl
+
+# Stage two for running app
+FROM alpine:3.9
+
+# Copy necessary files and directories from builder 
+WORKDIR /app
+COPY common/python common
+COPY image-rec-auto/service service
+
+# Set environment variables
+ENV IMAGERY_HOST='imagery' \
+
+# Define python as entry point
+ENTRYPOINT ["python3", "-m", "service"]

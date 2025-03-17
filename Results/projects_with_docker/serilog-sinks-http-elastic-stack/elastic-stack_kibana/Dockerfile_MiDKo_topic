@@ -1,0 +1,25 @@
+# The context of Dockerfile is set to "elastic-stack/kibana" directory
+
+FROM docker.elastic.co/kibana/kibana:${ELASTIC_VERSION}
+
+# health checks could be added by following instructions
+
+# expose port if required with EXPOSE instruction
+
+# copy necessary files
+# COPY source destination
+
+# Environment variables 
+# ENV name=value
+
+# defined as arguments will be used at build time
+# ARG ELASTIC_VERSION
+
+# set user if required
+# USER username
+
+# define commands to be executed at the run time
+# CMD ["executable","param1","param2"]
+
+# Labels are typically for storing additional useful information on the image
+# LABEL version="1.0"

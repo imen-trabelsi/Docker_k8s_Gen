@@ -1,0 +1,15 @@
+FROM ruby:alpine
+
+# Install dependencies
+RUN apk add --update build-base curl
+RUN gem install sinatra --version "~>3"
+RUN gem install thin
+
+# Copy source code
+COPY hasher.rb /
+
+# Expose Port 
+EXPOSE 80
+
+# Application run command
+CMD ["ruby", "hasher.rb"]

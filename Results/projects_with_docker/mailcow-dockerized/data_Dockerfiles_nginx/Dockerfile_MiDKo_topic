@@ -1,0 +1,28 @@
+# Base Image
+FROM nginx:alpine
+
+# Maintainer
+LABEL maintainer="xxx@xxx.com"
+
+# Environment Variable
+ENV PIP_BREAK_SYSTEM_PACKAGES=1
+
+# Add necessary dependencies
+RUN apk add --no-cache nginx python3 py3-pip && \
+    pip install --upgrade pip && \
+
+# Create required directories
+RUN mkdir -p /etc/nginx/includes
+
+# Copy necessary files
+COPY ./bootstrap.py /
+COPY ./docker-entrypoint.sh /
+
+# Grant executable permissions
+RUN chmod +x /bootstrap.py /docker-entrypoint.sh
+
+# Run the entry-point script
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
+# Default arguments for entry-point script
+CMD ["nginx", "-g", "daemon off;"]

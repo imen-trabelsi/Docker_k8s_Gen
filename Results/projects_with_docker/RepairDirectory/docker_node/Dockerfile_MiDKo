@@ -1,0 +1,22 @@
+# Base Image
+FROM node:6
+
+# Set Working Directory
+WORKDIR /app
+
+# Install dependencies
+COPY package.json .
+RUN npm install -g cross-env@5.0.1
+RUN npm install
+
+# Copy other source code files
+COPY . .
+
+# Set the docker entry point
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+
+# Expose the application on port 3000
+EXPOSE 3000
+
+# Set the startup command to execute the app
+CMD [ "node", "server.js" ]

@@ -1,0 +1,29 @@
+# Use python:3.7-alpine as base image
+FROM python:3.7-alpine
+
+# Set environment variables
+ENV PORT='8082'
+ENV PYTHONUNBUFFERED=TRUE
+
+# Set working directory
+WORKDIR /app
+
+# Copy dependencies and install them
+COPY common/python/requirements.txt common/requirements.txt
+COPY image-rec-master/requirements.txt .
+RUN apk --no-cache add gcc musl-dev protobuf
+RUN pip install -r common/requirements.txt -r requirements.txt
+
+# Generate python files from protobuf messages
+COPY common/messages/imagery.proto .
+RUN mkdir dist && protoc --python_out=dist messages/*.proto
+
+# Copy necessary files
+COPY common/python common
+COPY image-rec-master/service service
+
+# Run the service
+CMD ["python", "-m", "service"]
+
+# Expose specified port
+EXPOSE 8082

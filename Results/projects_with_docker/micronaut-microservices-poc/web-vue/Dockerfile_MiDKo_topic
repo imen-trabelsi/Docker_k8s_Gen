@@ -1,0 +1,36 @@
+# Base image
+FROM nginx
+
+# Labels
+LABEL version="1.0"
+LABEL description="Node.js application running on nginx"
+
+# Copy Feature
+COPY ./dist /usr/share/nginx/html
+COPY ./nginx-app.conf /etc/nginx/conf.d/default.tmpl
+COPY entrypoint.sh /
+
+# Environment variables
+ENV TESTING=false
+
+# Permissions
+RUN chmod +x /entrypoint.sh
+
+# Expose ports
+EXPOSE 80
+
+# Set work directory
+WORKDIR /usr/local/src/
+
+# Install dependencies
+COPY package.json ./
+RUN npm install --only=production
+
+# Bundle app source
+COPY . .
+
+# Health check
+HEALTHCHECK NONE
+
+# Command to execute
+ENTRYPOINT [ "/entrypoint.sh" ]

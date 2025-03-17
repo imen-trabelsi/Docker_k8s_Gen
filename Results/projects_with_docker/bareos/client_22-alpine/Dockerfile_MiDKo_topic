@@ -1,0 +1,33 @@
+# Set Base Image
+FROM alpine:3.20
+
+# Labels
+LABEL maintainer="barcus@tou.nu" \
+      org.label-schema.schema-version="1.0" \
+      org.label-schema.build-date=$BUILD_DATE  \
+      org.label-schema.name=$NAME  \
+      org.label-schema.vcs-ref=$VCS_REF \
+
+# Environment Variables
+ENV BAREOS_DAEMON_USER=bareos \
+
+# Run Commands
+RUN apk add --no-cache bareos-filedaemon openssh-client tar shadow bash su-exec && \
+    tar czf /bareos-fd.tgz /etc/bareos/bareos-fd.d && \
+    mkdir /run/bareos && \
+
+# Copy Instructions
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+
+# Expose Ports
+EXPOSE 9102
+
+# User
+USER bareos
+
+# Set permissions on entrypoint
+RUN chmod a+x /docker-entrypoint.sh
+
+# Entry Point & CMD
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["/usr/sbin/bareos-fd", "-f"]

@@ -1,0 +1,37 @@
+{
+    "docker_info": {
+        "base_image": "$BUILDER_IMAGE",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "4444"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "TAG=10.3",
+            "BUILDER_IMAGE=daerepository03.eur.ad.sag:4443/ccdevops/commandcentral-builder:$TAG",
+            "BASE_IMAGE=daerepository03.eur.ad.sag:4443/ibit/java:jdk-8-centos",
+            "__ninja_mem_max=256"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "COPY --from=builder $SAG_HOME/ $SAG_HOME/",
+            "ADD entrypoint.sh $SAG_HOME/"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "$SAG_HOME/entrypoint.sh"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "$CC_HOME/provision.sh && ./test.sh && $CC_HOME/cleanup.sh",
+                ""
+            ]
+        ]
+    }
+}

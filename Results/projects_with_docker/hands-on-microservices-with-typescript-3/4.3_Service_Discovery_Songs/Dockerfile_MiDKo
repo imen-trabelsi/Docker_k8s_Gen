@@ -1,0 +1,38 @@
+# Base image
+FROM node:8.13-slim
+
+# Create app directory
+WORKDIR /opt/my-musik/
+
+# Install global dependencies
+RUN npm install typescript -g
+RUN npm install --no-optional
+
+# Copy local files to container
+COPY ./package.json .
+ 
+# Install local dependencies 
+RUN npm install && \
+
+COPY ./gulpfile.js .
+COPY ./tsconfig.json .
+COPY ./tslint.json .
+COPY ./songs.json .
+COPY ./config.json .
+COPY ./src ./src
+
+# Run build command
+RUN node_modules/.bin/gulp
+
+RUN mkdir -p /opt/my-musik/
+WORKDIR /opt/my-musik/
+RUN npm install --no-optional --only=prod
+
+# Maintain integrity of files by making them read-only
+RUN find . -type f -exec chmod 444 {} \;
+
+# Start the application
+CMD ["node", "dist/app.js"]
+
+# Expose service on port 3000
+EXPOSE 3000

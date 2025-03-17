@@ -1,0 +1,49 @@
+{
+    "docker_info": {
+        "base_image": "${BUILDER_PYTHON_IMAGE}",
+        "multi_stage_build": true,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "BASE_PYTHON_IMAGE",
+            "BUILDER_PYTHON_IMAGE"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ./ /tmp/",
+            "COPY --from=builder /tmp/dist/*.whl /tmp/"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"sw-python\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "pip install --upgrade pip",
+                "RUN pip install poetry"
+            ],
+            [
+                "make -C /tmp package",
+                "# This is a temporary workaround, see #11481"
+            ],
+            [
+                "pip wheel \"psutil<=5.9.5\" -w /tmp/dist/",
+                ""
+            ],
+            [
+                "pip install --upgrade pip",
+                "RUN pip install /tmp/psutil*.whl /tmp/apache_skywalking*.whl"
+            ],
+            [
+                "rm /tmp/apache_skywalking*.whl /tmp/psutil*.whl",
+                "# So that the agent can be auto-started when container is started"
+            ]
+        ]
+    }
+}

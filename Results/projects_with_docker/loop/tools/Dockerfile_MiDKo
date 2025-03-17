@@ -1,0 +1,32 @@
+# Base Image
+FROM golang:1.23.6
+
+# Environment Variables
+ENV GOMODCACHE=/tmp/build/.modcache
+ENV GOFLAGS="-buildvcs=false"
+ENV GOCACHE=/tmp/build/.cache
+
+# Set Working Directory
+WORKDIR /build
+
+# Install Dependencies
+RUN apt-get update && apt-get install -y git
+
+# Create necessary directories for go modules.
+RUN mkdir -p /tmp/build/.cache \
+
+# Copy go mod files to Docker image for dependency resolution.
+COPY go.mod go.sum ./
+
+# Download dependencies.
+RUN go mod download
+
+# Copy Source Code
+COPY . /tmp/tools
+
+# Build Application
+RUN cd /tmp/tools \ 
+ && go install -trimpath github.com/golangci/golangci-lint/cmd/golangci-lint \ 
+
+EXPOSE 8080
+CMD ["go", "run", "."]

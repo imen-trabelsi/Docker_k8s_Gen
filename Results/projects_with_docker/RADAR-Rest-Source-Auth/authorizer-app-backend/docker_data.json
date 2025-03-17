@@ -1,0 +1,53 @@
+{
+    "docker_info": {
+        "base_image": "--platform=$BUILDPLATFORM",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8085"
+        ],
+        "user": [
+            "101"
+        ],
+        "labels": [
+            "description=\"RADAR-base"
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV GRADLE_USER_HOME=/code/.gradlecache \\",
+            "ENV JAVA_OPTS=\"\" \\"
+        ],
+        "copy_instructions": [
+            "COPY ./buildSrc /code/buildSrc",
+            "COPY ./build.gradle.kts ./settings.gradle.kts ./gradle.properties /code/",
+            "COPY ./buildSrc /code/buildSrc",
+            "COPY authorizer-app-backend/build.gradle.kts  /code/authorizer-app-backend/",
+            "COPY authorizer-app-backend/src /code/authorizer-app-backend/src",
+            "COPY --from=builder /code/authorizer-app-backend/build/scripts/* /usr/bin/",
+            "COPY --from=builder /code/authorizer-app-backend/build/third-party/* /usr/lib/",
+            "COPY --from=builder /code/authorizer-app-backend/build/libs/authorizer-app-backend-*.jar /usr/lib/"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"authorizer-app-backend\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir /code",
+                "WORKDIR /code"
+            ],
+            [
+                "gradle downloadDependencies copyDependencies startScripts",
+                ""
+            ],
+            [
+                "gradle jar",
+                ""
+            ]
+        ]
+    }
+}

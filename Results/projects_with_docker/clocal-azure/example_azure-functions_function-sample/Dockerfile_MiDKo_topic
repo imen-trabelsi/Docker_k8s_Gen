@@ -1,0 +1,24 @@
+# Using Microsoft's Azure Functions Runtime base image
+FROM microsoft/azure-functions-runtime:v2.0.0-beta1
+
+# Set the work directory
+WORKDIR /home/site/wwwroot
+
+# Copy all the static files from your source to the default azure static files
+COPY . .
+
+# Install necessary dependencies.
+COPY package.json .
+RUN npm install
+
+# Set environment variables
+ENV AzureWebJobsScriptRoot=/home/site/wwwroot \
+
+# Copy the rest of your application source code
+COPY . .
+
+# Expose the server port
+EXPOSE 80
+
+# Start the service
+CMD ["npm", "start"]

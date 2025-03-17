@@ -1,0 +1,58 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.23.4-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "appuser"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY web/assets web/assets",
+            "COPY build.js .",
+            "COPY package.json package-lock.json ./",
+            "WORKDIR /app",
+            "COPY go.mod go.sum ./",
+            "COPY . .",
+            "WORKDIR /go/bin",
+            "COPY --from=build-env /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/",
+            "COPY --from=build-env /etc/passwd /etc/passwd",
+            "COPY --from=build-env /app/admin admin",
+            "COPY --from=build-env /app/web/templates web/templates",
+            "COPY --from=asset-env /app/web/static web/static"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"./admin\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "npm ci && npm run build",
+                ""
+            ],
+            [
+                "apk --update --no-cache add build-base && apk --update --no-cache add \\",
+                "ca-certificates",
+                "tzdata",
+                "&& rm -rf /var/cache/apk/* && update-ca-certificates &&",
+                "adduser -D appuser"
+            ],
+            [
+                "go mod download",
+                ""
+            ],
+            [
+                "CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o admin cmd/admin/main.go",
+                ""
+            ]
+        ]
+    }
+}

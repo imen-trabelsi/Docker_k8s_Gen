@@ -1,0 +1,33 @@
+# First, I will define the base image that the user provided
+FROM docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-8.17.3}
+
+# Health checks are important for orchestration systems like Kubernetes, to ensure it's properly running
+HEALTHCHECK --interval=30s --timeout=3s --start-period=30s CMD curl -f http://localhost:9200/_cluster/health || exit 1
+
+# Since the application doesn't seem to be using any database, I will skip setting up any database-related environment variables
+# But I will setup the required Java environment variables for Spring Boot application
+
+# Firstly, the system must be updated and required dependencies must be installed
+RUN apt-get update && apt-get install -y \
+  openjdk-8-jdk \
+
+# Setting up the appropriate Java environment variables
+ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
+RUN export JAVA_HOME
+
+# As the ELASTIC_VERSION is used as build argument make sure to declare it
+ARG ELASTIC_VERSION
+
+# The application will run on port 8080, so that port needs to be exposed
+EXPOSE 8080
+
+# Copy the project files into the Docker image
+COPY . . 
+
+# To run commands inside the Docker container, a non-root user (to apply the principle of least privilege), must be created and used:
+RUN addgroup --system spring && adduser --system --ingroup spring spring
+USER spring:spring
+
+# Ensure that the Spring Boot application's jar file is built and executes when the Docker container runs
+ENTRYPOINT ["./mvnw", "package", "-DskipTests"]
+CMD ["java", "-jar", "target/*.jar"]

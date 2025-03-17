@@ -1,0 +1,46 @@
+# Use specified base image
+FROM node:12.14.0-alpine3.9
+
+# Create necessary directories and set permissions
+RUN mkdir -p /home/node/indyscan-daemon-api-client /home/node/indyscan-daemon-ui && chown -R node:node /home/node/indyscan-daemon-ui /home/node/indyscan-daemon-api-client
+
+# Use node user
+USER node
+
+# Set working directory
+WORKDIR /home/node/indyscan-daemon-api-client
+# Copy api client
+COPY --chown=node:node ./indyscan-daemon-api-client ./
+
+# Change to UI directory
+WORKDIR /home/node/indyscan-daemon-ui
+
+# Copy package file
+COPY --chown=node:node ./indyscan-daemon-ui/package.json ./indyscan-daemon-ui/package-lock.json ./
+
+# Install system dependencies
+RUN apk update && \
+    apk upgrade && \
+
+# Install project dependencies
+RUN npm install
+
+# Copy remaining files
+COPY --chown=node:node ./indyscan-daemon-ui/public ./public
+COPY --chown=node:node ./indyscan-daemon-ui/src ./src
+COPY --chown=node:node ./indyscan-daemon-ui/.env ./
+
+# Build the application
+RUN npm run build
+
+# Prune dev dependencies
+RUN npm prune --production
+
+# Set environment variables
+ENV PORT=${PORT:-"3710"} \
+
+# Expose the port
+EXPOSE $PORT
+
+# Run the application
+CMD [ "npm", "run", "serve" ]

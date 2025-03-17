@@ -1,0 +1,54 @@
+{
+    "docker_info": {
+        "base_image": "docker_base-streaming-file-server:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8002"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [
+            "HEALTHCHECK --retries=33 \\"
+        ],
+        "build_args": [
+            "APP_UPLOAD_PATH_ARG='/var/file-storage'"
+        ],
+        "envs": [
+            "ENV APP_UPLOAD_PATH=\"${APP_UPLOAD_PATH_ARG}\""
+        ],
+        "copy_instructions": [
+            "COPY --chown=appuser ./modules/apps/file-server/build/libs/*.jar ./app.jar"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "java",
+                    "${JAVA_OPTS}",
+                    "-jar",
+                    "./app.jar",
+                    "--spring.profiles.active=db-pg"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "wget",
+                    "--quiet",
+                    "--tries=1",
+                    "--spider",
+                    "http://127.0.0.1:8002/actuator/health",
+                    "||",
+                    "exit",
+                    "1"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "sudo mkdir -p ${APP_UPLOAD_PATH} \\",
+                "&& sudo chown -cR appuser ${APP_UPLOAD_PATH}"
+            ]
+        ]
+    }
+}

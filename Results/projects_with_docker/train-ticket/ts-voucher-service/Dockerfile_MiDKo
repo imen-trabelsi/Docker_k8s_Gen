@@ -1,0 +1,27 @@
+# Dockerfile
+FROM python:3
+
+WORKDIR /app
+
+# install Java and Maven
+RUN apt-get update && \
+    apt-get install -y openjdk-11-jdk maven && \
+
+# setting timezone
+RUN ln -snf /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo Asia/Shanghai > /etc/timezone
+
+# copy project files
+COPY . .
+
+# install python requirements
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# build spring boot application
+RUN mvn clean package
+
+# expose port
+EXPOSE 16101
+
+# run the spring boot application
+CMD ["java", "-jar", "/target/*.jar"]

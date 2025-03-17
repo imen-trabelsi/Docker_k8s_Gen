@@ -1,0 +1,47 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Rasa",
+        "dependencies": {
+            "pyproject.toml": "[build-system]\nrequires = [ \"poetry-core>=1.0.4\",]\nbuild-backend = \"poetry.core.masonry.api\"\n\n[tool.poetry]\nname = \"rasa-sdk\"\nversion = \"3.12.0.dev2\"\ndescription = \"Open source machine learning framework to automate text- and voice-based conversations: NLU, dialogue management, connect to Slack, Facebook, and more - Create chatbots and voice assistants\"\nauthors = [ \"Rasa Technologies GmbH <hi@rasa.com>\",]\nmaintainers = [ \"Tom Bocklisch <tom@rasa.com>\",]\nhomepage = \"https://rasa.com\"\nrepository = \"https://github.com/rasahq/rasa-sdk\"\ndocumentation = \"https://rasa.com/docs\"\nclassifiers = [ \"Development Status :: 5 - Production/Stable\", \"Intended Audience :: Developers\", \"License :: OSI Approved :: Apache Software License\", \"Topic :: Software Development :: Libraries\",]\nkeywords = [ \"nlp\", \"machine-learning\", \"machine-learning-library\", \"bot\", \"bots\", \"botkit\", \"rasa conversational-agents\", \"conversational-ai\", \"chatbot\", \"chatbot-framework\", \"bot-framework\",]\ninclude = [ \"LICENSE.txt\", \"README.md\",]\nreadme = \"README.md\"\nlicense = \"Apache-2.0\"\n\n[tool.towncrier]\npackage = \"rasa_sdk\"\npackage_dir = \"rasa_sdk\"\nfilename = \"CHANGELOG.mdx\"\ndirectory = \"./changelog\"\nunderlines = \"   \"\ntitle_format = \"## [{version}] - {project_date}\"\ntemplate = \"./changelog/_template.md.jinja2\"\nstart_string = \"<!-- TOWNCRIER -->\\n\"\nissue_format = \"[#{issue}](https://github.com/rasahq/rasa-sdk/issues/{issue})\"\n[[tool.towncrier.type]]\ndirectory = \"removal\"\nname = \"Deprecations and Removals\"\nshowcontent = true\n\n[[tool.towncrier.type]]\ndirectory = \"feature\"\nname = \"Features\"\nshowcontent = true\n\n[[tool.towncrier.type]]\ndirectory = \"improvement\"\nname = \"Improvements\"\nshowcontent = true\n\n[[tool.towncrier.type]]\ndirectory = \"bugfix\"\nname = \"Bugfixes\"\nshowcontent = true\n\n[[tool.towncrier.type]]\ndirectory = \"doc\"\nname = \"Improved Documentation\"\nshowcontent = true\n\n[[tool.towncrier.type]]\ndirectory = \"misc\"\nname = \"Miscellaneous internal changes\"\nshowcontent = false\n\n[tool.mypy]\nignore_missing_imports = true\nshow_error_codes = true\nwarn_redundant_casts = true\nwarn_unused_ignores = true\nexclude = \"rasa_sdk/grpc_py\"\n\n[tool.ruff]\nline-length = 88\ntarget-version = \"py38\"\nexclude = [ \"rasa_sdk/grpc_py\", \"eggs\", \".git\", \".pytest_cache\", \"build\", \"dist\", \".DS_Store\",]\n\n[tool.poetry.dependencies]\npython = \">3.8,<3.13\"\ncoloredlogs = \">=10,<16\"\nsanic = \"^22.12\"\ntyping-extensions = \">=4.1.1,<5.0.0\"\nSanic-Cors = \"^2.0.0\"\n\"ruamel.yaml\" = \">=0.16.5,<0.18.0\"\nwebsockets = \">=10.0,<12.0\"\npluggy = \"^1.0.0\"\nopentelemetry-api = \"~1.16.0\"\nopentelemetry-sdk = \"~1.16.0\"\nopentelemetry-exporter-jaeger = \"~1.16.0\"\nopentelemetry-exporter-otlp = \"~1.16.0\"\ngrpcio = \"~1.60.0\"\nprotobuf = \"~4.25.3\"\npydantic = \"^2.6.4\"\ngrpcio-health-checking = \"~1.59.3\"\ngrpcio-tools = \"~1.60.0\"\n\n[tool.poetry.dev-dependencies]\npytest-cov = \"^4.1.0\"\ncoveralls = \"^3.0.1\"\npytest = \"^7.4.0\"\nquestionary = \">=1.5.1,<2.1.0\"\ntowncrier = \"^23.6.0\"\ntoml = \"^0.10.0\"\npep440-version-utils = \"^0.3.0\"\nsemantic_version = \"^2.8.5\"\nmypy = \"^1.14\"\nsanic-testing = \"^22.12\"\n\n[tool.ruff.lint]\nignore = [ \"D100\", \"D101\", \"D102\", \"D103\", \"D104\", \"D105\", \"RUF005\",]\nselect = [ \"D\", \"E\", \"F\", \"W\", \"RUF\",]\n\n[tool.pytest.ini_options]\npython_functions = \"test_\"\nasyncio_mode = \"auto\"\n\n[tool.ruff.lint.pydocstyle]\nconvention = \"google\"\n\n[tool.poetry.group.dev.dependencies]\nruff = \">=0.3.5,<0.4.0\"\npytest-asyncio = \"^0.23.6\"\ntypes-protobuf = \"4.25.0.20240417\"\n"
+        },
+        "database": null,
+        "build_system": "poetry",
+        "config_files": {
+            "Dockerfile": "FROM ubuntu:22.04 AS base\n\n# hadolint ignore=DL3005,DL3008\nRUN apt-get update -qq \\\n    # Make sure that all security updates are installed\n    && apt-get dist-upgrade -y --no-install-recommends \\\n    && apt-get install -y --no-install-recommends \\\n      python3 \\\n      python3-venv \\\n      python3-pip \\\n      python3-dev \\\n    && apt-get autoremove -y \\\n    && apt-get clean \\\n    && rm -rf /var/lib/apt/lists/*\n\nRUN update-alternatives --install /usr/bin/python python /usr/bin/python3 100 \\\n   && update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 100\n\nFROM base AS python_builder\n\nARG POETRY_VERSION=1.8.2\n\n# hadolint ignore=DL3008\nRUN apt-get update -qq \\\n   && apt-get install -y --no-install-recommends \\\n    curl \\\n    && apt-get autoremove -y\n\n# install poetry\n# keep this in sync with the version in pyproject.toml and Dockerfile\nENV POETRY_VERSION=$POETRY_VERSION\nSHELL [\"/bin/bash\", \"-o\", \"pipefail\", \"-c\"]\nRUN curl -sSL https://install.python-poetry.org | python\nENV PATH=\"/root/.local/bin:/opt/venv/bin:${PATH}\"\n\n# install dependencies\nCOPY . /app/\n\nWORKDIR /app\n\n# hadolint ignore=SC1091,DL3013\nRUN python -m venv /opt/venv && \\\n  . /opt/venv/bin/activate && \\\n  pip install --no-cache-dir -U pip && \\\n  pip install --no-cache-dir wheel && \\\n  poetry install --no-dev --no-root --no-interaction\n\n# install dependencies and build wheels\n# hadolint ignore=SC1091,DL3013\nRUN . /opt/venv/bin/activate && poetry build -f wheel -n \\\n  && pip install --no-cache-dir --no-deps dist/*.whl \\\n  && mkdir /wheels \\\n  && poetry export -f requirements.txt --without-hashes --output /wheels/requirements.txt \\\n  && poetry run pip wheel --wheel-dir=/wheels -r /wheels/requirements.txt \\\n  && find /app/dist -maxdepth 1 -mindepth 1 -name '*.whl' -print0 | xargs -0 -I {} mv {} /wheels/\n\nWORKDIR /wheels\n# install wheels\n# hadolint ignore=SC1091,DL3013\nRUN find . -name '*.whl' -maxdepth 1 -exec basename {} \\; | awk -F - '{ gsub(\"_\", \"-\", $1); print $1 }' | uniq > /wheels/requirements.txt \\\n  && rm -rf /opt/venv \\\n  && python -m venv /opt/venv \\\n  && . /opt/venv/bin/activate \\\n  && pip install --no-cache-dir -U pip \\\n  && pip install --no-cache-dir --no-index --find-links=/wheels -r /wheels/requirements.txt \\\n  && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \\\n  && rm -rf /wheels \\\n  && rm -rf /root/.cache/pip/*\n\n# final image\nFROM base\n\n# copy needed files\nCOPY ./entrypoint.sh /app/\nCOPY --from=python_builder /opt/venv /opt/venv\n\nENV PATH=\"/opt/venv/bin:$PATH\"\n\n# update permissions & change user\nRUN chgrp -R 0 /app && chmod -R g=u /app\nUSER 1001\n\n# change shell\nSHELL [\"/bin/bash\", \"-o\", \"pipefail\", \"-c\"]\n\n# create a mount point for custom actions and the entry point\nWORKDIR /app\nEXPOSE 5055\nENTRYPOINT [\"./entrypoint.sh\"]\nCMD [\"start\", \"--actions\", \"actions\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            ".gitignore",
+            ".pre-commit-config.yaml",
+            ".typo-ci.yml",
+            "CHANGELOG.mdx",
+            "Dockerfile",
+            "Dockerfile.dev",
+            "Dockerfile.patch",
+            "LICENSE.txt",
+            "Makefile",
+            "README.md",
+            "entrypoint.sh",
+            "grpc-standalone-server-integration-test-results.xml",
+            "poetry.lock",
+            "pyproject.toml",
+            "trivy-secret.yaml"
+        ],
+        "folders": [
+            ".github",
+            "certs",
+            "changelog",
+            "data",
+            "examples",
+            "integration_tests",
+            "proto",
+            "rasa_sdk",
+            "scripts",
+            "tests"
+        ]
+    }
+}

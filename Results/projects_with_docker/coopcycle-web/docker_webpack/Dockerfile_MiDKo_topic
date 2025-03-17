@@ -1,0 +1,31 @@
+# Use the official Node.js 16 image from Docker Hub
+FROM node:16-alpine
+
+# Update and upgrade alpine
+RUN apk update && apk upgrade
+
+# Add bash, git, openssh for container functionality
+RUN apk add --no-cache bash git openssh
+
+# Set the work directory
+WORKDIR /srv/coopcycle
+
+# Copy dependencies and install
+COPY package.json /srv/coopcycle
+COPY package-lock.json /srv/coopcycle
+RUN npm install
+
+# Copy required files
+COPY .env.test /srv/coopcycle
+COPY docker-compose.yml /srv/coopcycle
+COPY docker/webpack/Dockerfile /srv/coopcycle
+
+# Define script for starting the microservice
+COPY docker/webpack/start.sh /
+RUN chmod +x /start.sh
+
+# Starting the microservice
+ENTRYPOINT ["/start.sh"]
+
+# Expose the port
+EXPOSE <insert_port_here>

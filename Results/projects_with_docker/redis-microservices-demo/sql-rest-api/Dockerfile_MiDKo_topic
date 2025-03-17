@@ -1,0 +1,30 @@
+# Step 1: Build the app in a Docker container
+FROM maven:3.5-jdk-8 as build
+
+WORKDIR /app
+
+# Add pom.xml and source code to the app directory
+COPY pom.xml .
+COPY src ./src
+
+# Package the app
+RUN mvn package
+
+# Step 2: Use OpenJDK image for JRE runtime
+FROM openjdk:8-jdk-alpine
+
+# Set the application home directory
+WORKDIR /app
+
+# Copy the JAR from the build stage
+
+# Set environment variables
+ENV SPRING_DATASOURCE_URL=jdbc:mysql://app-mysql:3306/inventory
+ENV SPRING_DATASOURCE_USERNAME=mysqluser
+ENV SPRING_DATASOURCE_PASSWORD=mysqlpw
+
+# Expose the application's port
+EXPOSE 8081
+
+# Set the startup command
+ENTRYPOINT ["java","-jar","./app.jar","--spring.profiles.active=prod"]

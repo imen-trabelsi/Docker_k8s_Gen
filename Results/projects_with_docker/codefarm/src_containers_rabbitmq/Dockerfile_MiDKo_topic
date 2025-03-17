@@ -1,0 +1,22 @@
+# Base Image
+FROM rabbitmq:3-management
+
+# Copy package.json and yarn.lock
+COPY package.json yarn.lock ./
+
+# Install all dependencies
+RUN npm install
+
+# Copy other source code to work directory
+COPY . /app
+
+# Change Current Directory
+WORKDIR /app
+
+# Compile and run the application
+RUN npm run build
+
+# Start the application
+CMD ["npm", "start"]
+
+

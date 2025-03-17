@@ -1,0 +1,42 @@
+{
+    "docker_info": {
+        "base_image": "node:10",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ./package*.json ./",
+            "COPY . ./"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"serve\",",
+                    "\"-s\",",
+                    "\"build\",",
+                    "\"-p\",",
+                    "\"5000\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p /user/src/app",
+                "WORKDIR /user/src/app"
+            ],
+            [
+                "npm install --quiet",
+                "RUN npm install -g serve"
+            ],
+            [
+                "npm run build",
+                "EXPOSE 5000"
+            ]
+        ]
+    }
+}

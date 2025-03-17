@@ -1,0 +1,27 @@
+# Base Image
+FROM elasticsearch:2.4
+
+# Copy elasticsearch.yml to the correct directory
+COPY elasticsearch.yml /usr/share/elasticsearch/config/
+
+# Run commands for installing plugins and setting the correct ownership
+RUN /usr/share/elasticsearch/bin/plugin install analysis-icu && \
+    /usr/share/elasticsearch/bin/plugin install cloud-aws && \
+
+# Exposed ports, if any should be declared below:
+
+# Add healthcheck, if required:
+
+# User instructions, if required:
+
+# Build arguments, if required:
+
+# Ensure the correct entrypoint, if required:
+
+# Deployment Environment, if required:
+
+# Networking settings, if required:
+
+# Labels, if required:
+
+# Environment Variables, if required:

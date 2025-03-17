@@ -1,0 +1,23 @@
+# Dockerfile
+
+FROM codefarm/appnodebase:0.0.0
+
+# Set environment variable
+ENV NODE_ENV production
+
+# Install dependencies
+COPY package.json .
+RUN npm install
+
+# Copy source files
+COPY src /src
+
+# Build/run commands
+RUN yarn run compile-client -- --env.global_modules_dir ${farmerHome}/.node_modules && \
+
+WORKDIR /src/app/UI
+
+# This is a Spring Boot application and, so traditionally it runs on port 8080.
+EXPOSE 8080
+
+CMD ["npm", "start"]

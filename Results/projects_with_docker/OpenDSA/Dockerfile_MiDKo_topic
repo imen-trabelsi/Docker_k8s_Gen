@@ -1,0 +1,31 @@
+# Use the specific node image as the base
+FROM node:22-alpine3.20 as node
+# Define timezone and install dependencies
+ENV TZ=America/New_York
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+RUN apk update && apk add --no-cache bash git curl make
+
+# Install corepack
+RUN npm install -g corepack
+
+# Set environment variables
+ENV ODSA_ENV=${ODSA_ENV}
+ENV FLASK_ENV=${FLASK_ENV}
+ENV FLASK_APP=${FLASK_APP}
+ENV PYTHONUNBUFFERED=1
+
+# Copy necessary files and install application dependencies
+COPY .yarnrc.yml ./
+WORKDIR /opendsa
+COPY package.json yarn.lock ./
+COPY requirements.txt requirements.txt
+RUN yarn install
+RUN pip3 install -r requirements.txt
+
+# Copy over the files from the original image
+
+# Add rest of the source code
+COPY . .
+
+# Run the application
+CMD ["make", "help", "webserver"]

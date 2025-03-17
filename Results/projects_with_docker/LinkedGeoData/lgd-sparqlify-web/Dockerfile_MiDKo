@@ -1,0 +1,22 @@
+# Base Image
+FROM lgd-build-nominatim:4.0.1
+
+# Set working directory
+WORKDIR /lgd/sparqlify
+
+# Copy required files  
+COPY --from=sparqlify /app .
+COPY start.sh .
+COPY wait-for-postgres.sh .
+
+# Provide necessary permissions for scripts
+RUN chmod +x ./wait-for-postgres.sh ./start.sh
+
+# Modify the jib-classpath-file
+RUN sed -Ei 's|/app/|/lgd/sparqlify/|g' jib-classpath-file
+
+# Expose the application on port 7531
+EXPOSE 7531
+
+# Set the entry point
+ENTRYPOINT ["./wait-for-postgres.sh",  "./start.sh"]

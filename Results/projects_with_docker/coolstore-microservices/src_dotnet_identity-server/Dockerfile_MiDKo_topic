@@ -1,0 +1,31 @@
+# Start with the Base Image
+FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build-env
+
+# Set up Work Directory
+WORKDIR /app
+WORKDIR /src
+COPY ["identity-server/IdentityServer.csproj", "identity-server/"]
+
+# Restore packages for the Project
+RUN dotnet restore "identity-server/IdentityServer.csproj"
+
+#Copy all the files
+COPY . .
+
+# Build the Project
+RUN dotnet build "IdentityServer.csproj" -c Release -o /app/build
+
+# Perform Publish operation and get the Runtime ready .dll
+RUN dotnet publish "IdentityServer.csproj" -c Release -o /app/publish
+
+#Start Setup for final stage , remove the unwanted files only keep Release DLL
+FROM mcr.microsoft.com/dotnet/sdk:3.1 AS final
+
+# Set up Final Work Directory
+WORKDIR /app
+
+# Expose Port for the application
+EXPOSE 80 443
+
+#Startup .dll
+ENTRYPOINT ["dotnet", "IdentityServer.dll"]

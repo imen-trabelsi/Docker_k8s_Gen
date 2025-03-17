@@ -1,0 +1,21 @@
+# Set the base image
+FROM keymetrics/pm2:14-alpine
+
+# Set the working directory
+WORKDIR /usr/src/app
+
+# Copy files
+COPY ./dist .
+COPY package.json .
+
+# Install dependencies
+RUN yarn install --production
+
+# Copy additional files
+COPY ecosystem.config.js .
+
+# Expose the port
+EXPOSE 3001
+
+# Start command
+CMD ["pm2-runtime", "start", "ecosystem.config.js"]

@@ -1,0 +1,43 @@
+# Use OpenJDK 8 as base image
+FROM openjdk:8
+
+# Specify maintainer
+LABEL maintainer="docker@user.com"
+
+# Set environment variables
+ENV REFRESHED_AT 2017-09-17
+ENV TERM xterm
+ENV JAVA_OPTS -Djava.security.egd=file:/dev/./urandom
+ENV FILEBEAT_VERSION=filebeat_1.2.3_amd64.deb
+
+# Install dependencies
+RUN apt-get update -qq \
+&& apt-get install -qqy curl wget \
+
+# Create log file and set permissions
+RUN touch /var/log/todo.log \
+
+# Add and set permissions on wait-for-it.sh
+ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh wait-for-it.sh
+RUN chmod +x wait-for-it.sh
+
+# Install Filebeat
+RUN curl -L -O https://download.elastic.co/beats/filebeat/${FILEBEAT_VERSION} \
+&& dpkg -i ${FILEBEAT_VERSION} \
+
+# Create directory for certificates
+RUN mkdir -p /etc/pki/tls/certs
+
+# Add the certificate
+COPY logstash-beats.crt /etc/pki/tls/certs/logstash-beats.crt
+
+# Copy files
+COPY application/lib/springboot-webapp.jar /app.jar
+COPY ./start.sh /usr/local/bin/start.sh
+COPY filebeat.yml /etc/filebeat/filebeat.yml
+
+# Set permissions on start script
+RUN chmod +x /usr/local/bin/start.sh
+
+# Run start script when container launches
+CMD ["/usr/local/bin/start.sh"]

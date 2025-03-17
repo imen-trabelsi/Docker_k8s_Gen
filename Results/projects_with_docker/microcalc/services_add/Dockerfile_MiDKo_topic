@@ -1,0 +1,29 @@
+# Use the base image provided by the user
+FROM node:10-alpine
+
+# Set the working directory to '/app'
+WORKDIR /app
+
+# Copy package definition files to the target image
+COPY package.json package-lock.json /app/
+
+# Giving ownership of the directory to node user
+RUN mkdir /app && chown node:node /app
+
+# Running as non-root user for increased security
+USER node
+
+# Install dependencies
+RUN npm install
+
+# Set the correct environment variables
+ENV APP_PORT=3000 NODE_ENV=production
+
+# Copy other source code files to the target image
+COPY . /app
+
+# Expose the application port
+EXPOSE ${APP_PORT}
+
+# Start the application using the start script from package.json
+CMD ["npm", "start"]

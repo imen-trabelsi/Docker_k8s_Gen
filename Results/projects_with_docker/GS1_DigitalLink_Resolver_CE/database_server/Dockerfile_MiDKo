@@ -1,0 +1,29 @@
+# Python Base Image
+FROM mongo:7-jammy
+
+# Author of the file
+LABEL authors="nick"
+
+# Set environment variables.
+ENV DEBIAN_FRONTEND=noninteractive
+ENV ACCEPT_EULA=Y
+ENV TZ=Europe/London
+
+# Run necessary commands to update the system.
+RUN apt-get update -y && apt-get dist-upgrade -y
+
+# Make directory for app files
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy necessary files
+COPY . .
+
+# Exposed Ports
+EXPOSE 5000
+
+# Set default command as python server for docker to execute when the container is running.
+CMD ["python", "./app.py"]

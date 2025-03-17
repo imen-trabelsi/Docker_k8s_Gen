@@ -1,0 +1,17 @@
+# Start with base image
+FROM java:8-jre
+
+# Working directory inside the container 
+WORKDIR /app
+
+# Setting the Timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+
+# Copy jar file to container
+COPY ./target/ts-basic-service-1.0.jar /app/
+
+# Expose the application on port 15680
+EXPOSE 15680
+
+# Set the command to start the spring boot application
+ENTRYPOINT ["java", "-Xmx200m", "-jar", "/app/ts-basic-service-1.0.jar"]

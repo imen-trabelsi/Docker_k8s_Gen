@@ -1,0 +1,44 @@
+# Use the user-provided Java base image
+FROM $REPOSITORY/gs-cloud-base-jre:$TAG
+
+# Set work directory
+WORKDIR /app
+
+# Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy pom.xml and src directory to the container
+COPY pom.xml .
+COPY src ./src
+
+# Build the application with maven
+RUN ./mvnw package
+
+# Set environment variable
+ENV JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS} -XX:SharedArchiveFile=application.jsa"
+
+# Copy the jar file to the container from the host
+COPY target/gs-cloud-*-bin.jar .
+
+# Copy necessary files and directories
+COPY ${JAR_FILE} application.jar
+COPY --from=builder dependencies/ ./
+COPY --from=builder snapshot-dependencies/ ./
+COPY --from=builder spring-boot-loader/ ./
+COPY --from=builder application/ ./
+
+# Setup commands
+RUN mkdir /tmp/tmpdatadir
+RUN GEOSERVER_DATA_DIR=/tmp/tmpdatadir java \
+-XX:ArchiveClassesAtExit=application.jsa \
+-Dspring.context.exit=onRefreshed \
+-Dspring.profiles.active=standalone,datadir,offline \
+-Dserver.port=0 -Dmanagement.server.port=0 \
+org.springframework.boot.loader.JarLauncher \
+
+# Expose necessary ports
+EXPOSE 8080
+
+# Run the application
+CMD ["java", "-jar", "gs-cloud-*-bin.jar"]

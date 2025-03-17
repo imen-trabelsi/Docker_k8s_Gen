@@ -1,0 +1,31 @@
+# Start from a base image
+FROM openlmis/awscli
+
+# Set the environment variable
+ENV PYTHONUNBUFFERED=1
+
+# Upgrade pip
+RUN pip install --upgrade pip
+
+# Set work directory
+WORKDIR /app
+
+# Copy all necessary files
+COPY . .
+
+# Install Flask and Python PostgreSQL support via pip using requirements.txt
+COPY ./requirements.txt /app/requirements.txt
+RUN pip install -r requirements.txt
+
+# Copy the snapshot restore shell script and give it execution permissions
+COPY restore-snapshot.sh /restore-snapshot.sh
+RUN chmod u+x /restore-snapshot.sh
+
+# Expose ports
+EXPOSE 80
+
+# Entry point
+CMD ["python", "./app.py"]
+
+# Run the restore snapshot shell script
+CMD ["/restore-snapshot.sh"]

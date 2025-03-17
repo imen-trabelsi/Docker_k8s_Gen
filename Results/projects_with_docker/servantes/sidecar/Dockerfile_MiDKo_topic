@@ -1,0 +1,29 @@
+#Use the alpine based Rust Image
+FROM rust:1.56.0-alpine as builder
+
+#Create a new directory to run our commands
+WORKDIR /usr/src/sidecar
+
+#Copy our source code into the image
+COPY ./ ./
+
+#Update the alpine packages 
+RUN apk update && apk upgrade 
+
+#Build the release version of our application
+RUN cargo build --release
+
+##################
+
+FROM alpine:latest
+
+#We want our service to run in this directory
+WORKDIR /sidecar-service
+
+#Copy artifacts from the builder stage into this image
+
+#Make sure our service executable has correct permissions
+RUN chmod +x /sidecar-service/sidecar
+
+#Start the sidecar application on container startup
+CMD ["./sidecar"]

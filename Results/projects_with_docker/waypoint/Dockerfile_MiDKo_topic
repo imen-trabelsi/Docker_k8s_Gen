@@ -1,0 +1,47 @@
+# Use an optimized Go image
+FROM docker.mirror.hashicorp.services/golang:1.19-alpine3.17 as builder
+
+# Add a non-privileged user for the build process
+RUN addgroup waypoint && adduser -S -u 100 -G waypoint waypoint
+
+USER waypoint
+
+# Set ENV variables
+ENV PATH $PATH:/kaniko/bin
+ENV TMPDIR /kaniko/tmp
+ENV USER waypoint
+ENV HOME /home/waypoint
+ENV XDG_RUNTIME_DIR=/run/user/100
+
+# Set the working directory
+WORKDIR /tmp/wp-prime
+
+# Copy all the files
+COPY . /tmp/wp-src
+
+# Install necessary dependencies
+RUN apk add --no-cache git gcc libc-dev make && \
+  go mod download && \
+  go install github.com/kevinburke/go-bindata/go-bindata && \
+  --mount=type=cache,target=/root/.cache/go-build make bin && \
+  mkdir -p /kaniko/bin && \
+
+# Build the application
+WORKDIR /tmp/wp-src
+RUN --mount=type=cache,target=/root/.cache/go-build make bin/entrypoint
+
+# Copy all the necessary files from the builder stage
+COPY --from=busybox /bin/busybox /kaniko/busybox
+
+# Adjust container permissions
+RUN mkdir /data && \
+chown -R waypoint:waypoint /data && \
+mkdir -p /run/user/100 && \
+chown -R waypoint /run/user/100 /home/waypoint && \
+
+# Expose the listening ports in the runtime
+EXPOSE 80 443
+
+# Specify the 'entrypoint' of the container: the application is started here
+ENTRYPOINT ["/kaniko/waypoint"]
+CMD ["/usr/bin/waypoint"]

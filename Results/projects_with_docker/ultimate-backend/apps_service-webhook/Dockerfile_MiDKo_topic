@@ -1,0 +1,24 @@
+# Dockerfile 
+FROM node:12-alpine
+
+ARG NODE_ENV=production
+ENV NODE_ENV $NODE_ENV
+
+WORKDIR /nest
+
+COPY . /nest
+
+RUN apk update && apk upgrade && \
+
+RUN yarn global add @nestjs/cli && \
+    yarn install --production=false && \
+    nest build proto-schema && \
+
+COPY package*.json ./
+RUN yarn install
+
+COPY . .
+
+EXPOSE 50053
+
+CMD [ "node", "dist/apps/service-tenant/main.js" ]

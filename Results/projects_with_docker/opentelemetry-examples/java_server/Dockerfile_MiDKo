@@ -1,0 +1,36 @@
+# Base Image 
+FROM maven:3-eclipse-temurin-11 AS build
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Copy pom.xml and other necessary files
+COPY pom.xml pom.xml
+
+# Updating packages and installing curl
+RUN set -ex && \
+    apt-get update && \
+    apt-get install -y curl && \
+
+# Downloading and copying Agent
+RUN curl -o opentracing-specialagent-1.7.0.jar https://repo1.maven.org/maven2/io/opentracing/contrib/specialagent/opentracing-specialagent/1.7.0/opentracing-specialagent-1.7.0.jar
+
+# Copy Microservice Source
+COPY src ./src
+
+# Package using Maven
+RUN mvn -f /usr/src/app/pom.xml clean package
+
+# Start a new stage for a lean final image
+FROM eclipse-temurin:11-jre
+
+# Copy the jar files to final image from Builder
+
+# Set the appropriate working directory for the app
+WORKDIR /app
+
+# Set the entrypoint to start the java application
+ENTRYPOINT ["java", "-javaagent:/app/opentracing-specialagent-1.7.0.jar", "-jar", "/app/server-1.0-SNAPSHOT.jar"]
+
+# Expose the necessary ports 
+EXPOSE

@@ -1,0 +1,38 @@
+# Use the base image provided by the user
+FROM pitstop-dotnet-sdk-base:1.0
+
+# Environment variables
+ENV NODE_VERSION=20.x
+ENV ASPNETCORE_URLS http://*:7005
+
+# Update system and install dependencies
+RUN apt-get -y update \
+    && apt-get install -y curl \
+    && curl -sL https://deb.nodesource.com/setup_${NODE_VERSION} | sh - \
+    && apt-get install -y nodejs \
+    && apt-get clean \
+
+# Copy project files to the workdir in the container
+WORKDIR /app
+COPY *.csproj ./
+COPY . ./
+    
+# Use npm to install the packages
+RUN npm install
+
+# Build the project
+RUN gulp default
+RUN dotnet restore
+RUN dotnet publish -c Release -o out
+
+# Copy the contents of out to the workdir
+COPY --from=build-env /app/out .
+
+# Expose the necessary port
+EXPOSE 7005/tcp
+
+# Set the health check
+HEALTHCHECK --interval=30s --timeout=3s --retries=1 CMD curl --silent --fail http://localhost:7005/hc || exit 1
+
+# Set the command to be run when the container starts
+ENTRYPOINT ["dotnet", "Pitstop.WebApp.dll"]

@@ -1,0 +1,35 @@
+# Using the base image with a specific version
+ARG HYDRA_VERSION
+ARG KETO_VERSION
+ARG OATHKEEPER_VERSION
+FROM oryd/hydra:$HYDRA_VERSION AS hydra
+FROM oryd/keto:$KETO_VERSION AS keto
+FROM oryd/oathkeeper:$OATHKEEPER_VERSION AS oathkeeper
+
+# Setting the environment variables for building dependencies
+ENV BUILD_DEPS="gettext" \
+
+# Installing the necessary dependencies and cleaning up
+RUN set -x && \
+    apk add --no-cache --update $TIME_DEPS && \
+    apk add --virtual build_deps $BUILD_DEPS && \
+    cp /usr/bin/envsubst /usr/local/bin/envsubst && \
+    apk del build_deps && \
+    pip install --upgrade pip && \
+
+# Copy the necessary files from the different build stages
+
+# Adding the configuration files, supervisor and scripts
+COPY ./config /config
+COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY ./scripts /scripts
+
+# SetUp the EntryPoint and Port
+ENTRYPOINT ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+EXPOSE 1234 5678
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the remaining app files
+COPY . .

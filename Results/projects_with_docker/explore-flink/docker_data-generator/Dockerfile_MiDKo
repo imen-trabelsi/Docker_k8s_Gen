@@ -1,0 +1,23 @@
+# Use the provided base image
+FROM maven:3.6-jdk-8-slim as builder
+
+# Setting working directory in the container
+WORKDIR /opt/data-producer
+
+# Copy project files into the docker image
+COPY ./src /opt/data-producer/src
+COPY ./pom.xml /opt/data-producer/
+
+# Build with Maven
+RUN mvn clean install
+
+# Copy built jar file
+
+# Copying the entrypoint shell script
+COPY docker-entrypoint.sh /
+
+# Grant execution permissions to the script
+RUN chmod +x /docker-entrypoint.sh
+
+# Set the shell script as the entrypoint of the container 
+ENTRYPOINT ["/docker-entrypoint.sh"]

@@ -1,0 +1,24 @@
+# Base Image
+FROM maven:3.9.9-eclipse-temurin-17 AS build
+
+# Set working directory
+WORKDIR /app
+
+# Copy pom.xml and source code to the container
+COPY ./pom.xml ./pom.xml
+COPY ./src ./src
+
+# Copy Arthas
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+
+# Install necessary packages
+RUN apt-get update && apt-get install -y \
+
+# Build the project
+RUN --mount=type=cache,target=/root/.m2/repository/ mvn clean package --batch-mode
+
+# Set the start command
+ENTRYPOINT ["java","-jar","/app/target/A.jar"]
+
+# Expose the necessary port
+EXPOSE 20001

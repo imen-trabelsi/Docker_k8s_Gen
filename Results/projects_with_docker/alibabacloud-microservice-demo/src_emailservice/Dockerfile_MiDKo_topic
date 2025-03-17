@@ -1,0 +1,27 @@
+# Start from the base image provided by user
+FROM registry.cn-beijing.aliyuncs.com/edas_unified/jct_dw_8_4_4:0.1 AS BASE
+
+# Install necessary libraries and packages
+RUN apk update && apk add curl && apk add openjdk8-jre
+
+# Create a new directory for the application
+WORKDIR /app
+
+# Copy necessary files
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+COPY /emailservice-provider/target/emailservice-provider-1.0.0-SNAPSHOT.jar /app
+COPY /start.sh /app
+
+# Provide necessary file permissions
+RUN chmod +x /app/start.sh
+
+# Set the current user
+USER root
+
+# Environment Variables (If any)
+
+# Expose necessary ports
+EXPOSE 8080
+
+# Execution instructions
+CMD ["/app/start.sh"]

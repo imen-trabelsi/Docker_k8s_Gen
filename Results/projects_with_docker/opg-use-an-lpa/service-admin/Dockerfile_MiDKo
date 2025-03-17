@@ -1,0 +1,38 @@
+# Start with the desired base image
+FROM golang:1.23.4-alpine
+   
+# Specify the working directory
+WORKDIR /app
+
+# Install necessary packages
+RUN apk --update --no-cache add build-base \
+    && apk --update --no-cache add ca-certificates tzdata \
+    && rm -rf /var/cache/apk/* \
+    && update-ca-certificates \
+
+# Copy project files into the docker image
+COPY web/assets web/assets
+COPY build.js .
+COPY package.json package-lock.json ./
+
+COPY go.mod go.sum ./
+COPY . .
+
+WORKDIR /go/bin
+COPY --from=build-env /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
+COPY --from=build-env /etc/passwd /etc/passwd
+COPY --from=build-env /app/admin admin
+COPY --from=build-env /app/web/templates web/templates
+COPY --from=asset-env /app/web/static web/static
+
+# Change to non-root user
+USER appuser
+
+# Downloading dependencies
+RUN npm ci && npm run build
+
+# Compile the Go application
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o admin cmd/admin/main.go
+
+# Define the entry point of the docker image
+ENTRYPOINT ["./admin"]

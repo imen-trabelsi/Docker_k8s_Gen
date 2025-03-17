@@ -1,0 +1,39 @@
+# Base Image
+FROM ubuntu:18.04
+
+# Maintainer
+LABEL maintainer="yourname@email.com"
+
+# Install Go
+RUN apt-get update && apt-get install -y golang
+
+# Add User
+RUN groupadd -r onap && useradd -r -g onap onap
+
+# Set Workspace
+WORKDIR /opt/multicloud/k8s/rsync
+
+# Environment Variables
+ENV http_proxy ${HTTP_PROXY}
+ENV https_proxy ${HTTPS_PROXY}
+ENV no_proxy ${NO_PROXY}
+
+# Copy Files
+COPY --chown=onap ./rsync ./
+COPY ./go.mod ./
+
+# Change Owner
+RUN chown onap:onap /opt/multicloud/k8s/rsync -R
+
+# Install Dependencies
+RUN go mod download
+
+# Expose Ports
+EXPOSE 9016
+
+# Switch to User
+USER onap
+
+# Start Command
+CMD ["./rsync"]
+

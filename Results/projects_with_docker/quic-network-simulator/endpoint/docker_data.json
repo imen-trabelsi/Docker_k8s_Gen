@@ -1,0 +1,44 @@
+{
+    "docker_info": {
+        "base_image": "ubuntu:24.04",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY setup.sh .",
+            "COPY run_endpoint.sh ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"/run_endpoint.sh\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && \\",
+                "apt-get install -y wget net-tools iputils-ping tcpdump ethtool iperf iproute2"
+            ],
+            [
+                "chmod +x setup.sh",
+                ""
+            ],
+            [
+                "chmod +x run_endpoint.sh",
+                ""
+            ],
+            [
+                "wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh && chmod +x wait-for-it.sh",
+                ""
+            ]
+        ]
+    }
+}

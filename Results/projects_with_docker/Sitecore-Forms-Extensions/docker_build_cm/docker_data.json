@@ -1,0 +1,26 @@
+{
+    "docker_info": {
+        "base_image": "${SOLUTION_IMAGE}",
+        "multi_stage_build": true,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "BASE_IMAGE",
+            "TOOLING_IMAGE",
+            "SOLUTION_IMAGE",
+            "MANAGEMENT_SERVICES_IMAGE"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "COPY --from=tooling \\tools\\ \\tools\\",
+            "COPY --from=management_services C:\\module\\cm\\content C:\\inetpub\\wwwroot",
+            "WORKDIR C:\\inetpub\\wwwroot",
+            "COPY --from=solution \\artifacts\\website\\ .\\",
+            "COPY --from=solution \\artifacts\\transforms\\ \\transforms\\solution\\"
+        ],
+        "execution": [],
+        "run": []
+    }
+}

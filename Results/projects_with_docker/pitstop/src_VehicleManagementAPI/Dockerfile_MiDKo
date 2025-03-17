@@ -1,0 +1,37 @@
+# Start from the base image pitstop-dotnet-sdk-base:1.0
+FROM pitstop-dotnet-sdk-base:1.0 AS build-env
+
+# Create a working directory
+WORKDIR /app
+
+# Copy project file to the working directory
+COPY *.csproj ./
+
+# Restore all the dependencies
+RUN dotnet restore
+
+# Copy everything else to the working directory
+COPY . ./
+
+# Build the project in release mode and publish the output
+RUN dotnet publish -c Release -o out
+
+# Start a new build stage where the app will be run
+FROM build-env AS runtime
+
+# Create a new directory for the app
+WORKDIR /app
+
+# Copy the built app from the previous stage to the current directory
+
+# Set environment variable to listen on port 5000
+ENV ASPNETCORE_URLS=http://*:5000
+
+# Healthcheck configuration
+HEALTHCHECK --interval=30s --timeout=3s --retries=1 CMD curl --silent --fail http://localhost:5000/hc || exit 1
+
+# Expose port 5000 for the app
+EXPOSE 5000/tcp
+
+# Define the entry point which will be used once a container is run
+ENTRYPOINT ["dotnet", "Pitstop.VehicleManagementAPI.dll"]

@@ -1,0 +1,53 @@
+{
+    "docker_info": {
+        "base_image": "node:18-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV PORT=80"
+        ],
+        "copy_instructions": [
+            "WORKDIR /usr/local/app",
+            "COPY package*.json ./",
+            "COPY . ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/usr/bin/tini\",",
+                    "\"--\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"node\",",
+                    "\"server.js\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && \\",
+                "apt-get install -y --no-install-recommends curl tini &&",
+                "rm -rf /var/lib/apt/lists/*"
+            ],
+            [
+                "npm install -g nodemon",
+                ""
+            ],
+            [
+                "npm ci && \\",
+                "npm cache clean --force &&",
+                "mv /usr/local/app/node_modules /node_modules"
+            ]
+        ]
+    }
+}

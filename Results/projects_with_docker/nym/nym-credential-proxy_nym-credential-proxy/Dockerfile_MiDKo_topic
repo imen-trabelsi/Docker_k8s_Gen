@@ -1,0 +1,41 @@
+# Use the harbor.nymte.ch/dockerhub/rust:latest as a base
+FROM harbor.nymte.ch/dockerhub/rust:latest AS builder
+
+# Set the working directory inside the docker
+WORKDIR /usr/src/nym
+
+# Copy all files from the current directory to the Workdir in the Docker image
+COPY ./nym-credential-proxy/nym-credential-proxy/ .
+
+# Run commands
+RUN cargo build --release
+
+# Again, start from base image
+FROM harbor.nymte.ch/dockerhub/rust:latest
+
+# Install required packages
+RUN apt update && apt install -yy curl ca-certificates
+
+# Set the working directory
+WORKDIR /nym
+
+# Copy files from builder to new image
+
+# Expose correct ports
+EXPOSE 8080
+
+# Set environment variables
+ENV NODE_ENV=production \
+
+# Define the network protocols this image will use
+EXPOSE 8080/tcp
+
+# Set health check instruction
+HEALTHCHECK CMD curl --fail http://localhost:8080 || exit 1
+
+# Add metadata to the image
+LABEL org.opencontainers.image.title="Nym Credential Proxy" \
+      org.opencontainers.image.description="Spring Boot microservice for Nym Credential Proxy" \
+
+# Command to run
+ENTRYPOINT ["/nym/nym-credential-proxy"]

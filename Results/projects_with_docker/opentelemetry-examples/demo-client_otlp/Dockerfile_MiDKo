@@ -1,0 +1,17 @@
+# Use python:3-alpine3.15 as base image
+FROM python:3-alpine3.15
+
+# Working Directory inside the container
+WORKDIR /app
+
+# Copy Source Code to Working Directory inside Docker container
+COPY client.py /app/client.py
+
+# Install dependencies
+RUN pip install opentelemetry-launcher requests pyyaml protobuf==3.20.1
+
+# Install opentelemetry
+RUN opentelemetry-bootstrap -a install
+
+# Execution Command
+CMD ["opentelemetry-instrument", "/app/client.py"]

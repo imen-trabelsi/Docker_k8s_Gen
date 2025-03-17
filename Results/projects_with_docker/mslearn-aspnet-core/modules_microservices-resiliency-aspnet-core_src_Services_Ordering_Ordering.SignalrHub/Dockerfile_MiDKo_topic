@@ -1,0 +1,31 @@
+# Base Image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+# Set Work Directory
+WORKDIR /src
+
+# Copy csproj and Restore dependencies
+COPY ["NuGet.config", "./"]
+COPY ["docker-compose.dcproj", "./"]
+COPY ["eShop-Learn.sln", "./"]
+COPY . .
+
+RUN dotnet restore "eShop-Learn.sln"
+
+# Copy everything else and build
+COPY . ./
+
+# publish the build
+RUN dotnet publish "Ordering.SignalrHub.csproj" -c Release -o /app/publish
+
+# Generate Runtime image
+FROM mcr.microsoft.com/dotnet/runtime:6.0
+
+# Set Work Directory
+WORKDIR /app
+EXPOSE 80
+
+# Copy files from publish to working directory and configure
+
+# Set Entry point
+ENTRYPOINT ["dotnet","Ordering.SignalrHub.dll"]

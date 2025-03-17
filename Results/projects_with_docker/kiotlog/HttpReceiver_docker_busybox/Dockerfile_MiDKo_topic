@@ -1,0 +1,44 @@
+# Dockerfile
+FROM debian:stretch-slim
+
+# Define the build arguments
+ARG PROJECT=SigFoxReceiver
+ARG CONFIGURATION=Release
+
+# Set correct environment variables
+ENV PATH /opt/${PROJECT}/bin:$PATH
+ENV COMMAND ${PROJECT}
+
+# Setup necessary dependencies
+RUN set -ex \
+    && apt update \
+    && apt install -y gpg \
+    && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF \
+    && echo "deb http://download.mono-project.com/repo/debian stretch main" > /etc/apt/sources.list.d/mono-official.list \
+    && apt-get update \
+
+# Switch to working directory
+WORKDIR /Build/${PROJECT}
+
+# Copy necessary files
+COPY . /Build/${PROJECT}/
+COPY docker-entrypoint.sh /usr/local/bin/
+COPY --from=mkbundle /usr/lib/x86_64-linux-gnu/libgcc* /lib/ \
+COPY --from=mkbundle /usr/lib/x86_64-linux-gnu/libdl* /lib/ 
+COPY --from=mkbundle /usr/lib/x86_64-linux-gnu/librt* /lib/
+
+# Perform build and restore operations
+RUN set -ex \
+RUN set -ex \
+RUN set -ex \
+RUN set -ex; ln -s /lib/libc.so.6 /lib/libc.so
+
+# Copy compiled project to the appropriate directory
+COPY --from=mkbundle /Build/${PROJECT}/bin/${CONFIGURATION}/${PROJECT} /opt/${PROJECT}/bin/
+
+# Symlink the entrypoint
+RUN ln -s /usr/local/bin/docker-entrypoint.sh /
+
+# Final command for the container
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["--host", "0.0.0.0", "--mqttbroker", "mqtt", "1883"]

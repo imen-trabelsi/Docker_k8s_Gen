@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: random-demo-service
+  name: random-demo-service
+spec:
+  ports:
+  - name: http
+    port: 800
+    protocol: TCP
+    targetPort: 800
+  selector:
+    app: random-demo-service
+  type: LoadBalancer

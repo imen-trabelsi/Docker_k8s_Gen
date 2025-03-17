@@ -1,0 +1,32 @@
+# Use the official .Net SDK Runtime as a parent image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 as build
+
+# Set the working directory
+WORKDIR /src
+
+# Copy csproj and restore
+COPY *.csproj .
+RUN dotnet restore
+
+# Copy everything else and build
+COPY . .
+RUN dotnet publish -c Release -o out
+RUN dotnet restore "eShop-Learn.sln"
+RUN dotnet publish --no-restore "WebStatus.csproj" -c Release -o /app/publish
+
+# Start new stage to build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+
+# Set the work directory
+WORKDIR /app
+
+# Copy from build to publish
+
+# Define environment variables
+# TODO: Define Environment Variables
+
+# Expose port
+EXPOSE 80
+
+# Run command
+ENTRYPOINT ["dotnet", "WebStatus.dll"]

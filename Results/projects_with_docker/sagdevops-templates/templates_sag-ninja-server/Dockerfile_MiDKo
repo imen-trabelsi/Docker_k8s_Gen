@@ -1,0 +1,31 @@
+# Set Basic Image
+FROM daerepository03.eur.ad.sag:4443/ccdevops/commandcentral-builder:10.3 as builder
+
+# Set Work Dir and system properties
+WORKDIR /home/spring-boot-app
+
+# Copy necessary files
+COPY scripts/entrypoint.sh $SAG_HOME/
+COPY scripts/cleanup.sh $SAG_HOME/
+COPY scripts/provision.sh $SAG_HOME/
+COPY scripts/test.sh $SAG_HOME/
+
+#Provide permission for script execution
+RUN chmod +x $SAG_HOME/*.sh
+
+# Execute necessary commands
+RUN $CC_HOME/provision.sh && ./test.sh && $CC_HOME/cleanup.sh
+
+#Change to the next stage with defined image
+FROM daerepository03.eur.ad.sag:4443/ibit/java:jdk-8-centos
+
+# Copy necessary files from previous stage
+
+# Expose necessary ports
+EXPOSE 4444
+
+# Set necessary Environment Variables
+ENV _JAVA_OPTIONS="-Xmx256m"
+
+# Entrypoint to handle container start 
+ENTRYPOINT ["$SAG_HOME/entrypoint.sh"]

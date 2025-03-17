@@ -1,0 +1,53 @@
+# Dockerfile 
+
+# Use golang alpine image
+FROM golang:alpine AS builder
+
+# Install necessary packages
+RUN apk --no-cache add openssl wget git
+
+# Setting GOPATH
+ENV GOPATH=/go
+
+# Installing dep and Go dependencies
+RUN wget -O /usr/local/bin/dep https://github.com/golang/dep/releases/download/v0.4.1/dep-$(go env GOOS)-$(go env GOHOSTARCH) && chmod +x /usr/local/bin/dep
+
+# Create directory for the app in the container
+RUN mkdir -p /go/src/github.com/pclubiitk/puppy-love
+
+# Set the current working directory in the Docker image
+WORKDIR /go/src/github.com/pclubiitk/puppy-love
+
+# Copy app dependencies
+COPY Gopkg.toml Gopkg.lock ./
+
+# Install application dependencies
+RUN dep ensure -v -vendor-only
+
+# Copy all source code to working directory
+COPY . .
+
+# Build the application
+RUN go build
+
+# Create directory for the compiled app in the container
+RUN mkdir -p /go/bin
+
+# Copy the compiled app to the created directory
+
+# start a new stage from scratch
+FROM alpine:latest  
+
+# Make sure we have ca-certificates installed. 
+RUN apk --no-cache add ca-certificates
+
+# Define the directory for the app 
+WORKDIR /root/
+
+# Copy the binary file from the previous stage
+
+# Expose port 3000 to the outside world
+EXPOSE 3000
+
+# Command for the container to execute when it starts up
+ENTRYPOINT ["/root/puppy-love"]

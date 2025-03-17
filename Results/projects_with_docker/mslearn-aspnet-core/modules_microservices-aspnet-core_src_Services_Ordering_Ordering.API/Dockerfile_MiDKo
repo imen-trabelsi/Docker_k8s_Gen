@@ -1,0 +1,32 @@
+# Base Image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+# Set Working Directory
+WORKDIR /src
+
+# Install dependencies
+RUN dotnet restore "./eShop-Learn.sln"
+
+COPY . .
+
+# Copy required files and directories
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+COPY ["src/BuildingBlocks/EventBus/EventBus/EventBus.csproj", "src/BuildingBlocks/EventBus/EventBus/"]
+ 
+
+# Build Source Code
+WORKDIR "/src/src/Services/Ordering/Ordering.API"
+RUN dotnet publish "Ordering.API.csproj" -c Release -o /app/publish
+
+# Runtime Image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS runtime
+
+WORKDIR /app
+
+# Copy compiled source code from build to runtime image
+
+# Expose Service Port
+EXPOSE 80
+
+# Define entrypoint
+ENTRYPOINT ["dotnet", "Ordering.API.dll"]

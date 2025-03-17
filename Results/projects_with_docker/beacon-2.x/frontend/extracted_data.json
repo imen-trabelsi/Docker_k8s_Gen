@@ -1,0 +1,31 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Django",
+        "dependencies": {
+            "requirements.txt": "# I noticed a misbehaviour with 3.7.2 regarding cookie storage for raised HTTP response\n# That's the case for the HTTPFound redirections\n# It seems the cookies are not sent in the response, and therefore, the browser does not store them\n# Obviously, sessions do not work then, and Openid Connect auth.py code is broken\naiohttp==3.8.1\naiohttp-cors==0.7.0\nasyncpg~=0.24.0\npyyaml~=6.0.1\ncryptography==39.0.1\njinja2~=3.0.2\n#aiohttp_csrf\npymongo~=4.0.1\naiohttp-jinja2~=1.5\naiohttp-session~=2.9.0\naiohttp-middlewares==2.2.0\ndataclasses-json~=0.5.6\nStrEnum~=0.4.7 # Only until Python 3.11 is released (we can use the built-in StrEnum)\nowlready2~=0.36\ntqdm~=4.62.3\npydantic~=2.6.2\npyhumps\nprogressbar~=2.5\n#requests\nrequests==2.25.1\npandas==1.5.3\nscipy==1.10.0\nnumpy==1.24.2\nurllib3==1.26.13\n#beautifulsoup4==4.11.2\n#torch==1.11.0\nobonet==0.3.1\nnetworkx==2.8.8\nPyJWT==2.7.0\nDjango==4.1.3\ndjango-crispy-forms==1.14.0\ndjango-environ==0.8.1\nmozilla-django-oidc==3.0.0\npytest==7.4.4\npytest-aiohttp==1.0.5\npytest-asyncio==0.23.4\npython-dotenv==1.0.1\n\n"
+        },
+        "database": "PostgreSQL",
+        "build_system": "pip",
+        "config_files": {
+            "Dockerfile": "##########################\n## Build env\n##########################\n\nFROM python:3.10-buster AS BUILD\n\nENV DEBIAN_FRONTEND noninteractive\n\nRUN apt-get update\n#RUN apt-get upgrade -y\nRUN apt-get install -y --no-install-recommends \\\n    ca-certificates pkg-config make \\\n    libssl-dev libffi-dev libpq-dev\n\n# python packages\nRUN pip install --upgrade pip\nCOPY requirements.txt /tmp/requirements.txt\nRUN pip install -r /tmp/requirements.txt\n\n\n##########################\n## Final image\n##########################\nFROM python:3.10-buster\n\nLABEL maintainer \"CRG System Developers\"\nLABEL org.label-schema.schema-version=\"2.0\"\nLABEL org.label-schema.vcs-url=\"https://github.com/EGA-archive/beacon-2.x/\"\n\n# Too much ?\nCOPY --from=BUILD /usr/local/bin      /usr/local/bin\nCOPY --from=BUILD /usr/local/lib      /usr/local/lib\n\nRUN apt-get update && \\\n#    apt-get upgrade -y && \\\n    apt-get install -y --no-install-recommends \\\n    nginx \\\n    && \\\n    rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/nginx.list && \\\n    apt-get purge -y --auto-remove\n\nCOPY deploy/nginx.conf        /beacon/nginx.conf\nCOPY deploy/supervisord.conf  /beacon/supervisord.conf\nCOPY deploy/entrypoint.sh     /usr/local/bin/entrypoint.sh\nCOPY deploy/permissions.sh     /usr/local/bin/permissions.sh\nCOPY beacon                   /beacon/beacon\nCOPY ui                       /beacon/ui\n\nRUN groupadd beacon                              && \\\n    useradd -M -g beacon beacon                  && \\\n#    mkdir /beacon                                && \\\n    mkdir /var/run/beacon                        && \\\n    chown -R beacon:beacon /beacon               && \\\n#    chmod 400 /beacon/beacon/conf.py             && \\\n    chown -R beacon:beacon /var/log/nginx        && \\\n    chown -R beacon:beacon /var/lib/nginx        && \\\n    chown -R beacon:beacon /etc/nginx            && \\\n    chown -R beacon:beacon /var/run/beacon       && \\\n    mkdir -p /var/log/supervisord                && \\\n    chown -R beacon:beacon /var/log/supervisord  && \\\n    chmod +x /usr/local/bin/entrypoint.sh\n\nWORKDIR /beacon\nUSER beacon\nENTRYPOINT [\"/usr/local/bin/entrypoint.sh\"]\n"
+        },
+        "static_files": {
+            "frontend/public/manifest.json": "{\n  \"short_name\": \"React App\",\n  \"name\": \"Create React App Sample\",\n  \"icons\": [\n    {\n      \"src\": \"favicon.ico\",\n      \"sizes\": \"64x64 32x32 24x24 16x16\",\n      \"type\": \"image/x-icon\"\n    },\n    {\n      \"src\": \"logo192.png\",\n      \"type\": \"image/png\",\n      \"sizes\": \"192x192\"\n    },\n    {\n      \"src\": \"logo512.png\",\n      \"type\": \"image/png\",\n      \"sizes\": \"512x512\"\n    }\n  ],\n  \"start_url\": \".\",\n  \"display\": \"standalone\",\n  \"theme_color\": \"#000000\",\n  \"background_color\": \"#ffffff\"\n}\n"
+        }
+    },
+    "project_structure": {
+        "files": [
+            ".gitignore",
+            "Dockerfile",
+            "README.md",
+            "package-lock.json",
+            "package.json",
+            "yarn.lock"
+        ],
+        "folders": [
+            "public",
+            "src"
+        ]
+    }
+}

@@ -1,0 +1,32 @@
+# Start from the base image
+FROM jupyter/minimal-notebook:55d5ca6be183
+
+# Run as root
+USER root
+
+# Set work directory in the container
+WORKDIR /usr/src/app
+
+# Copy Gemfile and Gemfile.lock into Container
+COPY Gemfile Gemfile.lock ./
+
+# Install all the dependencies
+RUN bundle install
+
+# Copy rest of the application code
+COPY . .
+
+# Copy configuration files
+COPY subrepos/docker-stacks/examples/docker-compose/notebook/Dockerfile ./config/database.yml
+
+# Install PostgreSQL and start the service and also give access to incoming connections
+# Please update the following script to meet your PostgreSQL version and configuration
+RUN apt-get update -qq && apt-get install -y postgresql postgresql-contrib && service postgresql start && \
+    sudo -u postgres sh -c 'echo "host all  all    0.0.0.0/0  md5" >> /etc/postgresql/9.3/main/pg_hba.conf' && \
+
+# Expose the application on port 3000
+# (The port number may vary depending on your application, please adjust accordingly)
+EXPOSE 3000
+
+# Start the main process.
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]

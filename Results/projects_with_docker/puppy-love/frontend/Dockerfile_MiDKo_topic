@@ -1,0 +1,31 @@
+# Base Image
+FROM node:8-alpine as builder
+
+# Create Working Directory
+WORKDIR /src
+
+# Install Dependencies
+COPY package.json yarn.lock /tmp/
+RUN cd /tmp && yarn install
+
+# Copy Dependencies to Working Directory
+RUN mkdir -p /src && cp -a /tmp/node_modules /src/
+
+# Copy Files to Working Directory
+COPY . .
+
+# Build Production Files
+RUN yarn build
+
+FROM nginx:alpine
+
+# Copy Static Build to Nginx Server
+
+# Copy Nginx Configuration File
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Expose Port 80
+EXPOSE 80
+
+# Add a command to run your application
+CMD ["nginx", "-g", "daemon off;"]

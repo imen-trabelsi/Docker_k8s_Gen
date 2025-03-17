@@ -1,0 +1,65 @@
+{
+    "docker_info": {
+        "base_image": "node:8.13-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3001"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ./package.json .",
+            "COPY ./tsconfig.json .",
+            "COPY ./tslint.json .",
+            "COPY ./src ./src",
+            "COPY ./public ./public",
+            "WORKDIR /opt/my-musik/",
+            "COPY --from=build-env /opt/my-musik/dist ./dist",
+            "COPY --from=build-env /opt/my-musik/package.json ./"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"static\",",
+                    "\"./dist\",",
+                    "\"-a\",",
+                    "\"0.0.0.0\",",
+                    "\"-p\",",
+                    "\"3001\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p /opt/my-musik/",
+                "WORKDIR /opt/my-musik/"
+            ],
+            [
+                "npm install typescript -g",
+                "RUN npm install --no-optional"
+            ],
+            [
+                "npm install -g @vue/cli",
+                ""
+            ],
+            [
+                "npm run build",
+                ""
+            ],
+            [
+                "npm install npm -g",
+                "RUN mkdir -p /opt/my-musik/"
+            ],
+            [
+                "npm install --no-optional --only=prod",
+                "RUN npm install node-static -g"
+            ]
+        ]
+    }
+}

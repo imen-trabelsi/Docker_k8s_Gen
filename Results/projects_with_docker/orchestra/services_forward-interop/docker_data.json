@@ -1,0 +1,62 @@
+{
+    "docker_info": {
+        "base_image": "node:12-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "4000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV NODE_ENV=production",
+            "ENV PORT=4000 \\"
+        ],
+        "copy_instructions": [
+            "WORKDIR /builder",
+            "COPY common/nodejs/package.json src/common/",
+            "COPY forward-interop/package.json .",
+            "COPY common/messages/interop.proto \\",
+            "COPY common/nodejs src/common",
+            "COPY forward-interop .",
+            "WORKDIR /app",
+            "COPY common/scripts/wait-for-it.sh .",
+            "COPY common/nodejs/package.json src/common/",
+            "COPY forward-interop/package.json .",
+            "COPY --from=builder /builder/lib lib",
+            "COPY /forward-interop/bin bin"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "./wait-for-it.sh",
+                    "\\"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "npm install",
+                ""
+            ],
+            [
+                "npm run build-msg",
+                ""
+            ],
+            [
+                "npm run build",
+                ""
+            ],
+            [
+                "apk --no-cache add \\",
+                "curl"
+            ],
+            [
+                "npm install",
+                ""
+            ]
+        ]
+    }
+}

@@ -1,0 +1,38 @@
+FROM ubuntu:18.04
+
+LABEL maintainer="DevOps Engineer"
+
+# Set Environment Variables
+ENV http_proxy=$HTTP_PROXY
+ENV https_proxy=$HTTPS_PROXY
+ENV no_proxy=$NO_PROXY
+
+# Install basic packages and Go
+RUN apt-get update && \
+    apt-get install -y curl && \
+    curl -O https://dl.google.com/go/go1.13.linux-amd64.tar.gz && \
+    tar -xvf go1.13.linux-amd64.tar.gz && \
+    mv go /usr/local && \
+    export GOROOT=/usr/local/go && \
+    export GOPATH=$HOME/Projects/Proj1 && \
+
+# Create app directory
+WORKDIR /opt/multicloud/k8s/ovnaction
+
+# Add user
+RUN groupadd -r onap && useradd -r -g onap onap
+
+# Grant permission
+RUN chown onap:onap /opt/multicloud/k8s/ovnaction -R
+
+# Change User
+USER onap
+
+# Copy source into container
+COPY --chown=onap ./ovnaction ./
+
+# Port to expose
+EXPOSE 9016
+
+# Default command to be executed
+CMD ["./ovnaction"]+

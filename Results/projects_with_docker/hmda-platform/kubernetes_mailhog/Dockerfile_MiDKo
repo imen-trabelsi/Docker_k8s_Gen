@@ -1,0 +1,33 @@
+# Using mailhog base image  
+FROM mailhog/mailhog:v1.0.1  
+
+# Updating and upgrading the packages  
+RUN apk update && apk upgrade  
+
+# Setting work directory  
+WORKDIR /opt/mailhog  
+
+# Copying the files over to the docker-image  
+COPY . /opt/mailhog/ 
+
+# Setting up the necessary environment variables   
+ENV DB_URL=jdbc:postgresql://localhost:5432/postgres  
+ENV DB_USERNAME=postgres  
+ENV DB_PASSWORD=secret  
+ENV SBT_VERSION=1.4.1 
+
+# Adding build.sbt into the container and running it to get dependencies  
+COPY build.sbt ./  
+RUN sbt update  
+
+# Copying the necessary files  
+COPY docker-compose.yml .  
+COPY kubernetes/mailhog/Dockerfile .  
+
+# Exposing the required ports  
+EXPOSE 80  
+EXPOSE 25 
+EXPOSE 8025 
+
+# Specifying the command to run 
+CMD ["Mailhog"]

@@ -1,0 +1,22 @@
+# Set base image to Maven
+FROM maven:3-eclipse-temurin-17-focal
+
+# Copy Application files 
+COPY . /opt/universal-registrar
+WORKDIR /opt/universal-registrar/uni-registrar-web/
+
+RUN export DEBIAN_FRONTEND=noninteractive && apt-get -y update && apt-get install -y --no-install-recommends patch && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+ cd /opt/universal-registrar && mvn clean install -N && \
+ cd /opt/universal-registrar/uni-registrar-core && mvn clean install -N && \
+ cd /opt/universal-registrar/driver && mvn clean install -N && \
+ cd /opt/universal-registrar/driver-http && mvn clean install -N && \
+ cd /opt/universal-registrar/uni-registrar-local && mvn clean install -N && \
+
+# Set Environment variable
+ENV uniregistrar_web_spring_profiles_active=default
+
+# Expose the container port
+EXPOSE 9080
+
+# Execute the application
+ENTRYPOINT [ "java", "-jar", "./*.jar" ]

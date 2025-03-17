@@ -1,0 +1,35 @@
+# Use the official maven/Java 11 image to create a build artifact.
+# This is based on Debian and sets the Maven version and the Java version for you automatically.
+FROM maven:3.6.0-jdk-11 AS build
+
+# Set the working directory in the image to /app
+WORKDIR /app
+
+# Copy the pom.xml file to our app directory
+COPY pom.xml .
+
+# Build all the dependencies in preparation to go offline. 
+# This is a separate step so the dependencies will be cached unless 
+# the pom.xml file has changed.
+RUN mvn dependency:go-offline -B
+
+# Copy the project source code (exclude docker file and docker-compose to avoid any unnecessary rebuild when they change)
+COPY src src
+
+# Package the application
+RUN mvn package -DskipTests
+
+# Start with a base image containing Java runtime
+FROM openjdk:11-jre-slim
+
+# Copy the jar to the production image from the builder stage.
+
+# Sets the working directory for following COPY and CMD instructions
+# Notice we haven't switched user so the WORKDIR is still owned by root.
+WORKDIR /usr/src
+
+# Set the startup command to execute the jar
+CMD ["java", "-jar", "login-service-0.0.1-SNAPSHOT.jar"]
+
+# Expose the application's port
+EXPOSE 8080

@@ -1,0 +1,34 @@
+# Get the stable Docker node image
+FROM public.ecr.aws/docker/library/node:20-bookworm-slim
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY package*.json ./
+
+RUN apt-get update && apt-get install -yq --no-install-recommends git zip
+
+# If you are building your code for production
+# RUN npm ci --only=production
+RUN npm install
+
+# Bundle app source by copying all necessary files and directories
+COPY . .
+COPY .git /repo/.git
+COPY cache/edge_lambdas /repo/cache/edge_lambdas
+
+# Set the working directory
+WORKDIR /repo/cache/edge_lambdas
+
+RUN yarn && yarn build && yarn cache clean
+
+RUN cd dist && zip -r ../edge_lambda_origin.zip .
+
+# This is the command that will be run when the Docker container starts
+CMD ["true"]
+
+# Inform Docker that the container is listening on the specified port at runtime.
+EXPOSE

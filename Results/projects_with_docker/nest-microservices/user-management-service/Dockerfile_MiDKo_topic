@@ -1,0 +1,26 @@
+# Use base image provided by the user
+FROM node:12
+
+# Create a directory where our app will be placed
+RUN mkdir -p /app/userservice
+
+# Set the Workdir
+WORKDIR /app/userservice
+
+# Copy application package.json and package-lock.json to workdir
+COPY package.json package-lock.json /app/userservice/
+
+# Install application dependencies
+RUN npm cache clean --force && npm install --no-optional
+
+# Copy application source code to workdir
+COPY . /app/userservice/
+
+# Build the application
+RUN npm run build
+
+# Expose the port the app runs in
+EXPOSE 8080
+
+# Serve the app
+CMD [ "npm", "start" ]

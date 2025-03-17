@@ -1,0 +1,58 @@
+{
+    "docker_info": {
+        "base_image": "python:3.12",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV PYTHONPATH /data-act/backend"
+        ],
+        "copy_instructions": [
+            "COPY requirements.txt /data-act/backend/requirements.txt",
+            "COPY server_requirements.txt /data-act/backend/server_requirements.txt",
+            "WORKDIR /data-act/backend",
+            "ADD . /data-act/backend"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "/bin/sh"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get -y update",
+                "RUN apt-get install -y gcc libpq-dev"
+            ],
+            [
+                "apt-get install -y postgresql-client",
+                "RUN apt-get install -y netcat-openbsd"
+            ],
+            [
+                "apt-get install -y libsqlite3-dev",
+                ""
+            ],
+            [
+                "pip install unittest-xml-reporting setuptools==68.1.2",
+                ""
+            ],
+            [
+                "pip install --upgrade pip==24.0",
+                "RUN pip install -r /data-act/backend/requirements.txt"
+            ],
+            [
+                "CPUCOUNT=1 pip install -r /data-act/backend/server_requirements.txt",
+                ""
+            ],
+            [
+                "opentelemetry-bootstrap -a install",
+                ""
+            ]
+        ]
+    }
+}

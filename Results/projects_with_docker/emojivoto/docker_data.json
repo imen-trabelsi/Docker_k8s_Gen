@@ -1,0 +1,31 @@
+{
+    "docker_info": {
+        "base_image": "buoyantio/emojivoto-svc-base:v12",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "svc_name"
+        ],
+        "envs": [
+            "ENV SVC_NAME $svc_name"
+        ],
+        "copy_instructions": [
+            "COPY $svc_name/target/ /usr/local/bin/"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "cd",
+                    "/usr/local/bin",
+                    "&&",
+                    "$SVC_NAME"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

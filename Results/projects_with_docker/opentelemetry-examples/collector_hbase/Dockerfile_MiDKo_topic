@@ -1,0 +1,29 @@
+# Use base image provided by user
+FROM curlimages/curl:7.82.0 as curler
+# Switch to root user
+USER root
+
+# Copies the go.mod and go.sum file into the WORKDIR so the necessary go packages are detected
+COPY go.mod go.sum ./
+
+# Run commands specified by user
+RUN curl -L --output /opentelemetry-jmx-metrics.jar "https://github.com/open-telemetry/opentelemetry-java-contrib/releases/download/${JMX_JAR_VERSION}/opentelemetry-jmx-metrics.jar"
+RUN curl -L -s "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.53.0/otelcol-contrib_0.53.0_linux_amd64.tar.gz" | tar -xvz -C /
+
+# Start fresh from a smaller image to reduce final size
+FROM golang:1.16-alpine as final
+# Define environment variables and build arguments
+ENV JMX_JAR_VERSION=v1.14.0
+
+# Change working directory
+WORKDIR /
+
+# Copy necessary files from previous stage
+COPY collector/hbase/docker-compose.yml collector/hbase/docker-compose.yml
+COPY collector/hbase/Dockerfile collector/hbase/Dockerfile
+
+# Expose necessary ports
+EXPOSE 4317 55679
+
+# Define start command 
+CMD ["/otelcol-contrib", "--config","/etc/otel/config.yaml"]

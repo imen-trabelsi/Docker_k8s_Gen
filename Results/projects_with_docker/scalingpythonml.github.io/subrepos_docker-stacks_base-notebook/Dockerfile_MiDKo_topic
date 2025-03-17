@@ -1,0 +1,58 @@
+# Use base image provided by user
+FROM $BASE_CONTAINER
+
+# Set labels for metadata
+LABEL maintainer="Jupyter Project <jupyter@googlegroups.com>"
+
+# Create jovyan user
+ENV NB_USER jovyan
+ENV NB_UID 1000
+ENV HOME /home/${NB_USER}
+
+# Create jovyan user with UID=1000 and in the 'users' group
+# and ensure it owns user home directory
+RUN useradd -m -s /bin/bash -N -u $NB_UID $NB_USER && \
+    mkdir -p $CONDA_DIR && \
+
+# Set Environment variables 
+ENV DEBIAN_FRONTEND noninteractive
+ENV CONDA_DIR /opt/conda 
+ENV PATH $CONDA_DIR/bin:$PATH
+
+# Install necessary dependencies
+RUN apt-get update && \
+    apt-get install -yq --no-install-recommends \
+    wget \
+    ca-certificates \
+    sudo \
+    locales \
+    fonts-liberation \
+    run-one && \
+    apt-get clean && \
+
+# Set up locales
+RUN echo "en_US.UTF-8 UTF-8" > /etc/locale.gen && locale-gen
+
+# Set up miniconda (Python 3.8, miniconda3)
+RUN wget --quiet https://github.com/conda-forge/miniforge/releases/download/4.8.5-1/Miniforge3-4.8.5-1-Linux-${miniforge_arch}.sh -O miniforge.sh && \
+    chmod a+x miniforge.sh && \
+    ./miniforge.sh -f -b -p $CONDA_DIR && \
+
+# Set permissions
+RUN chmod a+rx /usr/local/bin/fix-permissions  
+RUN fix-permissions $HOME
+RUN fix-permissions $CONDA_DIR
+
+# Copy necessary files and scripts
+COPY fix-permissions /usr/local/bin/fix-permissions
+WORKDIR /tmp
+COPY start.sh start-notebook.sh start-singleuser.sh /usr/local/bin/
+COPY jupyter_notebook_config.py /etc/jupyter/
+WORKDIR $HOME
+
+# Expose Ports
+EXPOSE 8888
+
+# Execute 
+ENTRYPOINT ["tini", "-g", "--"]
+CMD ["start-notebook.sh"]

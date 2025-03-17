@@ -1,0 +1,44 @@
+# Use an official Golang runtime as a parent image
+FROM golang:1.23-alpine3.20 AS builder
+ENV GOPATH=/go
+WORKDIR $GOPATH/src/github.com/webdevops/go-crond
+
+# Install necessary dependencies
+RUN apk --no-cache add gcc musl-dev libc-dev zlib-dev libjpeg-turbo-dev libpng-dev libxml2-dev libxslt-dev openldap-dev openssl1.1-compat-dev libffi-dev libpq libpq-dev gettext build-base make git
+
+# Copy the local package files to the container's workspace
+COPY ./docker/core/packages/ ./ 
+COPY ./docker/core/Dockerfile ./
+RUN GOCROND_VERSION=23.12.0
+RUN git clone https://github.com/webdevops/go-crond.git \
+    && git checkout $GOCROND_VERSION \
+    && go mod download \
+    && make test \
+COPY --from=go-crond-builder /go/src/github.com/webdevops/go-crond /usr/local/bin
+
+# Running the build 
+RUN apk add --update --no-cache python3 py-pip && \
+pip install poetry && \
+cp /usr/bin/python3 /usr/bin/python && \
+
+# Installing necessary libraries
+RUN apk add --update sudo alpine-sdk apkbuild-pypi && \
+    adduser -D packager && \
+    addgroup packager abuild && \
+    chgrp abuild /var/cache/distfiles && \
+
+# Copy the rest of the application code 
+WORKDIR /work
+COPY --chown=packager:packager . .
+
+# Poetry build settings
+RUN poetry config virtualenvs.create false
+
+# Installing the application
+RUN poetry install --no-dev --no-interaction --no-ansi
+
+# Application start 
+EXPOSE 8160
+WORKDIR /app
+ENV PATH="/app/bin:$PATH"
+CMD ["python", "app.py"]

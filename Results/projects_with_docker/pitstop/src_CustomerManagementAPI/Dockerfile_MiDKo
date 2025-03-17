@@ -1,0 +1,25 @@
+# Start with the base image
+FROM pitstop-dotnet-sdk-base:1.0 AS build
+
+# Set the working directory in the Docker image filesystem
+WORKDIR /app
+
+# Copy the specified files into the Docker image filesystem
+COPY *.csproj ./
+COPY . ./
+
+# Restore dependencies and publish the application
+RUN dotnet restore
+RUN dotnet publish -c Release -o out
+
+# Set the environment variable for ASP.NET Core to bind on all network interfaces
+ENV ASPNETCORE_URLS http://*:5100
+
+# Add a health check to the container
+HEALTHCHECK --interval=30s --timeout=3s --retries=1 CMD curl --silent --fail http://localhost:5100/hc || exit 1
+
+# Specify the entrypoint and the command to start the application inside the container
+ENTRYPOINT ["dotnet", "Pitstop.CustomerManagementAPI.dll"]
+
+# Expose port 5100 to the host so that the application can be accessed externally
+EXPOSE 5100/tcp

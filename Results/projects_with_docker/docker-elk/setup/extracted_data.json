@@ -1,0 +1,417 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".env",
+            "type": "blob"
+        },
+        {
+            "path": ".gitattributes",
+            "type": "blob"
+        },
+        {
+            "path": ".github",
+            "type": "tree"
+        },
+        {
+            "path": ".github/ISSUE_TEMPLATE",
+            "type": "tree"
+        },
+        {
+            "path": ".github/ISSUE_TEMPLATE/config.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/ISSUE_TEMPLATE/issue_report.md",
+            "type": "blob"
+        },
+        {
+            "path": ".github/dependabot.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows",
+            "type": "tree"
+        },
+        {
+            "path": ".github/workflows/ci.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/docs.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/lint",
+            "type": "tree"
+        },
+        {
+            "path": ".github/workflows/lint/linkspector.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/lint/rules.markdownlint.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/scripts",
+            "type": "tree"
+        },
+        {
+            "path": ".github/workflows/scripts/disable-disk-alloc-decider.sh",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/scripts/lib",
+            "type": "tree"
+        },
+        {
+            "path": ".github/workflows/scripts/lib/testing.sh",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/scripts/run-tests-core.sh",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/scripts/run-tests-enterprise-search.sh",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/scripts/run-tests-filebeat.sh",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/scripts/run-tests-fleet.sh",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/scripts/run-tests-heartbeat.sh",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/scripts/run-tests-metricbeat.sh",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/spam-issue-close.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/update-merge.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/update.yml",
+            "type": "blob"
+        },
+        {
+            "path": "LICENSE",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "demo.tape",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "elasticsearch",
+            "type": "tree"
+        },
+        {
+            "path": "elasticsearch/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "elasticsearch/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "elasticsearch/config",
+            "type": "tree"
+        },
+        {
+            "path": "elasticsearch/config/elasticsearch.yml",
+            "type": "blob"
+        },
+        {
+            "path": "extensions",
+            "type": "tree"
+        },
+        {
+            "path": "extensions/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/curator",
+            "type": "tree"
+        },
+        {
+            "path": "extensions/curator/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/curator/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/curator/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/curator/config",
+            "type": "tree"
+        },
+        {
+            "path": "extensions/curator/config/curator.yml",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/curator/config/delete_log_files_curator.yml",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/curator/curator-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/enterprise-search",
+            "type": "tree"
+        },
+        {
+            "path": "extensions/enterprise-search/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/enterprise-search/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/enterprise-search/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/enterprise-search/config",
+            "type": "tree"
+        },
+        {
+            "path": "extensions/enterprise-search/config/enterprise-search.yml",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/enterprise-search/enterprise-search-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/filebeat",
+            "type": "tree"
+        },
+        {
+            "path": "extensions/filebeat/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/filebeat/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/filebeat/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/filebeat/config",
+            "type": "tree"
+        },
+        {
+            "path": "extensions/filebeat/config/filebeat.yml",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/filebeat/filebeat-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/fleet",
+            "type": "tree"
+        },
+        {
+            "path": "extensions/fleet/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/fleet/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/fleet/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/fleet/agent-apmserver-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/fleet/fleet-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/heartbeat",
+            "type": "tree"
+        },
+        {
+            "path": "extensions/heartbeat/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/heartbeat/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/heartbeat/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/heartbeat/config",
+            "type": "tree"
+        },
+        {
+            "path": "extensions/heartbeat/config/heartbeat.yml",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/heartbeat/heartbeat-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/metricbeat",
+            "type": "tree"
+        },
+        {
+            "path": "extensions/metricbeat/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/metricbeat/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/metricbeat/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/metricbeat/config",
+            "type": "tree"
+        },
+        {
+            "path": "extensions/metricbeat/config/metricbeat.yml",
+            "type": "blob"
+        },
+        {
+            "path": "extensions/metricbeat/metricbeat-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kibana",
+            "type": "tree"
+        },
+        {
+            "path": "kibana/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "kibana/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "kibana/config",
+            "type": "tree"
+        },
+        {
+            "path": "kibana/config/kibana.yml",
+            "type": "blob"
+        },
+        {
+            "path": "logstash",
+            "type": "tree"
+        },
+        {
+            "path": "logstash/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "logstash/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "logstash/config",
+            "type": "tree"
+        },
+        {
+            "path": "logstash/config/logstash.yml",
+            "type": "blob"
+        },
+        {
+            "path": "logstash/pipeline",
+            "type": "tree"
+        },
+        {
+            "path": "logstash/pipeline/logstash.conf",
+            "type": "blob"
+        },
+        {
+            "path": "setup",
+            "type": "tree"
+        },
+        {
+            "path": "setup/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "setup/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "setup/entrypoint.sh",
+            "type": "blob"
+        },
+        {
+            "path": "setup/lib.sh",
+            "type": "blob"
+        },
+        {
+            "path": "setup/roles",
+            "type": "tree"
+        },
+        {
+            "path": "setup/roles/filebeat_writer.json",
+            "type": "blob"
+        },
+        {
+            "path": "setup/roles/heartbeat_writer.json",
+            "type": "blob"
+        },
+        {
+            "path": "setup/roles/logstash_writer.json",
+            "type": "blob"
+        },
+        {
+            "path": "setup/roles/metricbeat_writer.json",
+            "type": "blob"
+        }
+    ]
+}

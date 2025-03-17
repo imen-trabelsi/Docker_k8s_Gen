@@ -1,0 +1,29 @@
+# Use the baseline image provided by the user
+FROM golang:alpine3.10
+
+# Install dependencies
+RUN apk add build-base
+RUN apk add make
+RUN apk add git
+RUN apk add icu-dev
+RUN apk add icu-static
+
+# Set Enviroment Variables
+ENV GO111MODULE=on
+ENV CGO_ENABLED=0
+
+# Set the working directory in the image
+WORKDIR $GOPATH/src/github.com/user/app
+
+# Copy the go.mod and download the dependencies
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy the rest of the application code
+COPY . .
+
+# Expose the ports
+EXPOSE 8080
+
+# Run the application 
+CMD ["go", "run", "main.go"]

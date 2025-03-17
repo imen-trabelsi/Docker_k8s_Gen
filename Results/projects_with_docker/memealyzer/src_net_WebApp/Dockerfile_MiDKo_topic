@@ -1,0 +1,28 @@
+# 1. Using NGINX alpine as a base image
+FROM nginx:alpine
+
+# 2. Use /var/www/web as the working directory
+WORKDIR /var/www/web
+
+# 3. Copying the project to the current directory in the container
+COPY . .
+
+# 4. Copy the static files
+COPY ./wwwroot .
+COPY wwwroot/_framework/nginx.conf /etc/nginx/nginx.conf
+
+# 5. Install Python and Pip
+RUN apk add --update py-pip
+
+# 6. Install dependencies
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
+# 7. Ensure that python is to be used as an entrypoint
+ENTRYPOINT ["python"]
+
+# 8. Run the script with command line arguments
+CMD ["app.py"]
+
+# 9. Expose port 80 and 443
+EXPOSE 80 443

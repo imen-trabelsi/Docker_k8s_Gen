@@ -1,0 +1,18 @@
+FROM java:8-jre
+WORKDIR /app
+
+LABEL maintainer="DevOps-Engineer"
+
+# Enhancing security by copying Shanghai timezone to keep the system time in sync
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Copying project JAR file to the docker image
+COPY ./target/ts-security-service-1.0.jar /app/
+
+# Health check instruction
+HEALTHCHECK --interval=10s --timeout=3s --retries=3 CMD curl --fail http://localhost:11188/actuator/health || exit 1
+
+# Expose the service on the required port
+EXPOSE 11188
+
+ENTRYPOINT ["java", "-Xmx200m", "-jar", "/app/ts-security-service-1.0.jar"]

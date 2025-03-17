@@ -1,0 +1,11 @@
+# Use an official base image
+FROM mcr.microsoft.com/dotnet/framework/aspnet:4.7.2
+
+# Set the working directory
+WORKDIR /inetpub/wwwroot
+
+# Copy the necessary files
+COPY ${source:-obj/Docker/publish} .
+
+# Expose the necessary port(s)
+EXPOSE 80

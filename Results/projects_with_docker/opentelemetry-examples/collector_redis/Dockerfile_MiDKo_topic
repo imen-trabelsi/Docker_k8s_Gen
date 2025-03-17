@@ -1,0 +1,18 @@
+# Use the official Golang image as base
+FROM golang:latest
+
+# Create a directory where the application will reside
+WORKDIR /app
+
+# common run command
+RUN go mod init redis-demo
+RUN go mod tidy
+
+# Add the source code into the container
+COPY . .
+
+# Build the binary
+RUN go build -o load-generator
+
+# Command to run the binary
+CMD ["./load-generator"]

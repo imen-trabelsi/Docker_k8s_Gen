@@ -1,0 +1,39 @@
+FROM node:18-slim
+
+# Create App Directory
+WORKDIR /usr/local/app
+
+# Install Necessary Packages
+RUN apt-get update && \
+apt-get install -y --no-install-recommends curl tini && \
+
+# Install Nodemon
+RUN npm install -g nodemon
+
+# Copy package.json And package-lock.json
+COPY package*.json ./
+
+# Install Packages
+RUN npm ci && npm cache clean --force
+
+# Move node_modules To Root Directory
+RUN mv /usr/local/app/node_modules /node_modules
+
+# Copy Source Code
+COPY . .
+
+# Expose Port
+EXPOSE 80
+
+# Set Environment Variables
+ENV PORT=80
+
+# Set Health Checks
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD curl -f http://localhost:$PORT/ || exit 1
+
+# Entrypoint
+ENTRYPOINT ["/usr/bin/tini", "--"]
+
+# Start Server
+CMD ["node", "server.js"]

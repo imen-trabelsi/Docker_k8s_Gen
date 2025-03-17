@@ -1,0 +1,57 @@
+{
+    "docker_info": {
+        "base_image": "node:14-buster-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "node"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV NODE_ENV=production",
+            "ENV KARTOTHERIAN_PORT=6533",
+            "ENV KARTOTHERIAN_CASSANDRA_SERVERS=cassandra",
+            "ENV KARTOTHERIAN_CASSANDRA_USER=gis",
+            "ENV KARTOTHERIAN_CASSANDRA_PSWD=",
+            "ENV KARTOTHERIAN_TELEGRAF_HOST=telegraf",
+            "ENV KARTOTHERIAN_TELEGRAF_PORT=8125"
+        ],
+        "copy_instructions": [
+            "COPY kartotherian/config.yaml /etc/kartotherian",
+            "COPY kartotherian/sources.yaml /etc/kartotherian"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "node",
+                    "/opt/kartotherian/packages/kartotherian/server.js",
+                    "-c",
+                    "/etc/kartotherian/config.yaml"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update \\",
+                "&& DEBIAN_FRONTEND=noninteractive apt-get install --assume-yes --quiet --no-install-recommends",
+                "git python3.6 build-essential",
+                "&& apt-get clean"
+            ],
+            [
+                "npm i npm@8.5.0 -g \\",
+                "&& mkdir -p /etc/kartotherian",
+                "&& chown node /etc/kartotherian",
+                "&& chown node /opt"
+            ],
+            [
+                "git clone https://github.com/Qwant/kartotherian.git /opt/kartotherian \\",
+                "&& cd /opt/kartotherian",
+                "&& git checkout 46dedb6d0c46d0f1dbf6ad4e029d676c63fc5eab",
+                "&& npm ci --production"
+            ]
+        ]
+    }
+}

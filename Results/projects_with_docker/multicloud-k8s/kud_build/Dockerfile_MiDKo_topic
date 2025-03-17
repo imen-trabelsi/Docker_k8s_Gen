@@ -1,0 +1,39 @@
+# Use base image
+FROM ubuntu:18.04 as builder
+
+# Update and install required packages
+RUN apt-get update && apt-get install -y curl gnupg \
+    && sh -c 'echo "deb [arch=amd64] https://apt-mo.trafficmanager.net/repos/mongodb-org/4.2/ubuntu bionic/main" > /etc/apt/sources.list.d/mongodb-org-4.2.list' \
+
+# Set working directory in the container
+WORKDIR /usr/src/multicloud-k8s/kud/hosting_providers/containerized
+
+# Copy local code to the container image.
+COPY . /usr/src/multicloud-k8s
+
+# Install Go dependencies.
+COPY go.mod .
+COPY go.sum .
+RUN go mod download
+
+# Build the binary.
+RUN CGO_ENABLED=0 GOOS=linux go build -v -o app 
+
+# Use distroless for production image
+FROM gcr.io/distroless/base-debian10
+
+# Copy the binary to production image
+
+# Set necessary environment variables
+ENV KUD_ENABLE_TESTS=$KUD_ENABLE_TESTS
+ENV KUD_PLUGIN_ENABLED=$KUD_PLUGIN_ENABLED
+ENV CONTAINER_RUNTIME=$CONTAINER_RUNTIME
+ENV KUD_DEBUG=$KUD_DEBUG
+ENV ENABLE_KATA_WEBHOOK=$ENABLE_KATA_WEBHOOK
+ENV KATA_WEBHOOK_RUNTIMECLASS=$KATA_WEBHOOK_RUNTIMECLASS
+
+# Run the commands
+RUN ./installer --install_pkg
+
+# Specify the startup command
+ENTRYPOINT ["tail -f /dev/null"]

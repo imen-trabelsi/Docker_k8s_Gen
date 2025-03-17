@@ -1,0 +1,23 @@
+{
+    "docker_info": {
+        "base_image": "docker.elastic.co/logstash/logstash:${logstash_version}",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "logstash_version"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "COPY logstash-codec-gzip_lines-3.0.4.gem /etc/logstash/logstash-codec-gzip_lines-3.0.4.gem"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "bin/logstash-plugin install --no-verify /etc/logstash/logstash-codec-gzip_lines-3.0.4.gem"
+            ]
+        ]
+    }
+}

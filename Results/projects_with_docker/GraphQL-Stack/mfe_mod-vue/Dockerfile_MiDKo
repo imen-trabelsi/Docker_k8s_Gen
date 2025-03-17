@@ -1,0 +1,30 @@
+FROM caddy:2-alpine
+
+# Add maintainer label
+LABEL maintainer="developer@example.com"
+
+# Add metadata (optional)
+LABEL version="1.0"
+LABEL description="Spring Boot Microservice in Docker"
+
+# Change Working Directory
+WORKDIR /app
+
+# Copy package.json and install dependencies
+COPY package.json .
+RUN npm install
+
+# Copy rest of the source code
+COPY . .
+
+# Copy the Caddy configuration
+COPY mfe/mod-vue/Caddyfile /etc/caddy/Caddyfile
+
+# Copy the dist directory
+COPY mfe/mod-vue/dist /usr/share/caddy/dist
+
+# Expose the port
+EXPOSE 3000
+
+# Run the application
+CMD ["npm", "start"]

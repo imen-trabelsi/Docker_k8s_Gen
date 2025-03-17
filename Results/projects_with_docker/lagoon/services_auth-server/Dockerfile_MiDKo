@@ -1,0 +1,36 @@
+# The starting point for our image (base image)
+FROM ${IMAGE_REPO:-lagoon}/yarn-workspace-builder
+
+# Handle the arguments provided by the user
+ARG LAGOON_GIT_BRANCH
+ARG IMAGE_REPO
+ARG UPSTREAM_REPO
+ARG UPSTREAM_TAG
+ARG LAGOON_VERSION
+
+# Set our working directory within the docker image
+WORKDIR /app/services/auth-server/
+
+# Include our source code in the docker image
+COPY --from=yarn-workspace-builder /app .
+
+# Set environment variables
+ENV LAGOON_VERSION=$LAGOON_VERSION
+ENV NODE_ENV=production
+
+# Copy default environment variables from builder
+COPY --from=yarn-workspace-builder /app/.env.defaults .
+
+# Copy remaining source code files into the Docker image
+COPY . .
+
+# Run necessary commands to build the application
+RUN yarn check --verify-tree
+RUN yarn build
+
+# Set the listen port for the container
+# Please replace PORT with the port numbers needed to by exposed
+# EXPOSE PORT
+
+# The command that get's run on container start
+CMD ["yarn", "start"]

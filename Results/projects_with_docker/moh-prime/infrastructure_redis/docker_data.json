@@ -1,0 +1,35 @@
+{
+    "docker_info": {
+        "base_image": "rhel8/redis-6",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "6379"
+        ],
+        "user": [
+            "root"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV TINI_VERSION v0.19.0"
+        ],
+        "copy_instructions": [
+            "ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"run-redis\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "chmod +x /tini",
+                "ENTRYPOINT [\"/tini\", \"--\", \"container-entrypoint\"]"
+            ]
+        ]
+    }
+}

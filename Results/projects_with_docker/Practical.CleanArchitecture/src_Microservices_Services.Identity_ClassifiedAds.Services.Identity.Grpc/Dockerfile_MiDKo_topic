@@ -1,0 +1,35 @@
+# Using Microsoft's SDK as a base image since it already
+# contains necessary development tools
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
+
+# Set the working directory
+WORKDIR /ClassifiedAds.Microservices
+
+# Copy csproj files and restore as layer
+COPY ./Common/ClassifiedAds.Application/*.csproj ./Common/ClassifiedAds.Application/
+COPY ./Common/ClassifiedAds.CrossCuttingConcerns/*.csproj ./Common/ClassifiedAds.CrossCuttingConcerns/
+COPY ./Common/ClassifiedAds.Domain/*.csproj ./Common/ClassifiedAds.Domain/
+COPY ./Common/ClassifiedAds.Infrastructure/*.csproj ./Common/ClassifiedAds.Infrastructure/
+COPY ./Services.Identity/ClassifiedAds.Services.Identity/*.csproj ./Services.Identity/ClassifiedAds.Services.Identity/
+COPY ./Services.Identity/ClassifiedAds.Services.Identity.Grpc/*.csproj ./Services.Identity/ClassifiedAds.Services.Identity.Grpc/
+
+# Restore the packages of the solution
+RUN dotnet restore ./Common/ClassifiedAds.Application/ClassifiedAds.Application.csproj
+RUN dotnet restore ./Common/ClassifiedAds.Infrastructure/ClassifiedAds.Infrastructure.csproj
+RUN dotnet restore ./Services.Identity/ClassifiedAds.Services.Identity/ClassifiedAds.Services.Identity.csproj
+RUN dotnet restore ./Services.Identity/ClassifiedAds.Services.Identity.Grpc/ClassifiedAds.Services.Identity.Grpc.csproj
+
+# Copy the rest of the code
+COPY . ./
+
+# Build and publish the solution
+RUN dotnet publish ./Services.Identity/ClassifiedAds.Services.Identity.Grpc/ClassifiedAds.Services.Identity.Grpc.csproj -c Release -o out
+
+# Build the runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
+WORKDIR /ClassifiedAds.Microservices
+
+# Copy the compiled project from build-env 
+
+# Set the entrypoint command
+ENTRYPOINT ["dotnet", "ClassifiedAds.Services.Identity.Grpc.dll"]

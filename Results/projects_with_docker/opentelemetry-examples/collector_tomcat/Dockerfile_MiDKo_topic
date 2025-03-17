@@ -1,0 +1,33 @@
+# Base Image
+FROM curlimages/curl:7.82.0 as curler
+ARG JMX_JAR_VERSION
+
+# Set user
+USER root
+
+# Run Commands
+RUN curl -L --output /opentelemetry-jmx-metrics.jar "https://github.com/open-telemetry/opentelemetry-java-contrib/releases/download/${JMX_JAR_VERSION}/opentelemetry-jmx-metrics.jar" && \
+
+# New Stage
+FROM golang:1.17-alpine as builder
+
+# Copy the Go Modules manifests
+COPY go.mod go.mod
+COPY go.sum go.sum
+
+# Install dependencies
+RUN go mod download
+
+# Final stage
+FROM alpine
+
+# Copy the binary compiled in builder stage 
+
+# Copy instructions from above
+
+# Execution command
+ENTRYPOINT ["/otelcol-contrib"]
+CMD ["--config","/etc/otel/config.yaml"]
+
+# Expose default port for Spring Boot
+EXPOSE 8080

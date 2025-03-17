@@ -1,0 +1,38 @@
+{
+    "docker_info": {
+        "base_image": "harbor.nymte.ch/dockerhub/rust:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ./ /usr/src/nym",
+            "WORKDIR /usr/src/nym/nym-node-status-api",
+            "WORKDIR /nym",
+            "COPY --from=builder /usr/src/nym/target/release/nym-node-status-api ./"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"/nym/nym-node-status-api\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "cargo build --release",
+                ""
+            ],
+            [
+                "apt-get update && apt-get install -y ca-certificates",
+                ""
+            ]
+        ]
+    }
+}

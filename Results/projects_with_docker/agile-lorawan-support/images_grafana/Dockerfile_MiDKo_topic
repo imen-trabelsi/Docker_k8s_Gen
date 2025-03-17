@@ -1,0 +1,8 @@
+# Dockerfile
+FROM monitoringartist/grafana-xxl
+
+WORKDIR /usr/local/src/
+
+COPY backup_app /usr/local/src/
+
+ENTRYPOINT ["./backup_app/app/__main__.py"]

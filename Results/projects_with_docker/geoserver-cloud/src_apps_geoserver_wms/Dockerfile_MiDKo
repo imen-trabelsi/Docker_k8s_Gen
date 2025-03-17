@@ -1,0 +1,31 @@
+# Use the base image provided by the user
+FROM $REPOSITORY/gs-cloud-base-jre:$TAG
+
+# Set environment variables  
+ENV REPOSITORY=geoservercloud
+ENV TAG=latest
+ENV JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS} -XX:SharedArchiveFile=application.jsa"
+
+# if you need any variation of postgres drivers
+ADD https://jdbc.postgresql.org/download/postgresql-42.2.8.jar /home/postgres/
+
+# Copy the necessary files for running the application
+COPY ${JAR_FILE} application.jar
+COPY --from=builder dependencies/ ./
+COPY --from=builder snapshot-dependencies/ ./
+COPY --from=builder spring-boot-loader/ ./
+COPY --from=builder application/ ./
+
+# Run commands 
+RUN mkdir /tmp/tmpdatadir && \
+    GEOSERVER_DATA_DIR=/tmp/tmpdatadir java \
+    -XX:ArchiveClassesAtExit=application.jsa \
+    -Dspring.context.exit=onRefreshed \
+    -Dspring.profiles.active=standalone,datadir,offline \
+    -Dserver.port=0 -Dmanagement.server.port=0 -jar application.jar org.springframework.boot.loader.JarLauncher && \
+
+# Expose the necessary ports
+EXPOSE 8080
+
+# Set the container's default command 
+ENTRYPOINT ["java", "-jar", "application.jar"]

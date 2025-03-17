@@ -1,0 +1,35 @@
+# We use a multi-stage build to avoid including unnecessary build files in our final image.
+# The first stage, builder, sets up our build environment
+FROM node:12-alpine as builder
+
+# Copy our necessary build files and directories so we can build our app
+WORKDIR /builder
+COPY common/nodejs/package.json src/common/
+COPY telemetry/package.json .
+COPY common/messages/interop.proto .
+COPY common/nodejs src/common
+COPY telemetry .
+
+RUN npm install
+
+RUN npm run build-msg
+
+RUN npm run build
+
+# The second stage is our runtime environment. We set the correct environment variables and dependencies,
+# expose the correct ports and copy our necessary runtime files and directories.
+FROM node:12-alpine
+
+WORKDIR /app
+
+ENV NODE_ENV=production
+ENV PORT=5000
+
+COPY telemetry/bin bin
+COPY common/nodejs/package.json src/common/
+COPY telemetry/package.json .
+RUN npm install
+
+EXPOSE 5000
+
+CMD ["npm", "start"]

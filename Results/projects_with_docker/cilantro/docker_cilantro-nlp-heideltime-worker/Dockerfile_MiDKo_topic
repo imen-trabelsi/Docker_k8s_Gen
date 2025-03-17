@@ -1,0 +1,37 @@
+# Using base image
+FROM dainst/chronoi-heideltime:1.1.0
+
+# Setting up the environment variables
+ENV LIBRARY_PATH=/lib:/usr/lib
+ENV PIPENV_VENV_IN_PROJECT=true
+ENV LC_ALL C.UTF-8
+ENV LANG C.UTF-8
+
+# Installing dependencies
+RUN pip3 install 'poetry==1.0.9'
+
+COPY docker/cilantro-nlp-heideltime-worker/pyproject.toml docker/cilantro-nlp-heideltime-worker/poetry.lock ./
+
+WORKDIR /app
+
+# Installing the project dependencies
+RUN poetry config virtualenvs.create false \
+
+# Copying the files needed by the microservice
+COPY utils ./utils
+COPY workers ./workers
+COPY resources ./resources
+COPY docker/cilantro-nlp-heideltime-worker/entrypoint.sh /entrypoint.sh
+COPY docker/cilantro-nlp-heideltime-worker/VERSION .
+
+# Changing the permissions of the entrypoint script so it is runnable
+RUN chmod +x /entrypoint.sh
+
+# Expose ports
+EXPOSE <Your port here>
+
+# Specify user
+USER <User ID here>
+
+# Run the microservice when the container starts
+ENTRYPOINT [ "bash", "/entrypoint.sh" ]

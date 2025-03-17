@@ -1,0 +1,27 @@
+# Start with a base image
+FROM adoptopenjdk/openjdk11:alpine
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the POM and source code
+COPY pom.xml .
+COPY src ./src
+
+# Bundle the app
+RUN mvn -f pom.xml clean package
+
+# Expose ports
+EXPOSE 8080
+
+# Set-up health check
+HEALTHCHECK --interval=30s --timeout=3s CMD curl --fail http://localhost:8080/ || exit 1
+
+# Set Redis as environment variable
+ENV REDIS_URL redis://localhost
+
+# Copy the built jar file into the container
+COPY target/greetings.jar .
+
+# Run command to start the Spring Boot app
+CMD ["java","-jar","greetings.jar"]

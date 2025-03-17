@@ -1,0 +1,40 @@
+{
+    "docker_info": {
+        "base_image": "python:3.12.4",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "5001"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY requirements.txt .",
+            "COPY . ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"./init-backend.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update -yqq",
+                ""
+            ],
+            [
+                "mkdir /app",
+                "WORKDIR /app"
+            ],
+            [
+                "set -x && \\",
+                "pip3 install -r requirements.txt"
+            ]
+        ]
+    }
+}

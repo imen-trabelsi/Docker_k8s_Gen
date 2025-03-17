@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"exec\",\n  \"version\": \"0.0.0\",\n  \"description\": \"Central Execution Service\",\n  \"main\": \"index.js\",\n  \"scripts\": {\n    \"compile\": \"node  ./node_modules/.bin/webpack --config ./slave/build.js\",\n    \"build\": \"../../bs/build.sh\",\n    \"extract\": \"../../bs/extract.sh\",\n    \"load\": \"../../bs/load.sh\",\n    \"unload\": \"../../bs/unload.sh\",\n    \"shell\": \"../../bs/run_cmd.sh bash\",\n    \"start\": \"../../bs/start.sh --expose 19494 -p 19494:19494 -d\",\n    \"prestart-dev\": \"npm run compile\",\n    \"start-dev\": \"node . --bus amqp://localhost/codefarm\",\n    \"start-rel\": \"node . --bus amqp://localhost/codefarm\",\n    \"stop\": \"../../bs/stop.sh\",\n    \"test\": \"npm run compile && mocha --exit ./test\",\n    \"lint\": \"git ls-files \\\"*.js\\\" | xargs eslint\",\n    \"install\": \"if [ -n \\\"$gitroot\\\" ]; then $gitroot/src/bs/linklibs.sh; else ../../bs/linklibs.sh; fi\",\n    \"deepinstall\": \"if [ -n \\\"$gitroot\\\" ]; then FORCE_INSTALL_LIBS=1 $gitroot/src/bs/linklibs.sh; else FORCE_INSTALL_LIBS=1 ../../bs/linklibs.sh; fi\"\n  },\n  \"author\": \"Mattias Runge <mattias.runge@combitech.se>\",\n  \"license\": \"MIT\",\n  \"engines\": {\n    \"node\": \">= 7.0.0\"\n  },\n  \"libraries\": [\n    \"database\",\n    \"typelib\",\n    \"msgbus\",\n    \"loglib\",\n    \"emitter\",\n    \"log\",\n    \"service\",\n    \"misc\",\n    \"ssh\",\n    \"web\",\n    \"testsupport\",\n    \"servicecom\",\n    \"singleton\",\n    \"backend\"\n  ],\n  \"dependencies\": {\n    \"async-busboy\": \"^0.4.0\",\n    \"babel-eslint\": \"^7.2.2\",\n    \"bluebird\": \"^3.5.0\",\n    \"commander\": \"^2.9.0\",\n    \"fs-extra-promise\": \"^1.0.1\",\n    \"get-port\": \"^3.1.0\",\n    \"jsonpath-plus\": \"^0.16.0\",\n    \"koa\": \"^2.2.0\",\n    \"koa-bodyparser\": \"^4.2.0\",\n    \"moment\": \"^2.18.1\",\n    \"request\": \"^2.81.0\",\n    \"request-promise\": \"^4.2.0\",\n    \"source-map-support\": \"^0.4.14\",\n    \"uuid\": \"^3.0.1\",\n    \"webpack\": \"^2.4.1\",\n    \"webpack-async-await\": \"^1.1.0\",\n    \"yargs\": \"^7.1.0\"\n  },\n  \"devDependencies\": {\n    \"chai\": \"^3.5.0\",\n    \"eslint\": \"^3.19.0\",\n    \"mocha\": \"^6.0.0\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "src/app/Exec/Dockerfile": "FROM codefarm/appnodebase:0.0.0\n\nRUN yarn compile -- --env.global_modules_dir ${farmerHome}/.node_modules && \\\n  rm -rf babel_cache\n\nCMD [ \\\n    \"node\", \\\n    \".\", \\\n    \"--bus\", \"amqp://rabbitmq:5672/codefarm\" \\\n]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            "Dockerfile",
+            "package.json",
+            "yarn.lock"
+        ],
+        "folders": []
+    }
+}

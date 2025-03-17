@@ -1,0 +1,35 @@
+FROM alpine:latest
+
+LABEL maintainer=jon@jaggersoft.com
+
+ARG CYBER_DOJO_HOME
+
+ENV LANG C.UTF-8
+ENV BUNDLE_PATH /gems
+ENV GEM_HOME "${BUNDLE_PATH}"
+ENV PATH $GEM_HOME/bin:$GEM_HOME/gems/bin:$PATH
+
+COPY Gemfile ${CYBER_DOJO_HOME}/
+WORKDIR ${CYBER_DOJO_HOME}
+
+COPY . ${CYBER_DOJO_HOME}
+
+RUN apk --update --no-cache add \
+    bash \
+    libffi-dev \
+    ruby \
+    ruby-bigdecimal \
+    ruby-bundler \
+    ruby-dev \
+    tzdata \
+    zlib-dev \
+    apk --update --no-cache add --virtual build-dependencies build-base \
+    && bundle config --global silence_root_warning 1 \
+    && bundle install \
+    && apk del build-dependencies build-base \
+    && rm -vrf /var/cache/apk/* \
+    && cat ${CYBER_DOJO_HOME}/Gemfile.lock \
+
+USER nobody
+EXPOSE 3000
+CMD ["./up.sh"]

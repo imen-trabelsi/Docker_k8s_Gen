@@ -1,0 +1,40 @@
+# Pull base image
+FROM node:20-bookworm-slim
+
+# Set environment variables
+ENV VERSION=dev-master
+ENV PHP_VERSION=8.2
+ENV NODE_ENV=production
+
+# Update and install dependencies
+RUN set -ex
+RUN apt-get update \
+    && apt-get install -y apt-transport-https software-properties-common curl \
+    && curl -o /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg \
+    && echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list \
+    && apt-get update \
+    && apt-get install -y \
+    php$PHP_VERSION-{cli,mysql,gd,xsl,bz2,opcache,tidy,zip,bcmath,mbstring,ldap,curl,fpm,pgsql,gmp} \
+
+# Set work directory
+WORKDIR /usr/src/app
+
+# Install app dependencies
+COPY package*.json ./
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Permission to shell script
+COPY entrypoint.sh /
+RUN chmod +x /entrypoint.sh
+
+# Expose port 9000
+EXPOSE 9000
+
+# Start app
+CMD ["php-fpm", "--nodaemonize"]
+
+# Set the entry point to application's binary  
+ENTRYPOINT ["/entrypoint.sh"]

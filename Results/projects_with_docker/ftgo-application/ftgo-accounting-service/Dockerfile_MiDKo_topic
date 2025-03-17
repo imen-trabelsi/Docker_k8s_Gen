@@ -1,0 +1,14 @@
+# Use the base Image
+FROM eventuateio/eventuate-examples-docker-images-spring-example-base-image:$baseImageVersion
+
+# Copy the jar file to the container
+COPY build/libs/ftgo-accounting-service.jar service.jar
+
+# Expose application port
+EXPOSE 8080
+
+# Don't run the application as root
+USER user
+
+# Run the jar file 
+ENTRYPOINT ["java","-Dspring.profiles.active=prod","-jar","/service.jar"]

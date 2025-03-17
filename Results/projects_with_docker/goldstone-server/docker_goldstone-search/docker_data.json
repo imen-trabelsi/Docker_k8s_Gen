@@ -1,0 +1,27 @@
+{
+    "docker_info": {
+        "base_image": "solinea/elasticsearch:1.7.1",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "9200"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV ES_CLUSTERNAME=\"goldstone\" \\",
+            "ENV ES_JAVA_OPTS=\"\\"
+        ],
+        "copy_instructions": [
+            "COPY config /usr/share/elasticsearch/config"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "plugin install mobz/elasticsearch-head \\",
+                "&& plugin -install royrusso/elasticsearch-HQ"
+            ]
+        ]
+    }
+}

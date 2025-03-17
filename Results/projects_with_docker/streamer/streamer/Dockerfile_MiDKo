@@ -1,0 +1,44 @@
+# Use almalinux:8 as base image
+FROM almalinux:8
+
+# Set WORKDIR to /opt/streamer
+WORKDIR /opt/streamer
+
+# Copy necessary files
+ADD https://nodejs.org/dist/latest-v10.x/node-v10.24.1-linux-x64.tar.xz /tmp
+COPY package.json package.json
+COPY bin ./bin
+COPY lib ./lib
+COPY config ./config
+COPY start_streamer.sh start_streamer.sh
+COPY supervisord.conf /opt/streamer/supervisord.conf
+
+# Install necessary packages and dependencies
+RUN ulimit -n 1024 && \
+    yum -y install wget gcc gcc-c++ make autoconf git zlib zlib-devel openssl openssl-devel openssl-libs sssd-client which rsync curl curl-devel libxml2-devel epel-release supervisor sshpass pv expect && \
+    yum clean all && \
+    rm -rf /var/cache/yum/* && \
+    rm -rf /tmp/* && \
+    mkdir -p /tmp && \
+
+# Extract and move Node.js binary
+RUN if [ ! -d node-v10.24.1-linux-x64 ]; then tar xf node-v10.24.1-linux-x64.tar.xz; fi \
+
+# Install Node.js dependencies
+RUN mkdir -p /opt/streamer && \
+    export PATH=/opt/nodejs/bin:$PATH && \
+    export USER=root && \
+    /opt/nodejs/bin/npm install -g node-gyp && \
+
+# Copy JavaScript files
+COPY *.js ./
+
+# Set necessary permissions
+RUN chmod +x bin/* && \
+
+# Setting labels
+LABEL donders.ru.nl.app_name="streamer" \
+      donders.ru.nl.app_maintainer="maintainer@donders.ru.nl" \
+
+# Start the service
+CMD [ "/usr/bin/supervisord", "-c", "/opt/streamer/supervisord.conf" ]

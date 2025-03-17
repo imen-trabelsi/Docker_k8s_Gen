@@ -1,0 +1,46 @@
+{
+    "docker_info": {
+        "base_image": "alpine:3.7",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "10001"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/usr/local/bin/wait-for\",",
+                    "\"-t\",",
+                    "\"600\",",
+                    "\"xl-release:5516\",",
+                    "\"--\",",
+                    "\"/usr/local/bin/xl\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --no-cache curl",
+                ""
+            ],
+            [
+                "curl --silent --fail-early -o /usr/local/bin/xl https://s3.amazonaws.com/xl-cli/bin/9.5.2/linux-amd64/xl && \\",
+                "chmod +x /usr/local/bin/xl"
+            ],
+            [
+                "curl --silent --fail-early -o /usr/local/bin/wait-for https://raw.githubusercontent.com/eficode/wait-for/master/wait-for && \\",
+                "chmod +x /usr/local/bin/wait-for"
+            ],
+            [
+                "mkdir /.xebialabs && chown 10001:10001 /.xebialabs",
+                ""
+            ]
+        ]
+    }
+}

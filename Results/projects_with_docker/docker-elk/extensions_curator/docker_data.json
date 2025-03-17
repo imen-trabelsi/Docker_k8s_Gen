@@ -1,0 +1,36 @@
+{
+    "docker_info": {
+        "base_image": "untergeek/curator:8.0.10",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"crond\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"-f\",",
+                    "\"-d8\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                ">>/var/spool/cron/crontabs/nobody \\",
+                "echo '* * * * * /curator/curator /.curator/delete_log_files_curator.yml'"
+            ]
+        ]
+    }
+}

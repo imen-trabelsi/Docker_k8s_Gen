@@ -1,0 +1,33 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:8-jdk-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/usr/local/bin/amm-2.13\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk update && \\",
+                "apk add bash ncurses curl ca-certificates &&",
+                "rm -rf /var/cache/apk/*"
+            ],
+            [
+                "curl -L -o /usr/local/bin/amm-2.13 https://github.com/lihaoyi/Ammonite/releases/download/2.0.4/2.13-2.0.4 && \\",
+                "chmod +x /usr/local/bin/amm-2.13 &&",
+                "/usr/local/bin/amm-2.13 --predef-code \"sys.exit(0)\""
+            ]
+        ]
+    }
+}

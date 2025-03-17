@@ -1,0 +1,17 @@
+# Using the base image as provided by the user
+FROM nextcloud:apache
+
+# Setting environmental variable as needed
+ENV NEXTCLOUD_UPDATE=1
+
+# Using apt to update and install dependencies, also create directories as provided in the run commands
+RUN apt-get update \
+&& apt-get install -y \
+supervisor \
+&& rm -rf /var/lib/apt/lists/* \
+
+# The copy instruction provided by the user
+COPY supervisord.conf /
+
+# The command which the container will run as specified by the user.
+CMD ["/usr/bin/supervisord", "-c", "/supervisord.conf"]

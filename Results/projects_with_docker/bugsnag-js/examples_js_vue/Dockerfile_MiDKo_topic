@@ -1,0 +1,24 @@
+# Use the specified base image
+FROM node:8@sha256:a681bf74805b80d03eb21a6c0ef168a976108a287a74167ab593fc953aac34df
+
+# The work directory inside the docker image
+WORKDIR /usr/src/app
+
+# Copy package json and package-lock files
+COPY package*.json ./
+
+# Install only production dependencies.
+# If you want to install all dependencies, use the command "npm install"
+RUN npm install --only=production
+
+# Copy the rest of your application's source files
+COPY . .
+
+# Include the copy instructions
+COPY package* ./
+COPY . .
+
+# Execute the run command
+RUN npm install
+CMD [ "npm", "run", "serve" ]
+

@@ -1,0 +1,27 @@
+{
+    "source_code_info": {
+        "language": "Rust",
+        "framework": "Rust",
+        "dependencies": {
+            "Cargo.toml": "[package]\nname = \"pool\"\nversion = \"0.1.0\"\nauthors = [\"bdoyle\"]\n\n[[bin]]\nname = \"grin-pool\"\npath = \"src/main.rs\"\n\n[dependencies]\nbufstream = \"0.1\"\nrustc-serialize = \"*\"\njsonrpc-core = \"~4.0\"\nserde = \"1.0\"\nserde_derive = \"1.0\"\nserde_json = \"1.0\"\nlog = \"0.4\"\nlog4rs = { version = \"0.8.1\", features = [\"rolling_file_appender\", \"compound_policy\", \"size_trigger\", \"fixed_window_roller\"] }\nbacktrace = \"0.3\"\ntime = \"0.1\"\nlazy_static = \"0.2\"\ntoml = \"0.4\"\nreqwest = \"0.9.4\"\nblake2-rfc = \"0.2\"\nrand = \"0.6.5\"\nbyteorder = \"1.3.1\"\nredis = \"0.9.0\"\nqueues = \"1.0.0\"\nfailure = \"0.1.5\"\n#grin_core = \"3.1.0\"\n#grin_util = \"3.1.0\"\ngrin_core = { git = \"https://github.com/mimblewimble/grin.git\", tag = \"v3.1.0\"}\ngrin_util = \"3.1.0\"\n\n[dependencies.grin_secp256k1zkp]\n#git = \"https://github.com/mimblewimble/rust-secp256k1-zkp\"\n#tag = \"grin_integration_29\"\n#path = \"../../rust-secp256k1-zkp\"\nversion = \"=0.7.7\"\nfeatures = [\"bullet-proof-sizing\"]\n\n"
+        },
+        "database": "Redis",
+        "build_system": "Cargo",
+        "config_files": {
+            "keybase/Dockerfile": "FROM xxx/mwnginx-dockerbase\n\nWORKDIR /keybase\nRUN chown 1000:1000 /keybase\nENV HOME /keybase\n\nEXPOSE 16423\nEXPOSE 16723\n\nRUN echo \"keybase:x:1000:1000:,,,:/keybase:/bin/bash\" >> /etc/passwd && \\\n    echo \"keybase:x:1000:\" >> /etc/group && \\\n    echo \"keybase:x:17888:0:99999:7:::\" >> /etc/shadow\n\nCOPY keybase_amd64.deb /keybase/\nRUN set -ex && \\\n    apt-get update && \\\n    dpkg -i keybase_amd64.deb || /bin/true\nRUN apt-get install -f --yes\nRUN set -ex && \\\n    apt-get --no-install-recommends --yes install \\\n      vim \\\n      net-tools \\\n      procps\n\nCOPY entrypoint.sh /\n\nCMD [\"/entrypoint.sh\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "Makefile",
+            "jvm.options",
+            "logstash.yml",
+            "poolblockfilter.conf",
+            "run.sh",
+            "sharefilter.conf"
+        ],
+        "folders": []
+    }
+}

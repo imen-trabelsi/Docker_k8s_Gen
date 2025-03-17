@@ -1,0 +1,29 @@
+{
+    "docker_info": {
+        "base_image": "openlmis/awscli",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY stop-instance.sh /stop-instance.sh"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "/stop-instance.sh"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "chmod u+x /stop-instance.sh",
+                ""
+            ]
+        ]
+    }
+}

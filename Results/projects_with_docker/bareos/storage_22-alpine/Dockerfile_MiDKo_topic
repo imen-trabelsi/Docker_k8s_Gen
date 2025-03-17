@@ -1,0 +1,30 @@
+# Set base image
+FROM alpine:3.20
+
+# Build arguments
+ARG BUILD_DATE
+ARG NAME
+ARG VCS_REF
+ARG VERSION
+
+# Set labels
+LABEL maintainer="barcus@tou.nu" org.label-schema.schema-version="1.0"
+
+# Run commands
+RUN apk add --no-cache bareos bareos-storage tar
+
+RUN tar czf /bareos-sd.tgz /etc/bareos/bareos-sd.d
+RUN mkdir /run/bareos \
+    && chown bareos /run/bareos \
+
+# Copy Instructions
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+
+# Expose the necessary port
+EXPOSE 9103
+
+# Default command
+CMD ["/usr/sbin/bareos-sd", "-u", "bareos", "-f"]
+
+# Overridable command 
+ENTRYPOINT ["/docker-entrypoint.sh"]

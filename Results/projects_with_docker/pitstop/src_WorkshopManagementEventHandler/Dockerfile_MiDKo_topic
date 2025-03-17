@@ -1,0 +1,18 @@
+# Use SDK image as the base
+FROM pitstop-dotnet-sdk-base:1.0 as build-env
+WORKDIR /app
+
+# copy csproj and restore dependencies
+COPY *.csproj ./
+RUN dotnet restore
+
+# Copy everything else and build
+COPY . ./
+RUN dotnet publish -c Release -o out
+
+# Runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:5.0
+WORKDIR /app
+
+# Specify the entrypoint
+ENTRYPOINT ["dotnet", "Pitstop.WorkshopManagementEventHandler.dll"]

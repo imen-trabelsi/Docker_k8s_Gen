@@ -1,0 +1,29 @@
+# Use Official Python Image From Docker Hub
+FROM python:3.6-buster
+
+# Set Environment Variables
+ENV PYTHONUNBUFFERED 1
+
+# Make a working directory
+RUN mkdir -p /usr/src/app
+
+# Change Working Directory
+WORKDIR /usr/src/app
+
+# Copy Requirements File
+COPY ./requirements.txt /usr/src/app/requirements.txt
+
+# Upgrading pip
+RUN pip3 install --upgrade pip
+
+# Install Python Dependencies
+RUN pip3 install -r requirements.txt
+
+# Copy All Files
+COPY . /usr/src/app
+
+# Expose Port 8000 for the application
+EXPOSE 8000
+
+# Add Entrypoint. Assuming the main.py file as the entry point
+CMD ["python", "/usr/src/app/main.py"]

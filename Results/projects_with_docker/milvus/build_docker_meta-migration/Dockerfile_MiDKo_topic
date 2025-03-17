@@ -1,0 +1,31 @@
+# Based on user input
+FROM ubuntu:focal-20220426
+
+# Copying source files
+COPY . /milvus/
+COPY ./bin/meta-migration /milvus/bin/
+
+# To make images optimised and secure
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y go && \
+
+# Working directory for the application
+WORKDIR /milvus/
+
+# Install application dependencies
+COPY go.mod .
+RUN go mod download
+
+# Environment variable
+ENV PATH=/milvus/bin:$PATH
+
+# Expose application protocols
+EXPOSE 8080
+
+# Build the binary with Go
+COPY . .
+RUN go build -o main .
+
+# Executing the binary
+ENTRYPOINT ["./main"]

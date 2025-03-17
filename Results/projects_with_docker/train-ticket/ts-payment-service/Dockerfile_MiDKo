@@ -1,0 +1,17 @@
+# Choose the base image
+FROM java:8-jre
+
+# Set the working directory in the image
+WORKDIR /app
+
+# Copy the JAR file into the image
+COPY ./target/ts-payment-service-1.0.jar /app/
+
+# Set timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Expose the necessary port 
+EXPOSE 19001
+
+# Define default command.
+CMD ["java", "-Xmx200m", "-jar", "/app/ts-payment-service-1.0.jar"]

@@ -1,0 +1,32 @@
+# Set the Base Image
+FROM node:12 as builder
+
+# Set Working Directory
+WORKDIR /app
+
+# Copy package.json and yarn.lock to the working directory
+COPY package.json yarn.lock /app/
+
+# Install Dependencies
+RUN yarn install
+
+# Copy Rest of the Source Code to Working Directory
+COPY . /app
+
+# Build the Project
+RUN yarn build
+
+# Set the Base Image for the runtime
+FROM node:12
+
+
+# Set Working Directory
+WORKDIR /app
+
+# COPY generated build and config files from builder stage
+
+# Expose the specified port
+EXPOSE 80
+
+# Running the app
+CMD [ "yarn", "start" ]

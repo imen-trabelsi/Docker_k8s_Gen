@@ -1,0 +1,32 @@
+# Begin Dockerfile
+FROM fluent/fluentd:v0.12-debian
+
+# Set environment variable.
+ENV FLUENTD_OPT=""
+ENV FLUENTD_CONF="fluent.conf"
+
+# Copy configuration files.
+COPY ./docker/fluentd/Dockerfile .
+COPY ./docker/.env .
+COPY ./docker/docker-compose.yml .
+
+# Set work directory.
+WORKDIR /
+
+# Copy necessary files.
+COPY ./pom.xml ./pom.xml
+
+# Run commands to install necessary plugins.
+RUN ["gem", "install", "fluent-plugin-elasticsearch", "--no-rdoc", "--no-ri", "--version", "1.9.2"]
+
+# Compile code using maven.
+RUN mvn clean install -DskipTests
+
+# Copy built jar file into the docker image.
+COPY ./target/*.jar app.jar
+
+# Expose necessary ports.
+EXPOSE 8080
+
+# The command run in the container after it was started.
+ENTRYPOINT ["sh", "-c", "java -jar /app.jar"]

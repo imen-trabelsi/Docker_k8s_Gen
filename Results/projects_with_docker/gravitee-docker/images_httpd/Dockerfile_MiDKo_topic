@@ -1,0 +1,33 @@
+# Base Image
+FROM centos:7
+
+# Maintainer
+LABEL maintainer="contact@graviteesource.com"
+
+# System update and install dependencies
+RUN yum -y update && \
+    yum install -y wget zip unzip nc httpd && \
+    yum clean all && \
+
+# Setting up working directory
+WORKDIR /app
+
+# Copy the app
+COPY . .
+
+# Install python and pip
+RUN yum install -y python3-pip
+
+# Install python packages
+COPY requirements.txt .
+RUN pip3 install -r requirements.txt
+
+# Make port 80 available to the world outside this container
+EXPOSE 80
+
+# Switch to non-root user for security
+RUN useradd -ms /bin/bash user
+USER user
+
+# Run the application
+CMD ["python3", "your_script.py"]

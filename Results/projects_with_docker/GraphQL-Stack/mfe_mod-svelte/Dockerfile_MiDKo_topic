@@ -1,0 +1,39 @@
+# Use the specified base image
+FROM caddy:2-alpine
+
+# Create best security practices by creating a new group and user
+RUN addgroup -S app && adduser -S app -G app
+
+# Use /app directory as root directory
+WORKDIR /app/
+
+# Copy package.json and package-lock.json for dependency resolution
+COPY package.json package-lock.json /app/
+
+# Install the dependencies
+RUN apk add --no-cache npm \
+    && npm install \
+
+# Changing to the non-root 'app' user
+RUN chown -R app:app /app && chmod 755 /app
+
+# Copy Caddyfile from the current directory to the filesystem of the container
+# Also copy the static files into Caddy's root directory
+COPY Caddyfile /etc/caddy/Caddyfile
+COPY /dist /usr/share/caddy/dist
+
+# Copy JavaScript files
+COPY src/ /app/src/
+
+# Set environment variable for future use, adjust to your required variables
+ENV NODE_ENV=production
+
+# Expose port 80 for external access to the application
+# Replace this with your application's serving ports if needed
+EXPOSE 80
+
+# Set the build user to the app user and change owner permissions to avoid security issues
+USER app:app
+
+# Use npm for serving the JavaScript application at runtime
+CMD ["npm", "start"]

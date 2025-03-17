@@ -1,0 +1,40 @@
+{
+    "docker_info": {
+        "base_image": "maven:3.9.9-eclipse-temurin-17",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "20002"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY <<EOF /root/.m2/settings.xml",
+            "WORKDIR /app",
+            "COPY ./ ./",
+            "COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas",
+            "COPY --from=build /app/target/B.jar /app/target/B.jar"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"java\",\"-jar\",\"/app/target/B.jar\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "--mount=type=cache,target=/root/.m2/repository/ \\",
+                "mvn clean package --batch-mode"
+            ],
+            [
+                "apt-get update && apt-get install -y \\",
+                "vim unzip netcat-openbsd telnet tcpdump iproute2 lsof ngrep",
+                "&& rm -rf /var/lib/apt/lists/*"
+            ]
+        ]
+    }
+}

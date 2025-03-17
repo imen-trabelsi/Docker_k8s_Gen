@@ -1,0 +1,25 @@
+# Use an official Go image as base
+FROM golang:alp
+
+# Set work directory and environment variables
+ENV SRVDIR=product
+ENV SRVNAME=${SRVDIR}Server
+WORKDIR /go/src/goTemp
+
+# Copy go dependencies files
+COPY go.mod go.sum ./
+
+# Download all dependencies. If go.mod and go.sum files haven't changed, Docker should use cached results
+RUN go mod download
+
+# Copy everything else from the current directory to the container's workspace
+COPY . .
+
+# Build the Go app
+RUN go build -o ${SRVNAME} .
+
+# Expose port 2112 for the app 
+EXPOSE 2112
+
+# Run the built binary command by default when this container starts
+ENTRYPOINT ./${SRVNAME}

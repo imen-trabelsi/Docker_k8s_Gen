@@ -1,0 +1,22 @@
+# Use the official java base image
+FROM openjdk:8-jdk-alpine
+
+# Set required environment variables
+ENV REDIS_HOST=redis-service
+ENV REDIS_PORT=6379
+ENV REDIS_PASSWORD=
+ENV MYSQL_ROOT_PASSWORD=debezium
+ENV MYSQL_USER=mysqluser
+ENV MYSQL_PASSWORD=mysqlpw
+
+# Make port 8084 available to the world outside this container
+EXPOSE 8084
+
+# The application's jar file
+ARG JAR_FILE=target/*.jar
+
+# Copy the application's jar to the container
+COPY ${JAR_FILE} app.jar
+
+# Run the jar file
+ENTRYPOINT ["java","-jar","/app.jar","--spring.profiles.active=prod"]

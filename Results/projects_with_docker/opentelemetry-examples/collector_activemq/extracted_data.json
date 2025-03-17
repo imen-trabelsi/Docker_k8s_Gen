@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "Go",
+        "framework": "Go",
+        "dependencies": {
+            "go.mod": "module activemq\n\ngo 1.18\n\nrequire github.com/go-stomp/stomp v2.1.4+incompatible // indirect\n"
+        },
+        "database": null,
+        "build_system": "go mod",
+        "config_files": {
+            "collector/activemq/docker-compose.yml": "version: \"3.7\"\nservices:\n    activemq:\n        container_name: activemq\n        image: webcenter/activemq:latest\n        restart: always\n        environment:\n            ACTIVEMQ_SUNJMX_START: -Djava.rmi.server.hostname=activemq -Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=10991 -Dcom.sun.management.jmxremote.rmi.port=10991 -Dcom.sun.management.jmxremote.local.only=false -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false\n            ACTIVEMQ_CONFIG_NAME: amqp-srv1\n            ACTIVEMQ_CONFIG_DEFAULTACCOUNT: 'false'\n            ACTIVEMQ_ADMIN_LOGIN: admin\n            ACTIVEMQ_ADMIN_PASSWORD: admin\n            ACTIVEMQ_USERS_otelproducer: producerpassword\n            ACTIVEMQ_GROUPS_writes: otelproducer\n            ACTIVEMQ_USERS_otelconsumer: consumerpassword\n            ACTIVEMQ_GROUPS_reads: otelconsumer\n            ACTIVEMQ_CONFIG_TOPICS_topic1: mytopic1\n            ACTIVEMQ_CONFIG_TOPICS_topic2: mytopic2\n            ACTIVEMQ_CONFIG_QUEUES_queue1: myqueue1\n            ACTIVEMQ_CONFIG_QUEUES_queue2: myqueue2\n            ACTIVEMQ_CONFIG_MINMEMORY: 1024\n            ACTIVEMQ_CONFIG_MAXMEMORY: 4096\n            ACTIVEMQ_CONFIG_SCHEDULERENABLED: 'true'\n        ports:\n            - '5672:5672'\n            - '8161:8161'\n            - '10991:10991'\n            - '61616:61616'\n            - '61613:61613'\n        networks:\n            - integrations\n        stop_grace_period: 1s\n    otel-collector:\n        container_name: otel-collector\n        build: .\n        command: [ \"--config=/conf/collector.yml\" ]\n        environment:\n            LS_ACCESS_TOKEN: ${LS_ACCESS_TOKEN}\n        networks:\n            - integrations\n        volumes:\n            - ./collector.yml:/conf/collector.yml:rw\nnetworks:\n    integrations:\n",
+            "collector/activemq/Dockerfile": "FROM curlimages/curl:7.82.0 as curler\nARG JMX_JAR_VERSION=v1.14.0\nUSER root\n\nRUN curl -L \\\n    --output /opentelemetry-jmx-metrics.jar \\\n    \"https://github.com/open-telemetry/opentelemetry-java-contrib/releases/download/${JMX_JAR_VERSION}/opentelemetry-jmx-metrics.jar\"\n\nRUN curl -L -s \\\n    \"https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.53.0/otelcol-contrib_0.53.0_linux_amd64.tar.gz\" | \\\n    tar -xvz -C /\n\nFROM ibmjava:8-jre\nWORKDIR /\n\nCOPY --from=curler /opentelemetry-jmx-metrics.jar /opt/opentelemetry-jmx-metrics.jar\nCOPY --from=curler /otelcol-contrib /otelcol-contrib\n\nENTRYPOINT [ \"/otelcol-contrib\" ]\nCMD [\"--config\", \"/etc/otel/config.yaml\"]"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "collector.yml",
+            "docker-compose.yml"
+        ],
+        "folders": []
+    }
+}

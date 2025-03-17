@@ -1,0 +1,19 @@
+# Using base image provided by the user
+FROM node:8.16-buster-slim
+
+# Copying over the package.json and yarn.lock
+COPY package.json yarn.lock /home/tiler/
+
+# Setting the workdir to /home/tiler
+WORKDIR /home/tiler
+
+# Running update commands as required
+RUN apt-get update -y \
+    && apt-get install git jq -y \
+    && yarn global add carto \
+
+# Copying the rest of the files
+COPY . /home/tiler
+
+# Running the application 
+CMD ["yarn", "dev"]

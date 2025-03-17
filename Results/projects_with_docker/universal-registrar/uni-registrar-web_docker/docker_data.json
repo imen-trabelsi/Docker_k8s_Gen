@@ -1,0 +1,51 @@
+{
+    "docker_info": {
+        "base_image": "maven:3-eclipse-temurin-17-focal",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "9080"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV uniregistrar_web_spring_profiles_active=default"
+        ],
+        "copy_instructions": [
+            "ADD . /opt/universal-registrar",
+            "WORKDIR /opt/universal-registrar/uni-registrar-web/",
+            "COPY --from=build /opt/universal-registrar/uni-registrar-web/target/*-exec.jar ./"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "java",
+                    "-jar",
+                    "*.jar"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "export DEBIAN_FRONTEND=noninteractive && \\",
+                "apt-get -y update &&",
+                "apt-get install -y --no-install-recommends patch &&",
+                "apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*"
+            ],
+            [
+                "cd /opt/universal-registrar && mvn clean install -N",
+                "RUN cd /opt/universal-registrar/uni-registrar-core && mvn clean install -N"
+            ],
+            [
+                "cd /opt/universal-registrar/driver && mvn clean install -N",
+                "RUN cd /opt/universal-registrar/driver-http && mvn clean install -N"
+            ],
+            [
+                "cd /opt/universal-registrar/uni-registrar-local && mvn clean install -N",
+                "RUN cd /opt/universal-registrar/uni-registrar-web && mvn clean package -N"
+            ]
+        ]
+    }
+}

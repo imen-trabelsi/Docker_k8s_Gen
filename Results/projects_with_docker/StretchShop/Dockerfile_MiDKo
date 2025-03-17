@@ -1,0 +1,30 @@
+# Use a lighter version of Node as a parent image
+FROM node:20-alpine
+
+# Make the '/app' folder the current working directory inside the image
+RUN mkdir /app
+WORKDIR /app
+
+# Copy the files listed as dependencies into the image
+COPY package.json .
+
+# Copy the static and config files to the image
+COPY public/assets/_site/icons/browserconfig.xml public/project_dictionary.json resources/pages/_default/homepage/homepage.json resources/pages/_default/info/info.json resources/settings/README.md resources/settings/business.json resources/settings/countries-full.json resources/settings/locals.json resources/settings/orders.json ./
+
+# Install the latest version of npm
+RUN npm install npm@latest
+
+# Install only the production dependencies
+RUN npm install --silent --progress=false --production --ignore-scripts
+
+# Copy all the remaining application source code to the image
+COPY . .
+
+# Set environment variable
+ENV NODE_ENV=production
+
+# Ensure that the application runs on this port and it is available to the world
+EXPOSE <your port>
+
+# The command that starts our app
+CMD ["npm", "start"]

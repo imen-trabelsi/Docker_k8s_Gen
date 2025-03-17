@@ -1,0 +1,29 @@
+{
+    "docker_info": {
+        "base_image": "tiangolo/uvicorn-gunicorn-fastapi:python3.7",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD ./pyproject.toml ./pyproject.toml",
+            "ADD ./poetry.lock ./poetry.lock",
+            "WORKDIR /app",
+            "ADD ./src ./"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "pip install poetry",
+                ""
+            ],
+            [
+                "poetry config virtualenvs.create false",
+                "RUN poetry install"
+            ]
+        ]
+    }
+}

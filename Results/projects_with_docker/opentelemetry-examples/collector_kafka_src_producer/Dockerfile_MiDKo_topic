@@ -1,0 +1,20 @@
+# Base Image
+FROM golang:1.19
+
+# Set Working Directory
+WORKDIR /app
+
+# Copy Files to Container
+COPY . .
+
+# Initialize Go Module
+RUN go mod init opentelementry-examples-kafka
+
+# Download Dependencies
+RUN go mod tidy
+
+# Build the Binary
+RUN go build -o producer .
+
+# Execution command instruction
+CMD ["./producer"]

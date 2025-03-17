@@ -1,0 +1,20 @@
+#Base image
+FROM codefarm/appnodebase:0.0.0
+
+#Working directory
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install npm packages
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Expose the necessary ports
+EXPOSE YOUR_NEEDED_PORT
+
+# Default command
+CMD [ "npm", "start" ]

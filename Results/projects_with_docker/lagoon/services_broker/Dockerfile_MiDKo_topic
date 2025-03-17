@@ -1,0 +1,23 @@
+FROM ${UPSTREAM_REPO:-uselagoon}/commons:${UPSTREAM_TAG:-latest}
+
+ENV LAGOON_VERSION=$LAGOON_VERSION
+ENV SERVICE_NAME='0.0.0.0' 
+
+RUN apk add --no-cache \
+gojq \
+curl \
+&& wget -P /plugins https://github.com/rabbitmq/rabbitmq-delayed-message-exchange/releases/download/v3.13.0/rabbitmq_delayed_message_exchange-3.13.0.ez \
+&& chown rabbitmq:rabbitmq /plugins/rabbitmq_delayed_message_exchange-* \
+
+COPY --from=commons /bin/ep /bin/fix-permissions /bin/
+COPY definitions.json enabled_plugins rabbitmq.conf /etc/rabbitmq/
+COPY start-rabbit.sh enable-feature-flags.sh /
+COPY /start-rabbit.sh /cluster-rabbit.sh
+
+RUN fix-permissions /etc/rabbitmq
+
+RUN fix-permissions start-rabbit.sh enable-feature-flags.sh && chmod +x /start-rabbit.sh /enable-feature-flags.sh
+
+EXPOSE 5672
+
+ENTRYPOINT ["/start-rabbit.sh"]

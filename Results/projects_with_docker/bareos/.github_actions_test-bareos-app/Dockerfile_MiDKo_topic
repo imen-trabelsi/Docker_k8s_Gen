@@ -1,0 +1,22 @@
+# Start from an Alpine image with the latest stable docker version
+FROM docker:stable
+
+# Ensure up to date system and install necessary dependencies
+RUN apk update && \
+    apk add --no-cache curl bash && \
+
+# Copy the entrypoint script into the image
+COPY entrypoint.sh /entrypoint.sh
+
+# Set permissions for the entry point  
+RUN chmod +x /entrypoint.sh
+
+# Specify a non-root user to use when the container runs for security purposes
+# Replace 'user' with the actual username if available
+# USER user
+
+# Declare the port on which the app should be exposed (replace 8080 with actual port if known)
+# EXPOSE 8080
+
+# Set the entry point of the container to the entrypoint script
+ENTRYPOINT ["/entrypoint.sh"]

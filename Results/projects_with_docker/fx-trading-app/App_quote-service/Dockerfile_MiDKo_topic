@@ -1,0 +1,26 @@
+# Set the base image
+FROM maven:3.6.2-jdk-11-slim AS MAVEN_TOOL_CHAIN
+
+# Copy your source code and pom.xml file to the remote container
+COPY pom.xml /tmp/
+COPY src /tmp/src/
+
+# Set the working directory
+WORKDIR /tmp/
+
+# Build the project
+RUN mvn package -Pprod -DskipTests
+
+# Start a new build stage and set the base image
+FROM openjdk:11-jre-slim
+
+# Copy over the built artifact from the previous stage
+
+# Set the working directory
+WORKDIR /
+
+# Expose the required port
+EXPOSE 8080
+
+# Set the entry point of the container to the java command that starts your project
+ENTRYPOINT ["/usr/local/openjdk-11/bin/java", "-jar", "/quote-service.jar"]

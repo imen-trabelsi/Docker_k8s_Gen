@@ -1,0 +1,26 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Flask",
+        "dependencies": {
+            "requirements.txt": "https://github.com/wazo-platform/wazo-bus/archive/master.zip\nhttps://github.com/wazo-platform/xivo-dao/archive/master.zip\nhttps://github.com/wazo-platform/xivo-lib-python/archive/master.zip\nhttps://github.com/wazo-platform/wazo-auth-client/archive/master.zip\nhttps://github.com/wazo-platform/wazo-lib-rest-client/archive/master.zip  # from wazo-auth-client\nalembic==1.4.3\ncheroot==9.0.0\nflask-cors==3.0.9\nflask-httpauth==3.2.4\nflask-restful==0.3.8\nflask==1.1.2\nitsdangerous==1.1.0  # from flask\njinja2==3.0.3\njsonpatch==1.25\nkombu==5.0.2\nmarkupsafe==2.0.1 # from jinja\nmarshmallow==3.18.0\nnetifaces==0.10.9\npsycopg2-binary==2.8.6\npython-consul==1.1.0\npython-ldap==3.2.0\npyyaml==5.3.1\npysaml2==7.5.0\nrequests-oauthlib\nrequests==2.25.1\nsqlalchemy==1.3.22\nstevedore==4.0.2\ntenacity==6.2.0\nunidecode==1.2.0\nwebsocket-client==0.57.0\nwerkzeug==1.0.1\n"
+        },
+        "database": "PostgreSQL",
+        "build_system": "pip",
+        "config_files": {
+            "Dockerfile": "FROM python:3.9-slim-bullseye AS compile-image\nLABEL maintainer=\"Wazo Maintainers <dev@wazo.community>\"\n\nRUN python -m venv /opt/venv\n# Activate virtual env\nENV PATH=\"/opt/venv/bin:$PATH\"\n\nRUN apt-get -q update\nRUN apt-get -yq install --no-install-recommends gcc libldap2-dev libsasl2-dev\n\nCOPY requirements.txt /usr/src/wazo-auth/\nWORKDIR /usr/src/wazo-auth\nRUN pip install -r requirements.txt\n\nCOPY setup.py /usr/src/wazo-auth/\nCOPY wazo_auth /usr/src/wazo-auth/wazo_auth\nRUN python setup.py install\n\nFROM python:3.9-slim-bullseye AS build-image\nCOPY --from=compile-image /opt/venv /opt/venv\n\nCOPY ./etc/wazo-auth /etc/wazo-auth\nCOPY ./templates /var/lib/wazo-auth/templates\nRUN true \\\n    && adduser --quiet --system --group --home /var/lib/wazo-auth wazo-auth \\\n    && apt-get -q update \\\n    && apt-get -yq install --no-install-recommends libldap2-dev libsasl2-dev xmlsec1 \\\n    && mkdir -p /etc/wazo-auth/conf.d \\\n    && mkdir -p /etc/wazo-auth/templates.d \\\n    && install -o wazo-auth -g wazo-auth /dev/null /var/log/wazo-auth.log \\\n    && rm -rf /var/lib/apt/lists/*\n\nEXPOSE 9497\n\n# Activate virtual env\nENV PATH=\"/opt/venv/bin:$PATH\"\nCMD [\"wazo-auth\", \"--db-upgrade-on-startup\"]\n",
+            "Jenkinsfile": "pipeline {\n  agent any\n  triggers {\n    githubPush()\n    pollSCM('H H * * *')\n  }\n  environment {\n    MAIL_RECIPIENTS = 'dev+tests-reports@wazo.community'\n  }\n  options {\n    skipStagesAfterUnstable()\n    timestamps()\n    buildDiscarder(logRotator(numToKeepStr: '10'))\n  }\n  stages {\n    stage('Debian build and deploy') {\n      steps {\n        build job: 'build-package-no-arch', parameters: [\n          string(name: 'PACKAGE', value: \"${JOB_NAME}\"),\n        ]\n      }\n    }\n    stage('Docker build') {\n      steps {\n        sh \"docker build --no-cache -t wazoplatform/${JOB_NAME}:latest .\"\n      }\n    }\n    stage('Docker publish') {\n      steps {\n        sh \"docker push wazoplatform/${JOB_NAME}:latest\"\n      }\n    }\n    stage('Docker build DB') {\n      steps {\n        sh \"docker build -t wazoplatform/${JOB_NAME}-db:latest -f contribs/docker/Dockerfile-db .\"\n      }\n    }\n    stage('Docker publish DB') {\n      steps {\n        sh \"docker push wazoplatform/${JOB_NAME}-db:latest\"\n      }\n    }\n  }\n  post {\n    failure {\n      emailext to: \"${MAIL_RECIPIENTS}\", subject: '${DEFAULT_SUBJECT}', body: '${DEFAULT_CONTENT}'\n    }\n    fixed {\n      emailext to: \"${MAIL_RECIPIENTS}\", subject: '${DEFAULT_SUBJECT}', body: '${DEFAULT_CONTENT}'\n    }\n  }\n}\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "requirements.txt",
+            "server.py"
+        ],
+        "folders": [
+            "templates"
+        ]
+    }
+}

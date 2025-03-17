@@ -1,0 +1,34 @@
+# Set base image 
+FROM mailhog/mailhog:v1.0.1 
+
+# Update and upgrade the apk packages 
+USER root 
+RUN apk update && apk upgrade 
+
+# Set working directory in the container 
+WORKDIR /app 
+
+# Copy the sbt and source files 
+COPY ./build.sbt /app/
+COPY ./src /app/src 
+
+# Add Scala and sbt dependencies 
+RUN apk add bash
+RUN apk add openjdk8 
+RUN apk add sbt 
+
+# Compile and build the application 
+RUN sbt compile 
+RUN sbt package 
+
+# Switch to a non-root user for security 
+USER mailhog 
+
+# Set environment variables 
+ENV DATABASE_URL postgres://user:pass@localhost:5432/db 
+
+# Expose the port for the application 
+EXPOSE 8080 
+
+# Set the entry point for the container 
+ENTRYPOINT ["java", "-jar", "target/scala-2.13/app_2.13-0.1.0-SNAPSHOT.jar"]

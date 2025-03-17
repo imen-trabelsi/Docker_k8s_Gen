@@ -1,0 +1,17 @@
+# Python base image
+FROM python:3
+
+# Work directory set
+WORKDIR /home
+
+# Install required dependencies
+COPY requirements.txt .
+RUN python -m pip install --upgrade pip && \
+
+# Copy application
+COPY enrich.py .
+
+# Open required ports
+
+# Setup entrypoint/command
+CMD ["python3", "-u", "enrich.py"]

@@ -1,0 +1,25 @@
+# Use official maven/Java 11 image to create build artifact.
+# It is based on openjdk:11-jre-slim
+FROM maven:3-eclipse-temurin-11 AS build
+
+# Set the current working directory inside the image
+WORKDIR /usr/src/app
+
+# Copy files as specified by information provided by the user
+COPY pom.xml .
+
+# Perform necessary installations and updates
+RUN apt-get update && \
+    apt-get install -y curl && \
+
+# Get opentracing-specialagent-1.7.0.jar
+RUN curl -o opentracing-specialagent-1.7.0.jar https://repo1.maven.org/maven2/io/opentracing/contrib/specialagent/opentracing-specialagent/1.7.0/opentracing-specialagent-1.7.0.jar
+
+# Copy the rest of the working directory contents into the image
+COPY src ./src
+
+# Build the project according to the pom.xml file
+RUN mvn -f /usr/src/app/pom.xml clean package
+
+# Set the command to execute the jar
+ENTRYPOINT ["java", "-javaagent:/app/opentracing-specialagent-1.7.0.jar", "-jar", "client-1.0-SNAPSHOT.jar"]

@@ -1,0 +1,26 @@
+# Start with the Base Image
+FROM golang:1.19-alpine3.16 as build
+
+# Set Work directory
+COPY . /workspace
+WORKDIR /workspace
+
+# replace the default repositories with the Tsinghua mirrors
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories && \
+
+ENV GOPROXY=https://goproxy.cn,direct
+RUN --mount=type=cache,target=/go \
+
+# Start with the Base Image
+FROM golang:1.19-alpine3.16 as release
+
+# Set Work directory
+WORKDIR /workspace
+
+# Copy files from build stage
+
+# expose the required Port
+EXPOSE 50051
+
+# Set the Entry point command
+CMD ["/a-server"]

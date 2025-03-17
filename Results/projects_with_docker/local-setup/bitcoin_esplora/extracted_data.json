@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "JavaScript",
+        "dependencies": {
+            "package.json": "{\n  \"scripts\": {\n    \"format\": \"prettier --check .\",\n    \"format:fix\": \"prettier --write .\"\n  },\n  \"devDependencies\": {\n    \"@keep-network/prettier-config-keep\": \"github:keep-network/prettier-config-keep\",\n    \"prettier\": \"^2.3.0\",\n    \"prettier-plugin-sh\": \"^0.6.1\",\n    \"prettier-plugin-toml\": \"^0.3.1\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "bitcoin/docker-compose.yml": "version: \"3\"\n\nservices:\n  bitcoind:\n    container_name: bitcoind\n    image: ghcr.io/keep-network/local-setup/bitcoind\n    # build: ./bitcoind\n    ports:\n      - 18332:18332\n    volumes:\n      - ./.data/bitcoind:/workdir/datadir\n  electrumx:\n    container_name: electrumx\n    image: ghcr.io/keep-network/local-setup/electrumx\n    # build: ./electrumx\n    ports:\n      - 50001:50001\n      - 50002:50002\n      - 50003:50003\n      - 50004:50004\n      - 8000:8000\n    environment:\n      - DAEMON_URL=http://user:password@bitcoind:18332\n      - COIN=BitcoinSegwit\n      - NET=regtest\n      - SERVICES=tcp://0.0.0.0:50001,ssl://0.0.0.0:50002,ws://0.0.0.0:50003,wss://127.0.0.1:50004,rpc://0.0.0.0:8000\n      - COST_SOFT_LIMIT=0\n      - COST_HARD_LIMIT=0\n    depends_on:\n      - bitcoind\n\n  electrs:\n    container_name: electrs\n    image: ghcr.io/keep-network/local-setup/electrs\n    # build: ./electrs\n    ports:\n      # esplora image expects that electrs API is exposed at port 3002\n      - 3002:3002\n    volumes:\n      - ./.data/electrs:/workdir/data\n      - ./.data/bitcoind:/workdir/bitcoin-data\n    environment:\n      - DAEMON_RPC_ADDR=bitcoind:18332\n      - NETWORK=regtest\n    depends_on:\n      - bitcoind\n\n  esplora:\n    container_name: esplora\n    image: ghcr.io/keep-network/local-setup/esplora\n    # build:\n    #   context: ./esplora\n    #   args:\n    #     API_URL: http://localhost:3002/ # electrs\n    ports:\n      - 8094:80\n    depends_on:\n      - electrs\n",
+            "bitcoin/esplora/Dockerfile": "FROM node:14-alpine3.13 AS build\n\nRUN apk add --update --no-cache \\\n  git \\\n  bash\n\nWORKDIR /workdir\n\nRUN git clone --no-checkout https://github.com/Blockstream/esplora.git\n\nWORKDIR esplora\n\nRUN git checkout f6da494a9a0080ae2ae13842bcf53b259e3a3360\n\nRUN npm install --unsafe-perm\n\nENV CORS_ALLOW=\"*\"\nENV FLAVOR=\"bitcoin-regtest\"\nENV BASE_HREF=\"/\"\n\nARG API_URL\nENV API_URL=$API_URL\n\nRUN npm run dist $FLAVOR\n\nFROM nginx:1.21-alpine\n\nCOPY --from=build /workdir/esplora/dist /usr/share/nginx/html\n\nRUN rm /etc/nginx/conf.d/default.conf\nCOPY nginx.conf /etc/nginx/conf.d\n\nEXPOSE 80\n\n## Set `daemon off` so the nginx is run in the foreground.\nCMD [\"nginx\", \"-g\", \"daemon off;\"]\n",
+            "bitcoin/esplora/nginx.conf": "server {\n\n  listen 80;\n\n  location / {\n    root     /usr/share/nginx/html;\n    index    index.html;\n    try_files $uri $uri/ /index.html;\n  }\n}\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "entrypoint.sh"
+        ],
+        "folders": []
+    }
+}

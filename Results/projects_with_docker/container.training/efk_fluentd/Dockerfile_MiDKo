@@ -1,0 +1,15 @@
+# Use Ruby as the base image
+FROM ruby
+
+# Install dependencies using pip
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# Install Fluentd and plugins
+RUN gem install fluentd fluent-plugin-elasticsearch
+
+# Copy configuration
+COPY fluentd.conf /fluentd.conf
+
+# Application starts here
+CMD ["fluentd", "-c", "/fluentd.conf"]

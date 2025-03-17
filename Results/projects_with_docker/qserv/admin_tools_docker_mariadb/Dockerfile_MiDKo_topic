@@ -1,0 +1,61 @@
+# Use the specified base image
+FROM ubuntu:focal AS base
+
+# Set work directory
+WORKDIR /app
+
+# Update Ubuntu Software repository
+RUN apt-get update && apt-get install -y \
+    curl \
+    g++ \
+    make \
+    git \
+    python3 \
+
+# Link python3 to python
+RUN update-alternatives --install /usr/bin/python python /usr/bin/python3 0
+
+# Clone scisql repository
+RUN cd /tmp \
+    && git clone https://github.com/smonkewitz/scisql \
+    && cd scisql \
+
+# Configure and build scisql
+RUN cd /tmp/scisql \
+    && ./configure \
+
+# Apply configurations
+RUN cd /tmp/scisql \
+    && PYTHONPATH=/usr/local/python python -c "from scisql import configure;\
+    configure.init_config(None, None, None, None, None);\
+
+# Set the appropriate file permission
+RUN chmod a+r /tmp/scisql/build/deploy.mysql
+
+# Create a new user
+RUN useradd --uid 1000 qserv
+
+# Create necessary directories and set the appropriate ownership
+RUN mkdir -p /qserv/data /qserv/data/results /config-etc /var/log/mysql \
+
+# Install the poetry build system
+RUN curl -sSL https://install.python-poetry.org | python -
+
+# Copy dependencies and lock file
+COPY pyproject.toml poetry.lock ./
+
+# Install dependencies
+RUN poetry install
+
+# Copy source code
+COPY . .
+
+# Copy necessary files from mariadb-scisql-builder
+COPY --from=mariadb-scisql-builder /tmp/scisql/build/libscisql-scisql_0.3.so /usr/lib/mysql/plugin
+COPY --from=mariadb-scisql-builder /tmp/scisql/build/deploy.mysql /docker-entrypoint-initdb.d/scisql.sql
+
+# Switch to new user
+USER qserv
+
+# Run the application. Change this if you have a different command to run your application.
+CMD ["python", "app.py"]

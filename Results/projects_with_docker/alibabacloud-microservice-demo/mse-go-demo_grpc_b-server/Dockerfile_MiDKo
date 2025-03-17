@@ -1,0 +1,23 @@
+# Use golang:1.19-alpine3.16 as base image
+FROM golang:1.19-alpine3.16 AS build
+
+# Installing necessary packages and setting repositories
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories \
+
+# Setting GOPROXY and building workspace
+RUN --mount=type=cache,target=/go \
+env GOPROXY=https://goproxy.cn,direct \
+
+# Setting working directory
+WORKDIR /workspace
+
+# Add all the source code to the /workspace directory
+COPY . /workspace
+
+# Copying build workspace
+
+# Expose port 50051
+EXPOSE 50051
+
+# Command to execute 
+CMD ["/b-server"]

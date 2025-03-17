@@ -1,0 +1,47 @@
+{
+    "docker_info": {
+        "base_image": "microsoft/windowsservercore",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8081",
+            "10250",
+            "10251",
+            "10252",
+            "10253",
+            "10254"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD https://aka.ms/cosmosdb-emulator c:\\\\CosmosDBEmulator\\\\AzureCosmosDB.Emulator.msi",
+            "COPY package_scripts\\\\startemu.cmd c:\\\\CosmosDBEmulator\\\\startemu.cmd",
+            "COPY package_scripts\\\\getaddr.ps1 c:\\\\CosmosDBEmulator\\\\getaddr.ps1",
+            "COPY package_scripts\\\\exportcert.ps1 c:\\\\CosmosDBEmulator\\\\exportcert.ps1",
+            "COPY package_scripts\\\\importcert.ps1 c:\\\\CosmosDBEmulator\\\\importcert.ps1"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"c:\\\\CosmosDBEmulator\\\\startemu.cmd\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "echo \"Starting Installer\"",
+                "RUN powershell.exe -Command $ErrorActionPreference = 'Stop';",
+                "Start-Process 'msiexec.exe' -ArgumentList '/i','c:\\CosmosDBEmulator\\AzureCosmosDB.Emulator.msi','/qn' -Wait"
+            ],
+            [
+                "echo \"Installer Done\"",
+                ""
+            ]
+        ]
+    }
+}

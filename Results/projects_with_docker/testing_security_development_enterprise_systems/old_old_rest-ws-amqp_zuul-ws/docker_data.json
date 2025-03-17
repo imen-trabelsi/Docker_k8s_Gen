@@ -1,0 +1,26 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:8",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD target/zuul-ws.jar ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "java",
+                    "-jar",
+                    "zuul-ws.jar"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

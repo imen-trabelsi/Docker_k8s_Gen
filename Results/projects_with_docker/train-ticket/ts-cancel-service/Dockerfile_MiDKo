@@ -1,0 +1,20 @@
+# Use official java runtime base image
+FROM java:8-jre
+
+# Copy project files into the docker image
+COPY . /app
+
+# Set the work directory
+WORKDIR /app
+
+# Copy the build jar file
+COPY ./target/ts-cancel-service-1.0.jar /app/
+
+# Copy system timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+
+# Expose the app port
+EXPOSE 18885
+
+# Run the jar files
+CMD ["java", "-Xmx200m", "-jar", "/app/ts-cancel-service-1.0.jar"]

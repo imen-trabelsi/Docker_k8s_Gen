@@ -1,0 +1,14 @@
+# Using the base image as provided
+FROM mcr.microsoft.com/dotnet/aspnet
+
+COPY ./pub .
+WORKDIR /app
+
+# Expose the application on port 80
+EXPOSE 80
+
+# Copy the necessary files to the Docker container
+COPY src/MicroServices/Certifications/src/NurseCron.Certifications.OData/. /app
+
+# Set the entry point for the Docker container
+ENTRYPOINT ["dotnet", "NurseCron.Competencies.OData.dll"]

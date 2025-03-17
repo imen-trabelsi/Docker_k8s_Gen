@@ -1,0 +1,50 @@
+{
+    "docker_info": {
+        "base_image": "ubuntu:24.04",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [
+            "HEALTHCHECK --interval=5s --start-period=15s --retries=20 CMD test -f /tmp/healthcheck || exit 1"
+        ],
+        "build_args": [],
+        "envs": [
+            "ENV PYTHONUNBUFFERED=1"
+        ],
+        "copy_instructions": [
+            "COPY . /acceptance_tests",
+            "WORKDIR /acceptance_tests",
+            "COPY entrypoint.py /bin/entrypoint.py"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/bin/entrypoint.py\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"sleep\",",
+                    "\"infinity\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update \\",
+                "&& apt-get upgrade --assume-yes",
+                "&& apt-get install --assume-yes --no-install-recommends",
+                "vim curl jq libmagic1 zip python3-pip libpq-dev python3-dev gcc",
+                "&& rm -rf /var/lib/apt/lists/*",
+                "&& rm /usr/lib/python*/EXTERNALLY-MANAGED"
+            ],
+            [
+                "python3 -m pip install --disable-pip-version-check .",
+                ""
+            ]
+        ]
+    }
+}

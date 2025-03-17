@@ -1,0 +1,40 @@
+{
+    "docker_info": {
+        "base_image": "python:3.11",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /code",
+            "COPY ./requirements.txt ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"uvicorn\",",
+                    "\"main:app\",",
+                    "\"--host\",",
+                    "\"0.0.0.0\",",
+                    "\"--port\",",
+                    "\"8877\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && \\",
+                "apt-get install -y postgresql-client &&",
+                "rm -rf /var/lib/apt/lists/*"
+            ],
+            [
+                "pip install --no-cache-dir -U pip && \\",
+                "pip install --no-cache-dir -r requirements.txt"
+            ]
+        ]
+    }
+}

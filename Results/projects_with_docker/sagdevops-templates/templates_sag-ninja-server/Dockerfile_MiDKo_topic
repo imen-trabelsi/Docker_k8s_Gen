@@ -1,0 +1,17 @@
+# builder stage
+FROM $BUILDER_IMAGE as builder
+ARG __ninja_mem_max=256
+WORKDIR $SAG_HOME
+RUN $CC_HOME/provision.sh && ./test.sh && $CC_HOME/cleanup.sh
+
+# production stage
+FROM $BASE_IMAGE as production
+ARG TAG=10.3
+LABEL version=$TAG
+EXPOSE 4444
+
+WORKDIR $SAG_HOME
+COPY entrypoint.sh $SAG_HOME/
+RUN chmod +x $SAG_HOME/entrypoint.sh
+
+CMD ["$SAG_HOME/entrypoint.sh"]

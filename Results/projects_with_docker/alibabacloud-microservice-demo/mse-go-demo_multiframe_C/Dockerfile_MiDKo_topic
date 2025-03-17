@@ -1,0 +1,21 @@
+# Base Image
+FROM registry-cn-hangzhou.ack.aliyuncs.com/dev/alpine:3.18-update@sha256:f2f97bbc6f3173044292cbf8d306ca31b4356a5f2eb54701fc97f64065b412cf AS builder
+
+# Install necessary dependencies
+RUN apk add --no-cache bash
+RUN apk add --no-cache openjdk8
+RUN apk add --no-cache maven
+
+# Create a directory for the application
+WORKDIR /app
+
+# Copy the source code to the container
+COPY . /app
+
+# Build with maven
+RUN mvn clean package
+
+# Run the executable jar
+FROM openjdk:8-jdk-alpine
+WORKDIR /app
+ENTRYPOINT ["java","-jar","/app/app.jar"]

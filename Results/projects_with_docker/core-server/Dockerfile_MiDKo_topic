@@ -1,0 +1,36 @@
+# Base image
+FROM python:3.7 AS build
+
+# Maintainer
+LABEL maintainer="Lucio"
+
+# Set python to not buffer the outputs
+ENV PYTHONUNBUFFERED 1
+
+# Set current working directory inside the container
+WORKDIR /usr/src/app
+
+# Copy requirements.txt first, to leverage Docker cache
+COPY requirements.txt .
+
+# Install pip dependencies
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /wheels -r requirements.txt
+
+FROM python:3.7 as runtime
+
+# Update and install dependencies
+RUN apt-get update && \
+    apt-get install -y libpq-dev && \
+    rm -rf /var/lib/apt/lists/* && \
+    # cleaning up unused files
+    apt-get purge -y --auto-remove && \
+    rm -rf /var/lib/apt/lists/* && \
+    
+# Copy all files 
+COPY . /usr/src/app
+
+# Expose port 
+EXPOSE 8000
+
+# Define the command to run app
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

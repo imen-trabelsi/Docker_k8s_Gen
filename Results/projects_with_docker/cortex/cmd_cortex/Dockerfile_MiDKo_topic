@@ -1,0 +1,35 @@
+# Use Alpine Linux as Base Image
+FROM alpine:3.19 AS builder
+
+# Build Arguments
+ARG TARGETARCH
+ARG revision
+
+# Include Security Certificates
+RUN apk add --no-cache ca-certificates
+
+# Copy your Go Mod and Source Code
+COPY /cmd/cortex .
+
+# Download and Install Dependencies
+RUN go mod download
+
+# Build the Go app
+RUN go build -o myapp .
+
+#Start a new stage from scratch
+FROM alpine:3.19
+
+# Expose Port 80
+EXPOSE 80
+
+# Copy the binaries from builder to working directory
+
+# Copy migrations if available
+COPY migrations /migrations/
+
+# Set the title of the image
+LABEL org.opencontainers.image.title="cortex"
+
+# Execution Command
+ENTRYPOINT [ "/bin/cortex"]

@@ -1,0 +1,21 @@
+# Base Image
+FROM beevelop/ionic AS ionic
+
+# Set working directory
+WORKDIR /usr/src/app
+
+# Copy project files
+COPY package*.json ./
+COPY . .
+
+# Installing dependencies
+RUN npm ci
+RUN ionic build
+
+# Configure nginx
+
+# Expose default Ionic port
+EXPOSE 8100
+
+# Starting command
+CMD ["npm", "start"]

@@ -1,0 +1,28 @@
+#Set base image
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-env
+
+WORKDIR /src
+
+# copy everything and build the project
+COPY ["src/Services/ResultProcessing/ResultProcessing.API/ResultProcessing.API.csproj", "src/Services/ResultProcessing/ResultProcessing.API/"]
+
+COPY . .
+RUN dotnet restore "src/Services/ResultProcessing/ResultProcessing.API/ResultProcessing.API.csproj"
+
+WORKDIR "/src/src/Services/ResultProcessing/ResultProcessing.API"
+
+RUN dotnet build "ResultProcessing.API.csproj" -c Release -o /app/build
+
+# Begin publish stage
+FROM build-env AS publish
+RUN dotnet publish "ResultProcessing.API.csproj" -c Release -o /app/publish
+
+#Begin final stage
+FROM mcr.microsoft.com/dotnet/aspnet:5.0
+
+WORKDIR /app
+
+# Expose port for the app
+EXPOSE 80
+
+ENTRYPOINT ["dotnet", "ResultProcessing.API.dll"]

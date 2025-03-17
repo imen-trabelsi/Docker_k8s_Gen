@@ -1,0 +1,38 @@
+# Use the latest rust image as the base
+FROM harbor.nymte.ch/dockerhub/rust:latest as builder
+
+# Set working directory
+WORKDIR /usr/src/nym
+
+# Copy all files and directories from the local context to the WORKDIR
+COPY . .
+
+# Going to node directory
+WORKDIR /usr/src/nym/nym-node
+
+# Build the application
+RUN cargo build --release
+
+# Start a new build stage
+FROM harbor.nymte.ch/dockerhub/rust:latest
+
+# Set working directory
+WORKDIR /nym
+
+# Copy the built binary from the previous stage
+
+# Copy other necessary files
+COPY ./nym-node/entrypoint.sh ./
+
+# Update packages list and install wget
+RUN apt update && apt install -y wget
+
+# Download latest version of nym-cli
+RUN wget https://builds.ci.nymte.ch/develop/nym-cli
+
+# Make the script executable
+RUN chmod +x nym-cli
+RUN chmod +x entrypoint.sh
+
+# Define the entry point
+ENTRYPOINT ["./entrypoint.sh"]

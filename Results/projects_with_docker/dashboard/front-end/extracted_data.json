@@ -1,0 +1,43 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "JavaScript",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"front-end\",\n  \"version\": \"1.0.1\",\n  \"private\": true,\n  \"scripts\": {\n    \"start\": \"vue-cli-service serve --watch --mode development\",\n    \"build\": \"vue-cli-service build\"\n  },\n  \"dependencies\": {\n    \"@coda-19/coda19-fhir-templates\": \"npm:@CODA-19/coda19-fhir-templates@1.0.3-main-532a7a87.0\",\n    \"@CODA-19/coda19-fhir-templates\": \"1.0.6-main-7573265b.0\",\n    \"@fortawesome/fontawesome-free\": \"^5.15.2\",\n    \"@fortawesome/fontawesome-svg-core\": \"^1.2.34\",\n    \"@fortawesome/free-solid-svg-icons\": \"^5.15.2\",\n    \"@fortawesome/vue-fontawesome\": \"^2.0.2\",\n    \"axios\": \"^0.21.1\",\n    \"bootstrap\": \"^4.5.3\",\n    \"bootstrap-validator\": \"^0.11.9\",\n    \"bootstrap-vue\": \"^2.0.4\",\n    \"d3\": \"7.8.5\",\n    \"echarts\": \"^5.0.2\",\n    \"jquery\": \"^3.5.1\",\n    \"jQuery-QueryBuilder\": \"^2.6.0\",\n    \"keycloak-js\": \"^11.0.2\",\n    \"luxon\": \"^1.26.0\",\n    \"moment\": \"2.29.4\",\n    \"popper.js\": \"^1.16.1\",\n    \"underscore\": \"^1.11.0\",\n    \"vue\": \"^2.6.11\",\n    \"vue-echarts\": \"^6.0.0-rc.3\",\n    \"vue-i18n\": \"^8.24.1\",\n    \"vue-multiselect\": \"^2.1.6\",\n    \"vue-router\": \"^3.2.0\",\n    \"vue-slider-component\": \"^3.2.5\",\n    \"vue-underscore\": \"^0.1.4\",\n    \"vuejs-logger\": \"^1.5.4\",\n    \"vuetify\": \"^2.2.11\"\n  },\n  \"devDependencies\": {\n    \"@vue/cli-plugin-router\": \"5.0.8\",\n    \"@vue/cli-service\": \"5.0.8\",\n    \"@vue/composition-api\": \"^1.0.0-rc.5\",\n    \"raw-loader\": \"^4.0.2\",\n    \"sass\": \"^1.29.0\",\n    \"sass-loader\": \"^10.1.0\",\n    \"vue-cli-plugin-vuetify\": \"~2.0.7\",\n    \"vue-loader\": \"^15.9.8\",\n    \"vue-template-compiler\": \"^2.6.11\",\n    \"vuetify-loader\": \"^1.3.0\"\n  },\n  \"resolutions\": {\n    \"error-stack-parser\": \"2.0.6\"\n  },\n  \"browserslist\": [\n    \"> 1%\",\n    \"last 2 versions\",\n    \"not dead\"\n  ]\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "docker-compose.yml": "version: \"3.3\"\nservices:\n  api_111:\n    container_name: api_111\n    build: ../coda19-stats-api\n    environment:\n      - CODA19_STATS_API_FAKE_AIDBOX=true\n      - CODA19_STATS_API_PORT=8082\n    ports:\n      - 8082:8082 # For debugging at least one of them\n  spoke_111:\n    container_name: spoke_111\n    build: ../coda19-site-api\n    environment:\n      - CODA19_SITE_API_HUB_API_URL=http://hub:8080/\n      - CODA19_SITE_API_HOSPITAL_CODE=111\n      - CODA19_SITE_API_SERVER_PORT=5418\n      - CODA19_SITE_API_STATS_API_ENDPOINT=http://api_111:8082\n      - CODA19_SITE_API_KEYCLOAK_APP_PASSWORD=${LOCAL_SITE_API_KEYCLOAK_APP_PASSWORD}\n    depends_on:\n      - hub\n      - api_111\n  api_112:\n    container_name: api_112\n    build: ../coda19-stats-api\n    environment:\n      - CODA19_STATS_API_FAKE_AIDBOX=true\n      - CODA19_STATS_API_PORT=8083\n    ports:\n      - 8083:8083\n  spoke_112:\n    container_name: spoke_112\n    build: ../coda19-site-api\n    environment:\n      - CODA19_SITE_API_HUB_API_URL=http://hub:8080/\n      - CODA19_SITE_API_HOSPITAL_CODE=112\n      - CODA19_SITE_API_SERVER_PORT=5419\n      - CODA19_SITE_API_STATS_API_ENDPOINT=http://api_112:8083\n      - CODA19_SITE_API_KEYCLOAK_APP_PASSWORD=${LOCAL_SITE_API_KEYCLOAK_APP_PASSWORD}\n    depends_on:\n      - hub\n  hub:\n    container_name: hub\n    build: ../coda19-hub-api\n    environment:\n      - CODA19_HUB_API_SERVER_PORT=8080\n      - CODA19_HUB_API_KEYCLOAK_CLIENT_SECRET=${LOCAL_HUB_API_KEYCLOAK_CLIENT_SECRET}\n      - CODA19_HUB_API_KEYCLOAK_SESSION_MEMORY_SECRET=${LOCAL_HUB_API_KEYCLOAK_SESSION_MEMORY_SECRET}\n    ports:\n      - 8081:8080\n  # dash-backend:\n  #   container_name: dash-backend\n  #   build: ./back-end\n  #   ports:\n  #     - 3000:3000\n  #   environment:\n  #     - CODA19_DASHBOARD_BACKEND_HUB_ENDPOINT=http://hub:8080\n  #     - CODA19_DASHBOARD_BACKEND_KEYCLOAK_CLIENT_SECRET=${LOCAL_DASHBOARD_BACKEND_KEYCLOAK_CLIENT_SECRET}\n  #     - CODA19_DASHBOARD_BACKEND_KEYCLOAK_SESSION_MEMORY_SECRET=${LOCAL_DASHBOARD_BACKEND_KEYCLOAK_SESSION_MEMORY_SECRET}\n  #   depends_on:\n  #     - hub\n  # dash-frontend:\n  #   container_name: dash-frontend\n  #   build:\n  #     context: ./front-end\n  #     args:\n  #       - BUILD_ENV=local\n  #   ports:\n  #     - 8000:8080\n  #   depends_on:\n  #     - dash-backend\n  #   command: http-server --port 8080 -S -C cert.pem dist # Do not modify docker file for this. Docker command is for production envrionnement.\n",
+            "front-end/Dockerfile": "FROM node:16-alpine3.13 as base-node-modules\n\nWORKDIR /usr/src/build\n\nRUN apk update \\\n    && apk add openssl\n\nCOPY ./ ./\nCOPY ./${BUILD_ENV}.env ./.env\n\nRUN yarn cache clean\nRUN yarn add @coda-19/coda19-fhir-templates@1.0.6-main-7573265b.0\nRUN yarn install\nRUN rm -f .yarnrc\nRUN rm -f .npmrc\n\nRUN yarn build\n\nFROM node:16-alpine3.13\n\nRUN npm install -g http-server\n\nRUN apk update \\\n    && apk add openssl\n\nARG BUILD_ENV=prod\n\nWORKDIR /usr/src/app\nCOPY --from=base-node-modules /usr/src/build ./\nCOPY ./${BUILD_ENV}.env ./.env\n\n# Make build footprint version for easier debugging.\nRUN rm ./version.txt\nRUN openssl rand -hex 12 > version.txt\n\nEXPOSE 8080\nCMD [ \"http-server\", \"--port\", \"8080\",  \"dist\" ]"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".gitignore",
+            ".npmrc",
+            ".yarnrc",
+            "Dockerfile",
+            "README.md",
+            "cert.pem",
+            "coda-sa.yaml",
+            "coda19-hub-dashboard.dev.yaml",
+            "coda19-hub-dashboard.yaml",
+            "key.pem",
+            "local.env",
+            "openshift-commands.txt",
+            "package-lock.json",
+            "package.json",
+            "prod.env",
+            "publish.dev.sh",
+            "publish.sh",
+            "version.txt",
+            "vue.config.js"
+        ],
+        "folders": [
+            "public",
+            "src"
+        ]
+    }
+}

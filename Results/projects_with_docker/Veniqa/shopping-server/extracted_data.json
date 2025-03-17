@@ -1,0 +1,41 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n    \"name\": \"veniqa\",\n    \"version\": \"2.3.0\",\n    \"private\": false,\n    \"description\": \"An E-commerce solution\",\n    \"bugs\": {\n      \"url\": \"https://github.com/Viveckh/Veniqa/issues\"\n    },\n    \"author\": \"(EJ) Vivek Pandey <vpandey+veniqa@ramapo.edu>\",\n    \"contributors\": [\n        \"Arjun Bastola <abastola+veniqa@ramapo.edu>\",\n        \"Vivek Pandey <vpandey+veniqa@ramapo.edu>\",\n        \"Sujil Maharjan <maharjansujil+veniqa@ramapo.edu>\"\n    ],\n    \"keywords\": [\n      \"Veniqa\",\n      \"e-commerce solution\",\n      \"e-commerce\",\n      \"fashion\",\n      \"online retail\",\n      \"retail\",\n      \"Vue.js\",\n      \"Node.js\",\n      \"Mongo\",\n      \"Redis\"\n    ],\n    \"license\": \"MIT\",\n    \"repository\": {\n      \"type\": \"git\",\n      \"url\": \"https://github.com/Viveckh/Veniqa\"\n    }\n  }\n  "
+        },
+        "database": "Redis",
+        "build_system": "npm",
+        "config_files": {
+            "docker-compose.yml": "version: '3'\nservices:\n  mongo: \n    build:\n      context: ./mongo\n      dockerfile: Dockerfile-mongo\n    ports:\n      - 27000:27017\n    volumes:\n      - \"dbconfig:/data/configdb\"\n      - \"dbdata:/data/db\"\n\n  redis:\n    image: \"redis:alpine\"\n    container_name: cache\n\n    command: redis-server --requirepass SOME_PASSWORD\n\n    ports:\n      - 6379:6379\n\n    environment:\n      - REDIS_REPLICATION_MODE=master\n\n  shopping-server:\n    build:\n      context: ./shopping-server\n      dockerfile: Dockerfile-local\n    volumes:\n      - './shopping-server:/app'\n      - '/app/node_modules'\n    ports:\n      - 4201:3000\n    depends_on: \n      - mongo\n      - redis\n    environment:\n      NODE_ENV: development\n      VENIQA_ENV: local\n      VENIQA_MONGODB_DB: veniqa-prod-db\n      VENIQA_MONGODB_URL: mongodb://mongo:27017/veniqa-prod-db\n      VENIQA_REDIS_HOST: redis://cache\n      VENIQA_REDIS_PORT: 6379\n      VENIQA_REDIS_PASSWORD: SOME_PASSWORD\n      VENIQA_REDIS_DB_NUMBER: 0\n      VENIQA_SESSION_SECRET_KEY: SECRET_KEY\n      VENIQA_CRYPTO_SECRET_KEY: CRYPTO_SECRET\n\n  management-server:\n    build:\n      context: ./management-server\n      dockerfile: Dockerfile-local\n    volumes:\n      - './management-server:/app'\n      - '/app/node_modules'\n    ports:\n      - 4202:3000\n    depends_on: \n      - mongo\n      - redis\n    environment:\n      NODE_ENV: development\n      VENIQA_ENV: local\n      VENIQA_MONGODB_DB: veniqa-prod-db\n      VENIQA_MONGODB_URL: mongodb://mongo:27017/veniqa-prod-db\n      VENIQA_REDIS_HOST: redis://cache\n      VENIQA_REDIS_PORT: 6379\n      VENIQA_REDIS_PASSWORD: SOME_PASSWORD\n      VENIQA_REDIS_DB_NUMBER: 1\n      VENIQA_SESSION_SECRET_KEY: SECRET_KEY\n      VENIQA_CRYPTO_SECRET_KEY: CRYPTO_SECRET\n\n  shopping-webclient:\n    build:\n      context: ./shopping-webclient\n      dockerfile: Dockerfile-local\n    volumes:\n      - './shopping-webclient:/app'\n      - '/app/node_modules'\n    ports:\n      - 5201:5201\n    \n  management-webclient:\n    build:\n      context: ./management-webclient\n      dockerfile: Dockerfile-local\n    volumes:\n      - './management-webclient:/app'\n      - '/app/node_modules'\n    ports:\n      - 5202:5202\n\nvolumes:\n  dbdata:\n  dbconfig:",
+            "shopping-server/Dockerfile": "FROM mhart/alpine-node:8\n\nWORKDIR /app\n\nCOPY package*.json /app/\n\nRUN npm install\n\nRUN npm run build\n\nCOPY . /app/\n\nEXPOSE 3000\n\nCMD [ \"npm\", \"start\" ]"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".browserslistrc",
+            ".dockerignore",
+            ".editorconfig",
+            ".env",
+            ".env.dev",
+            ".env.production",
+            ".eslintrc.js",
+            ".gitignore",
+            ".prettierrc.js",
+            "Dockerfile",
+            "Dockerfile-local",
+            "README.md",
+            "babel.config.js",
+            "package-lock.json",
+            "package.json",
+            "postcss.config.js",
+            "vue.config.js"
+        ],
+        "folders": [
+            "public",
+            "src"
+        ]
+    }
+}

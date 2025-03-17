@@ -1,0 +1,30 @@
+# Base Image
+FROM openjdk:17-alpine
+
+# Maintainer
+LABEL maintainer="your-email@example.com"
+
+# Install maven
+RUN apk add maven
+
+# Working directory in the container
+WORKDIR /app
+
+# Copy pom.xml and source code to the work directory
+COPY pom.xml ./
+COPY src ./src/
+
+# Package the application
+RUN mvn clean package -DskipTests
+
+# Argument for JAR file
+ARG JAR_FILE
+
+# Copy the build jar file
+COPY target/${JAR_FILE} /usr/share/myservice/myservice.jar
+
+# Expose port
+EXPOSE 8080
+
+# Command to execute the Java application
+CMD [ "java", "-jar", "/usr/share/myservice/myservice.jar" ]

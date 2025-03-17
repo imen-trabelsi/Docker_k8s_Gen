@@ -1,0 +1,21 @@
+# Base Image
+FROM node:boron
+
+# App Directory 
+WORKDIR /usr/src/dc-campaign-finance-watch
+
+# Dependencies
+COPY package.json .
+COPY yarn.lock .
+
+# Install app dependencies using the npm binary
+RUN yarn install
+
+# Bundle app source
+COPY . .
+
+# Expose port to the outside
+EXPOSE 8080
+
+# Start the service
+CMD [ "npm", "start" ]

@@ -1,0 +1,20 @@
+# Use base image
+FROM debian:buster-slim
+
+# Set work directory
+WORKDIR /app
+
+# Update the system and install the Go language
+RUN apt-get update && apt-get install -y golang
+
+# Copy the local package files to the container's workspace.
+COPY . /app
+
+# Build the Go app
+RUN go build -o main .
+
+# Expose the application on port 8080
+EXPOSE 8080
+
+# Run the Go app
+ENTRYPOINT ["./main"]

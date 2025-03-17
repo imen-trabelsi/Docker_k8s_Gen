@@ -1,0 +1,63 @@
+{
+    "docker_info": {
+        "base_image": "node:12.22.12",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "4001"
+        ],
+        "user": [],
+        "labels": [
+            "version=\"2.0.0\"",
+            "description=\"This"
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD common/ /usr/src/common",
+            "COPY package.json /usr/src/common",
+            "WORKDIR /usr/src",
+            "ADD statscontroller/src /usr/src/statscontroller/src",
+            "WORKDIR /usr/src/statscontroller",
+            "COPY statscontroller/Gruntfile.js /usr/src/statscontroller/",
+            "COPY statscontroller/package.json /usr/src/statscontroller/"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"npm\",",
+                    "\"start\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p /usr/src/common",
+                "WORKDIR /usr/src/common"
+            ],
+            [
+                "npm install",
+                ""
+            ],
+            [
+                "mkdir -p /usr/src/statscontroller",
+                ""
+            ],
+            [
+                "npm install grunt-cli -g",
+                ""
+            ],
+            [
+                "mkdir -p /usr/src/statscontroller/src",
+                "WORKDIR /usr/src/statscontroller/src"
+            ],
+            [
+                "npm install",
+                ""
+            ]
+        ]
+    }
+}

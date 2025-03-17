@@ -1,0 +1,36 @@
+# This is an optimised Dockerfile based on the provided information
+
+FROM docker.elastic.co/elasticsearch/elasticsearch:${ELK_VERSION}
+
+# Update and install base packages
+RUN apt-get update && apt-get install -y \
+    apt-utils \
+    curl \
+    software-properties-common \
+
+# Copy .env and docker-compose.yml files
+COPY .env docker-compose.yml ./
+
+# Copy config folder
+COPY config ./config
+
+# Copy build.sbt and necessary scripts
+COPY build.sbt ./
+COPY scripts/logging_aggregator/dev/elasticsearch/Dockerfile ./scripts/logging_aggregator/dev/elasticsearch/Dockerfile
+
+# Expose necessary ports defined by user
+# NOTE: Replace "PORT_NUMBER" with the actual port numbers you want to expose 
+EXPOSE PORT_NUMBER 
+
+# Set environment variable ELK_VERSION
+ENV ELK_VERSION ${ELK_VERSION}
+
+# Set up and activate necessary Redis dependencies
+RUN bash -c "$(curl -s https://raw.githubusercontent.com/antirez/redis/unstable/utils/install_server.sh)"
+
+# Define the default command to run in the container
+# Specify the entrypoint with your actual entrypoint script
+ENTRYPOINT ["Your_entrypoint_script.sh"] 
+
+# Specify the command with your actual command
+CMD ["Your_command"]

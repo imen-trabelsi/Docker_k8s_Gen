@@ -1,0 +1,34 @@
+# Use the specified base image
+FROM ${BASE_IMAGE}
+
+# Meta data
+LABEL maintainer=jon@jaggersoft.com
+
+# Set environment variables
+ENV BASE_IMAGE=${BASE_IMAGE}
+ENV SHA=${COMMIT_SHA}
+
+# Set the user
+USER nobody
+
+# Set the workding directory
+WORKDIR /runner
+
+# First, copy over the important files to the container
+COPY . .
+
+# Create a system user and group, give them minimal permissions
+RUN addgroup -g 1001 app && \
+    adduser -D -G app -g 'app' -h /app -u 1001 app && \
+
+# Install needed dependencies
+RUN apk update && \
+
+# Expose required ports
+# EXPOSE <port> 
+
+# Configure the health check
+HEALTHCHECK --interval=1s --timeout=1s --retries=5 --start-period=5s CMD /runner/config/healthcheck.sh
+
+# Define the command to run
+ENTRYPOINT ["/sbin/tini", "-g", "--", "/runner/config/up.sh"]

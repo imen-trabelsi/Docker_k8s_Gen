@@ -1,0 +1,21 @@
+# Use the provided base image
+FROM eclipse-temurin:11
+
+# Set the working directory inside the Docker container
+WORKDIR /app
+
+# Copy generated JAR file to the container
+COPY *.jar /app.jar
+
+# Copy the script and provide executable permissions
+COPY wait-for-it.sh /wait-for-it.sh
+RUN bash -c 'chmod 777 /wait-for-it.sh'
+
+# Build a shell script to touch the app.jar to create a timestamp and then execute it
+RUN bash -c 'touch /app.jar'
+
+# Expose the application on port 9998
+EXPOSE 9998
+
+# Set the startup command to execute the jar
+CMD ["java", "-Dspring.profiles.active=docker", "-jar", "/app.jar"]

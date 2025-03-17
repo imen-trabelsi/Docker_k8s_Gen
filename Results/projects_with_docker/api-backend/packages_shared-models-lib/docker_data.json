@@ -1,0 +1,28 @@
+{
+    "docker_info": {
+        "base_image": "php:8.4-cli",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "apt-get update && apt-get upgrade -y",
+                "RUN apt-get install -y git libzip-dev"
+            ],
+            [
+                "docker-php-ext-install zip",
+                "RUN pecl install xdebug && docker-php-ext-enable xdebug"
+            ],
+            [
+                "curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer",
+                ""
+            ]
+        ]
+    }
+}

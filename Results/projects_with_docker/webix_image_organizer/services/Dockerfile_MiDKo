@@ -1,0 +1,25 @@
+#base image
+FROM jjanzic/docker-python3-opencv:opencv-4.0.1
+
+#environment variables
+ENV NAME insearch
+ENV FLASK_APP /app/server.py
+
+#working directory
+WORKDIR /app
+
+#copying requirements file to the working directory
+COPY requirements.txt /app
+
+#install dependencies
+RUN apt-get update && \
+    apt-get install -y tesseract-ocr tesseract-ocr-eng libdmtx-* && \
+
+#copying the current directory contents to the container
+COPY . /app
+
+#exposed port
+EXPOSE 5000
+
+#application run command
+CMD ["flask", "run", "--host=0.0.0.0"]

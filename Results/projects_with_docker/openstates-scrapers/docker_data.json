@@ -1,0 +1,86 @@
+{
+    "docker_info": {
+        "base_image": "python:3.9-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [
+            "maintainer=\"James"
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV PYTHONUNBUFFERED=1",
+            "ENV PYTHONDONTWRITEBYTECODE=1",
+            "ENV PYTHONIOENCODING='utf-8'",
+            "ENV LANG='C.UTF-8'",
+            "ENV PYTHONPATH=./scrapers",
+            "ENV OPENSSL_CONF=/opt/openstates/openstates/openssl.cnf"
+        ],
+        "copy_instructions": [
+            "ADD poetry.lock /opt/openstates/openstates/",
+            "ADD pyproject.toml /opt/openstates/openstates/",
+            "WORKDIR /opt/openstates/openstates/",
+            "ADD . /opt/openstates/openstates/",
+            "COPY docker_entrypoint.sh /opt/openstates/entrypoint.sh"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/bin/bash\",",
+                    "\"/opt/openstates/entrypoint.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update -qq \\",
+                "&& DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends",
+                "ca-certificates",
+                "curl",
+                "wget",
+                "unzip",
+                "mdbtools",
+                "libpq5",
+                "libgdal32",
+                "build-essential",
+                "git",
+                "libssl-dev",
+                "libffi-dev",
+                "freetds-dev",
+                "libxml2-dev",
+                "libxslt-dev",
+                "libyaml-dev",
+                "poppler-utils",
+                "libpq-dev",
+                "libgdal-dev",
+                "libgeos-dev",
+                "gnupg",
+                "&& curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg -o /usr/share/keyrings/githubcli-archive-keyring.gpg",
+                "&& chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg",
+                "&& echo \"deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main\" > /etc/apt/sources.list.d/github-cli.list",
+                "&& apt-get update -qq",
+                "&& DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends gh"
+            ],
+            [
+                "pip --no-cache-dir --disable-pip-version-check install wheel \\",
+                "&& pip --no-cache-dir --disable-pip-version-check install crcmod poetry"
+            ],
+            [
+                "poetry install --no-root",
+                ""
+            ],
+            [
+                "poetry install --no-root \\",
+                "&& rm -r /root/.cache/pypoetry/cache /root/.cache/pypoetry/artifacts/",
+                "&& apt-get remove -y -qq",
+                "build-essential",
+                "libpq-dev",
+                "&& apt-get autoremove -y -qq",
+                "&& apt-get clean",
+                "&& rm -rf /var/lib/apt/lists/*"
+            ]
+        ]
+    }
+}

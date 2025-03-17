@@ -1,0 +1,24 @@
+# Using the specified base image
+FROM abiosoft/caddy
+
+# Creating usr directory and setting it as working directory
+WORKDIR /usr
+
+# Add package.json and install dependencies
+COPY package.json package.json
+RUN npm install
+
+# Globally install pm2
+RUN npm install -g pm2
+
+# Copy entire project from local directory to Docker image
+COPY . .
+
+# Expose the necessary port
+EXPOSE 2015
+
+# Set the correct environment variables
+ENV NODE_ENV=production
+
+# Set the default command for the container
+CMD ["pm2-runtime", "start", "npm", "--", "start"]

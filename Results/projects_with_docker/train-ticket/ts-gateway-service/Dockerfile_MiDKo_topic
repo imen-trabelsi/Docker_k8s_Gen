@@ -1,0 +1,17 @@
+# Use base image from registry
+FROM java:8-jre
+
+# Needed to set timezone
+RUN apk add --no-cache tzdata
+
+# Setup timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' > /etc/timezone
+
+# Add necessary files
+COPY ./target/ts-gateway-service-1.0.jar /app/
+
+# Expose port 18888
+EXPOSE 18888
+
+# Set the startup command to execute the jar
+ENTRYPOINT ["java", "-Xmx1024m", "-jar", "/app/ts-gateway-service-1.0.jar"]

@@ -1,0 +1,50 @@
+# Use an official Maven runtime as a parent image
+FROM maven:3.6.3-openjdk-11 as build
+
+# Set the working directory in the image
+WORKDIR /app
+
+# Copy the pom.xml before the src/ to cache the dependencies,
+# It will only re-build if the pom.xml has changed
+COPY pom.xml .
+
+# Download all required dependencies into ./target/dependency
+RUN mvn dependency:go-offline
+
+# Copy the rest of the working dir contents into the image
+COPY src ./src
+
+# Build a single, runnable "fat" JAR with all the necessary dependencies
+RUN mvn clean compile test package
+
+# Use redislabs/redisearch:2.0.5 as base
+FROM redislabs/redisearch:2.0.5
+
+# Copy the necessary library files
+COPY --from=redisearch ${LD_LIBRARY_PATH}/redisearch.so ${LD_LIBRARY_PATH}/
+COPY --from=redisgraph ${LD_LIBRARY_PATH}/redisgraph.so ${LD_LIBRARY_PATH}/
+
+# Install redis dependencies
+RUN set -ex; \
+    apt-get update; \
+
+# Set Redis environment variables
+ENV LD_LIBRARY_PATH /usr/lib/redis/modules
+ENV REDISGRAPH_DEPS libgomp1
+
+# Set the working Directory to /data
+WORKDIR /data
+
+# Copy the jar file
+
+# Expose port 8080
+EXPOSE 8080
+
+# Entry point for Redis server
+ENTRYPOINT ["redis-server"]
+
+# Run the jar file from Spring Boot
+CMD ["java", "-jar", "app.jar"]
+
+# The above command could be replaced by Spring Boot's maven plugin
+# ENTRYPOINT ["./mvnw", "spring-boot:run"]

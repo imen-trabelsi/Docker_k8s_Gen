@@ -1,0 +1,40 @@
+# Set base image
+FROM @docker.account@/java-base
+
+# Labels
+LABEL maintainer="your email"
+
+# Create user 
+RUN useradd -u 1001 -g 0 -d '/var/opt/h2' -s '/sbin/nologin' h2
+
+# Set the working directory
+WORKDIR /app
+
+# Copy maven executable to the image
+COPY maven ./
+
+# Copy source code to the image
+COPY ./ ./
+
+# Build the application
+RUN mvn clean install -DskipTests
+
+# Set necessary environment variables needed for our image
+ENV JAVA_OPTS=""
+
+# Expose the port
+EXPOSE 3306
+
+# Run the jar file 
+ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -jar target/*.jar" ]
+
+# Health check
+HEALTHCHECK --interval=5m --timeout=3s CMD curl -f http://localhost:3306/health || exit 1
+
+# Copy H2 dependencies and set the required permissions
+RUN mkdir -p /var/opt/h2/data && chmod -R a+rw /var/opt/h2 && \
+mkdir -p /opt/h2 && chmod a+r /opt/h2 && \
+cd /opt/h2 && \
+
+# Set the correct entry point
+CMD ["entrypoint: /var/opt/h2/run-h2"]

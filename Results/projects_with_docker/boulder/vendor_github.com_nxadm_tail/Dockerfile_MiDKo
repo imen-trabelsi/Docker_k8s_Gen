@@ -1,0 +1,26 @@
+# Set golang as base image
+FROM golang
+
+# Set Environment variable
+ENV PATH $GOPATH/bin:$PATH
+
+# Create application directory
+RUN mkdir -p $GOPATH/src/github.com/nxadm/tail/
+
+# Copy all the files to the container
+COPY . $GOPATH/src/github.com/nxadm/tail/
+
+# Install dependencies
+WORKDIR $GOPATH/src/github.com/nxadm/tail/
+RUN go get -v github.com/nxadm/tail
+
+# Test and build the application
+RUN go test -v github.com/nxadm/tail
+RUN go install -v github.com/nxadm/tail
+
+# Install gotail
+RUN go install -v github.com/nxadm/tail/cmd/gotail
+RUN $GOPATH/bin/gotail -h || true
+
+# Start the application
+CMD ["gotail"]

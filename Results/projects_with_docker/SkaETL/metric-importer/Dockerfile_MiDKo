@@ -1,0 +1,36 @@
+# Use the provided base image
+FROM openjdk:8u151-jdk
+
+# Copy the pom.xml file and install dependencies 
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+# Copy your source code
+COPY src /src
+
+# Build the application
+RUN mvn package -DskipTests
+
+# Define environment variable
+ARG JAR_FILE
+
+# Add necessary files
+COPY startup.sh /usr/bin/startup.sh
+COPY target/${JAR_FILE} /usr/share/skalogs/metric-importer.jar
+
+# Define command
+CMD ["/usr/bin/startup.sh"]
+
+# expose the port 
+EXPOSE 8080
+
+# Labels
+LABEL maintainer="Spring Boot Developers"
+LABEL version="2.1"
+LABEL description="This Dockerfile will build a Spring Boot microservice."
+
+# Ensure all the files can be executed
+RUN chmod +x /usr/bin/startup.sh /usr/share/skalogs/metric-importer.jar
+
+# Set entry point 
+ENTRYPOINT ["java", "-jar", "/usr/share/skalogs/metric-importer.jar"]

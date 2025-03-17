@@ -1,0 +1,40 @@
+{
+    "docker_info": {
+        "base_image": "node:10.15.3-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV JAVA_CMD=\"node server.js\""
+        ],
+        "copy_instructions": [
+            "WORKDIR /usr/src/app",
+            "COPY package*.json ./",
+            "COPY . ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"node\",",
+                    "\"server.js\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && apt-get install netcat-openbsd -y",
+                ""
+            ],
+            [
+                "npm install --only=production",
+                ""
+            ]
+        ]
+    }
+}

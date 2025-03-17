@@ -1,0 +1,31 @@
+{
+    "docker_info": {
+        "base_image": "public.ecr.aws/docker/library/node:20-bookworm-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "ADD package.json yarn.lock ./",
+            "ADD . ./"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"true\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "yarn install --frozen-lockfile && yarn cache clean",
+                ""
+            ]
+        ]
+    }
+}

@@ -1,0 +1,29 @@
+# Stage 1: Build the application
+FROM mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim AS build-env
+
+# Set the working directory
+WORKDIR /src
+
+# Copy everything and restore as distinct layers
+COPY . .
+RUN dotnet restore "Endpoints/Domain/Elastic.csproj"
+
+# Change directory to microservice
+WORKDIR /src/src/Endpoints/Elastic
+
+# Build the project
+RUN dotnet build "Endpoints/Domain/Elastic.csproj" -c Release -o /app/build
+
+# Publish the project
+RUN dotnet publish "Endpoints/Domain/Elastic.csproj" -c Release -o /app/publish
+
+# Stage 2: Setup runtime container
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-bullseye-slim AS runtime
+
+# Set the working directory
+WORKDIR /app
+
+# Copy from build stage
+
+# Define the entrypoint of the container. This will be run when the container starts.
+ENTRYPOINT ["dotnet", "Elastic.dll"]

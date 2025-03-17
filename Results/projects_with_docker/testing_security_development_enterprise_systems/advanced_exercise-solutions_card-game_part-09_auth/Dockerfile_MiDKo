@@ -1,0 +1,19 @@
+# Base Image
+FROM adoptopenjdk/openjdk11:alpine
+
+# Copy pom.xml and install dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# Copy source code and build the project
+COPY . .
+RUN mvn clean package
+
+# Copy the built jar file
+COPY target/auth.jar .
+
+# Expose the appropriate port for external access
+EXPOSE 8080
+
+# Run command
+CMD ["java", "-jar", "auth.jar"]

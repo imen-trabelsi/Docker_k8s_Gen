@@ -1,0 +1,11 @@
+# Define the base image
+FROM docker.elastic.co/logstash/logstash:${ELASTIC_VERSION:-8.17.3}
+
+# Add current directory files to the container at the path "/usr/share/logstash/"
+COPY . /usr/share/logstash/
+
+# Set the working directory inside the container
+WORKDIR /usr/share/logstash/
+
+# Default command to run when the container starts
+CMD ["logstash"]

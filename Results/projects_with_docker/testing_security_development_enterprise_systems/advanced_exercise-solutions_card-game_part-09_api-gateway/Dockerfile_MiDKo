@@ -1,0 +1,21 @@
+# Specify the base image
+FROM adoptopenjdk/openjdk11:alpine
+
+# Create the working directory
+WORKDIR /app
+
+# Copy the pom.xml separately, this will allow Docker to cache our resolved
+# dependencies if there are no changes in this file. This will speed up the build
+COPY pom.xml .
+
+# Copy other source code files
+COPY src ./src
+
+# Copy jar file
+COPY target/api-gateway.jar .
+
+# Expose and bind application port
+EXPOSE 8080
+
+# Java command to execute JAR file
+CMD ["java", "-jar", "./api-gateway.jar"]

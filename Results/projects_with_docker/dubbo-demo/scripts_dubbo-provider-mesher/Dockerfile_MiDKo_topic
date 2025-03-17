@@ -1,0 +1,28 @@
+# Start with the base image specified by the user
+FROM ninokop/dubbo-demo-base
+
+# Add metadata to the image
+LABEL version="1.0"
+LABEL description="Spring Boot Microservice"
+
+# Set the working directory
+WORKDIR /app
+
+# Add all the necessary files to the docker container
+COPY . /app
+
+# Install dependencies using Maven
+RUN mvn clean install
+
+# Run necessary commands provided by the user
+RUN cd home/
+RUN mkdir /app
+
+# Copy the jar into the image
+COPY target/*.jar app.jar
+
+# Set the ENTRYPOINT to use bash
+ENTRYPOINT ["bash"]
+
+# Run the microservice when the container is started
+CMD ["app/mystart.sh"]

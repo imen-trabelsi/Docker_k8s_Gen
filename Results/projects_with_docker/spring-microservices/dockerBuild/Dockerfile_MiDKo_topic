@@ -1,0 +1,30 @@
+# Start with Base Image
+FROM maven:3.6-jdk-8-slim AS build
+
+# Set Work Directory
+WORKDIR /buildDir
+
+# Copy pom.xml and download dependencies
+COPY ./pom.xml /buildDir/
+RUN mvn dependency:go-offline -B
+
+# Copy Source Code
+COPY . /buildDir
+
+# Build Application
+RUN mvn package
+
+# Final Stage - Build Runtime Image
+FROM openjdk:8-jre-alpine
+
+# Create User for the Application
+RUN addgroup -S spring && adduser -S spring -G spring
+USER spring:spring
+
+# Copy Built Application from Previous Stage
+
+# Expose HTTP Port
+EXPOSE 8080
+
+# Run Application
+ENTRYPOINT ["java", "-jar", "/app.jar"]

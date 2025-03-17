@@ -1,0 +1,14 @@
+FROM nextcloud:fpm
+
+RUN apt-get update && apt-get install -y procps smbclient && rm -rf /var/lib/apt/lists/*
+
+COPY .config /var/www/html/config 
+COPY .examples /var/www/html/examples 
+
+RUN chown -R www-data:www-data /var/www/html && chmod 750 /var/www/html
+
+VOLUME /var/www/html
+
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["php-fpm"]
+

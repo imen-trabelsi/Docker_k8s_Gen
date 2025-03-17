@@ -1,0 +1,48 @@
+# Setting up build stage
+FROM rust:1.52 AS builder
+WORKDIR /app
+COPY . .
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates
+RUN curl https://mise.run | sh
+RUN  rm -rf /var/lib/apt/lists/*
+RUN eval "$(mise activate bash)"
+RUN mise install node
+RUN mise install npm:turbo
+RUN mise use --global yq
+RUN turbo prune --scope='@apps/hash-integration-worker' --docker
+COPY rust-toolchain.toml /usr/local/
+WORKDIR /usr/local/src/
+COPY --from=base /app/out/json/ .
+COPY --from=base /app/out/yarn.lock ./yarn.lock
+COPY --from=base /app/out/full/.yarn .yarn
+COPY --from=base /app/out/full/turbo.json turbo.json
+COPY --from=base /app/out/full/ .
+WORKDIR /usr/local/src/apps/hash-integration-worker
+RUN mise use --global yq
+RUN mise use --global rust[profile=minimal]@$(yq '.toolchain.channel' rust-toolchain.toml)
+RUN rm rust-toolchain.toml
+RUN apt-get update && apt-get install -y --no-install-recommends build-essential 
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN mise install node npm:turbo java biome npm:@redocly/cli cargo-binstall cargo:wasm-pack cargo:wasm-opt
+RUN yarn install --immutable
+RUN yarn cache clean
+RUN turbo build --filter '@apps/hash-integration-worker' --env-mode=loose
+
+# Setting up runtime and copying build artifacts from the build stage
+FROM rust:1.52 
+WORKDIR /app
+RUN groupadd --system --gid 60000 hash && useradd --system integrationworker -G hash && mkdir -p /log /home/integrationworker
+ENV MISE_DATA_DIR="/mise"
+ENV MISE_CACHE_DIR="/mise/cache"
+ENV MISE_INSTALL_PATH="/usr/local/bin/mise"
+ENV MISE_VERBOSE=1
+ENV PATH="/mise/shims:$PATH"
+ENV MISE_CARGO_HOME="/usr/local/cargo" 
+ENV COREPACK_HOME=/usr/local/src/var/corepack-cache
+ENV NODE_ENV=production
+COPY .config/mise /etc/mise
+USER integrationworker:hash
+EXPOSE 4300
+HEALTHCHECK --interval=5s --timeout=3s --start-period=10s --retries=3 CMD curl -f http://localhost:4300/health || exit 1
+ENTRYPOINT ["yarn"]
+CMD ["start"]

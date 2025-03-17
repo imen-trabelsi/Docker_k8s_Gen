@@ -1,0 +1,29 @@
+{
+    "docker_info": {
+        "base_image": "openlmis/awscli",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY start-instance.sh /start-instance.sh"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "/start-instance.sh"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "chmod u+x /start-instance.sh",
+                ""
+            ]
+        ]
+    }
+}

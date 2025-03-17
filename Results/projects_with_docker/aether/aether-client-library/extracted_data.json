@@ -1,0 +1,30 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "setup.py": "#!/usr/bin/env python\n\n# Copyright (C) 2023 by eHealth Africa : http://www.eHealthAfrica.org\n#\n# See the NOTICE file distributed with this work for additional information\n# regarding copyright ownership.\n#\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this file except in compliance with\n# the License.  You may obtain a copy of the License at\n#\n#   http://www.apache.org/licenses/LICENSE-2.0\n#\n# Unless required by applicable law or agreed to in writing,\n# software distributed under the License is distributed on an\n# \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY\n# KIND, either express or implied.  See the License for the\n# specific language governing permissions and limitations\n# under the License.\n\nfrom io import open\nfrom setuptools import find_namespace_packages, setup\n\n\ndef read(f):\n    return open(f, 'r', encoding='utf-8').read()\n\n\nsetup(\n    version=read('/var/tmp/VERSION').strip(),\n    name='aether.client',\n    description='A python library with Aether Client functionality',\n    long_description=read('README.md'),\n    long_description_content_type='text/markdown',\n\n    url='https://github.com/eHealthAfrica/aether/',\n    author='eHealth Africa',\n    author_email='aether@ehealthafrica.org',\n    license='Apache2 License',\n\n    python_requires='>=3.6',\n    install_requires=[\n        'bravado',\n        'jsonschema[format]<4',\n        'requests[security]',\n        'requests_oauthlib'\n    ],\n\n    packages=find_namespace_packages(),\n    include_package_data=True,\n    classifiers=[\n        'Development Status :: 5 - Production/Stable',\n        'Intended Audience :: Developers',\n        'License :: OSI Approved :: Apache Software License',\n        'Natural Language :: English',\n        'Operating System :: OS Independent',\n        'Programming Language :: Python :: 3 :: Only',\n        'Topic :: Software Development :: Libraries :: Python Modules',\n    ],\n)\n"
+        },
+        "database": null,
+        "build_system": "setuptools",
+        "config_files": {
+            "aether-client-library/docker-compose.yml": "services:\n  client:\n    image: aether-client\n    build: .\n    volumes:\n      - .:/code\n    command: build\n",
+            "aether-client-library/Dockerfile": "FROM python:3.10-slim\n\nARG VERSION=0.0.0\n\nWORKDIR /code\n\nCOPY ./conf/pip /code/conf/pip\n\nENV VIRTUAL_ENV=/var/run/aether/venv\nENV PATH=\"$VIRTUAL_ENV/bin:$PATH\"\n\nRUN apt-get update -qq > /dev/null && \\\n    apt-get -qq \\\n        --yes \\\n        --allow-downgrades \\\n        --allow-remove-essential \\\n        --allow-change-held-packages \\\n        install gcc libssl-dev > /dev/null && \\\n    mkdir -p $VIRTUAL_ENV && \\\n    python3 -m venv $VIRTUAL_ENV && \\\n    pip install -q --upgrade pip && \\\n    pip install -q -r /code/conf/pip/requirements.txt && \\\n    mkdir -p /var/tmp && \\\n    echo $VERSION > /var/tmp/VERSION\n\nCOPY ./ /code\n\nENTRYPOINT [\"/code/entrypoint.sh\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            "Dockerfile",
+            "entrypoint.sh",
+            "manage.py",
+            "setup.cfg",
+            "setup.py"
+        ],
+        "folders": [
+            "aether",
+            "conf"
+        ]
+    }
+}

@@ -1,0 +1,40 @@
+# Use the specified base image
+FROM elixir:1.8-alpine
+
+# Create directories for the application
+WORKDIR /builder
+
+# Copy the source code and static files into the Docker image
+COPY interop-proxy/mix.exs .
+COPY interop-proxy .
+COPY common/messages lib/messages
+
+# Install hex and rebar
+RUN mix local.hex --force && mix local.rebar --force
+
+# Set the MIX_ENV environment variable to prod and set LANG variable
+ENV MIX_ENV=prod
+ENV LANG="C.UTF-8"
+
+# Get dependencies and compile the application
+RUN mix deps.get && mix deps.compile
+RUN mix compile && mix deps.clean mime --build && mix release
+
+# Copy the release file to the output directory
+RUN cp _build/prod/rel/interop_proxy/releases/*/interop_proxy.tar.gz .
+
+# Modify the working directory to /app
+WORKDIR /app
+
+# Copy the release file from the builder
+COPY --from=builder /builder/interop_proxy.tar.gz .
+
+# Install and clean up necessary packages
+RUN apk --no-cache add bash libssl1.1 && \
+    tar -xzf interop_proxy.tar.gz && \
+
+# Expose the necessary port
+EXPOSE 8000
+
+# Configure Docker to execute these commands when we run the image
+CMD ["/app/bin/interop_proxy", "foreground"]

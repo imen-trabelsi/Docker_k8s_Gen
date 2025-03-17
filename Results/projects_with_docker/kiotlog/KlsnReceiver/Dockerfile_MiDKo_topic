@@ -1,0 +1,28 @@
+# Use the image provided by the user as the base image
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-env
+
+# Set the work directory
+WORKDIR /Sln
+
+# Copy everything into the work directory
+COPY . .
+
+# Set the work directory to the specified path
+WORKDIR /Sln/KlsnReceiver
+
+# Restore the necessary dependencies
+RUN dotnet restore
+
+# Publish the application
+RUN dotnet publish -c Release -r linux-x64 -o out
+
+# Start a new stage of build
+FROM mcr.microsoft.com/dotnet/sdk:5.0
+
+# Set the work directory
+WORKDIR /App
+
+# Copy the files from the previous stage into the work directory
+
+# Set the entry point
+ENTRYPOINT ["/App/KlsnReceiver"]

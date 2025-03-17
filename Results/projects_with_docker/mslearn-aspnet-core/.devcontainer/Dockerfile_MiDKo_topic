@@ -1,0 +1,28 @@
+# Download base image
+FROM mcr.microsoft.com/vscode/devcontainers/dotnet:0-${VARIANT} AS base
+
+# Build arguments
+ARG VARIANT="6.0-bullseye-slim"
+ARG NODE_VERSION="none"
+
+# Set up environment variables
+ENV PATH /app:$PATH
+
+# Set working directory
+WORKDIR /app
+
+# Copy files and config
+COPY . . 
+COPY ./.devcontainer/Dockerfile ./
+
+# Check for a specific node version If one exists , execute some command
+RUN if [ "${NODE_VERSION}" != "none" ]; then su vscode -c "umask 0002 && . /usr/local/share/nvm/nvm.sh && nvm install ${NODE_VERSION} 2>&1"; fi
+
+# Download and install dependencies
+RUN yarn install --production
+
+# Expose ports
+EXPOSE 8080 
+
+# Start Application
+CMD ["yarn", "start"]

@@ -1,0 +1,30 @@
+# Create image based on the specified base image
+FROM caddy:2-alpine
+
+# Change the working directory in the image
+WORKDIR /usr/src/app
+
+# Copy package.json into the container
+COPY package.json ./
+
+# Install project dependencies
+RUN npm install
+
+# Copy all the contents of the current directory into the container
+COPY . .
+
+# Maintain Caddy's default behaviour
+COPY Caddyfile /etc/caddy/Caddyfile
+COPY /dist /usr/share/caddy/dist
+
+# Add health check
+HEALTHCHECK CMD curl --fail http://localhost || exit 1
+
+# Expose the port
+EXPOSE 80
+
+# Set environment variable
+ENV NODE_ENV production
+
+# Start the application
+CMD ["npm", "start"]

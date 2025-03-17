@@ -1,0 +1,14 @@
+# start with the base image specified by the user
+FROM mono:3.10 
+
+# copy the server executable to the container
+COPY ./server.exe ./server.exe
+
+# Expose the necessary port
+EXPOSE 9090
+
+# specify the entrypoint command and arguments
+ENTRYPOINT ["mono", "./server.exe"]
+
+# specify the cmd command and arguments
+CMD ["/standalone"]

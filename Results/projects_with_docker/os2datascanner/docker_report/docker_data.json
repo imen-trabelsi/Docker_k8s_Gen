@@ -1,0 +1,98 @@
+{
+    "docker_info": {
+        "base_image": "node:14",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "5000"
+        ],
+        "user": [
+            "os2ds_report:os2ds_report"
+        ],
+        "labels": [
+            "org.opencontainers.image.title=\"OS2datascanner"
+        ],
+        "health_checks": [],
+        "build_args": [
+            "SUPERCRONIC_VERSION=v0.1.12",
+            "SUPERCRONIC_SHA1SUM=048b95b48b708983effb2e5c935a1ef8483d9e3e"
+        ],
+        "envs": [
+            "ENV PYTHONUNBUFFERED=1 \\"
+        ],
+        "copy_instructions": [
+            "WORKDIR /code/src/os2datascanner/projects/report/reportapp",
+            "COPY src/os2datascanner/projects/report/reportapp/package.json .",
+            "COPY src/os2datascanner/projects/report/reportapp/package-lock.json .",
+            "COPY src/os2datascanner/projects/report/reportapp/postcss.config.js .",
+            "COPY src/os2datascanner/projects/report/reportapp/webpack.dev.js .",
+            "COPY src/os2datascanner/projects/report/reportapp/webpack.prod.js .",
+            "COPY src/os2datascanner/projects/report/reportapp/static/src ./static/src",
+            "COPY src/os2datascanner/projects/report/reportapp/static/3rdparty ./static/3rdparty",
+            "WORKDIR /code/requirements/sys-requirements",
+            "COPY requirements/sys-requirements/sys-requirements-common.txt \\",
+            "WORKDIR /code/requirements/python-requirements",
+            "COPY requirements/python-requirements/requirements-report.txt \\",
+            "WORKDIR /code/docker/",
+            "COPY docker/report/crontab ./crontab",
+            "COPY docker/report/docker-settings.toml ./docker-settings.toml",
+            "COPY docker/docker-entrypoint-django.sh ./docker-entrypoint.sh",
+            "COPY docker/gunicorn-settings.py ./gunicorn-settings.py",
+            "WORKDIR /code/src/os2datascanner",
+            "COPY src/os2datascanner/projects/report ./projects/report",
+            "COPY src/os2datascanner/projects/__init__.py ./projects/",
+            "COPY src/os2datascanner/projects/django_toml_configuration.py ./projects/",
+            "COPY src/os2datascanner/utils ./utils",
+            "COPY src/os2datascanner/__init__.py ./",
+            "COPY src/os2datascanner/engine2 ./engine2",
+            "WORKDIR /code",
+            "COPY VERSION ./",
+            "COPY LICENSE ./",
+            "COPY README.rst ./",
+            "COPY NEWS.rst ./",
+            "WORKDIR /code/src/os2datascanner/projects/report/reportapp/static",
+            "COPY --from=frontend /code/src/os2datascanner/projects/report/reportapp/static/dist ./dist",
+            "WORKDIR /code/src/os2datascanner/projects/report"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"npm\",",
+                    "\"run\",",
+                    "\"dev\"]"
+                ]
+            },
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/code/docker/docker-entrypoint.sh\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"gunicorn\",",
+                    "\\"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "npm ci",
+                ""
+            ],
+            [
+                "npm run prod",
+                ""
+            ],
+            [
+                "set -ex \\",
+                "# Add an application specific group and user."
+            ],
+            [
+                "find requirements*.txt -print0 | xargs -0 -n1 pip install -r",
+                ""
+            ]
+        ]
+    }
+}

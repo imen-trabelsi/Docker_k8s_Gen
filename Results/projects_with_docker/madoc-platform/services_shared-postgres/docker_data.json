@@ -1,0 +1,33 @@
+{
+    "docker_info": {
+        "base_image": "library/postgres:12-bullseye",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV TASKS_API_PASSWORD=tasks_api_password",
+            "ENV MODEL_API_PASSWORD=model_api_password"
+        ],
+        "copy_instructions": [
+            "COPY ./entrypoint.sh /entrypoint.sh"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/entrypoint.sh\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"postgres\"]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

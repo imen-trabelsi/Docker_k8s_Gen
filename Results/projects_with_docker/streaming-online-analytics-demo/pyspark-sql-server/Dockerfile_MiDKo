@@ -1,0 +1,26 @@
+FROM docker.io/radanalyticsio/openshift-spark
+
+# Set the working directory
+WORKDIR /opt
+
+# Set the environment variable
+ENV SPARK_MASTER_URL local[*]
+
+# Installing necessary packages
+USER root
+RUN yum install python-pip -y
+RUN pip install -r requirements.txt
+
+# Change to user 1001
+USER 1001
+
+# Copying necessary files
+COPY ./spark-sql.py /opt
+COPY ./requirements.txt /opt
+COPY ./entrypoint.sh /opt
+
+# Expose the necessary port
+EXPOSE 8080
+
+# Set the entry point
+ENTRYPOINT ["./entrypoint.sh"]

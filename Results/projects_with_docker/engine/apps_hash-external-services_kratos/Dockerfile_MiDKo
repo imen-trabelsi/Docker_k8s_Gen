@@ -1,0 +1,32 @@
+# Set base Image
+FROM oryd/kratos:v1.2.0
+
+# Set Workdir
+WORKDIR /apps/hash-external-services
+
+# Copy instructions
+COPY ./templates /etc/config/kratos/templates
+COPY ./hooks /etc/config/kratos/hooks
+COPY ./identity.schema.json /etc/config/kratos/
+COPY kratos.$ENV.yml /etc/config/kratos/kratos.$ENV.yml
+ADD https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem /home/ory/.postgresql/root.crt
+
+# Run Commands
+RUN apk add --no-cache yq=~4 && \
+    mkdir -p /etc/config/kratos && \
+    mkdir -p /home/ory/.postgresql && \
+    yq -i '.selfservice.flows.registration.after.password.hooks[0].config.auth.config.value |= strenv(API_SECRET)' /etc/config/kratos/kratos.$ENV.yml && \
+    yq -i '.selfservice.flows.registration.after.password.hooks[0].config.url |= strenv(API_CALLBACK_URL)' /etc/config/kratos/kratos.$ENV.yml && \
+    ln -s /etc/config/kratos/kratos.$ENV.yml /etc/config/kratos/kratos.yml && \
+    chown -R ory:ory /home/ory && \
+
+# Environment variables
+ENV ENV=$ENV
+ENV API_SECRET=$API_SECRET
+ENV API_CALLBACK_URL=$API_CALLBACK_URL
+
+# User
+USER ory
+
+# CMD instructions
+CMD ["kratos", "-c", "/etc/config/kratos/kratos.yml", "serve", "--watch-courier"]

@@ -1,0 +1,29 @@
+# Use the Base Image
+FROM adoptopenjdk/openjdk11:alpine
+
+# Install maven
+RUN apk add --no-cache curl tar bash
+ARG MAVEN_VERSION=3.6.1
+ARG USER_HOME_DIR="/root"
+RUN mkdir -p /usr/share/maven \
+  && curl -fsSL https://apache.osuosl.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz \
+    | tar -xzC /usr/share/maven --strip-components=1 \
+ENV MAVEN_HOME /usr/share/maven
+ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
+
+# Copy pom.xml and source code
+COPY pom.xml /app/
+COPY src /app/src/
+
+# Build the application
+WORKDIR /app
+RUN mvn package
+
+# Copy the executable jar file from the builder image
+COPY target/quizgame-exec.jar .
+
+# Expose the port the app runs in
+EXPOSE 8080
+
+# Command to run the executable
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "quizgame-exec.jar"]

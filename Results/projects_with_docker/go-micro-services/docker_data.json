@@ -1,0 +1,22 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.19.4",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY . /go/src/github.com/harlow/go-micro-services",
+            "WORKDIR /go/src/github.com/harlow/go-micro-services"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "go install -ldflags=\"-s -w\" ./cmd/..."
+            ]
+        ]
+    }
+}

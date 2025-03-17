@@ -1,0 +1,42 @@
+# Use the specified base image
+FROM hexpm/elixir:1.15.7-erlang-25.3.2.7-debian-bullseye-20231009-slim AS builder
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the necessary files
+COPY mix.exs mix.lock ./
+COPY . .
+
+# Set Environment to production
+ENV MIX_ENV=$BUILD_ENV
+ENV LANG=C.UTF-8
+
+# Install the necessary dependencies
+RUN apt-get update --allow-releaseinfo-change -y \
+    && apt-get install -y build-essential git \
+    && apt-get clean \
+    && rm -f /var/lib/apt/lists/*_* \
+    && mix local.hex --force \
+    && mix local.rebar --force \
+
+# Run Elixir commands
+RUN mix do deps.get, deps.compile
+RUN mix do compile, release
+
+FROM debian:bullseye-slim
+RUN apt-get -qq update \
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the output of the previous build stage
+
+# Copy the run_export script
+COPY ./run_export.sh /app/
+
+# Set execution permissions
+RUN chmod +x by /app/run_export.sh
+
+# Set the entrypoint to the script
+CMD ["sh","/app/run_export.sh"]

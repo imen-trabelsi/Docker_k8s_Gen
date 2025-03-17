@@ -1,0 +1,44 @@
+# Use base image and user-provided inputs.
+FROM golang:dev as builder
+
+# Set environment variable
+ENV SRVDIR=user
+ENV SRVNAME=${SRVDIR}Server
+ENV GO111MODULE=on
+
+# Switch to work directory
+WORKDIR /go/src/goTemp
+
+# Copy go dependency management files
+COPY ./go.mod ./go.sum ./
+
+# Download dependencies
+RUN go mod download
+
+# Copy other directories
+COPY ./globalerrors ./globalerrors
+COPY ./globalUtils ./globalUtils
+COPY ./globalMonitoring ./globalMonitoring
+
+# Copy server
+COPY ./$SRVDIR ./$SRVDIR
+
+# Build server executable
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o $SRVNAME ./$SRVDIR/server/
+
+# Use alpine as base image for final stage
+FROM alpine:latest
+
+# Install ca-certificates
+RUN apk --no-cache add ca-certificates
+
+# Set working directory to '/goTemp'
+WORKDIR /goTemp
+
+# Copy server executable from builder
+
+# Expose port 2112
+EXPOSE 2112
+
+# Command to run the service
+CMD ["./$SRVNAME"]

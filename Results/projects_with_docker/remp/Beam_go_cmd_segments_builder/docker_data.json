@@ -1,0 +1,42 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.22",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /go/src/gitlab.com/remp/remp/Beam/go",
+            "COPY build /usr/local/bin/"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"build\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "go install golang.org/x/tools/cmd/goimports@latest",
+                ""
+            ],
+            [
+                "mkdir -p /src/build",
+                ""
+            ],
+            [
+                "mkdir -p /go/src/gitlab.com/remp/remp/Beam/go",
+                ""
+            ],
+            [
+                "chmod +x /usr/local/bin/build",
+                ""
+            ]
+        ]
+    }
+}

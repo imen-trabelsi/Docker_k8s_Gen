@@ -1,0 +1,19 @@
+# Use of variable for Elastic version to support different builds
+ARG ELASTIC_VERSION=8.17.3
+
+# Set base image
+FROM docker.elastic.co/beats/filebeat:${ELASTIC_VERSION}
+
+# Copy necessary files
+COPY . .
+
+# Here, include any necessary RUN commands to install dependencies
+
+# Set any necessary environment variables
+
+# Expose necessary ports 
+
+# Set the entry point or command
+# ENTRYPOINT [ "" ]
+# or
+# CMD [ "" ]

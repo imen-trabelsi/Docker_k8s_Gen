@@ -1,0 +1,41 @@
+# Start with a base image containing Java runtime
+FROM openjdk:8-jdk-alpine
+
+# Add Maintainer Info
+LABEL maintainer="author=Vijayendra"
+
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
+
+# The application's jar file
+ARG JAR_FILE=target/*.jar
+
+# Add the application's jar to the container
+COPY ${JAR_FILE} app.jar
+
+# Add the maven pom.xml (assumes your pom.xml is in the same directory as your Dockerfile)
+COPY pom.xml /pom.xml
+
+# Install maven
+RUN apk update
+RUN apk add maven
+
+# Run maven dependency:go-offline
+RUN mvn -B org.apache.maven.plugins:maven-dependency-plugin:go-offline -f /pom.xml
+
+# Create a directory in the container at /usr/src/app
+WORKDIR /usr/src/app
+
+# Copy the project's package.json and entire project tree to the WORKDIR
+COPY package.json /usr/src/app
+COPY . /usr/src/app
+
+# Install project dependencies
+RUN npm install -g @angular/cli@6.0.8
+RUN npm install
+
+#Expose port 4200
+EXPOSE 4200
+
+# Run the jar file 
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]

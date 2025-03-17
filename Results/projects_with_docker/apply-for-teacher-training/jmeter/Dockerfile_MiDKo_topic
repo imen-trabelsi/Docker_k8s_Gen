@@ -1,0 +1,51 @@
+# Start from a base image
+FROM ruby:2.7.5-alpine3.15
+LABEL maintainer="<your-email>"
+
+# Define environment variables
+ENV JMETER_VERSION="5.4.3"
+ENV JMETER_MIRROR https://downloads.apache.org/jmeter/binaries
+ENV JMETER_PATH /opt/apache-jmeter-${JMETER_VERSION}
+ENV JMETER_TARGET_BASEURL=
+ENV JMETER_TARGET_PLAN=
+ENV JMETER_WAIT_FACTOR=
+
+# Update and install dependencies
+RUN apk -U upgrade \
+    && apk add --update --no-cache $BUILD_DEPS tzdata libxml2 libxslt curl unzip \
+    && echo "Europe/London" > /etc/timezone \
+    && cp /usr/share/zoneinfo/Europe/London /etc/localtime \
+
+# Download and configure JMeter
+RUN cd /opt \
+    && curl -o apache-jmeter-${JMETER_VERSION}.tgz ${JMETER_MIRROR}/apache-jmeter-${JMETER_VERSION}.tgz \
+    && curl -o apache-jmeter-${JMETER_VERSION}.tgz.sha512 ${JMETER_MIRROR}/apache-jmeter-${JMETER_VERSION}.tgz.sha512 \
+    && sha512sum -c apache-jmeter-${JMETER_VERSION}.tgz.sha512 \
+    && tar xzf apache-jmeter-${JMETER_VERSION}.tgz \
+
+# Add JMeter plugins
+RUN cd ${JMETER_PATH} \
+    && curl -o jmeter-prometheus.zip https://jmeter-plugins.org/files/packages/jmeter-prometheus-0.6.0.zip \
+    && unzip jmeter-prometheus.zip \
+    && curl -o jmeter-json.zip https://jmeter-plugins.org/files/packages/jpgc-json-2.7.zip \
+
+# Install Ruby dependencies
+RUN mkdir /app && cd /app && bundle install
+
+# Copy application file
+WORKDIR /app
+COPY Gemfile Gemfile.lock ./
+COPY plans/ plans/
+COPY *.csv ./
+COPY add_prometheus_xml.rb ./
+COPY log4j2.xml /opt/apache-jmeter-5.4.3/bin/log4j2.xml
+COPY run.sh ./
+
+# Change permissions
+RUN chmod +x ./run.sh
+
+# Expose the appropriate port
+EXPOSE 8080
+
+# Set the entry point and the command to be executed
+CMD [ "ash", "./run.sh" ]

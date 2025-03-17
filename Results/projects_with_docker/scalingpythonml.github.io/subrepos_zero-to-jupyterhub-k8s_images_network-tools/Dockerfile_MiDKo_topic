@@ -1,0 +1,36 @@
+# Choose Base Image
+FROM ruby:2.6.6-alpine3.13 as builder
+
+# Update Repository & Install Ruby and Postgres Client Libraries
+RUN apk update && apk upgrade && \
+
+# Set Working Directory
+WORKDIR /app
+
+# Copy Gemfile & Bundle Install The Required Gems
+COPY ./Gemfile Gemfile.lock /app/
+RUN bundle config set without 'development test' && bundle install --jobs 2
+
+# Copy The Current App To The Working Directory Inside The Docker Image
+COPY . .
+
+# Consolidate Assets
+RUN rails assets:precompile RAILS_ENV=production
+
+# Start from a leaner image.
+FROM ruby:2.6.6-alpine3.13
+
+# Copy Relevant Files From Builder Image
+
+# Expose Necessary Service Ports
+EXPOSE 3000
+
+# Provide Necessary Environment Variables
+ENV DB_NAME=postgres \
+    DB_PASSWORD=postgres \
+    DB_HOST=db \
+    DB_PORT=5432 \
+    RAILS_LOG_TO_STDOUT=true \
+
+# Entry Point & Run Command
+CMD ["bundle","exec","puma","-C","config/puma.rb"]

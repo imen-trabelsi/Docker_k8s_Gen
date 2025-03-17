@@ -1,0 +1,19 @@
+{
+    "docker_info": {
+        "base_image": "fluent/fluentd:v0.12-debian",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "[\"gem\", \"install\", \"fluent-plugin-elasticsearch\", \"--no-rdoc\", \"--no-ri\", \"--version\", \"1.9.2\"]"
+            ]
+        ]
+    }
+}

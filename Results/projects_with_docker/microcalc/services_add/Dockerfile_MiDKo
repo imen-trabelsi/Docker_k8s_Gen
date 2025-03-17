@@ -1,0 +1,28 @@
+# Setting up the base image
+FROM node:10-alpine
+
+# Set the working directory in the Docker image filesystem
+WORKDIR /app
+
+# Run commands to create app directory and set the current user
+RUN mkdir /app && chown node:node /app
+USER node
+
+# Copying the package.json and package-locks.json to the filesystem of the container
+COPY package.json package-lock.json /app/
+
+# Install all the dependencies
+RUN npm install
+
+# Copying the source code of the app to the filesystem of the container
+COPY . /app
+
+# Setting up the environment variables
+ENV APP_PORT=3000
+ENV NODE_ENV=production
+
+# Expose the port in which the app will be running
+EXPOSE ${APP_PORT}
+
+# Command to run the application
+CMD ["npm", "start"]

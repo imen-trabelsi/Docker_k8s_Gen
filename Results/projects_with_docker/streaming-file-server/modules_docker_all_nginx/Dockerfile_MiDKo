@@ -1,0 +1,37 @@
+#Use a base image
+FROM nginx:1.17.6-alpine AS builder
+
+#Set the maintainer
+LABEL MAINTAINER='Maksim'
+
+# Set the working directory in the image
+WORKDIR /app
+
+# Copy the Maven pom.xml (Java project object model) file to the workdir
+COPY pom.xml .
+
+# Copy the configuration files
+COPY .env modules/docker/all/docker-compose.yml modules/docker/all/nginx/Dockerfile /app/
+
+# Use Maven to build the application
+RUN apk add maven && mvn package
+
+# Copy the application jar file
+COPY target/*.jar /app
+
+# Set the environment variables
+ENV DATABASE_URL=jdbc:postgresql://localhost:5432/mydatabasename
+ENV DATABASE_USER=mydatabaseuser
+ENV DATABASE_PASSWORD=mydatabasepassword
+
+# Expose necessary ports
+EXPOSE 8080
+
+# Set healthcheck command
+HEALTHCHECK --interval=5m --timeout=3s --retries=33 CMD curl -f http://localhost:8080/health || exit 1
+
+# Copy in any necessary configs
+COPY ./default.conf /etc/nginx/conf.d/default.conf
+
+# Run the application
+ENTRYPOINT ["java", "-jar", "/app/myapplication.jar"]

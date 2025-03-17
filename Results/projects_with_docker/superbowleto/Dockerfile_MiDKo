@@ -1,0 +1,25 @@
+# Start with the base image specified by the user
+FROM 697525377503.dkr.ecr.us-east-1.amazonaws.com/pay-docker-base-images:pagarme-node8.9
+
+# Create application directory
+WORKDIR /superbowleto
+
+# Install app dependencies by copying package files and running npm install
+COPY package.json package-lock.json /superbowleto/
+RUN npm install
+
+# Bundle app source
+COPY . /superbowleto
+
+# PostgreSQL database env vars
+# Set them as needed
+# ENV POSTGRES_USER=postgres_user
+# ENV POSTGRES_PASSWORD=postgres_password
+# ENV POSTGRES_DB=postgres_database
+# ENV POSTGRES_HOST=postgres_host
+
+# Expose port 3000 for the application
+EXPOSE 3000
+
+# Default command to run the app
+CMD [ "npm", "start" ]

@@ -1,0 +1,30 @@
+# Use sebp/elk:701 as a base image
+FROM sebp/elk:701
+
+# Set work directory
+WORKDIR ${ES_HOME}
+
+# Set environment variables
+ENV ES_HOME /opt/elasticsearch
+ENV PATH $ES_HOME/bin:$PATH
+
+# Copy package.json and install dependencies via npm
+COPY package.json* ./
+
+RUN apk add --no-cache --virtual .build-deps alpine-sdk python \
+    && npm install \
+
+# Copy the rest of the application code to the WORKDIR
+COPY . .
+
+# Install Elasticsearch plugins
+RUN yes | CONF_DIR=/etc/elasticsearch gosu elasticsearch bin/elasticsearch-plugin \
+install -b analysis-smartcn \
+&& yes | CONF_DIR=/etc/elasticsearch gosu elasticsearch bin/elasticsearch-plugin \
+
+# Expose ports
+# Replace these with the actual ports to be exposed
+EXPOSE 9200 9300
+
+# Define the command that will be executed when Docker container starts
+CMD ["node", "server.js"]

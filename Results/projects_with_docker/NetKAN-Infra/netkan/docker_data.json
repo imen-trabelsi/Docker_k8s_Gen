@@ -1,0 +1,86 @@
+{
+    "docker_info": {
+        "base_image": "ubuntu:24.04",
+        "multi_stage_build": true,
+        "exposed_ports": [],
+        "user": [
+            "netkan",
+            "root",
+            "root",
+            "netkan"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV DEBIAN_FRONTEND=noninteractive",
+            "ENV PATH=\"$PATH:/home/netkan/.local/bin\"",
+            "ENV PYTHONPATH=/home/netkan/.local/lib/python3.12/site-packages"
+        ],
+        "copy_instructions": [
+            "COPY . /netkan",
+            "WORKDIR /netkan",
+            "COPY --from=base /home/netkan/.local /home/netkan/.local",
+            "COPY .gitconfig .",
+            "COPY . /netkan",
+            "WORKDIR /netkan",
+            "ADD . /netkan"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"--help\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update \\",
+                "&& apt-get install -y --no-install-recommends",
+                "git libffi-dev openssh-client",
+                "python3 python-is-python3 ca-certificates curl &&",
+                "apt-get clean &&",
+                "curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py &&",
+                "rm /usr/lib/python3.12/EXTERNALLY-MANAGED &&",
+                "python3 get-pip.py --no-input && rm get-pip.py"
+            ],
+            [
+                "groupmod -n 'netkan' 'ubuntu' && \\",
+                "usermod -l 'netkan' -d /home/netkan -m ubuntu"
+            ],
+            [
+                "chown -R netkan:netkan /netkan",
+                "USER netkan"
+            ],
+            [
+                "pip install --user . --no-warn-script-location",
+                ""
+            ],
+            [
+                "chown -R netkan:netkan /home/netkan",
+                "WORKDIR /home/netkan"
+            ],
+            [
+                "/home/netkan/.local/bin/netkan --help",
+                "ENTRYPOINT [\"/home/netkan/.local/bin/netkan\"]"
+            ],
+            [
+                "chown -R netkan:netkan /netkan",
+                "USER netkan"
+            ],
+            [
+                "pip install --user .[test]",
+                "RUN /home/netkan/.local/bin/pytest -v"
+            ],
+            [
+                "chown -R netkan:netkan /netkan",
+                "COPY run_dev.sh /usr/local/bin/"
+            ],
+            [
+                "pip install --user /netkan/.[development]",
+                "ENTRYPOINT [\"/usr/local/bin/run_dev.sh\"]"
+            ]
+        ]
+    }
+}

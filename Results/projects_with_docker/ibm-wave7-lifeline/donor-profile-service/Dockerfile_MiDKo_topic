@@ -1,0 +1,14 @@
+# The base image for the Docker container
+FROM openjdk:11
+
+# Copy the jar file into the Docker container
+COPY ./target/donor-profile-service-0.0.1-SNAPSHOT.jar /usr/src/donor-profile-service-0.0.1-SNAPSHOT.jar
+
+# Set the working directory in the Docker container
+WORKDIR /usr/src
+
+# Run command in the Docker container
+RUN chmod 755 /usr/src/donor-profile-service-0.0.1-SNAPSHOT.jar
+
+# Start the Spring Boot application
+ENTRYPOINT ["java","-jar","donor-profile-service-0.0.1-SNAPSHOT.jar"]

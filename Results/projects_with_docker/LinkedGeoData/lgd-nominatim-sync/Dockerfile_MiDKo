@@ -1,0 +1,15 @@
+# Use the specified base image
+FROM lgd-build-nominatim:4.0.1
+
+# Copy project files into the docker image
+COPY . .
+
+# Make scripts executable
+RUN chmod +x ./start.sh ./wait-for-postgres.sh
+
+# Copy build script
+COPY start.sh .
+COPY wait-for-postgres.sh .
+
+# Execute the scripts
+CMD ./wait-for-postgres.sh && ./start.sh

@@ -1,0 +1,36 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ovnaction
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ovnaction
+  template:
+    metadata:
+      labels:
+        app: ovnaction
+    spec:
+      containers:
+      - command:
+        - /opt/emco/entrypoint
+        - ovnaction
+        image: emcov2/emco:stable
+        imagePullPolicy: Always
+        name: ovnaction
+        ports:
+        - containerPort: 9053
+        - containerPort: 9051
+        volumeMounts:
+        - mountPath: /opt/emco/config.json
+          name: config
+          subPath: config.json
+        workingDir: /opt/emco
+      volumes:
+      - configMap:
+          items:
+          - key: config.json
+            path: config.json
+          name: ovnaction
+        name: config

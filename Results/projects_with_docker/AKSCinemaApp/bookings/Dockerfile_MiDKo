@@ -1,0 +1,44 @@
+# Start from the latest Golang:1.15.6-alpine base image
+FROM golang:1.15.6-alpine as builder
+
+# Add Maintainer Info
+LABEL maintainer="author@example.com"
+LABEL language="golang"
+LABEL org.opencontainers.image.source="https://example.com"
+
+# Set necessary environmet variables needed for our image
+ENV GO111MODULE=on 
+ENV CGO_ENABLED=0 
+ENV GOOS=linux 
+ENV GOARCH=amd64 
+
+# Move to working directory /opt/app
+WORKDIR /opt/app/
+
+# Copy the Go Modules manifests
+COPY go.mod go.sum ./
+
+# Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed 
+RUN go mod download 
+
+# Verify all dependencies
+RUN go mod verify
+
+# Copy the source from the current directory to the working Directory inside the docker image
+COPY . .
+
+# Add user
+RUN adduser -D -g '' elf
+
+# Build the Go app
+RUN go build -ldflags="-w -s" -a -installsuffix cgo -o /go/bin/cinema-bookins ./cmd/app
+
+# This image starts a virtual network router and runs the handler inside it.
+FROM scratch
+
+
+# Document that the service listens on these ports
+EXPOSE 8080
+
+# Run the executable command
+CMD ["./cinema-bookins"]

@@ -1,0 +1,32 @@
+# Set the base image
+FROM ${UPSTREAM_REPO:-uselagoon}/commons:${UPSTREAM_TAG:-latest}
+
+# Set the working directory
+WORKDIR /home
+
+# Set environment variable
+ENV JWTSECRET=super-secret-string \
+
+# Copy the application and necessary files to the working directory
+COPY api-data /home/api-data
+COPY minio-data /home/minio-data
+COPY data-init-push.sh create_jwt.py /home/
+
+# Install necessary packages
+RUN apk add --no-cache \
+    bash \
+    curl \
+    gettext \
+    minio-client \
+    moreutils \
+    py3-jwt \
+
+# Install application dependencies
+COPY package.json ./
+RUN npm install --only=production
+
+# Bundle app source
+COPY . .
+
+# Start the service with tini
+CMD ["/sbin/tini", "--", "/home/data-init-push.sh"]

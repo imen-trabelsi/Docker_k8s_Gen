@@ -1,0 +1,40 @@
+# Defines our base image
+FROM python:3.12
+
+# Sets directory for the application
+WORKDIR /app
+
+# Ensure that Python outputs everything that's printed
+ENV PYTHONUNBUFFERED=1
+ENV STATIC_URL=${STATIC_URL:-/static/}
+
+COPY poetry.lock pyproject.toml /app/
+
+# Install dependencies and necessary packages
+RUN apt-get -y update && apt-get install -y gettext \
+
+# Install Poetry
+RUN --mount=type=cache,mode=0755,target=/root/.cache/pip pip install poetry==2.0.1 && \
+    poetry config virtualenvs.create false && \
+
+# Create a new directory and set permissions
+RUN groupadd -r saleor && useradd -r -g saleor saleor && \
+
+# Copy necessary application files and directories
+COPY --from=build-python /usr/local/lib/python3.12/site-packages/ /usr/local/lib/python3.12/site-packages/
+COPY --from=build-python /usr/local/bin/ /usr/local/bin/
+COPY . /app
+
+WORKDIR /app
+
+# Run command for Django's Static files
+RUN SECRET_KEY=dummy STATIC_URL=${STATIC_URL} python3 manage.py collectstatic --no-input
+
+# Expose port 8000
+EXPOSE 8000
+
+# Metadata 
+LABEL org.opencontainers.image.title="saleor/saleor"
+
+# Load application
+CMD ["uvicorn", "saleor.asgi:application", "--host=0.0.0.0", "--port=8000", "--workers=2", "--lifespan=off", "--ws=none", "--no-server-header", "--no-access-log", "--timeout-keep-alive=35", "--timeout-graceful-shutdown=30", "--limit-max-requests=10000"]

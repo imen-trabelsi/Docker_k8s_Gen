@@ -1,0 +1,15 @@
+FROM nextcloud:fpm-alpine
+# Prepare supervisord
+RUN apk add --no-cache supervisor \
+# Copy supervisord config file
+COPY supervisord.conf /
+# Copy all our source files over
+COPY . /usr/src/myapp
+# Set working directory
+WORKDIR /usr/src/myapp
+
+# Set environment variables
+ENV NEXTCLOUD_UPDATE=1
+
+# Define the execution command
+CMD ["/usr/bin/supervisord", "-c", "/supervisord.conf"]

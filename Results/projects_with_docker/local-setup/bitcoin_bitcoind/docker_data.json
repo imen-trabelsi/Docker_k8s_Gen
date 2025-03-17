@@ -1,0 +1,40 @@
+{
+    "docker_info": {
+        "base_image": "ubuntu:18.04",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "18332"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD ./entrypoint.sh /workdir/entrypoint.sh",
+            "WORKDIR /workdir"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"./entrypoint.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && apt-get install -y wget jq && rm -rf /var/lib/apt/lists/*",
+                ""
+            ],
+            [
+                "wget -O bitcoin-core.tar.gz https://bitcoin.org/bin/bitcoin-core-0.20.0/bitcoin-0.20.0-x86_64-linux-gnu.tar.gz",
+                "RUN mkdir /bitcoin-core && tar -xzf bitcoin-core.tar.gz -C /bitcoin-core --strip-components=1"
+            ],
+            [
+                "cp -a /bitcoin-core/bin /workdir",
+                ""
+            ]
+        ]
+    }
+}

@@ -1,0 +1,44 @@
+# Use base image
+FROM python:3
+
+# Set environment variable
+ENV PYTHONUNBUFFERED=TRUE
+
+# Create app directory
+WORKDIR /app
+
+# Copy existing files into image
+COPY . .
+
+# Install system dependencies
+RUN apt update -y && apt install -y cmake libgl1-mesa-glx \
+    && mkdir -p /app \
+    && /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+
+# Copy system files to container
+COPY .env .
+COPY docker-compose.yml .
+
+# Set working directory in container
+COPY ts-avatar-service/Dockerfile Dockerfile
+
+# This will copy all files from your Docker client’s current directory
+COPY . /app/
+
+# Install project dependencies
+RUN pip install -r requirements.txt
+
+# Expose port
+EXPOSE 17001
+
+# Add JAVA build
+RUN apt update && apt install -y maven
+
+# Adding source, compile and package into a fat jar
+COPY pom.xml .
+COPY src /src
+
+RUN mvn package
+
+# Execute the jar
+CMD ["java","-jar","/target/*.jar"]

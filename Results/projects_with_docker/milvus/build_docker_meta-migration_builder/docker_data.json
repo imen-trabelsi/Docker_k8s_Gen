@@ -1,0 +1,19 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.21.11-alpine3.19",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "apk add --no-cache make bash"
+            ]
+        ]
+    }
+}

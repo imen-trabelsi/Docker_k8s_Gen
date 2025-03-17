@@ -1,0 +1,31 @@
+# Use the base image provided by user
+FROM ubuntu:16.04
+
+# Update system, install dependencies
+RUN apt-get -qq update && \
+    apt-get -qq -y install curl && \
+    apt-get install -y net-tools && \
+    apt-get install -y iproute && \
+
+# Java related dependencies
+RUN apt-get update && \
+    apt-get install -y openjdk-8-jdk && \
+    apt-get install -y maven && \
+
+# Create a new directory to build the project
+RUN mkdir /app
+
+# Add source code into the app folder
+COPY . /app
+
+# Change working directory
+WORKDIR /app
+
+# Build the project using Maven
+RUN mvn clean install -DskipTests
+
+# Make mystart.sh executable
+RUN chmod +x /app/mystart.sh
+
+# Set your entry point script
+ENTRYPOINT ["bash","app/mystart.sh"]

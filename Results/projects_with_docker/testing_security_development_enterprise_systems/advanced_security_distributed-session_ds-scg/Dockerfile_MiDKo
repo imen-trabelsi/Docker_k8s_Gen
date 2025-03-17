@@ -1,0 +1,15 @@
+FROM adoptopenjdk/openjdk11:alpine
+
+WORKDIR /app
+
+COPY pom.xml ./
+RUN mvn dependency:go-offline
+
+COPY src/ ./src
+RUN mvn package -DskipTests && mv target/*.jar ./app.jar
+
+COPY target/scg.jar ./
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "scg.jar"]

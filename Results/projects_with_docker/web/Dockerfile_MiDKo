@@ -1,0 +1,48 @@
+# Start from the user's specified base image
+FROM alpine:latest
+
+LABEL maintainer=jon@jaggersoft.com
+
+# Set work directory
+ARG CYBER_DOJO_HOME
+WORKDIR $CYBER_DOJO_HOME
+
+# Install dependencies
+RUN apk --update --no-cache add \
+    bash \
+    libffi-dev \
+    ruby \
+    ruby-bigdecimal \
+    ruby-bundler \
+    ruby-dev \
+    tzdata \
+
+# Install build-dependencies
+RUN apk --update --no-cache add --virtual build-dependencies build-base
+
+# Copy the Gemfile and install gems
+COPY Gemfile $CYBER_DOJO_HOME/
+RUN bundle config --global silence_root_warning 1
+RUN bundle install
+
+# Clean up
+RUN apk del build-dependencies build-base
+RUN rm -vrf /var/cache/apk/*
+
+# Copy rest of the application
+COPY . $CYBER_DOJO_HOME
+
+# Check for Gemfile.lock
+RUN cat $CYBER_DOJO_HOME/Gemfile.lock
+
+# Change owner to nobody
+RUN chown -R nobody:nogroup $CYBER_DOJO_HOME
+
+# Switch to user nobody
+USER nobody
+
+# Expose the application on port 3000
+EXPOSE 3000
+
+# Start the application
+CMD [ "bash", "./up.sh" ]

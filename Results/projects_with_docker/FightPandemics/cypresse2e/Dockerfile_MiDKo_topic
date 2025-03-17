@@ -1,0 +1,28 @@
+# Base Image
+FROM cypress/included:6.0.1
+
+# Set the Work Directory
+WORKDIR /app
+
+# Copy package.json and package-lock.json
+COPY package.json package-lock.json ./
+
+# Set Environment Variables
+ENV CI=1
+ENV DOCKERIZE_VERSION v0.6.1
+
+# Install dependencies
+RUN npm ci
+
+# Run Cypress verify
+RUN npx cypress verify
+
+# Download, extract and clean up dockerize
+RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
+    tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
+
+# Expose port
+EXPOSE 80
+
+# Default command
+CMD ["npm", "start"]

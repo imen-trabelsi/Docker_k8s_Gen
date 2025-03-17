@@ -1,0 +1,46 @@
+# Start the multi-stage build with golang image as builder
+FROM golang:alp as builder
+
+# Define the necessary environment vaiables
+ENV GO111MODULE=on
+ENV SRVDIR=user
+ENV SRVNAME=${SRVDIR}Server
+
+# Set work directory
+WORKDIR /go/src/goTemp
+
+# Copy necessary files for building the go app
+COPY ./go.mod ./go.sum ./
+COPY ./globalerrors ./globalerrors
+COPY ./globalUtils ./globalUtils
+COPY ./globalMonitoring ./globalMonitoring
+
+# Download necessary packages
+RUN go mod download
+
+# Copy more files
+COPY ./$SRVDIR ./$SRVDIR
+
+# Build the go app with necessary flags
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o $SRVNAME ./$SRVDIR/server/
+
+# Start the final stage of the build
+FROM alpine:latest as final
+
+# Update packages and add necessary tools
+RUN apk --no-cache add ca-certificates
+
+# Define another environment variable
+ENV SRVNAME=${SRVDIR}ServerAlp
+
+# Set work directory
+WORKDIR /goTemp
+
+# Copy the Go binary from the previous stage
+
+# Expose the necessary ports
+EXPOSE 2112
+EXPOSE 50051
+
+# Finally, define the command to be executed 
+CMD [ "./$SRVNAME" ]

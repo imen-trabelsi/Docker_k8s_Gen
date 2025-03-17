@@ -1,0 +1,29 @@
+# Use the specified base image
+FROM keybaseio/client
+
+# Set working directory in the container 
+WORKDIR /app
+
+# Set environment variable to secure Keybase service
+ENV KEYBASE_SERVICE=1
+
+# Copy package.json and package-lock.json to the work directory
+COPY package*.json ./
+
+# Installing from package.json
+RUN npm install
+
+# Updating the instance and installing git
+RUN apt-get update && apt-get install -y git && rm -rf /var/lib/apt/lists/*
+
+# Copy all the files from the current directory to the /app folder in the container
+COPY . .
+
+# Copy entrypoint.sh into root
+COPY docker/keybase-secrets/entrypoint.sh /
+
+# Set the entrypoint script execution command
+ENTRYPOINT ["/entrypoint.sh"]
+
+# The instruction that will be executed when docker runs the container
+CMD [ "npm", "start" ]

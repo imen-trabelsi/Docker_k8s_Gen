@@ -1,0 +1,77 @@
+{
+    "docker_info": {
+        "base_image": "python:3.9",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV DEBIAN_FRONTEND noninteractive",
+            "ENV LANG='en_US.UTF-8'",
+            "ENV PYTHONPATH /aleph",
+            "ENV ALEPH_WORD_FREQUENCY_URI=https://public.data.occrp.org/develop/models/word-frequencies/word_frequencies-v0.4.1.zip",
+            "ENV ALEPH_FTM_COMPARE_MODEL_URI=https://public.data.occrp.org/develop/models/xref/glm_bernoulli_2e_wf-v0.4.1.pkl",
+            "ENV ALEPH_ELASTICSEARCH_URI=http://elasticsearch:9200/ \\"
+        ],
+        "copy_instructions": [
+            "COPY requirements.txt /tmp/",
+            "COPY . /aleph",
+            "WORKDIR /aleph"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "gunicorn",
+                    "--config",
+                    "/aleph/gunicorn.conf.py",
+                    "--workers",
+                    "6",
+                    "--log-level",
+                    "debug",
+                    "--log-file",
+                    "-"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get -qq -y update \\",
+                "&& apt-get -qq --no-install-recommends -y install locales",
+                "postgresql-client jq python3-dev",
+                "&& apt-get -qq -y autoremove",
+                "&& apt-get clean",
+                "&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*",
+                "&& localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8"
+            ],
+            [
+                "groupadd -g 1000 -r app \\",
+                "&& useradd -m -u 1000 -s /bin/false -g app app"
+            ],
+            [
+                "pip3 install --no-cache-dir -q -U pip setuptools six",
+                ""
+            ],
+            [
+                "pip3 install --no-cache-dir -q -r /tmp/requirements.txt",
+                ""
+            ],
+            [
+                "pip install --no-cache-dir -q -e /aleph",
+                ""
+            ],
+            [
+                "mkdir -p /opt/ftm-compare/word-frequencies/ && \\",
+                "curl -L -o \"/opt/ftm-compare/word-frequencies/word-frequencies.zip\" \"$ALEPH_WORD_FREQUENCY_URI\" &&",
+                "python3 -m zipfile --extract /opt/ftm-compare/word-frequencies/word-frequencies.zip /opt/ftm-compare/word-frequencies/ &&",
+                "curl -L -o \"/opt/ftm-compare/model.pkl\" \"$ALEPH_FTM_COMPARE_MODEL_URI\""
+            ],
+            [
+                "mkdir /run/prometheus",
+                ""
+            ]
+        ]
+    }
+}

@@ -1,0 +1,25 @@
+# Base Image
+FROM node:12-alpine
+
+# Creating application directory
+RUN mkdir -p /nest
+WORKDIR /nest
+
+# Building app
+COPY package.json /nest/
+RUN npm install
+COPY . /nest
+RUN yarn global add @nestjs/cli
+RUN yarn install --production=false
+RUN nest build proto-schema
+RUN nest build api-admin
+
+# Setting Environment Variables
+ENV NODE_ENV=production
+ENV NODE_PATH=/nest
+
+# Exposing Port
+EXPOSE 50020
+
+# Execution Command
+CMD ["node", "dist/apps/api-admin/main.js"]

@@ -1,0 +1,23 @@
+# Use official node image as the base image
+FROM node:10.20.1-slim@sha256:79809f748c1de29269f1fffc212486a758412e4f0f0c79eaf99408245156a042
+
+# Update and install dependencies
+RUN apt-get update \
+ && apt-get install -y wget gnupg ca-certificates \
+ && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+ && sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Copy the package.json and package-lock.json
+COPY ./backend/ApiREST/package*.json ./
+
+# Install Node modules
+RUN npm install
+
+# Copy source code to container
+COPY ./backend/ApiREST .
+
+# Start the application
+CMD ["npm", "start"]

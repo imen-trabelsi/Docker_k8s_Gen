@@ -1,0 +1,22 @@
+# Base Image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS base
+WORKDIR /app
+EXPOSE 80
+
+# Build the app
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+COPY . .
+RUN dotnet restore "eShop-Learn.sln"
+WORKDIR "/src/src/Services/Ordering/Ordering.SignalrHub"
+RUN dotnet build "Ordering.SignalrHub.csproj" -c Release -o /app/build
+
+# Publish the app
+FROM build AS publish
+RUN dotnet publish --no-restore "Ordering.SignalrHub.csproj" -c Release -o /app/publish
+
+# Final stage / image
+FROM base AS final
+WORKDIR /app
+ENTRYPOINT ["dotnet", "Ordering.SignalrHub.dll"]

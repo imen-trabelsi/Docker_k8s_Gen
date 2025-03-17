@@ -1,0 +1,14 @@
+# Set the base image
+FROM nextcloud:fpm-alpine
+
+# Set environment variable
+ENV NEXTCLOUD_UPDATE=1
+
+# Install necessary dependencies
+RUN apk add --no-cache supervisor && mkdir /var/log/supervisord /var/run/supervisord
+
+# Copy necessary files
+COPY supervisord.conf /
+
+# Define entrypoint and cmd
+CMD ["/usr/bin/supervisord", "-c", "/supervisord.conf"]

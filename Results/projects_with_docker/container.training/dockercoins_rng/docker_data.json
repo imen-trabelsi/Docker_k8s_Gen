@@ -1,0 +1,30 @@
+{
+    "docker_info": {
+        "base_image": "python:alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"python\",",
+                    "\"rng.py\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "pip install Flask",
+                "COPY rng.py /"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,59 @@
+{
+    "docker_info": {
+        "base_image": "node:12-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "5000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV NODE_ENV=production",
+            "ENV PORT=5000 \\"
+        ],
+        "copy_instructions": [
+            "WORKDIR /builder",
+            "COPY common/nodejs/package.json src/common/",
+            "COPY telemetry/package.json .",
+            "COPY common/messages/interop.proto \\",
+            "COPY common/nodejs src/common",
+            "COPY telemetry .",
+            "WORKDIR /app",
+            "COPY common/nodejs/package.json src/common/",
+            "COPY telemetry/package.json .",
+            "COPY --from=builder /builder/lib lib",
+            "COPY telemetry/bin bin"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "FORCE_COLOR=1",
+                    "npm",
+                    "start",
+                    "--silent"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "npm install",
+                ""
+            ],
+            [
+                "npm run build-msg",
+                ""
+            ],
+            [
+                "npm run build",
+                ""
+            ],
+            [
+                "npm install",
+                ""
+            ]
+        ]
+    }
+}

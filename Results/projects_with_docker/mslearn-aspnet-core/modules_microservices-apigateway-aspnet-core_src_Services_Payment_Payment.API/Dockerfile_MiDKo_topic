@@ -1,0 +1,35 @@
+# Use official .NET SDK Image from Microsoft Registry
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS base
+
+# Set the workdir in the Docker image
+WORKDIR /app
+WORKDIR /src
+
+# Copy csproj and restore dependencies
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+COPY ["src/Services/Payment/Payment.API/Payment.API.csproj", "src/Services/Payment/Payment.API/"]
+COPY ["NuGet.config", "./"]
+COPY ["eShop-Learn.sln", "./"]
+
+# Restoring the solution file
+RUN dotnet restore "eShop-Learn.sln"
+
+# Copy all files to the WORKDIR
+COPY . .
+
+# Move to the working directory of Payment.API
+WORKDIR "/src/src/Services/Payment/Payment.API"
+
+# Build the Payment.API project
+RUN dotnet publish "Payment.API.csproj" -c Release -o /app/publish
+
+# Copy the build artefacts to app directory
+FROM base AS final
+WORKDIR /app
+COPY --from=publish /app/publish .
+
+# Expose port 80
+EXPOSE 80
+
+# Define EntryPoint
+ENTRYPOINT ["dotnet", "Payment.API.dll"]

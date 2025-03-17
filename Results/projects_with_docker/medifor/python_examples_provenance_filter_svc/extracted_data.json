@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "requirements.txt": "pillow==6.2.0\nnumpy==1.17.3\nrequests==2.20.0\n\n\n# Also need libomp (brew install libomp on Mac)\n"
+        },
+        "database": null,
+        "build_system": "pip",
+        "config_files": {
+            "python/examples/provenance/docker-compose.yml": "version: \"3\"\n\nnetworks:\n  mfnet:\n\nservices:\n  filter_svc:\n    image: mediaforensics/samples:prov-filter-svc\n    restart: always\n    ports:\n      - 50051:50051\n    volumes:\n      - \"./:/input\"\n    command:\n      - \"--url=http://faiss1:8080/search\"\n      - \"--url=http://faiss2:8080/search\"\n      - \"--url=http://faiss3:8080/search\"\n    networks:\n      - mfnet\n\n  faiss1:\n    image: mediaforensics/samples:prov-index-svc\n    restart: always\n    volumes:\n      - \"./index_svc:/data\"\n    command:\n      - \"--index=/data/index.faiss\"\n      - \"--port=8080\"\n    networks:\n      - mfnet\n\n  faiss2:\n    image: mediaforensics/samples:prov-index-svc\n    restart: always\n    volumes:\n      - \"./index_svc:/data\"\n    command:\n      - \"--index=/data/index2.faiss\"\n      - \"--port=8080\"\n    networks:\n      - mfnet\n\n  faiss3:\n    image: mediaforensics/samples:prov-index-svc\n    restart: always\n    volumes:\n      - \"./index_svc:/data\"\n    command:\n      - \"--index=/data/index3.faiss\"\n      - \"--port=8080\"\n    networks:\n      - mfnet\n",
+            "Dockerfile": "FROM golang:1.14-buster as gobuild\n\nWORKDIR /go\n\nENV GOPATH \"\"\n\nCOPY . ./\nRUN cd cmd/analyticproxy && go build; cd -; \\\n    cd cmd/medifor && go build; cd - \\\n    cd cmd/analyticworker && go build; cd -  \\\n    cd cmd/analyticworkflow && go build; cd - \\\n    cd cmd/fusionworker && go build; cd -\n\nFROM python:3.8-slim-buster as pybuild\n\nRUN mkdir -p /src/medifor/python \\\n && apt-get update \\\n && apt-get install -y g++\n\nCOPY ./setup.py /src/medifor/\nCOPY ./python/ /src/medifor/python/\n\nRUN pip install -U pip && pip install /src/medifor\n\nFROM python:3.8-slim-buster\n\nRUN mkdir -p /app/bin \\\n && apt-get update \\\n && apt-get install -y libmagic1\n\nCOPY --from=gobuild /go/cmd/analyticproxy/analyticproxy /app/bin/\nCOPY --from=gobuild /go/cmd/medifor/medifor /app/bin/\nCOPY --from=gobuild /go/cmd/analyticworker/analyticworker /app/bin\nCOPY --from=gobuild /go/cmd/analyticworkflow/analyticworkflow /app/bin\nCOPY --from=gobuild /go/cmd/fusionworker/fusionworker /app/bin\nCOPY --from=pybuild /usr/local/lib/python3.8/ /usr/local/lib/python3.8/\n\nENV PATH ${PATH}:/app/bin\n\nEXPOSE 50051\n\nCMD ['python', '-m', 'medifor', '--help']\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "filtersvc.py",
+            "requirements.txt"
+        ],
+        "folders": []
+    }
+}

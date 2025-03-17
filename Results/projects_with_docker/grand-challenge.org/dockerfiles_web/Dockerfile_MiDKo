@@ -1,0 +1,49 @@
+# syntax=docker/dockerfile:1
+# Base Image
+ARG PYTHON_VERSION
+ARG POETRY_HASH
+ARG GRAND_CHALLENGE_WEB_TEST_BASE_REPOSITORY_URI
+FROM ${GRAND_CHALLENGE_WEB_TEST_BASE_REPOSITORY_URI}:${PYTHON_VERSION}-${POETRY_HASH} as build-stage
+
+ARG COMMIT_ID=unknown
+ENV COMMIT_ID=$COMMIT_ID
+
+WORKDIR /app
+COPY --chown=django:django ./app/ /app/
+COPY --chown=django:django setup.cfg /home/django
+RUN mkdir /tmp/.pytest_cache
+
+# Installing dependencies
+COPY pyproject.toml ./
+RUN pip install -r requirements.txt
+
+# Build instructions
+RUN poetry install --no-dev
+
+# Starting the application
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+
+# Multi stage
+FROM ${GRAND_CHALLENGE_WEB_BASE_REPOSITORY_URI}:${PYTHON_VERSION}-${POETRY_HASH} as production-stage
+COPY --chown=django:django ./app/ /app/
+
+# Environment Variables
+ENV DJANGO_SETTINGS_MODULE app.settings.production
+ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE 1
+
+# Health Checks
+HEALTHCHECK --interval=5m --timeout=3s CMD curl -f http://localhost:8000/ || exit 1 
+
+# Exposing Ports
+EXPOSE 8000
+
+# Set user
+USER django
+
+# Handling Static Files and DB migrations
+RUN python manage.py collectstatic --noinput && python manage.py compress --force
+CMD ["python", "manage.py", "migrate"]
+
+# Entrypoint
+ENTRYPOINT ["gunicorn", "--bind", ":8000", "--workers", "3", "app.wsgi:application"]

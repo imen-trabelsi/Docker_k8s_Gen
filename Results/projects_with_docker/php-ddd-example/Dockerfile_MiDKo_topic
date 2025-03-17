@@ -1,0 +1,41 @@
+# Use the specified base image
+FROM php:8.3-fpm-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy php configuration files
+COPY etc/infrastructure/php/ /usr/local/etc/php/
+
+# Install system dependencies and PHP Extensions
+RUN apk --update upgrade \
+    && apk add --no-cache autoconf automake make gcc g++ git bash icu-dev libzip-dev rabbitmq-c rabbitmq-c-dev linux-headers \
+    && pecl install apcu-5.1.23 \
+    && pecl install amqp-2.1.1 \
+    && pecl install xdebug-3.3.0 \
+    && docker-php-ext-install -j$(nproc) bcmath opcache intl zip pdo_mysql \
+  
+# Install Symfony
+RUN curl -sS https://get.symfony.com/cli/installer | bash -s - --install-dir /usr/local/bin
+
+# Set home directory
+RUN mkdir -p /opt/home \
+
+# Set home environment
+ENV HOME /opt/home
+
+# Copy rest of the application
+COPY . /app
+
+# Install application dependencies
+RUN composer install --no-dev --no-scripts --no-autoloader \
+
+# Expose necessary ports
+EXPOSE 9000
+
+# Define a health check
+HEALTHCHECK --timeout=5s \
+  CMD curl --silent --fail http://localhost:9000/health-check || exit 1
+
+# Set the command to start the Symfony service
+CMD ["php", "bin/console", "server:run"]

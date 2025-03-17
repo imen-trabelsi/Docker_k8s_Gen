@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rsync
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rsync
+  template:
+    metadata:
+      labels:
+        app: rsync
+    spec:
+      containers:
+      - command:
+        - /opt/emco/entrypoint
+        - rsync
+        image: emcov2/emco:stable
+        imagePullPolicy: Always
+        name: rsync
+        ports:
+        - containerPort: 9041
+        volumeMounts:
+        - mountPath: /opt/emco/config.json
+          name: config
+          subPath: config.json
+        workingDir: /opt/emco
+      volumes:
+      - configMap:
+          items:
+          - key: config.json
+            path: config.json
+          name: rsync
+        name: config

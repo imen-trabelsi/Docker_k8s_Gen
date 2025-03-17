@@ -1,0 +1,37 @@
+# Use official Node.js 8.13 as a parent image
+FROM node:8.13-slim
+
+# An arbitrary location used by the builder in the image
+WORKDIR /opt/my-musik/
+
+# Copy the files from the host to the new location in the container
+COPY ./gulpfile.js .
+COPY ./package.json .
+COPY ./tsconfig.json .
+COPY ./tslint.json .
+COPY ./config.json .
+COPY ./Dockerfile .
+COPY --from=build-env /opt/my-musik/dist ./dist
+COPY --from=build-env /opt/my-musik/package.json ./
+COPY --from=build-env /opt/my-musik/config.json ./
+COPY ./src ./src
+
+# Install typescript globally
+RUN npm install typescript -g
+
+# Install any needed packages specified in package.json. "--no-optional" skips optional dependencies 
+RUN npm install --no-optional
+RUN npm install --no-optional --only=prod
+
+# Make the directory as mentioned in the user commands
+RUN mkdir -p /opt/my-musik/
+
+# Specify the working directory
+WORKDIR /opt/my-musik/
+RUN "node_modules/.bin/gulp"
+
+# Indicate the container listens on the specified network port at runtime.
+EXPOSE 3002
+
+# Provide defaults for an executing container
+CMD ["node", "dist/app.js"]

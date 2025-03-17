@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: smtp
+spec:
+  ports:
+  - name: smtp
+    nodePort: 2500
+    port: 2500
+    targetPort: 2500
+  - name: smtp1
+    nodePort: 8888
+    port: 8888
+    targetPort: 8888
+  selector:
+    app: inbucket
+  type: NodePort

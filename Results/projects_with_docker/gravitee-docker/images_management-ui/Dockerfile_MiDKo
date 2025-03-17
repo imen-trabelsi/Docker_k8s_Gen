@@ -1,0 +1,29 @@
+# Base Image
+FROM nginx:1.23-alpine
+
+# Maintainer
+LABEL maintainer="contact@graviteesource.com"
+
+# Environment Variables
+ENV GRAVITEEIO_VERSION=0 \
+    CONFD_VERSION="0.16.0" \
+    CONFD_URL="https://github.com/kelseyhightower/confd/releases/download" \
+
+# Installing dependencies
+RUN apk --update add zip unzip bash wget && \
+    apk add --upgrade --no-cache libgcrypt && \
+    wget https://download.gravitee.io/graviteeio-apim/components/gravitee-management-webui/gravitee-management-webui-${GRAVITEEIO_VERSION}.zip --no-check-certificate -P /tmp/ && \
+    unzip /tmp/gravitee-management-webui-${GRAVITEEIO_VERSION}.zip -d /tmp/ && \
+    mkdir -p ${WWW_TARGET} && \
+    mv /tmp/gravitee-management-webui-${GRAVITEEIO_VERSION}/* ${WWW_TARGET} && \
+    rm -rf /tmp/* && \
+    wget -T 5 ${CONFD_URL}/v${CONFD_VERSION}/confd-${CONFD_VERSION}-linux-amd64 -O /bin/confd && \
+    chmod +x /bin/confd && \
+    chgrp -R 0 /var/www/ /var/log/nginx /var/cache/nginx/ /etc/nginx/ /var/run/ && \
+
+# Copy instructions
+COPY config /etc/confd
+COPY run.sh /run.sh
+
+# Execution command
+CMD ["sh", "/run.sh"]

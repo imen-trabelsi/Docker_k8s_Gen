@@ -1,0 +1,47 @@
+# Using the base image from the user
+FROM @docker.account@/java-base
+
+# Create a directory to hold the app
+RUN mkdir -p /app
+
+# Go to that directory
+WORKDIR /app
+
+# Application jar file
+ARG JAR_FILE=target/*.jar
+
+# Create user h2 with a specific predefined ID
+RUN useradd -u 1001 -g 0 -d '/var/opt/h2' -s '/sbin/nologin' h2 && \
+    mkdir -p /var/opt/h2/data && chmod -R a+rw /var/opt/h2 && \
+    mkdir -p /opt/h2 && chmod a+r /opt/h2 && \
+    cd /opt/h2 && \
+
+# Make user `h2` the owner of the /app directory
+RUN chown -R h2 /app
+
+# Copy the source code to /app
+COPY . /app
+
+# Run as user h2
+USER h2
+
+# Copy the maven to a maven directory
+COPY maven /
+
+# Environment variable for PostgreSQL
+ENV POSTGRES_DB=@POSTGRES_DB@ \
+    POSTGRES_USER=@POSTGRES_USER@ \
+
+# Build the source code
+RUN mvn clean package
+
+# Copy the application
+COPY ${JAR_FILE} app.jar
+
+# Expose the port
+EXPOSE 3306
+
+# Set the entrypoint
+ENTRYPOINT [ "/var/opt/h2/run-h2" ]
+
+CMD ["java","-jar","/app.jar"]

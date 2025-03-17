@@ -1,0 +1,46 @@
+# Use OpenJDK v8 as the base image
+FROM openjdk:8-jre as builder
+
+# Create app directory
+WORKDIR /app
+
+# Copy Maven file
+COPY pom.xml .
+
+# Fetch dependencies
+RUN mvn dependency:go-offline -B
+
+# Copy source code
+COPY src /app/src
+
+# Package the application
+RUN mvn package -DskipTests
+
+# Start a new stage
+FROM openjdk:8-jre
+
+# Set environment variables for PostgreSQL
+ENV SPRING_DATASOURCE_URL jdbc:postgresql://localhost:5432/zipkin
+ENV SPRING_DATASOURCE_USERNAME zipkin
+ENV SPRING_DATASOURCE_PASSWORD zipkin
+ENV SPRING_JPA_HIBERNATE_DDL_AUTO update
+
+# Create app directory
+WORKDIR /zipkin-web
+
+# Copy dependencies from builder
+
+# Copy the library files
+COPY lib/ /zipkin-web/
+
+# Set permission
+RUN chmod +x *
+
+# Expose the necessary port
+EXPOSE 9412
+
+# Set the entrypoint
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom"]
+
+# Set the command to run the jar
+CMD ["-jar","/zipkin-web/zipkin-web-all.jar", "-zipkin.web.port=:9412", "-zipkin.web.rootUrl=/", "-zipkin.web.query.dest=zipkin:9411"]

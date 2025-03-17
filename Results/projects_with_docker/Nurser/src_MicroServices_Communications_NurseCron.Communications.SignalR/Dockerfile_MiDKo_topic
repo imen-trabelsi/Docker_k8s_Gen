@@ -1,0 +1,18 @@
+# Set the base image
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 AS base
+
+# Configure the working directory in the container
+WORKDIR /app
+
+# Set environment variables
+ENV ASPNETCORE_URLS=http://*:80
+ENV ASPNETCORE_ENVIRONMENT=Production
+
+# Copy the app
+COPY ./pub .
+
+# Expose the necessary port(s)
+EXPOSE 80
+
+# Set up the application entry point
+ENTRYPOINT ["dotnet", "NurseCron.Communications.SignalR.dll"]

@@ -1,0 +1,26 @@
+# Build Stage
+FROM ubuntu:20.04 AS build-env
+
+# Set Non-Interactive for apt-get install
+ENV DEBIAN_FRONTEND=noninteractive
+
+RUN apt-get update \
+    && apt-get install -y curl git npm \
+    && apt-get clean \
+
+# Download the source code
+WORKDIR /tmp
+RUN git clone https://github.com/mojaloop/license-scanner 
+
+WORKDIR /tmp/license-scanner
+RUN make build default-files \
+  
+# Final Stage
+FROM ubuntu:20.04
+
+# Copy binary from build stage
+
+WORKDIR /app
+
+ENTRYPOINT ["./app"]
+

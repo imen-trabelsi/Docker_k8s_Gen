@@ -1,0 +1,46 @@
+{
+    "docker_info": {
+        "base_image": "--platform=${BUILDPLATFORM}",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "TARGETPLATFORM",
+            "TARGETARCH",
+            "BUILDPLATFORM"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /source",
+            "COPY *.csproj .",
+            "COPY . .",
+            "WORKDIR /app",
+            "COPY --from=build /app ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"dotnet\",",
+                    "\"Worker.dll\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "echo \"I am running on $BUILDPLATFORM, building for $TARGETPLATFORM\"",
+                ""
+            ],
+            [
+                "dotnet restore -a $TARGETARCH",
+                ""
+            ],
+            [
+                "dotnet publish -c release -o /app -a $TARGETARCH --self-contained false --no-restore",
+                ""
+            ]
+        ]
+    }
+}

@@ -1,0 +1,48 @@
+# Use base image
+FROM python:3.9
+
+# Labels
+LABEL maintainer="yourname@example.com"
+
+# Set environment variables
+ENV DEBIAN_FRONTEND noninteractive
+ENV LANG='en_US.UTF-8'
+ENV PYTHONPATH /aleph
+ENV ALEPH_WORD_FREQUENCY_URI=https://public.data.occrp.org/develop/models/word-frequencies/word_frequencies-v0.4.1.zip
+ENV ALEPH_FTM_COMPARE_MODEL_URI=https://public.data.occrp.org/develop/models/xref/glm_bernoulli_2e_wf-v0.4.1.pkl
+ENV ALEPH_ELASTICSEARCH_URI=http://elasticsearch:9200/
+
+# Update system packages and Install dependencies
+RUN apt-get -qq -y update \
+&& apt-get -qq --no-install-recommends -y install locales postgresql-client jq python3-dev \
+&& apt-get -qq -y autoremove \
+&& apt-get clean \
+&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+&& localedef -i en_US -c -f UTF-8 -A /usr/share/locale/locale.alias en_US.UTF-8 \
+&& groupadd -g 1000 -r app \
+&& useradd -m -u 1000 -s /bin/false -g app app \
+
+# Copy requirements and install
+COPY requirements.txt /tmp/
+RUN pip3 install --no-cache-dir -q -r /tmp/requirements.txt
+
+# Copy the App
+COPY . /aleph
+WORKDIR /aleph
+RUN pip install --no-cache-dir -q -e /aleph
+
+# Download word-frequencies and model
+RUN mkdir -p /opt/ftm-compare/word-frequencies/ \
+&& curl -L -o "/opt/ftm-compare/word-frequencies/word-frequencies.zip" "$ALEPH_WORD_FREQUENCY_URI" \
+&& python3 -m zipfile --extract /opt/ftm-compare/word-frequencies/word-frequencies.zip /opt/ftm-compare/word-frequencies/ \
+
+RUN mkdir /run/prometheus
+
+# Switch to user
+USER app
+
+# Expose the application port
+EXPOSE 5000
+
+# Run command
+CMD ["gunicorn", "--config", "/aleph/gunicorn.conf.py", "--workers", "6", "--log-level", "debug", "--log-file", "-"]

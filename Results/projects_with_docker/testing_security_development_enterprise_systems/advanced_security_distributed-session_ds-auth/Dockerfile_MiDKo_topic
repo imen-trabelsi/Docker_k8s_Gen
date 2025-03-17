@@ -1,0 +1,30 @@
+# Start from the required base image 
+FROM adoptopenjdk/openjdk11:alpine AS builder
+
+# Set work directory in the container
+WORKDIR /app
+
+# Copy maven executable to the image, and setup Maven 
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy the actual code to the image 
+COPY src ./src 
+COPY pom.xml .
+
+# Build a release artifact
+RUN ./mvnw package -DskipTests
+
+FROM adoptopenjdk/openjdk11:alpine
+
+WORKDIR /app
+
+# Copy over the built artifact from the builder image
+
+# Add necessary health checks, users, environment variables, labels and exposed ports
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD curl -f http://localhost:8080/actuator/health || exit 1
+
+EXPOSE 8080
+
+# Provide default command that will be bundled with container
+CMD ["java", "-jar", "auth.jar"]

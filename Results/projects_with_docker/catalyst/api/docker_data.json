@@ -1,0 +1,48 @@
+{
+    "docker_info": {
+        "base_image": "node:12-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "DEV"
+        ],
+        "envs": [
+            "ENV SUPPORTING_FILES /app"
+        ],
+        "copy_instructions": [
+            "WORKDIR $SUPPORTING_FILES",
+            "ADD package.json .",
+            "COPY . $SUPPORTING_FILES"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apk update && apk add --update alpine-sdk build-base bash python nano",
+                ""
+            ],
+            [
+                "npm i -g pnpm",
+                ""
+            ],
+            [
+                "mkdir -p $SUPPORTING_FILES",
+                "RUN mkdir -p /node_modules"
+            ],
+            [
+                "pnpm install",
+                ""
+            ],
+            [
+                "npm run test",
+                ""
+            ],
+            [
+                "npm run build",
+                ""
+            ]
+        ]
+    }
+}

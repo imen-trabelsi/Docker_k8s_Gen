@@ -1,0 +1,46 @@
+# Set base image
+FROM ghcr.io/absaoss/vcxagencynode/vcxagency-base:2.5.0-release260-864
+
+# Build arguments
+ARG UID=1002
+ARG GID=1002
+
+# Set Workdir
+WORKDIR /home/indyscan/
+
+# Create Group and User
+RUN addgroup -g $GID indyscan && adduser -u $UID -D -G indyscan indyscan
+
+# Install dependencies
+RUN apk add --no-cache npm bash g++ gcc make cmake python2 curl 
+RUN npm install -g npm@8.7.0
+
+# Copy necessary files
+COPY --chown=indyscan:indyscan indyscan-txtype ./indyscan-txtype
+COPY --chown=indyscan:indyscan indyscan-storage ./indyscan-storage
+COPY --chown=indyscan:indyscan indyscan-daemon/package*.json ./indyscan-daemon/
+
+# Install project dependencies
+RUN chown -R indyscan:indyscan /home/indyscan
+USER indyscan
+RUN npm ci --only=prod
+
+# Copy remaining files
+COPY --chown=indyscan:indyscan indyscan-daemon ./
+
+# Create necessary directories
+RUN mkdir -p /home/indyscan/indyscan-daemon/logs
+RUN mkdir -p /home/indyscan/.indy_client/wallet
+RUN mkdir -p /home/indyscan/.indy_client/pool
+
+# Labels
+LABEL org.label-schema.schema-version="1.1.0"
+LABEL org.label-schema.name="indyscan-daemon"
+LABEL org.label-schema.description="Application"
+LABEL org.label-schema.vcs-url="https://github.com/Patrik-Stas/indyscan"
+
+# Run as indyscan user
+USER indyscan
+
+# Start command
+CMD ["npm", "run", "start"]

@@ -1,0 +1,55 @@
+{
+    "docker_info": {
+        "base_image": "rust:alpine3.13",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3002"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV RUSTFLAGS -Ctarget-feature=-crt-static"
+        ],
+        "copy_instructions": [
+            "WORKDIR /workdir",
+            "WORKDIR electrs",
+            "WORKDIR /workdir",
+            "COPY --from=electrsbuild /workdir/electrs/target/release/electrs ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "./electrs",
+                    "--cookie",
+                    "'user:password'",
+                    "\\"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --no-cache clang-dev build-base linux-headers git",
+                "RUN rustup component add rustfmt"
+            ],
+            [
+                "git clone --no-checkout https://github.com/Blockstream/electrs.git",
+                ""
+            ],
+            [
+                "git checkout a33e97e1a1fc63fa9c20a116bb92579bbf43b254",
+                ""
+            ],
+            [
+                "cargo build --release --locked --bin electrs",
+                ""
+            ],
+            [
+                "apk --no-cache add musl libgcc libstdc++",
+                ""
+            ]
+        ]
+    }
+}

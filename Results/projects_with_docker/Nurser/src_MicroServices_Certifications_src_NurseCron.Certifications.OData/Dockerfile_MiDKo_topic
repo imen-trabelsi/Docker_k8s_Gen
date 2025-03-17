@@ -1,0 +1,17 @@
+# Use the official DotNet AspNet image as base
+FROM mcr.microsoft.com/dotnet/aspnet
+
+# Set work directory
+WORKDIR /app
+
+# Copy application code
+COPY ./pub .
+
+# Expose the port application runs on
+EXPOSE 80
+
+# Set execute permissions to the script 
+RUN chmod  +x NursCron.Certifications.OData.dll
+
+# Entry point to start the application
+ENTRYPOINT ["dotnet", "NurseCron.Certifications.OData.dll"]

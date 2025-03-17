@@ -1,0 +1,96 @@
+{
+    "docker_info": {
+        "base_image": "ghcr.io/absaoss/vcxagencynode/vcxagency-base:2.5.0-release260-864",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "node",
+            "root",
+            "indyscan",
+            "root"
+        ],
+        "labels": [
+            "org.label-schema.schema-version=\"1.1.0\"",
+            "org.label-schema.name=\"indyscan-daemon\"",
+            "org.label-schema.description=\"Application",
+            "org.label-schema.vcs-url=\"https://github.com/Patrik-Stas/indyscan\""
+        ],
+        "health_checks": [],
+        "build_args": [
+            "UID=1002",
+            "GID=1002"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /home/indyscan/indyscan-txtype",
+            "WORKDIR /home/indyscan/indyscan-storage",
+            "WORKDIR /home/indyscan/indyscan-daemon",
+            "WORKDIR /home/indyscan/indyscan-txtype",
+            "COPY --chown=indyscan:indyscan indyscan-txtype ./",
+            "WORKDIR /home/indyscan/indyscan-storage",
+            "COPY --chown=indyscan:indyscan indyscan-storage ./",
+            "WORKDIR /home/indyscan/indyscan-daemon",
+            "COPY --chown=indyscan:indyscan indyscan-daemon/package*.json ./",
+            "WORKDIR /home/indyscan/indyscan-daemon"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "npm",
+                    "run",
+                    "start"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --no-cache \\",
+                "npm",
+                "bash",
+                "g++",
+                "gcc",
+                "make",
+                "cmake",
+                "python2",
+                "curl"
+            ],
+            [
+                "npm install -g npm@8.7.0",
+                ""
+            ],
+            [
+                "addgroup -g $GID indyscan && adduser -u $UID -D -G indyscan indyscan",
+                ""
+            ],
+            [
+                "chown -R indyscan:indyscan /home/indyscan",
+                ""
+            ],
+            [
+                "npm ci --only=prod",
+                ""
+            ],
+            [
+                "npm ci --only=prod",
+                ""
+            ],
+            [
+                "npm ci --only=prod",
+                "COPY --chown=indyscan:indyscan indyscan-daemon ./"
+            ],
+            [
+                "chown -R indyscan:indyscan /home/indyscan",
+                "USER indyscan"
+            ],
+            [
+                "mkdir -p /home/indyscan/indyscan-daemon/logs",
+                "RUN mkdir -p /home/indyscan/.indy_client/wallet"
+            ],
+            [
+                "mkdir -p /home/indyscan/.indy_client/pool",
+                ""
+            ]
+        ]
+    }
+}

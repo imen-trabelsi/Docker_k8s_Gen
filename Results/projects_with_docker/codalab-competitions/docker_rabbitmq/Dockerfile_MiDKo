@@ -1,0 +1,17 @@
+# Use rabbitmq base image
+FROM rabbitmq:3.13.7-management as base
+
+# Update system and install gettext for i18n support
+RUN apt-get update && apt-get install -y gettext
+
+# Set up Python environment
+FROM python:3.8-slim
+
+WORKDIR /app
+
+COPY requirements.txt .
+
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy project files
+COPY . .

@@ -1,0 +1,36 @@
+{
+    "docker_info": {
+        "base_image": "public.ecr.aws/lambda/python:3.12",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY app ${LAMBDA_TASK_ROOT}",
+            "COPY requirements.txt requirements.txt"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"upload_statistics.lambda_handler\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "pip install --requirement requirements.txt",
+                ""
+            ],
+            [
+                "dnf update -y libarchive --releasever 2023.6.20241028 && \\",
+                "dnf clean all"
+            ]
+        ]
+    }
+}

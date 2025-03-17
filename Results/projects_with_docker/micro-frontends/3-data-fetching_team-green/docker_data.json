@@ -1,0 +1,41 @@
+{
+    "docker_info": {
+        "base_image": "node:20",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3002"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY package.json /code/",
+            "COPY package-lock.json /code/",
+            "COPY ./src /code/src",
+            "COPY ./images /code/images"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"npm\",",
+                    "\"start\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p /code",
+                "WORKDIR /code"
+            ],
+            [
+                "npm install",
+                ""
+            ]
+        ]
+    }
+}

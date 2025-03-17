@@ -1,0 +1,24 @@
+# Dockerfile
+FROM node:12.22.12
+
+WORKDIR /usr/src/app
+
+# Copy application dependency manifests to the container image.
+# A wildcard is used to ensure both package.json AND package-lock.json are copied.
+# COPY Instruction
+COPY package*.json ./
+
+# Install application dependencies inside the docker image
+# We install globally so that these tools will be useful
+# for any project that is in a subdirectory in the container
+RUN npm install
+RUN npm install grunt-cli -g
+
+# Copy local code to the container image.
+COPY . .
+
+# Exposed Ports
+EXPOSE 3000
+
+# command to run on container start
+CMD [ "node", "server.js" ]

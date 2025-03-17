@@ -1,0 +1,1557 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "LICENSE",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "src",
+            "type": "tree"
+        },
+        {
+            "path": "src/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways",
+            "type": "tree"
+        },
+        {
+            "path": "src/ApiGateways/YarpApiGateway",
+            "type": "tree"
+        },
+        {
+            "path": "src/ApiGateways/YarpApiGateway/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/YarpApiGateway/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/YarpApiGateway/YarpApiGateway.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/YarpApiGateway/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/YarpApiGateway/appsettings.Local.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/YarpApiGateway/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks",
+            "type": "tree"
+        },
+        {
+            "path": "src/BuildingBlocks/BuildingBlocks.Messaging",
+            "type": "tree"
+        },
+        {
+            "path": "src/BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/BuildingBlocks.Messaging/Events",
+            "type": "tree"
+        },
+        {
+            "path": "src/BuildingBlocks/BuildingBlocks.Messaging/Events/BasketCheckoutEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/BuildingBlocks.Messaging/Events/IntegrationEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/BuildingBlocks.Messaging/MassTransit",
+            "type": "tree"
+        },
+        {
+            "path": "src/BuildingBlocks/BuildingBlocks.Messaging/MassTransit/Extentions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/BuildingBlocks",
+            "type": "tree"
+        },
+        {
+            "path": "src/BuildingBlocks/BuildingBlocks/Behaviors",
+            "type": "tree"
+        },
+        {
+            "path": "src/BuildingBlocks/BuildingBlocks/Behaviors/LoggingBehavior.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/BuildingBlocks/Behaviors/ValidationBehavior.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/BuildingBlocks/CQRS",
+            "type": "tree"
+        },
+        {
+            "path": "src/BuildingBlocks/BuildingBlocks/CQRS/ICommand.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/BuildingBlocks/CQRS/ICommandHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/BuildingBlocks/CQRS/IQuery.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/BuildingBlocks/CQRS/IQueryHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/BuildingBlocks/Exceptions",
+            "type": "tree"
+        },
+        {
+            "path": "src/BuildingBlocks/BuildingBlocks/Exceptions/BadRequestException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/BuildingBlocks/Exceptions/Handler",
+            "type": "tree"
+        },
+        {
+            "path": "src/BuildingBlocks/BuildingBlocks/Exceptions/Handler/CustomExceptionHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/BuildingBlocks/Exceptions/InternalServerException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/BuildingBlocks/Exceptions/NotFoundException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/BuildingBlocks/Pagination",
+            "type": "tree"
+        },
+        {
+            "path": "src/BuildingBlocks/BuildingBlocks/Pagination/PaginatedResult.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/BuildingBlocks/Pagination/PaginationRequest.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/EShopMicroservices.postman_collection.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Basket",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Basket.API.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Basket",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Basket/CheckoutBasket",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Basket/CheckoutBasket/CheckoutBasketEndpoints.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Basket/CheckoutBasket/CheckoutBasketHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Basket/DeleteBasket",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Basket/DeleteBasket/DeleteBasketEndpoints.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Basket/DeleteBasket/DeleteBasketHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Basket/GetBasket",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Basket/GetBasket/GetBasketEndpoints.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Basket/GetBasket/GetBasketHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Basket/StoreBasket",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Basket/StoreBasket/StoreBasketEndpoints.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Basket/StoreBasket/StoreBasketHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Data",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Data/BasketRepository.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Data/CachedBasketRepository.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Data/IBasketRepository.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Dockerfile.original",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Dtos",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Dtos/BasketCheckoutDto.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Exceptions",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Exceptions/BasketNotFoundException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/GlobalUsing.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Models/ShoppingCart.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Models/ShoppingCartItem.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Catalog.API.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Data",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Data/CatalogInitialData.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Dockerfile.original",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Exceptions",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Exceptions/ProductNotFoundException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/GlobalUsing.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Models/Product.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Products",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Products/CreateProduct",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Products/CreateProduct/CreateProductEndpoint.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Products/CreateProduct/CreateProductHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Products/DeleteProduct",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Products/DeleteProduct/DeleteProductEndpoint.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Products/DeleteProduct/DeleteProductHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Products/GetProductByCategory",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Products/GetProductByCategory/GetProductByCategoryEndpoint.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Products/GetProductByCategory/GetProductByCategoryHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Products/GetProductById",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Products/GetProductById/GetProductByIdEndpoint.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Products/GetProductById/GetProductByIdHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Products/GetProducts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Products/GetProducts/GetProductsEndpoint.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Products/GetProducts/GetProductsHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Products/UpdateProduct",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Products/UpdateProduct/UpdateProductEndpoint.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Products/UpdateProduct/UpdateProductHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Discount",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Discount/Discount.Grpc",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Discount/Discount.Grpc/Data",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Discount/Discount.Grpc/Data/DiscountContext.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Discount/Discount.Grpc/Data/Extentions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Discount/Discount.Grpc/Discount.Grpc.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Discount/Discount.Grpc/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Discount/Discount.Grpc/Migrations",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Discount/Discount.Grpc/Migrations/20240202091837_InitialCreate.Designer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Discount/Discount.Grpc/Migrations/20240202091837_InitialCreate.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Discount/Discount.Grpc/Migrations/DiscountContextModelSnapshot.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Discount/Discount.Grpc/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Discount/Discount.Grpc/Models/Coupon.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Discount/Discount.Grpc/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Discount/Discount.Grpc/Protos",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Discount/Discount.Grpc/Protos/discount.proto",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Discount/Discount.Grpc/Services",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Discount/Discount.Grpc/Services/DiscountService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Discount/Discount.Grpc/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Discount/Discount.Grpc/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Discount/Discount.Grpc/discountdb",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/DependencyInjection.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Dockerfile.original",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Endpoints",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Endpoints/CreateOrder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Endpoints/DeleteOrder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Endpoints/GetOrders.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Endpoints/GetOrdersByCustomer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Endpoints/GetOrdersByName.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Endpoints/UpdateOrder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/GlobalUsing.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Ordering.API.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Data",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Data/IApplicationDbContext.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/DependencyInjection.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Dtos",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Dtos/AddressDto.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Dtos/OrderDto.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Dtos/OrderItemDto.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Dtos/PaymentDto.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Exceptions",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Exceptions/OrderNotFoundException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Extensions",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Extensions/OrderExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/GlobalUsing.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Ordering.Application.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders/Commands",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders/Commands/CreateOrder",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders/Commands/CreateOrder/CreateOrderCommand.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders/Commands/CreateOrder/CreateOrderHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders/Commands/DeleteOrder",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders/Commands/DeleteOrder/DeleteOrderCommand.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders/Commands/DeleteOrder/DeleteOrderHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders/Commands/UpdateOrder",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders/Commands/UpdateOrder/UpdateOrderCommand.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders/Commands/UpdateOrder/UpdateOrderHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders/EventHandlers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders/EventHandlers/Domain",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders/EventHandlers/Domain/OrderCreatedEventHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders/EventHandlers/Domain/OrderUpdatedEventHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders/EventHandlers/Integration",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders/EventHandlers/Integration/BasketCheckoutEventHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders/Queries",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders/Queries/GetOrders",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders/Queries/GetOrders/GetOrdersHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders/Queries/GetOrders/GetOrdersQuery.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders/Queries/GetOrdersByCustomer",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders/Queries/GetOrdersByCustomer/GetOrdersByCustomerHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders/Queries/GetOrdersByCustomer/GetOrdersByCustomerQuery.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders/Queries/GetOrdersByName",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders/Queries/GetOrdersByName/GetOrdersByNameHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Application/Orders/Queries/GetOrdersByName/GetOrdersByNameQuery.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/Abstractions",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/Abstractions/Aggregate.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/Abstractions/Entity.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/Abstractions/IAggregate.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/Abstractions/IDomainEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/Abstractions/IEntity.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/Enums",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/Enums/OrderStatus.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/Events",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/Events/OrderCreatedEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/Events/OrderUpdatedEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/Exceptions",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/Exceptions/DomainException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/GlobalUsing.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/Models/Customer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/Models/Order.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/Models/OrderItem.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/Models/Product.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/Ordering.Domain.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/ValueObjects",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/ValueObjects/Address.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/ValueObjects/CustomerId.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/ValueObjects/OrderId.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/ValueObjects/OrderItemId.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/ValueObjects/OrderName.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/ValueObjects/Payment.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Domain/ValueObjects/ProductId.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Infrastructure",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Infrastructure/Data",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Infrastructure/Data/ApplicationDbContext.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Infrastructure/Data/Configurations",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Infrastructure/Data/Configurations/CustomerConfiguration.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Infrastructure/Data/Configurations/OrderConfiguration.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Infrastructure/Data/Configurations/OrderItemConfiguration.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Infrastructure/Data/Configurations/ProductConfiguration.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Infrastructure/Data/Extensions",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Infrastructure/Data/Extensions/DatabaseExtentions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Infrastructure/Data/Extensions/InitialData.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Infrastructure/Data/Interceptors",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Infrastructure/Data/Interceptors/AuditableEntityInterceptor.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Infrastructure/Data/Interceptors/DispatchDomainEventsInterceptor.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Infrastructure/Data/Migrations",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Infrastructure/Data/Migrations/20240216090112_InitialCreate.Designer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Infrastructure/Data/Migrations/20240216090112_InitialCreate.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Infrastructure/Data/Migrations/ApplicationDbContextModelSnapshot.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Infrastructure/DependencyInjection.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Infrastructure/GlobalUsing.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.Infrastructure/Ordering.Infrastructure.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps",
+            "type": "tree"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web",
+            "type": "tree"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/GlobalUsing.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Models/Basket",
+            "type": "tree"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Models/Basket/BasketCheckoutModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Models/Basket/ShoppingCartModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Models/Catalog",
+            "type": "tree"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Models/Catalog/ProductModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Models/Ordering",
+            "type": "tree"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Models/Ordering/OrderModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Models/Ordering/PaginatedResult.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages",
+            "type": "tree"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/Cart.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/Cart.cshtml.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/Checkout.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/Checkout.cshtml.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/Confirmation.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/Confirmation.cshtml.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/Contact.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/Contact.cshtml.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/Error.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/Error.cshtml.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/Index.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/Index.cshtml.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/OrderList.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/OrderList.cshtml.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/Privacy.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/Privacy.cshtml.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/ProductDetail.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/ProductDetail.cshtml.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/ProductList.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/ProductList.cshtml.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/Shared",
+            "type": "tree"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/Shared/_Layout.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/Shared/_Layout.cshtml.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/Shared/_ProductItemPartial.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/Shared/_TopProductPartial.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/Shared/_ValidationScriptsPartial.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/_ViewImports.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Pages/_ViewStart.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Services",
+            "type": "tree"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Services/IBasketService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Services/ICatalogService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Services/IOrderingService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/Shopping.Web.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot",
+            "type": "tree"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/css",
+            "type": "tree"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/css/style.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/favicon.ico",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/images",
+            "type": "tree"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/images/banner",
+            "type": "tree"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/images/banner/banner1.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/images/banner/banner2.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/images/banner/banner3.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/images/placeholder.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/images/product",
+            "type": "tree"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/images/product/product-1.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/images/product/product-2.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/images/product/product-3.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/images/product/product-4.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/images/product/product-5.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/images/product/product-6.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/images/product/product-7.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/images/product/productx1.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/images/product/productx2.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/images/product/productx3.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/images/product/productx4.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/images/product/productx5.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/images/product/productx6.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/images/product/productx7.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib",
+            "type": "tree"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap",
+            "type": "tree"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/LICENSE",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist",
+            "type": "tree"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css",
+            "type": "tree"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.css.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.min.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.min.css.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.rtl.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.rtl.css.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.rtl.min.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.rtl.min.css.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.css.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.min.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.min.css.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.rtl.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.rtl.css.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.rtl.min.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.rtl.min.css.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.css.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.min.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.min.css.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.rtl.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.rtl.css.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.rtl.min.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap-utilities.rtl.min.css.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap.css.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap.min.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap.min.css.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap.rtl.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap.rtl.css.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap.rtl.min.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/css/bootstrap.rtl.min.css.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/js",
+            "type": "tree"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.js.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.min.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.min.js.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/js/bootstrap.esm.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/js/bootstrap.esm.js.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/js/bootstrap.esm.min.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/js/bootstrap.esm.min.js.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/js/bootstrap.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/js/bootstrap.js.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/js/bootstrap.min.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/bootstrap/dist/js/bootstrap.min.js.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/jquery-validation-unobtrusive",
+            "type": "tree"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/jquery-validation-unobtrusive/LICENSE.txt",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/jquery-validation",
+            "type": "tree"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/jquery-validation/LICENSE.md",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/jquery-validation/dist",
+            "type": "tree"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/jquery-validation/dist/additional-methods.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/jquery-validation/dist/additional-methods.min.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/jquery-validation/dist/jquery.validate.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/jquery-validation/dist/jquery.validate.min.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/jquery",
+            "type": "tree"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/jquery/LICENSE.txt",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/jquery/dist",
+            "type": "tree"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/jquery/dist/jquery.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/jquery/dist/jquery.min.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/WebApps/Shopping.Web/wwwroot/lib/jquery/dist/jquery.min.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/docker-compose.dcproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/docker-compose.override.yml",
+            "type": "blob"
+        },
+        {
+            "path": "src/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "src/eshop-microservices.sln",
+            "type": "blob"
+        },
+        {
+            "path": "src/launchSettings.json",
+            "type": "blob"
+        }
+    ]
+}

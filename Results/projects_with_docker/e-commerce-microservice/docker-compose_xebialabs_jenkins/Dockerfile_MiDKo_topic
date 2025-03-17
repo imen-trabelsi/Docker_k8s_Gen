@@ -1,0 +1,43 @@
+# Start from a Java image.
+FROM openjdk:11-jre-slim as builder
+
+ENV APP_HOME=/app
+
+WORKDIR $APP_HOME
+
+COPY build.gradle $APP_HOME
+
+# Do 'gradle build' to download dependencies and compile Java code
+RUN gradle build
+
+# Since this stage is only for the compiled Java application,
+# no further build steps are needed.
+
+# Now, start another stage, which will be the final one, where the Jenkins image will be.
+FROM jenkins/jenkins:2.138.1
+
+# Set environment variables.
+ENV JENKINS_USER admin
+ENV JENKINS_PASS admin
+ENV JAVA_OPTS -Djenkins.install.runSetupWizard=false -Djenkins.model.Jenkins.slaveAgentPort=55888
+
+# Install the necessary dependencies.
+RUN apt-get update && \
+    apt-get install -y apt-transport-https ca-certificates curl gnupg2 software-properties-common && \
+    curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor > /etc/apt/trusted.gpg.d/docker.gpg && \
+    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/debian $(lsb_release -cs) stable" && \
+    apt-get update && \
+    apt-get install -y docker-ce && \
+
+# Copy required files and scripts.
+COPY init.groovy /var/jenkins_home/init.groovy.d/
+COPY plugins.txt /usr/share/jenkins/ref/plugins.txt
+
+# Execute command to install plugins.
+RUN /usr/local/bin/install-plugins.sh < /usr/share/jenkins/ref/plugins.txt
+
+# Run Jenkins.
+CMD [“java”, “-jar”, “/app/target/my-app.jar”]
+
+# Expose port for the application.
+EXPOSE 8080

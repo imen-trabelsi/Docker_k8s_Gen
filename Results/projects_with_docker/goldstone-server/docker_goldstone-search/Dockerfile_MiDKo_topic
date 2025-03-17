@@ -1,0 +1,23 @@
+# Base Image
+FROM solinea/elasticsearch:1.7.1
+
+# Set up dependencies using setuptools
+COPY setup.py /app/
+RUN python3 -m pip install --no-cache-dir -e /app
+
+# Expose the correct Port
+EXPOSE 9200
+
+# Add necessary run commands and plugins from input
+RUN plugin install mobz/elasticsearch-head \
+
+# Set up necessary environment variables
+ENV ES_CLUSTERNAME="goldstone"
+
+# Copy necessary Configuration Files
+COPY docker/docker-compose.yml /
+COPY docker/goldstone-search/Dockerfile /
+COPY config /usr/share/elasticsearch/config
+
+# Define ENTRYPOINT instructions
+ENTRYPOINT ["docker-entrypoint.sh"]

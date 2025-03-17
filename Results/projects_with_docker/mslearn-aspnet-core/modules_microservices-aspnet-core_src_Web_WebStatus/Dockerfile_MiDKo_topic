@@ -1,0 +1,30 @@
+# Use the dotnet SDK image as the base image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+
+# Set up .NET Core CLI to use a specific Nuget Feed
+COPY NuGet.config ./
+
+#Copy and restore all the projects
+COPY ["eShop-Learn.sln", "./"]
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+#... Repeat for all projects
+
+#Copy everything else
+COPY . .
+WORKDIR "/src/src/Web/WebStatus"
+
+RUN dotnet restore "eShop-Learn.sln"
+RUN dotnet publish "WebStatus.csproj" -c Release -o /app/publish
+
+# Generate runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
+WORKDIR /app
+
+# Setup command to start the app
+ENTRYPOINT ["dotnet", "WebStatus.dll"]
+  
+# Expose ports
+EXPOSE 80
+
+

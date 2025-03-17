@@ -1,0 +1,39 @@
+{
+    "docker_info": {
+        "base_image": "ubuntu:18.04",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "KUD_ENABLE_TESTS=false",
+            "KUD_PLUGIN_ENABLED=false",
+            "CONTAINER_RUNTIME=docker",
+            "KUD_DEBUG=\"\"",
+            "ENABLE_KATA_WEBHOOK=false",
+            "KATA_WEBHOOK_RUNTIMECLASS=kata-clh"
+        ],
+        "envs": [
+            "ENV KUD_ENABLE_TESTS=$KUD_ENABLE_TESTS",
+            "ENV KUD_PLUGIN_ENABLED=$KUD_PLUGIN_ENABLED",
+            "ENV CONTAINER_RUNTIME=$CONTAINER_RUNTIME",
+            "ENV KUD_DEBUG=$KUD_DEBUG",
+            "ENV ENABLE_KATA_WEBHOOK=$ENABLE_KATA_WEBHOOK",
+            "ENV KATA_WEBHOOK_RUNTIMECLASS=$KATA_WEBHOOK_RUNTIMECLASS"
+        ],
+        "copy_instructions": [
+            "ADD . /usr/src/multicloud-k8s",
+            "WORKDIR /usr/src/multicloud-k8s/kud/hosting_providers/containerized"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "./installer --install_pkg",
+                "ENTRYPOINT [\"tail -f /dev/null\"]"
+            ]
+        ]
+    }
+}

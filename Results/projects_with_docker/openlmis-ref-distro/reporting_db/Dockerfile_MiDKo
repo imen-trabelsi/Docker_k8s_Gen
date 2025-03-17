@@ -1,0 +1,32 @@
+# Use alpine:3.11 as base image
+FROM alpine:3.11
+
+# Update and install python and pip
+RUN apk add --no-cache python3 py3-pip postgresql-libs \
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the requirements file into the container
+COPY requirements.txt ./
+
+# Install all requirements
+RUN pip install --no-cache-dir -r requirements.txt \
+
+# Copy the rest of the source code
+COPY . .
+
+# Copy Docker entrypoint initializer script
+COPY ./docker-entrypoint-initdb.d /docker-entrypoint-initdb.d
+
+# Make the entrypoint script executable
+RUN chmod +x /docker-entrypoint-initdb.d
+
+# Set the entry point to the entrypoint script
+ENTRYPOINT ["/docker-entrypoint-initdb.d"]
+
+# Set the application execution command
+CMD ["/bin/true"]
+
+# Expose the application port
+EXPOSE 8000

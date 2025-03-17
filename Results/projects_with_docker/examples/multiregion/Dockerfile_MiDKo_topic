@@ -1,0 +1,41 @@
+# Step 1: Using Base Image
+FROM $REPOSITORY/$IMAGE:$CP_VERSION
+
+# Step 2: Define the build arguments
+ARG REPOSITORY
+ARG IMAGE
+ARG CP_VERSION
+
+# Step 3: Installing dependencies
+USER root
+RUN yum install -y \
+libmnl \
+findutils \
+
+RUN wget http://vault.centos.org/8.1.1911/BaseOS/x86_64/os/Packages/iproute-tc-4.18.0-15.el8.x86_64.rpm \
+
+RUN wget http://vault.centos.org/8.1.1911/BaseOS/x86_64/os/Packages/iptables-libs-1.8.2-16.el8.x86_64.rpm \
+
+# Step 4: Creating Spring Boot app directory
+WORKDIR /app
+
+# Step 5: Copying pom.xml and source code to the application directory
+COPY pom.xml /app
+COPY src /app/src
+
+# Step 6: Build the application
+RUN mvn clean package -DskipTests
+
+# Step 7: Defining the entry point
+ENTRYPOINT ["java","-jar","target/spring-boot-app.jar"]
+
+# Step 8: Switching to non-root user
+USER appuser
+
+# Step 9: Exposing the necessary ports
+EXPOSE 8080 5005
+
+# Step 10: Copy the configuration and static files
+COPY multiregion/.env /app
+COPY multiregion/docker-compose.yml /app
+COPY multiregion/Dockerfile /app

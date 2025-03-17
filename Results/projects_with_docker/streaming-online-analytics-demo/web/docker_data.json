@@ -1,0 +1,39 @@
+{
+    "docker_info": {
+        "base_image": "nodesource/centos7:0.10.45",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8181"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ./package.json /usr/src/app/",
+            "COPY . /usr/src/app"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"npm\",",
+                    "\"start\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p /usr/src/app",
+                "WORKDIR /usr/src/app"
+            ],
+            [
+                "npm install",
+                ""
+            ]
+        ]
+    }
+}

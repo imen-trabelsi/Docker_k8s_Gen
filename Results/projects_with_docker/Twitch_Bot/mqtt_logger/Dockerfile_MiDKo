@@ -1,0 +1,21 @@
+# Base Image
+FROM python:3.9
+
+# Set Workdir
+WORKDIR /workspace/mqtt_logger/
+
+# Copy requirement file
+COPY ./requirements.txt /workspace/mqtt_logger/
+
+# Set environment variables
+ENV PIP_NO_CACHE_DIR=false \
+    PIP_INDEX_URL= \
+
+# Run Commands
+RUN pip install --upgrade -r /workspace/mqtt_logger/requirements.txt
+
+# Copy Project to Workdir
+COPY ./ /workspace/mqtt_logger/
+
+# Entrypoint and Execution Command
+CMD ["./wait_for_it.sh", "mqtt:1883", "--timeout=60", "--strict", "--", "python", "main.py"]

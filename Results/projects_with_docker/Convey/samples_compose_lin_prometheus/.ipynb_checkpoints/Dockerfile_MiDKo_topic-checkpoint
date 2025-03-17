@@ -1,0 +1,11 @@
+# Use the prom/prometheus as the base image, as provided by the user
+FROM prom/prometheus
+
+# Set the work directory to /app
+WORKDIR /app
+
+# Copy the Prometheus configuration
+COPY ./prometheus.yml /etc/prometheus/prometheus.yml
+
+# Expose Prometheus default port
+EXPOSE 9090

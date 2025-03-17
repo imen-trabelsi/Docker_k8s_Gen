@@ -1,0 +1,40 @@
+{
+    "docker_info": {
+        "base_image": "node:alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [
+            "HEALTHCHECK --interval=1m --timeout=3s CMD curl --fail http://localhost/vitals/docker || exit 1"
+        ],
+        "build_args": [],
+        "envs": [
+            "ENV DEBUG loopback:connector:swagger"
+        ],
+        "copy_instructions": [
+            "COPY package.json .",
+            "COPY . ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"npm\",",
+                    "\"run\",",
+                    "\"start.dev\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p /usr/src/app",
+                "WORKDIR /usr/src/app"
+            ]
+        ]
+    }
+}

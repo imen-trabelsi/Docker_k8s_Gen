@@ -1,0 +1,55 @@
+# Step 1: Base Image
+############################
+FROM rust as base
+
+LABEL maintainer="name@domain.com"
+
+# Setting environment variables
+ENV MISE_DATA_DIR="/mise"
+ENV MISE_CACHE_DIR="/mise/cache"
+ENV MISE_INSTALL_PATH="/usr/local/bin/mise"
+ENV PATH="/mise/shims:$PATH"
+ENV MISE_CARGO_HOME="/usr/local/cargo"
+ENV GOOGLE_CLOUD_WORKLOAD_IDENTITY_FEDERATION_CONFIG_JSON=${GOOGLE_CLOUD_WORKLOAD_IDENTITY_FEDERATION_CONFIG_JSON}
+ENV COREPACK_HOME=/usr/local/src/var/corepack-cache
+ENV NODE_ENV=production
+
+# HEALTHCHECK
+HEALTHCHECK --interval=5s --timeout=3s --start-period=10s --retries=3 CMD curl -f http://localhost:4100/health || exit 1
+
+RUN apt-get update && \
+RUN curl https://mise.run | sh && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    eval "$(mise activate bash)" && \
+
+# Adding user: tsworker
+RUN groupadd --system --gid 60000 hash && \
+
+# Changing to new user
+USER tsworker:hash
+
+WORKDIR /app
+COPY . .
+
+# Step 2: Development Image
+############################
+# Creating the builder layer
+FROM base as builder
+
+WORKDIR /usr/local/
+COPY rust-toolchain.toml .
+
+WORKDIR /usr/local/src/
+
+WORKDIR /usr/local/src/apps/hash-ai-worker-ts
+
+# Execution
+############################
+# Replacing shell with bash so we can source files
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
+RUN command -v node > /dev/null || (apt-get update && apt-get install -y nodejs)
+
+ENTRYPOINT ["yarn"]
+CMD ["start"]

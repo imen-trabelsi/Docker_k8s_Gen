@@ -1,0 +1,29 @@
+{
+    "docker_info": {
+        "base_image": "hmctspublic.azurecr.io/base/java:21-distroless",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8008"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "APP_INSIGHTS_AGENT_VERSION=3.7.1"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "COPY lib/applicationinsights.json /opt/app/",
+            "COPY build/libs/tribunals-case-api.jar /opt/app/"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"tribunals-case-api.jar\"]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

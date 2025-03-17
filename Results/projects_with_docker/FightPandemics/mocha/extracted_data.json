@@ -1,0 +1,37 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "JavaScript",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"mocha\",\n  \"version\": \"1.0.0\",\n  \"description\": \"Mocha API integration tests\",\n  \"scripts\": {\n    \"pretest\": \"rm -rf mochawesome-report/*\",\n    \"test\": \"mocha --reporter mochawesome './test/**/*.js' --recursive --timeout 60000 --exit\"\n  },\n  \"private\": true,\n  \"devDependencies\": {\n    \"chai\": \"^4.2.0\",\n    \"http-status\": \"^1.4.2\",\n    \"mocha\": \"^8.1.0\",\n    \"mochawesome\": \"^6.2.1\",\n    \"lodash\": \"^4.17.20\",\n    \"mongoose\": \"^5.10.13\",\n    \"should\": \"^13.2.3\",\n    \"supertest\": \"^4.0.2\"\n  }\n}\n"
+        },
+        "database": "MongoDB",
+        "build_system": "npm",
+        "config_files": {
+            "docker-compose.yml": "version: \"3\"\nservices:\n  mongo:\n    image: mongo\n    container_name: mongo\n    environment:\n      MONGO_INITDB_DATABASE: fightpandemics\n    restart: always\n    ports:\n      - \"27017:27017\"\n    networks:\n      - fp_network\n\n  mongo-express:\n    image: mongo-express\n    container_name: mongo-express\n    restart: always\n    ports:\n      - \"8081:8081\"\n    networks:\n      - fp_network\n    depends_on:\n      - mongo\n\n  backend-service:\n    build:\n      context: backend\n      dockerfile: Dockerfile.dev\n      args:\n        NODE_ENV: dev\n    container_name: backend-service\n    restart: always\n    ports:\n      - \"8000:8000\"\n      - \"9229:9229\"\n    volumes:\n      - ./backend:/app\n      - /app/node_modules/\n    working_dir: /app\n    depends_on:\n      - mongo\n      - redis\n    networks:\n      - fp_network\n\n  client:\n    build:\n      context: client\n      dockerfile: Dockerfile.dev\n    restart: always\n    container_name: client\n    environment:\n      BACKEND_SERVICE_URL: http://backend-service:8000\n    ports:\n      - \"3000:3000\"\n    volumes:\n      - ./client:/app\n      - /app/node_modules/\n    working_dir: /app\n    stdin_open: true\n    tty: true\n    networks:\n      - fp_network\n\n  cypress-e2e-tests:\n    build:\n      context: cypresse2e\n      dockerfile: Dockerfile\n    container_name: cypress-e2e-tests\n    depends_on:\n      - client\n    environment:\n      - CYPRESS_baseUrl=http://client:3000\n    entrypoint: \"\"\n    command:\n      [\n        \"dockerize\",\n        \"-wait\",\n        \"http://client:3000\",\n        \"-timeout\",\n        \"300s\",\n        \"bash\",\n        \"-c\",\n        \"npm run test\",\n      ]\n    volumes:\n      - ./cypresse2e/mochawesome-report/:/app/mochawesome-report/\n      - ./cypresse2e/cypress:/app/cypress\n      - ./cypresse2e/cypress.json:/app/cypress.json\n    working_dir: /app\n    networks:\n      - fp_network\n\n  cypress-e2e-report:\n    build:\n      context: cypresse2e\n      dockerfile: Dockerfile\n    container_name: cypress-e2e-report\n    entrypoint: \"\"\n    command: [\"bash\", \"-c\", \"npm run report\"]\n    volumes:\n      - ./cypresse2e/mochawesome-report/:/app/mochawesome-report/\n      - ./cypresse2e/cypress:/app/cypress\n      - ./cypresse2e/cypress.json:/app/cypress.json\n    working_dir: /app\n\n  mocha-integration:\n    build:\n      context: mocha\n      dockerfile: Dockerfile\n    container_name: mocha-integration\n    depends_on:\n      - client\n    environment:\n      MOCHA_URL: http://backend-service:8000\n    command: dockerize -wait http://client:3000 -timeout 300s npm run test\n    volumes:\n      - ./mocha/mochawesome-report/:/app/mochawesome-report/\n      - ./mocha/test/:/app/test/\n      - ./mocha/utils/:/app/utils/\n    working_dir: /app\n    networks:\n      - fp_network\n\n  awscli:\n    image: mesosphere/aws-cli\n    environment:\n      AWS_ACCESS_KEY_ID: dummy_id\n      AWS_SECRET_ACCESS_KEY: dummy_key\n      AWS_DEFAULT_REGION: us-east-1\n    networks:\n      - fp_network\n\n  localstack:\n    image: localstack/localstack\n    container_name: localstack\n    ports:\n      - \"4566:4566\"\n    environment:\n      SERVICES: s3\n      HOSTNAME: localstack\n      DOCKER_HOST: unix:///var/run/docker.sock\n      DATA_DIR: /tmp/localstack/data\n      DEBUG: 1\n    volumes:\n      - /var/run/docker.sock:/var/run/docker.sock\n      - ./localstack:/docker-entrypoint-initaws.d\n    networks:\n      - fp_network\n\n  redis:\n    image: redis:alpine\n    container_name: redis\n    restart: always\n    ports:\n      - \"26379:6379\"\n    volumes:\n      - redis-volume:/data\n    networks:\n      - fp_network\n\nnetworks:\n  fp_network:\n    driver: bridge\n\nvolumes:\n  redis-volume:\n",
+            "mocha/Dockerfile": "FROM node:12-alpine as builder\nWORKDIR '/app'\nCOPY package.json package-lock.json ./\n# Install mocha\nRUN npm install --global mocha mochawesome\n\n# Install dependencies\nRUN npm install --save-dev should supertest chai http-status\n\n#Add dockerize tool -------------------\nENV DOCKERIZE_VERSION v0.6.0\nRUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \\\n     && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \\\n     && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            ".env.example_docker",
+            ".env.example_local",
+            ".eslintrc",
+            ".nvmrc",
+            "Dockerfile",
+            "Dockerfile.dev",
+            "config.js",
+            "jest.config.js",
+            "package-lock.json",
+            "package.json",
+            "server.js",
+            "version.json"
+        ],
+        "folders": [
+            "lib",
+            "scripts"
+        ]
+    }
+}

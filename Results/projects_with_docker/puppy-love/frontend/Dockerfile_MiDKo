@@ -1,0 +1,29 @@
+# Use official base image of Node.js
+FROM node:8-alpine
+
+# Create directory in container image for app source code
+WORKDIR /src
+
+# Copies package.json and yarn.lock to Docker environment
+COPY package.json yarn.lock /tmp/
+
+# Install all node packages
+RUN cd /tmp && yarn install
+
+# Copy the dependencies into a static volume to help with Docker caching
+RUN mkdir -p /src && cp -a /tmp/node_modules /src/
+
+# Copies everything form source to Docker environment 
+COPY . .
+
+# Builds production ready app
+RUN yarn build
+
+# Make port 80 available to the world outside this container
+EXPOSE 80
+
+# Copy nginx.conf configuration file
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Start the server
+CMD ["npm", "start"]

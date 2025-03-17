@@ -1,0 +1,24 @@
+# Use the Ubuntu base image provided by the user
+FROM ubuntu:focal-20240530
+
+# Set the environment variables
+ENV PATH=/milvus/bin:$PATH \
+    LD_LIBRARY_PATH=/milvus/lib:$LD_LIBRARY_PATH:/usr/lib \
+    LD_PRELOAD=${MILVUS_ASAN_LIB}:/milvus/lib/libjemalloc.so \
+
+# Install the necessary dependencies and clean up the cache
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl ca-certificates libaio-dev libgomp1 libopenblas-dev && \
+    apt-get remove --purge -y && \
+    rm -rf /var/lib/apt/lists/* && \
+    curl -L -o /tini https://github.com/krallin/tini/releases/download/v0.19.0/tini-$TARGETARCH && \
+    chmod +x /tini && \
+
+# Copy the necessary files
+COPY --chown=root:root --chmod=774 ./configs/ /milvus/configs/
+COPY --chown=root:root --chmod=774 ./lib/ /milvus/lib/
+COPY --chown=root:root --chmod=774 ./bin/milvus /milvus/bin/milvus
+WORKDIR /milvus/
+
+# Set the entrypoint
+ENTRYPOINT ["/tini", "--"]

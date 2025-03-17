@@ -1,0 +1,22 @@
+# Start with the openjdk 11 base image
+FROM adoptopenjdk/openjdk11:jre-11.0.8_10-alpine
+
+# Define the build arguments
+ARG JAR_FILE=build/libs/*.jar
+
+WORKDIR /application
+
+# Copy the jar file to the correct location
+COPY ${JAR_FILE} application.jar
+
+# Configure and set the entrypoint
+ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]
+
+# Set the entrypoint command to execute the jar file
+RUN java -Djarmode=layertools -jar application.jar extract
+
+# Copy files from the builder image
+COPY --from=builder /application/dependencies/ ./
+COPY --from=builder /application/snapshot-dependencies/ ./
+COPY --from=builder /application/spring-boot-loader/ ./
+COPY --from=builder /application/application/ ./

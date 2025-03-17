@@ -1,0 +1,26 @@
+# Set base image
+FROM openjdk:8-jdk-alpine
+
+# Set working directory in docker image
+WORKDIR /app
+
+# Copy gradle and build file
+COPY build.gradle /app
+
+# Install dependecies
+RUN gradle build
+
+# Copy rest of the application
+COPY . /app
+
+# Argument for external file
+ARG JAR_FILE
+
+# Add Jar file
+COPY ${JAR_FILE} app.jar
+
+# Expose port for the application
+EXPOSE 8080
+
+# Run java file
+ENTRYPOINT ["java", "-jar", "/app.jar"]

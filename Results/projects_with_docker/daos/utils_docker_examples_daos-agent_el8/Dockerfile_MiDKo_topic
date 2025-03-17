@@ -1,0 +1,31 @@
+# Starting from base image
+FROM "$DAOS_DOCKER_IMAGE_NSP/daos-base-$LINUX_DISTRO:$DAOS_DOCKER_IMAGE_TAG"
+
+# Setting metadata
+LABEL maintainer="daos@daos.groups.io"
+
+# Setting environment variables
+ARG LINUX_DISTRO=""
+ARG DAOS_DOCKER_IMAGE_NSP=""
+ARG DAOS_DOCKER_IMAGE_TAG=""
+ARG DAOS_VERSION=""
+
+# Validating if needed arguments are passed
+RUN for it in DAOS_VERSION ; do if eval "[[ -z \$$it ]]" ; then echo "[ERROR] Docker build argument $it is not defined" ; exit 1 ; fi ; done
+
+# Installing dependencies
+RUN echo "[INFO] Installing DAOS containerization dependencies" ; dnf install -y sudo xz
+
+# Installing daos-client
+RUN echo "[INFO] Installing DAOS" ; dnf install -y daos-client-${DAOS_VERSION} && dnf clean all
+
+# Copying configurations
+COPY	daos_agent.yml /etc/daos/daos_agent.yml
+COPY	run-daos_agent.sh /usr/local/sbin/run-daos_agent
+
+# Giving permissions
+RUN chmod 755 /usr/local/sbin/run-daos_agent
+
+# Setting the command to execute
+ENTRYPOINT ["/usr/local/sbin/run-daos_agent"]
+CMD ["start"]

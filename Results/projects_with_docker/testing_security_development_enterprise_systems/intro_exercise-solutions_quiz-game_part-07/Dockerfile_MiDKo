@@ -1,0 +1,24 @@
+# Use official base image of Java Runtine
+FROM jboss/wildfly:18.0.1.Final
+
+# Set the working directory in the container to /app
+WORKDIR /app
+
+# Add Maven dependencies (best to re-use them instead of re-downloading)
+COPY pom.xml /app/pom.xml
+
+# Package the application
+COPY ./src /app/src
+RUN mvn -f /app/pom.xml clean package
+
+# Copy WAR file
+COPY /target/quizgame.war /opt/jboss/wildfly/standalone/deployments/
+
+# Set necessary environments (example environments, consider what you need)
+ENV JAVA_OPTS="-Djava.security.egd=file:/dev/./urandom"
+
+# Expose the ports (should be adapted to your application's needs)
+EXPOSE 8080
+
+# Default command, can be overridden
+CMD [ "/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0" ]

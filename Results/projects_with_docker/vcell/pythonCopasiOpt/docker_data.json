@@ -1,0 +1,49 @@
+{
+    "docker_info": {
+        "base_image": "python:3.10-slim-bullseye",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV PATH=\"/opt/poetry/bin:$PATH\"",
+            "ENV POETRY_HOME=/opt/poetry"
+        ],
+        "copy_instructions": [
+            "COPY ./vcell-opt /usr/local/app/vcell/installDir/python/vcell_opt/",
+            "COPY ./docker_run.sh /usr/local/app/vcell/installDir/",
+            "WORKDIR /usr/local/app/vcell/installDir/python/vcell_opt"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/usr/local/app/vcell/installDir/docker_run.sh\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt -y update && apt -y upgrade &&  \\",
+                "apt install -y curl"
+            ],
+            [
+                "mkdir -p /usr/local/app/vcell/installDir && \\",
+                "mkdir -p /usr/local/app/vcell/installDir/python/vcell_opt"
+            ],
+            [
+                "curl -sSL https://install.python-poetry.org | python3 -  && \\",
+                "cd /usr/local/app/vcell/installDir/python/vcell_opt/ &&",
+                "poetry config cache-dir \"/poetry/.cache\" --local && chmod 755 poetry.toml && poetry install"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,35 @@
+# Use the provided base image
+FROM ubuntu:18.04
+
+# Set the environment varriable
+ENV TERM=xterm \
+
+# Copy the dependency files to the working directory
+COPY requirements/ /root/openTPOD/requirements/
+
+# Create a working directory
+WORKDIR /root/openTPOD
+
+# Copy other necessary files to the working directory
+COPY frontend/package.json /root/openTPOD/frontend/
+COPY frontend /root/openTPOD/frontend/
+COPY . /root/openTPOD/
+
+# Update package list and install necessary packages
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yq \
+
+# Install miniconda
+RUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-py37_4.8.3-Linux-x86_64.sh -O ~/miniconda.sh \
+
+# Create conda env from requirements file
+RUN MAKEFLAGS=-j8 conda env create -f requirements/environment.yml \
+
+# Install and build frontend
+RUN cd frontend && npm install
+RUN cd frontend && npm run-script build
+
+# Expose the necessary port
+EXPOSE 8000
+
+# Use bash as the command
+CMD ["/bin/bash"]

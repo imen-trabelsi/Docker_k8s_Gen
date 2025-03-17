@@ -1,0 +1,120 @@
+{
+    "docker_info": {
+        "base_image": "base",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "5678/tcp",
+            "5000/tcp"
+        ],
+        "user": [
+            "appuser:appuser",
+            "appuser:appuser",
+            "root",
+            "appuser:appuser"
+        ],
+        "labels": [
+            "org.hotosm.tasks.app-version=\"${APP_VERSION}\""
+        ],
+        "health_checks": [],
+        "build_args": [
+            "DEBIAN_IMG_TAG=slim-bookworm",
+            "PYTHON_IMG_TAG=3.10",
+            "APP_VERSION=0.1.0",
+            "DOCKERFILE_VERSION=0.5.0",
+            "ALPINE_IMG_TAG",
+            "DEBIAN_IMG_TAG",
+            "PYTHON_IMG_TAG",
+            "MAINTAINER=sysadmin@hotosm.org",
+            "PYTHON_IMG_TAG"
+        ],
+        "envs": [
+            "ENV TZ UTC",
+            "ENV PYTHONDONTWRITEBYTECODE=1 \\"
+        ],
+        "copy_instructions": [
+            "COPY pyproject.toml pdm.lock README.md /opt/python/",
+            "COPY --from=extract-deps \\",
+            "WORKDIR /usr/src/app",
+            "COPY --from=build \\",
+            "COPY backend backend/",
+            "COPY migrations migrations/",
+            "COPY scripts/world scripts/world/",
+            "COPY scripts/database scripts/database/",
+            "COPY manage.py ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"python\",",
+                    "\"-m\",",
+                    "\"debugpy\",",
+                    "\"--wait-for-client\",",
+                    "\"--listen\",",
+                    "\"0.0.0.0:5678\",",
+                    "\\"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"gunicorn\",",
+                    "\"-c\",",
+                    "\"python:backend.gunicorn\",",
+                    "\"manage:application\",",
+                    "\\"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "useradd --uid 9000 --create-home --home /home/appuser --shell /bin/false appuser",
+                ""
+            ],
+            [
+                "pip install --no-cache-dir --upgrade pip",
+                "WORKDIR /opt/python"
+            ],
+            [
+                "pip install --no-cache-dir pdm==2.18.1",
+                "RUN pdm export --prod --without-hashes > requirements.txt"
+            ],
+            [
+                "pip install --no-cache-dir --upgrade pip",
+                "WORKDIR /opt/python"
+            ],
+            [
+                "apt-get update && apt-get install --no-install-recommends -y \\",
+                "build-essential",
+                "libffi-dev",
+                "libgeos-dev",
+                "postgresql-server-dev-15",
+                "python3-dev",
+                "&& rm -rf /var/lib/apt/lists/*"
+            ],
+            [
+                "pip install --user --no-warn-script-location \\",
+                "--no-cache-dir -r /opt/python/requirements.txt"
+            ],
+            [
+                "apt-get update && \\",
+                "apt-get install --no-install-recommends -y",
+                "libgeos3.11.1 postgresql-client proj-bin &&",
+                "rm -rf /var/lib/apt/lists/*"
+            ],
+            [
+                "pip install --user --no-warn-script-location \\",
+                "--no-cache-dir debugpy==1.8.5"
+            ],
+            [
+                "apt-get update && \\",
+                "apt-get install -y curl &&",
+                "rm -rf /var/lib/apt/lists/*"
+            ],
+            [
+                "python -c \"import compileall; compileall.compile_path(maxlevels=10, quiet=1)\"",
+                "RUN python -m compileall ."
+            ]
+        ]
+    }
+}

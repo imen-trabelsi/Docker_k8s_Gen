@@ -1,0 +1,37 @@
+# Start with the base image provided by the user
+FROM python:3.6
+
+# Change working directory
+WORKDIR /app
+
+# Copy system dependencies list
+WORKDIR /requirements/sys-requirements
+COPY requirements/sys-requirements .
+
+# Combine all system dependencies
+RUN cat sys-requirements-*.txt > sys-requirements.txt
+
+# Display the system dependencies list
+RUN cat sys-requirements.txt
+
+# Install system dependencies
+RUN set -ex \
+
+# Remove unnecessary file
+RUN rm sys-requirements-for-bash-install.txt
+
+# Move to python-requirements directory and copy files
+WORKDIR /requirements/python-requirements
+COPY requirements/python-requirements .
+
+# Move back to main /app directory
+WORKDIR /app
+
+# Copy all local files into the image
+COPY . .
+
+# Install the Python dependencies
+RUN poetry install --no-root --no-dev
+
+# Start command
+CMD ["python", "/app/app.py"]

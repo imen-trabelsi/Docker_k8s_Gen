@@ -1,0 +1,80 @@
+{
+    "docker_info": {
+        "base_image": "mozillabteam/bmo-perl-slim:20240822.1",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "8000"
+        ],
+        "user": [
+            "app",
+            "root",
+            "app"
+        ],
+        "labels": [],
+        "health_checks": [
+            "HEALTHCHECK CMD curl -sfk http://localhost -o/dev/null",
+            "HEALTHCHECK NONE"
+        ],
+        "build_args": [
+            "CI",
+            "CIRCLE_SHA1",
+            "CIRCLE_BUILD_URL"
+        ],
+        "envs": [
+            "ENV DEBIAN_FRONTEND=noninteractive",
+            "ENV CI=${CI}",
+            "ENV CIRCLE_BUILD_URL=${CIRCLE_BUILD_URL}",
+            "ENV CIRCLE_SHA1=${CIRCLE_SHA1}",
+            "ENV LOG4PERL_CONFIG_FILE=log4perl-json.conf",
+            "ENV LOGGING_PORT=5880",
+            "ENV LOCALCONFIG_ENV=1"
+        ],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY . /app"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/app/scripts/entrypoint.pl\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"httpd\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update \\",
+                "&& apt-get upgrade -y",
+                "&& apt-get install -y rsync curl",
+                "&& rm -rf /var/lib/apt/lists/*"
+            ],
+            [
+                "chown -R app:app /app && \\",
+                "perl -I/app -I/app/local/lib/perl5 -c -E 'use Bugzilla; BEGIN { Bugzilla->extensions }' &&",
+                "perl -c /app/scripts/entrypoint.pl"
+            ],
+            [
+                "perl checksetup.pl --no-database --default-localconfig && \\",
+                "rm -rf /app/data /app/localconfig &&",
+                "mkdir /app/data"
+            ],
+            [
+                "apt-get update \\",
+                "&& apt-get install -y firefox-esr lsof",
+                "&& rm -rf /var/lib/apt/lists/*"
+            ],
+            [
+                "curl -L https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckodriver-v0.33.0-linux64.tar.gz -o /tmp/geckodriver.tar.gz \\",
+                "&& cd /tmp",
+                "&& tar zxvf geckodriver.tar.gz",
+                "&& mv geckodriver /usr/bin/geckodriver"
+            ]
+        ]
+    }
+}

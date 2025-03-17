@@ -1,0 +1,36 @@
+# Initial Image
+FROM buildpack-deps:bullseye
+
+# Update Packages
+RUN apt-get update -qq && apt-get install -y chromium chromium-driver curl git \
+&& curl -sL https://deb.nodesource.com/setup_18.x | bash - \
+&& curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+&& echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
+&& apt-get update -qq && apt-get install -y yarn nodejs \
+&& yarn config set cache-folder /root/.yarn/ \
+&& git clone https://github.com/rbenv/rbenv.git /rbenv \
+&& git clone https://github.com/rbenv/ruby-build.git /rbenv/plugins/ruby-build \
+&& /rbenv/plugins/ruby-build/install.sh \
+&& echo 'export PATH="/root/.rbenv/shims:/rbenv/bin:$PATH"' >> /.bashrc \
+&& bash -l \
+&& apt-get update -qq && apt-get upgrade -y && apt-get install -y clamav less \
+
+# Set Workdir
+WORKDIR /app
+
+# Install project dependencies
+COPY Gemfile* ./
+RUN bundle install
+
+# Copy static files
+COPY . .
+
+# Set Environment Variables
+ENV GOVUK_TEST_CHROME_NO_SANDBOX 1
+ENV BUNDLE_SILENCE_ROOT_WARNING 1
+
+# Setup Startup Command
+CMD ["bundle", "exec", "rackup", "-o", "0.0.0.0"]
+
+# Expose ports
+EXPOSE 9292

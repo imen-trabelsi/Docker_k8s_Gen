@@ -1,0 +1,20 @@
+# Using multi-stage build
+# Stage 1: Build
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+# Further copy commands... 
+COPY ["src/Web/WebStatus/WebStatus.csproj", "src/Web/WebStatus/"]
+COPY ["NuGet.config", "./"]
+COPY ["docker-compose.dcproj", "./"]
+COPY ["eShop-Learn.sln", "./"]
+COPY . .
+WORKDIR "/src/src/Services/Coupon/Coupon.API"
+RUN dotnet restore "eShop-Learn.sln"
+RUN dotnet publish --no-restore "Coupon.API.csproj" -c Release -o /app/publish
+
+# Stage 2: Runtime 
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS runtime
+WORKDIR /app
+EXPOSE 80
+ENTRYPOINT ["dotnet", "Coupon.API.dll"]

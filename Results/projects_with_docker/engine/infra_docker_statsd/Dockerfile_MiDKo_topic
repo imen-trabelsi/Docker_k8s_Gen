@@ -1,0 +1,23 @@
+# Choose the base image
+FROM statsd/statsd
+
+# Copy the configuration file from the local directory to the container
+COPY infra/docker/statsd/config.json config.js
+
+# Define the ENV variables needed for the environment
+ARG PY_ENV=production
+
+# Use the above build argument to set an environment variable
+ENV PY_ENV=${PY_ENV}
+
+# Copy the dependencies file from the local directory to the container
+COPY pyproject.toml ./
+
+# Install the necessary dependencies
+RUN poetry install $(if [ "$PY_ENV" = 'production' ]; \
+
+# Copy the rest of the code from the local directory to the container
+COPY . .
+
+# Specify the command to run on container start
+CMD ["python", "app.py"]

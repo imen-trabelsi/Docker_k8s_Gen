@@ -1,0 +1,26 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Spring Boot",
+        "dependencies": {
+            "build.gradle": "buildscript {\n    repositories {\n        mavenCentral()\n    }\n}\n\nplugins {\n    id 'java'\n    id 'org.springframework.boot' version \"${springBoot}\"\n    id 'io.spring.dependency-management' version \"${dependencyManagement}\"\n    id 'com.avast.gradle.docker-compose' version '0.7.1'\n}\n\nallprojects {\n    group = 'in.projecteka'\n    version = '0.0.1-SNAPSHOT'\n    sourceCompatibility = '11'\n}\n\nsubprojects {\n    apply plugin: 'org.springframework.boot'\n    apply plugin: 'io.spring.dependency-management'\n    apply plugin: 'java'\n\n    repositories {\n        mavenCentral()\n    }\n\n    test {\n        useJUnitPlatform()\n    }\n}\n\nproject(':consent') {\n    dependencies {\n        implementation project(':commons')\n    }\n}\n\nproject(':user') {\n    dependencies {\n        implementation project(':commons')\n    }\n}\n\nproject(':dataflow') {\n    dependencies {\n        implementation project(':commons')\n    }\n}\n\nbootJar {\n    enabled = false\n}\n\ndockerCompose {\n    useComposeFiles = ['haproxy/docker-compose.yml']\n}"
+        },
+        "database": null,
+        "build_system": "Gradle",
+        "config_files": {
+            "consent/docker-compose.yml": "version: '3'\nservices:\n  consent-manager:\n    build: .\n    container_name: consent-manager\n    hostname: consent-manager\n    ports:\n      - \"9000:9000\"\n    networks:\n      - backend_default\n    environment:\n      SPRING_PROFILES_ACTIVE: \"docker\"\n      CONSENTMANAGER_CLIENTREGISTRY_XAUTHTOKEN: \"0e3f27a0-c167-45b4-a95b-ca1ba019b1bf\"\n      CONSENTMANAGER_KEYCLOAK_CLIENTSECRET: \"0e3f27a0-c167-45b4-a95b-ca1ba019b1bf\"\n      LOG_LOCATION: /applogs/app.log\n    volumes:\n      - demo_logs:/applogs\n    depends_on:\n      - otp\n      - client-registry\n\n  otp:\n    image: \"ganesan92/otp-service:latest\"\n    container_name: otp\n    hostname: otp\n    networks:\n      - backend_default\n    environment:\n      \"ConnectionStrings:DefaultConnection\": \"Host=postgres;Port=5432;Username=postgres;Password=password;Database=otpservice;\"\n    ports:\n    - \"5000:80\"\n\n  client-registry:\n    image: \"ganesan92/client-registry:f056f2c\"\n    container_name: client-registry\n    hostname: client-registry\n    networks:\n      - backend_default\n    ports:\n      - \"8080:8080\"\n    environment:\n      profile: dev\n      CENTRALREGISTRY_IDENTITY_URL: \"http://keycloak:8080/auth/\"\n      CENTRALREGISTRY_IDENTITY_REALM: \"central-registry\"\n      CENTRALREGISTRY_HOST: \"http://keycloak:8080\"\n\n  filebeat:\n    image: docker.elastic.co/beats/filebeat:7.6.2\n    container_name: filebeat\n    hostname: filebeat\n    networks:\n      - backend_default\n    volumes:\n      - ./filebeat.yml:/usr/share/filebeat/filebeat.yml\n      - demo_logs:/applogs\n\nvolumes:\n  demo_logs:\n    driver: local\n\nnetworks:\n  backend_default:\n    external: true",
+            "consent/Dockerfile": "FROM adoptopenjdk/openjdk11:jre-11.0.8_10-alpine as builder\nWORKDIR application\nARG JAR_FILE=build/libs/*.jar\nCOPY ${JAR_FILE} application.jar\nRUN java -Djarmode=layertools -jar application.jar extract\n\nFROM adoptopenjdk/openjdk11:jre-11.0.8_10-alpine\nWORKDIR application\nCOPY --from=builder application/dependencies/ ./\nCOPY --from=builder application/snapshot-dependencies/ ./\nCOPY --from=builder application/spring-boot-loader/ ./\nCOPY --from=builder application/application/ ./\nENTRYPOINT [\"java\", \"org.springframework.boot.loader.JarLauncher\"] "
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "build.gradle",
+            "settings.gradle"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

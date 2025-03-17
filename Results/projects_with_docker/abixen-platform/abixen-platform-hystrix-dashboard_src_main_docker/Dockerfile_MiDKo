@@ -1,0 +1,20 @@
+# Base Image
+FROM openjdk:8-jre
+
+# Copy Instructions
+COPY abixen-platform-hystrix-dashboard.jar app.jar
+
+# Label of Dockerfile
+LABEL maintainer="your email"
+
+# Exposed Port
+EXPOSE 8989
+
+# Specify Environment Variables
+ENV JAVA_OPTS=""
+
+# Add the java security Property
+# and spring boot profile
+ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=docker -Dabixen.services.eureka.uri=discovery -jar /app.jar"]
+
+CMD ["-jar","/app.jar"]

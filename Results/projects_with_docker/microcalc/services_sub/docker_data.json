@@ -1,0 +1,42 @@
+{
+    "docker_info": {
+        "base_image": "composer:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV docker=true"
+        ],
+        "copy_instructions": [
+            "COPY composer.json composer.lock /app/",
+            "WORKDIR /app",
+            "COPY --from=builder /app /app",
+            "WORKDIR /app"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"php\",",
+                    "\"-S\",",
+                    "\"0.0.0.0:8000\",",
+                    "\"-t\",",
+                    "\"public\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "composer install",
+                "COPY . /app"
+            ]
+        ]
+    }
+}

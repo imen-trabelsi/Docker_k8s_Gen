@@ -1,0 +1,72 @@
+{
+    "docker_info": {
+        "base_image": "--platform=\"${BUILD_PLATFORM}\"",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "1234"
+        ],
+        "user": [
+            "${USER}"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "BUILD_PLATFORM=linux/amd64",
+            "USER=node"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY packages/director/ ./packages/director/",
+            "COPY packages/common/ ./packages/common",
+            "COPY packages/mongo/ ./packages/mongo",
+            "COPY packages/logger/ ./packages/logger",
+            "COPY package.json ./",
+            "COPY yarn.lock ./",
+            "COPY tsconfig.json ./",
+            "WORKDIR /app",
+            "COPY --chown=node:node --from=build /app/packages/ packages/",
+            "COPY --chown=node:node --from=build /app/node_modules/ node_modules/"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/sbin/tini\",",
+                    "\"--\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"./node_modules/.bin/pm2-runtime\",",
+                    "\"packages/director/dist\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "yarn install --frozen-lockfile",
+                ""
+            ],
+            [
+                "yarn workspace @sorry-cypress/common build",
+                "RUN yarn workspace @sorry-cypress/mongo build"
+            ],
+            [
+                "yarn workspace @sorry-cypress/logger build",
+                "RUN yarn workspace @sorry-cypress/director build"
+            ],
+            [
+                "yarn install --production --frozen-lockfile",
+                "RUN apk --no-cache add curl &&",
+                "curl -sf https://gobinaries.com/tj/node-prune | sh &&",
+                "node-prune"
+            ],
+            [
+                "apk add --no-cache tini",
+                "ENV NODE_ENV=production"
+            ]
+        ]
+    }
+}

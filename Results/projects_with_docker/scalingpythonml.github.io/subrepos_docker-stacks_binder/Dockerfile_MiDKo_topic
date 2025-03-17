@@ -1,0 +1,48 @@
+# Use jupyter base notebook image
+FROM $BASE_CONTAINER
+
+# Set maintainer label
+LABEL maintainer="Jupyter"
+
+# Set environment variables
+ENV TAG="aec555e49be6"
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+ENV PATH=/home/$NB_UID/.local/bin:$PATH
+ENV HOME=/home/$NB_UID
+
+# Copy necessary files
+COPY binder/README.ipynb $HOME/
+COPY subrepos/docker-stacks/binder/Dockerfile $HOME/Dockerfile
+
+# Change working directory
+WORKDIR $HOME
+
+# Install PostgreSQL
+RUN apt-get -y update && apt-get install -y postgresql postgresql-contrib && apt-get clean
+
+# Install Ruby and Bundler
+RUN apt-get install -y ruby-full && gem install bundler
+
+# Copy and Install project dependencies
+COPY Gemfile $HOME/Gemfile
+RUN bundle install
+
+# Create a non-root user with uid $NB_UID and fix permissions
+RUN useradd --create-home --shell /bin/bash --uid $NB_UID $NB_UID
+RUN chown -R $NB_UID:$NB_UID $HOME/
+RUN fix-permissions README.ipynb
+
+# Expose the required ports
+# TODO: Add actual port numbers
+EXPOSE 
+
+# Provide healthcheck
+# TODO: Provide actual healthcheck depending on your service requirements
+HEALTHCHECK 
+
+# Switch to non-root user
+USER $NB_UID
+
+# CMD instruction
+# TODO: Modify the CMD instruction as per your service
+CMD ["bash"]

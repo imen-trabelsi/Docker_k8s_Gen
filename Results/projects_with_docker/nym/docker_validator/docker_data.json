@@ -1,0 +1,38 @@
+{
+    "docker_info": {
+        "base_image": "golang:buster",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "BECH32_PREFIX",
+            "WASMD_VERSION"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "COPY --from=go_builder /go/wasmd/build/nymd /root/nymd",
+            "COPY --from=go_builder /go/wasmd/build/libwasmvm*.so /root",
+            "COPY init_and_start.sh ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"./init_and_start.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt update && apt install -y git build-essential",
+                "COPY setup.sh ."
+            ],
+            [
+                "./setup.sh",
+                ""
+            ]
+        ]
+    }
+}

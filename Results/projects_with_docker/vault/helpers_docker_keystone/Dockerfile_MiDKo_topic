@@ -1,0 +1,44 @@
+# Use an official Python runtime as a parent image
+FROM python:2.7-stretch
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Add maintainer Info
+LABEL maintainer="devops@example.com"
+
+# Environment Variables
+ENV VERSION=12.0.3
+
+# Install any needed packages specified in requirements.txt
+COPY ./helpers/docker/keystone/requirements.txt /etc/requirements.txt
+RUN pip install --no-cache-dir -r /etc/requirements.txt 
+
+# Run Initial Setup Commands
+RUN set -x \
+&& apt-get -y update \
+&& apt-get install -y libffi-dev python-dev libssl-dev netcat default-libmysqlclient-dev \
+&& apt-get -y clean all \
+&& curl -fSL https://tarballs.openstack.org/keystone/keystone-${VERSION}.tar.gz -o keystone-${VERSION}.tar.gz \
+&& tar xvf keystone-${VERSION}.tar.gz \
+&& cd keystone-${VERSION} \
+&& pip install -r requirements.txt \
+&& PBR_VERSION=${VERSION} pip install . \
+&& cp -r etc /etc/keystone \
+&& cd - \
+&& rm -rf keystone-${VERSION}* \
+
+# Copy Project Files into Docker Image
+COPY ./helpers/docker/keystone/keystone.conf /etc/keystone/keystone.conf
+COPY ./helpers/docker/keystone/bootstrap_fn.sh /etc/bootstrap_fn.sh
+COPY ./helpers/docker/keystone/bootstrap.sh /etc/bootstrap.sh
+COPY ./helpers/docker/keystone/create_db.py /etc/create_db.py
+
+# Make scripts executable
+RUN chmod +x /etc/bootstrap.sh
+
+# Expose port 5000 to the outside world
+EXPOSE 5000
+
+# Set the entrypoint
+ENTRYPOINT ["/etc/bootstrap.sh"]

@@ -1,0 +1,32 @@
+FROM ${BUILDER_PYTHON_IMAGE} as builder
+
+WORKDIR /tmp
+
+COPY ./ /tmp/
+
+RUN pip install --upgrade pip
+RUN pip install poetry
+
+# Building the project
+RUN poetry install
+
+# Workaround to fix #11481
+RUN pip wheel "psutil<=5.9.5" -w /tmp/dist/
+
+# Building wheels
+RUN poetry build
+
+
+
+FROM ${BASE_PYTHON_IMAGE}
+
+
+# Install python dependencies
+RUN pip install --upgrade pip
+RUN pip install /tmp/psutil*.whl
+RUN rm /tmp/psutil*.whl
+
+
+EXPOSE YOUR_REQUIRED_PORT
+
+ENTRYPOINT ["sw-python"]

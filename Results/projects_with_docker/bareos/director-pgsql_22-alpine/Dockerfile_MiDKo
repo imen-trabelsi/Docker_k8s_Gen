@@ -1,0 +1,31 @@
+# Base Image
+FROM alpine:3.20
+
+# Labels
+LABEL maintainer="barcus@tou.nu"
+LABEL org.label-schema.schema-version="1.0"
+LABEL org.label-schema.build-date=$BUILD_DATE
+LABEL org.label-schema.name="$NAME"
+LABEL org.label-schema.vcs-ref=$VCS_REF
+LABEL org.label-schema.version=$VERSION
+
+# Necessary dependencies
+RUN apk add --no-cache bareos bareos-postgresql postgresql-client curl tzdata tar
+
+# Necessary directories and permissions
+RUN mkdir /run/bareos \
+    && chown bareos /run/bareos \
+    && chmod -R u+x /docker-entrypoint.sh \
+
+# Copy Instructions
+COPY webhook-notify /usr/local/bin/webhook-notify
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+
+# Expose Port 9101
+EXPOSE 9101
+
+# Entrypoint
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
+# Default Command
+CMD ["/usr/sbin/bareos-dir", "-u", "bareos", "-f"]

@@ -1,0 +1,30 @@
+# Start from the base image
+FROM golang:1.15 AS builder
+
+# Set the current working directory inside the docker image 
+WORKDIR /src/app 
+
+# Copy go mod and sum files  
+COPY go.mod go.sum ./
+
+# Download all dependencies. 
+RUN go mod download 
+
+# Copy the source from the project to the Working Directory inside the docker image 
+COPY . .
+
+# Build the Go app
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o fh .
+
+# Minimal image with curl installed for health checking
+FROM alpine:3.7  
+RUN apk --no-cache add curl
+WORKDIR /root/
+
+# Copy binary from builder
+
+# Export necessary port 
+EXPOSE 8000 
+
+# Command to run the executable 
+ENTRYPOINT ["./fh"]

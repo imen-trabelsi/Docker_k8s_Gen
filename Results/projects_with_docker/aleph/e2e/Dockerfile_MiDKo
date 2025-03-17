@@ -1,0 +1,16 @@
+# Start with the Python image
+ARG PLAYWRIGHT_VERSION=v1.10.0
+FROM mcr.microsoft.com/playwright/python:${PLAYWRIGHT_VERSION}
+
+# Copy necessary files
+COPY entrypoint.sh wait-for requirements.txt ./
+
+# Install necessary dependencies
+RUN apt update -y \
+&& apt install -y netcat wget \
+&& apt-get -qq -y autoremove \
+&& apt-get clean \
+&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+
+# Specify the entrypoint script
+ENTRYPOINT ["./entrypoint.sh"]

@@ -1,0 +1,29 @@
+# Base image
+FROM maven:3-eclipse-temurin-11
+
+# Set the working directory
+WORKDIR /usr/src/hobbit-platform
+
+# Copy POM files
+COPY parent-pom/pom.xml parent-pom/
+COPY platform-storage/storage-service/pom.xml platform-storage/storage-service/
+
+# Run Maven install without running any tests
+RUN mvn --file parent-pom -Dmaven.test.skip=true install
+ARG project=platform-storage/storage-service
+RUN mvn --file ${project} dependency:go-offline
+
+# Copy project sources
+COPY ${project}/src ${project}/src
+
+# Build the project without running any tests
+RUN mvn --file ${project} -Dmaven.test.skip=true package
+
+# Define container command
+CMD ["java", "-cp", "storage-service.jar", "org.hobbit.core.run.ComponentStarter", "org.hobbit.storage.service.StorageService"]
+
+# Copy built JAR file into container
+COPY --from=build /usr/src/hobbit-platform/platform-storage/storage-service/target/storage-service.jar .
+
+# Expose necessary port(s)
+EXPOSE 8080

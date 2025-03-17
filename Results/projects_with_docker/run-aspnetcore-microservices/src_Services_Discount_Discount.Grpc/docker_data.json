@@ -1,0 +1,51 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/sdk:8.0",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "8080",
+            "8081"
+        ],
+        "user": [
+            "app"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "BUILD_CONFIGURATION=Release",
+            "BUILD_CONFIGURATION=Release"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "WORKDIR /src",
+            "COPY [\"Services/Discount/Discount.Grpc/Discount.Grpc.csproj\", \"Services/Discount/Discount.Grpc/\"]",
+            "WORKDIR \"/src/Services/Discount/Discount.Grpc\"",
+            "WORKDIR /app",
+            "COPY --from=publish /app/publish ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"dotnet\",",
+                    "\"Discount.Grpc.dll\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "dotnet restore \"./Services/Discount/Discount.Grpc/./Discount.Grpc.csproj\"",
+                "COPY . ."
+            ],
+            [
+                "dotnet build \"./Discount.Grpc.csproj\" -c $BUILD_CONFIGURATION -o /app/build",
+                ""
+            ],
+            [
+                "dotnet publish \"./Discount.Grpc.csproj\" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false",
+                ""
+            ]
+        ]
+    }
+}

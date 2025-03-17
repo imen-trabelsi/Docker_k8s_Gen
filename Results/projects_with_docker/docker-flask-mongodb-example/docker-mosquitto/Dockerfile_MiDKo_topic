@@ -1,0 +1,20 @@
+# Start from the eclipse-mosquitto Base Image
+FROM eclipse-mosquitto:1.6.8
+
+# Create the Configuration File
+RUN touch /mosquitto/config/pwfile && \
+    echo 'password_file /mosquitto/config/pwfile' >> /mosquitto/config/mosquitto.conf && \
+    echo 'allow_anonymous false' >> /mosquitto/config/mosquitto.conf && \
+
+# Copy necessary files
+COPY . .
+
+# Setting necessary environment variables. Replace with actual values if provided.
+# If required add ENV MY_VARIABLE=MY_VALUE
+
+# Port to expose
+EXPOSE 1883
+
+# Default command to execute    
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["/usr/sbin/mosquitto", "-c", "/mosquitto/config/mosquitto.conf"]

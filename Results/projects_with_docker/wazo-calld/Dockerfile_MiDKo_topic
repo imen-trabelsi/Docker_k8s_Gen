@@ -1,0 +1,45 @@
+# Use python slim-bullseye as a base image
+FROM python:3.9-slim-bullseye as compile-image
+
+LABEL maintainer="Wazo"
+
+# Set environment variables
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Create Virtual Environment
+RUN python -m venv /opt/venv
+
+# Activate virtual env
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Install build dependencies
+RUN apt-get -q update && apt-get -yq install --no-install-recommends ghostscript 
+
+# Set work directory
+WORKDIR /usr/src/wazo-calld
+
+# Copy app
+COPY . /usr/src/wazo-calld
+
+# Install app dependencies
+COPY requirements.txt ./
+RUN pip install -r requirements.txt
+RUN pip install .
+
+# Prepare special folders and files
+RUN adduser --quiet --system --group --home /var/lib/wazo-calld wazo-calld \
+    && mkdir -p /etc/wazo-calld/conf.d \
+    && mkdir -p /var/spool/asterisk/voicemail \
+    && touch /var/log/wazo-calld.log \
+    && chown root:www-data /usr/bin/wazo-pdf2fax \
+    && install -o www-data -g www-data /dev/null /var/log/wazo-calld.log \
+
+# Copy etc and binary files
+COPY ./etc/wazo-calld /etc/wazo-calld
+COPY ./bin/wazo-pdf2fax /usr/bin/wazo-pdf2fax
+
+# Expose port
+EXPOSE 9500
+
+# Run wazo-calld when the container launches
+CMD ["wazo-calld"]

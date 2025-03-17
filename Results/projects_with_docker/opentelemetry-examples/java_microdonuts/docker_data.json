@@ -1,0 +1,45 @@
+{
+    "docker_info": {
+        "base_image": "maven:3-eclipse-temurin-11",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /usr/src/app",
+            "COPY pom.xml pom.xml",
+            "COPY client ./client"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "mvn",
+                    "package",
+                    "exec:exec"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update",
+                "RUN apt-get install -y curl"
+            ],
+            [
+                "update-ca-certificates -f",
+                ""
+            ],
+            [
+                "curl -o opentelemetry-javaagent.jar https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar",
+                "COPY src ./src"
+            ],
+            [
+                "mvn -f /usr/src/app/pom.xml clean package",
+                ""
+            ]
+        ]
+    }
+}

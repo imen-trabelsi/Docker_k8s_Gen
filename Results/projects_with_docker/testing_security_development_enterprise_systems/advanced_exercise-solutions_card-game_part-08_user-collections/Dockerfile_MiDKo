@@ -1,0 +1,14 @@
+FROM adoptopenjdk/openjdk11:alpine
+
+WORKDIR /app
+
+COPY pom.xml .
+COPY src ./src
+
+RUN mvn clean install -DskipTests
+
+COPY target/user-collections.jar .
+
+EXPOSE 8080
+
+CMD ["java", "-jar", "user-collections.jar"]

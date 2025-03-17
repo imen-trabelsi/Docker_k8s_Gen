@@ -1,0 +1,36 @@
+# Set the Base Image
+FROM nginx:1.25.1-alpine
+
+# Set Labels 
+LABEL authors="nick"
+
+# Install necessary dependencies
+RUN apk update && \
+    apk add python3 py3-pip && \
+
+# Copy the application code to the image
+COPY . /app
+
+# Set the working directory in the image to /app
+WORKDIR /app
+
+# Install any needed packages specified in requirements.txt
+RUN pip3 install --trusted-host pypi.python.org -r requirements.txt
+
+# Remove unnecessary packages
+RUN apk del py3-pip
+
+# Ensure the service runs on startup.
+CMD ["python3", "app.py"]
+
+# Copy Configuration File
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Expose ports
+EXPOSE 80
+
+# Set environment variables
+ENV NAME World
+
+# Configure health check
+HEALTHCHECK CMD curl --fail http://localhost:80 || exit 1

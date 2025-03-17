@@ -1,0 +1,34 @@
+# Use the Python 3.10 Buster slim image from Docker Hub as a base image.
+FROM python:3.10-buster
+LABEL maintainer="Your Name <your.email@domain.com>"
+
+# Install dependencies
+RUN apt-get update && apt-get install -y git
+
+# Make /root the work directory
+WORKDIR /root
+
+# Clone the repository containing the application
+RUN git clone https://github.com/danionescu0/docker-flask-mongodb-example.git flask-mongodb-example
+
+# Change the work directory to the application directory
+WORKDIR /root/flask-mongodb-example/python
+
+# PYTHONPATH environment variable
+ENV PYTHONPATH "/root/flask-mongodb-example/python/common"
+
+# Install Python dependencies
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
+# Copy the application file
+COPY --from=web-base /root/flask-mongodb-example /root/flask-mongodb-example
+
+# Expose port 5000  
+EXPOSE 5000
+
+# Provide a healthcheck instruction
+HEALTHCHECK CMD curl --fail http://localhost:5000/health || exit 1
+
+# Run the application when the container launches
+CMD ["python", "your-app-main-file"]

@@ -1,0 +1,32 @@
+# Get the base Image
+FROM lightsofapollo/ubuntu-node:unstable
+
+# Create directory in the container
+RUN mkdir /worker
+
+# Set work directory
+WORKDIR /worker/
+
+# Install Postgres
+RUN apt-get update && apt-get install -y postgresql
+
+# Copying source files
+COPY . /worker/
+
+# Installing dependencies
+RUN npm install 
+
+# Copying config files
+COPY .env workers/docker-worker/config.yml /worker/
+
+# Transpiling to JavaScript
+RUN npm run build
+
+# Expose the application on port 8080
+EXPOSE 8080
+
+# Health Check
+HEALTHCHECK CMD curl --fail http://localhost:8080/ || exit 1
+
+# Starting the application
+CMD ["npm", "start"]

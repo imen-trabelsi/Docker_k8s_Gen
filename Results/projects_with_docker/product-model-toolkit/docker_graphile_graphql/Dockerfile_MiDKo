@@ -1,0 +1,23 @@
+# Start with Base Image
+FROM node:alpine
+
+# Create a directory in the container where the app will be placed
+WORKDIR /app
+
+# Install PostGraphile and the necessary plugin globally
+RUN npm install -g postgraphile postgraphile-plugin-connection-filter
+
+# Copy application dependency manifests to the container image.
+# A wildcard is used to ensure both package.json AND package-lock.json are copied.
+# Copying this separately prevents re-running npm install on every code change.
+COPY go.mod ./
+RUN go mod download
+
+# Copy the application source code to the WORKDIR
+COPY . .
+
+# Set the container execution command
+ENTRYPOINT ["postgraphile", "-n", "0.0.0.0"]
+
+# Inform Docker that the container listens on the specific network port at runtime.
+EXPOSE 5000

@@ -1,0 +1,20 @@
+# Using the base image for Java Runtime Environment
+FROM java:8-jre
+
+# Set working directory
+WORKDIR /app
+
+# Copy .env file to root, if exist
+COPY ./.env /
+
+# Copy the jar file into docker image
+COPY ./target/ts-preserve-service-1.0.jar /app/
+
+# Copy the system time setting command into docker image
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+
+# Expose the application on port 14568
+EXPOSE 14568
+
+# JVM configurations and start command
+ENTRYPOINT ["java", "-Xmx200m", "-jar", "/app/ts-preserve-service-1.0.jar"]

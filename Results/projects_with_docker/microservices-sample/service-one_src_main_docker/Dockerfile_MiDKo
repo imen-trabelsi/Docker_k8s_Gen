@@ -1,0 +1,37 @@
+# Derived from openjdk official image.
+FROM --platform=${arch} openjdk:8-jdk-alpine as build
+ARG arch=linux/arm64/v8
+
+# Add author and vendor information
+LABEL vendor="Mudigal" \
+
+# Create directiry for application
+WORKDIR /usr/src/app
+
+# Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy the pom.xml file
+COPY pom.xml .
+
+# Build all dependencies for offline use
+RUN ./mvnw dependency:go-offline -B
+
+# Copy your other files
+COPY src/ ./src/
+
+# Build the project 
+RUN ./mvnw package -DskipTests
+
+# Copy service-one.jar to app.jar 
+COPY --from=build /usr/src/app/target/service-one.jar app.jar
+
+# Make the application jar executable
+RUN /bin/sh -c 'touch /app.jar'
+
+# Expose the service on port 8082
+EXPOSE 8082
+
+# Run the application
+ENTRYPOINT ["java", "-Xmx256m", "-Xss32m", "-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]

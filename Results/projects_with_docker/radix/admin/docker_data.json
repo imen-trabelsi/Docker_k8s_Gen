@@ -1,0 +1,18 @@
+{
+    "docker_info": {
+        "base_image": "nginx:stable",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY default.conf /etc/nginx/conf.d/default.conf",
+            "COPY dist/ /usr/share/nginx/html/manage"
+        ],
+        "execution": [],
+        "run": []
+    }
+}

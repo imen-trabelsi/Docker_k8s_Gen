@@ -1,0 +1,35 @@
+# First we build our application
+FROM node:8.13-slim as builder
+
+# Make a directory for our app
+RUN mkdir -p /opt/my-musik/
+WORKDIR /opt/my-musik/
+
+# Copy our application and configuration files
+COPY ./gulpfile.js .
+COPY ./package.json .
+COPY ./tsconfig.json .
+COPY ./tslint.json .
+COPY ./songs.json .
+COPY ./config.json .
+COPY ./src ./src
+
+# Install typescript and dependencies
+RUN npm install typescript -g
+RUN npm install --no-optional
+RUN ./node_modules/.bin/gulp
+
+# Bundle up the application directory
+FROM node:8.13-slim
+
+WORKDIR /opt/my-musik/
+
+
+# Install production only dependencies
+RUN npm install --no-optional --only=prod
+
+# Expose ports
+EXPOSE 3000
+
+# Set the entrypoint
+CMD ["node", "dist/app.js"]

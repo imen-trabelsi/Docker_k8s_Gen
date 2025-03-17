@@ -1,0 +1,23 @@
+# Base Image
+FROM python:3-alpine
+
+# Environment variables
+ENV PYTHONUNBUFFERED 1
+ENV NAME=$NAME
+ENV TOKEN=$TOKEN
+
+# Creating directory for the app
+RUN mkdir /code
+
+# Set working directory
+WORKDIR /code
+
+# Installing dependencies
+COPY requirements.txt /code/
+RUN pip install -r requirements.txt && apk add bash
+
+# Copying Application File
+COPY . /code/
+
+# Running the application
+CMD bash -c "python3 manage.py makemigrations && python3 manage.py runserver 0.0.0.0:8000"

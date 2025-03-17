@@ -1,0 +1,15 @@
+# Start by specifying the base image
+FROM nextcloud:fpm
+
+# Environment variable to Update Nextcloud
+ENV NEXTCLOUD_UPDATE=1
+
+# Update packages and install supervisor & needed dependencies 
+RUN apt-get update && apt-get install -y supervisor \
+  && rm -rf /var/lib/apt/lists/* \
+
+# Copy supervisor configuration
+COPY supervisord.conf /
+
+# Set supervisor as the main command
+CMD ["/usr/bin/supervisord", "-c", "/supervisord.conf"]

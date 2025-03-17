@@ -1,0 +1,37 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Flask",
+        "dependencies": {
+            "requirements.txt": "absl-py==0.2.2\nappnope==0.1.0\nasn1crypto==0.24.0\nastor==0.6.2\naws==0.2.5\nawscli==1.15.38\nbackports-abc==0.5\nbackports.functools-lru-cache==1.5\nbackports.shutil-get-terminal-size==1.0.0\nbackports.weakref==1.0.post1\nbcdoc==0.12.2\nbcrypt==3.1.4\nbleach==1.5.0\nboto==2.48.0\nboto3==1.7.38\nbotocore==1.10.38\ncertifi==2018.4.16\ncelery==4.2.0\ncffi==1.11.5\nchardet==3.0.4\nclick==6.7\ncolorama==0.2.5\ncryptography==2.2.2\ncycler==0.10.0\ndecorator==4.3.0\nDjango==1.11.15\ndocutils==0.14\nenum34==1.1.6\nenvparse==0.2.0\nfabric==2.1.3\nFlask==1.0.2\nfuncsigs==1.0.2\nfutures==3.2.0\ngast==0.2.0\ngrpcio==1.12.1\nh5py==2.8.0\nhtml5lib==0.9999999\nidna==2.7\nimage==1.5.24\ninvoke==1.0.0\nipaddress==1.0.22\nipykernel==4.8.2\nipython==5.7.0\nipython-genutils==0.2.0\nitsdangerous==0.24\nJinja2==2.10\njmespath==0.9.3\njupyter-client==5.2.3\njupyter-core==4.4.0\nKeras==2.0.0\nKeras-Applications==1.0.2\nKeras-Preprocessing==1.0.1\nkiwisolver==1.0.1\nMarkdown==2.6.11\nMarkupSafe==1.0\nmatplotlib==2.2.2\nmock==2.0.0\nnumpy==1.14.4\nparamiko==2.4.2\npathlib2==2.3.2\npbr==4.0.4\npexpect==4.6.0\npickleshare==0.7.4\nPillow==5.1.0\nprettytable==0.7.2\nprompt-toolkit==1.0.15\nprotobuf==3.6.0\nptyprocess==0.5.2\npyasn1==0.4.3\npycparser==2.18\nPygments==2.2.0\nPyNaCl==1.2.1\npyparsing==2.2.0\npython-dateutil==2.7.3\npytz==2018.4\nPyYAML==3.12\npyzmq==17.0.0\nredis==2.10.6\nrequests==2.19.0\nrq==0.11.0\nrsa==3.1.2\ns3transfer==0.1.13\nscandir==1.7\nscipy==1.1.0\nsimplegeneric==0.8.1\nsingledispatch==3.4.0.3\nsix==1.11.0\nsubprocess32==3.5.1\ntensorboard==1.8.0\ntensorflow==1.11.0\ntermcolor==1.1.0\ntornado==5.0.2\ntqdm==4.26.0\ntraitlets==4.3.2\nurllib3==1.23\nuWSGI==2.0.17\nwcwidth==0.1.7\nWerkzeug==0.14.1\n"
+        },
+        "database": "Redis",
+        "build_system": "pip",
+        "config_files": {
+            "docker-compose.yml": "version: '2.3'\n\nservices:\n  michaniki_client:\n    build: ./src\n    ports:\n      - \"3031:3031\"\n    environment:\n      - PORT=3031\n      - FLAS_APP=app/__init__.py\n      - FLASK_DEBUG=1\n      - REDIS_URL=\"redis://redis\"\n      - REDIS_PORT=6379\n      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}\n      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}\n\n    volumes:\n      - ./src:/opt/src\n\n    command: ./entryPoint.sh\n    depends_on:\n      - redis\n    networks:\n      - michaniki\n\n  inference_server:\n    build: ./src\n    environment:\n      - REDIS_URL=\"redis://redis\"\n      - REDIS_PORT=6379\n      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}\n      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}\n      \n    command: ['python', 'app/models/InceptionV3/inception_inference_server.py']\n    volumes:\n      - ./src:/opt/src\n\n    networks:\n      - michaniki\n    depends_on:\n      - michaniki_client\n      - redis\n\n  sentiment_inference_server:\n    build:\n      context: ./src\n      dockerfile: Dockerfile-sentiment\n    environment:\n      - REDIS_URL=\"redis://redis\"\n      - REDIS_PORT=6379\n      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}\n      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}\n    command: ['python', 'app/models/SentimentV1/sentiment_infer_server.py']\n    volumes:\n      - ./src:/opt/src\n    networks:\n      - michaniki\n    depends_on:\n      - michaniki_client\n      - redis\n\n  celery_worker:\n    build: ./src\n    command: ['celery', '-A', 'app.celeryapp:michaniki_celery_app', 'worker', '-l', 'info']\n    volumes:\n      - ./src:/opt/src\n    networks:\n      - michaniki\n    depends_on:\n      - michaniki_client\n    environment:\n      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}\n      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}\n      - DB_HOST=db\n      - DB_USERNAME=root\n      - DB_PASSWORD=michaniki\n      - DB_NAME=michanikidb\n      - BROKER_URL=redis://redis:6379/0\n     \n\n  redis:\n    image: redis:4.0.5-alpine\n    command: [\"redis-server\", \"--appendonly\", \"yes\"]\n    hostname: redis\n    networks:\n      - michaniki\n\nnetworks:\n    michaniki:\n",
+            "src/Dockerfile": "FROM continuumio/miniconda:4.4.10\n\n# utils\nRUN apt-get update && apt-get install -y --no-install-recommends apt-utils\n\nRUN conda install gxx_linux-64\n\nRUN apt-get install -y --force-yes default-libmysqlclient-dev mysql-client build-essential\n\n# Grab requirements.txt.\nCOPY requirements.txt /tmp/requirements.txt\n\n# Install dependencies\nRUN pip install -qr /tmp/requirements.txt\n\n# create a user for web server\nRUN adduser --disabled-password --gecos \"\" foo\n\nCOPY ./ /opt/src\n\nWORKDIR /opt/src"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "Dockerfile-gpu",
+            "Dockerfile-sentiment",
+            "__init__.py",
+            "config.py",
+            "dump.rdb",
+            "entryPoint.sh",
+            "install_base_model.py",
+            "requirements-gpu.txt",
+            "requirements.txt",
+            "requirementssenti.txt",
+            "uwsgi.ini",
+            "wsgi.py"
+        ],
+        "folders": [
+            "app",
+            "notebooks"
+        ]
+    }
+}

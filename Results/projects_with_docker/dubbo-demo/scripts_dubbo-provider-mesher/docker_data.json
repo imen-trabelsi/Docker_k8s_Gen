@@ -1,0 +1,29 @@
+{
+    "docker_info": {
+        "base_image": "ninokop/dubbo-demo-base",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD . /app"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"bash\",\"app/mystart.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "cd home/",
+                "RUN mkdir /app"
+            ]
+        ]
+    }
+}

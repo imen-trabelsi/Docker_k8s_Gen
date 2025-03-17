@@ -1,0 +1,31 @@
+# Use the base Image
+FROM openjdk:8u151-jdk
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the current directory contents into the container at /app
+COPY . /app
+
+# Add maven dependencies to the PATH
+ENV PATH $PATH:/root/.m2/repository
+
+# Add build arguments
+ARG JAR_FILE
+
+# Copy startup script and jar file
+COPY startup.sh /usr/bin/startup.sh
+COPY target/${JAR_FILE} /usr/share/skalogs/retry-importer.jar
+
+# Make startup script executable
+RUN chmod +x /usr/bin/startup.sh
+
+# Set the startup command to execute when the container starts.
+CMD ["/usr/bin/startup.sh"]
+
+# Expose the application's port to the Docker host.
+EXPOSE 8080
+
+# Configure health checks
+HEALTHCHECK --interval=10m --timeout=3s \
+  CMD curl -f http://localhost:8080/actuator/health || exit 1

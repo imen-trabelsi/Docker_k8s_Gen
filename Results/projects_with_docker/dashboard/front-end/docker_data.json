@@ -1,0 +1,71 @@
+{
+    "docker_info": {
+        "base_image": "node:16-alpine3.13",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8080"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "BUILD_ENV=prod"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /usr/src/build",
+            "COPY ./ ./",
+            "COPY ./${BUILD_ENV}.env ./.env",
+            "WORKDIR /usr/src/app",
+            "COPY --from=base-node-modules /usr/src/build ./",
+            "COPY ./${BUILD_ENV}.env ./.env"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"http-server\",",
+                    "\"--port\",",
+                    "\"8080\",",
+                    "\"dist\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk update \\",
+                "&& apk add openssl"
+            ],
+            [
+                "yarn cache clean",
+                "RUN yarn add @coda-19/coda19-fhir-templates@1.0.6-main-7573265b.0"
+            ],
+            [
+                "yarn install",
+                "RUN rm -f .yarnrc"
+            ],
+            [
+                "rm -f .npmrc",
+                ""
+            ],
+            [
+                "yarn build",
+                ""
+            ],
+            [
+                "npm install -g http-server",
+                ""
+            ],
+            [
+                "apk update \\",
+                "&& apk add openssl"
+            ],
+            [
+                "rm ./version.txt",
+                "RUN openssl rand -hex 12 > version.txt"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,39 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Java",
+        "dependencies": {
+            "build.gradle": "plugins {\n    id 'java'\n    id 'application'\n    id 'maven-publish'\n    id 'com.github.johnrengelman.shadow' version '5.2.0'\n}\n\nrepositories {\n    maven {\n        url = 'https://artifacts.openmicroscopy.org/artifactory/maven'\n    }\n    mavenCentral()\n}\n\ndependencies {\n\n    implementation 'ch.qos.logback:logback-classic:1.1.7'\n    implementation 'com.j2html:j2html:1.4.0'\n    implementation 'org.slf4j:jul-to-slf4j:1.7.30'\n    implementation 'org.slf4j:jcl-over-slf4j:1.7.30'\n\n    implementation 'org.openmicroscopy:omero-server:5.5.6'\n    implementation 'com.google.guava:guava:27.1-jre'\n    implementation 'io.vertx:vertx-core:3.9.1'\n    implementation 'io.vertx:vertx-web:3.9.1'\n\n    implementation platform('software.amazon.awssdk:bom:2.11.10')\n    implementation 'software.amazon.awssdk:sts'\n    implementation 'commons-cli:commons-cli:1.4'\n\n    testImplementation 'org.junit.jupiter:junit-jupiter:5.6.2'\n    testImplementation 'org.mockito:mockito-core:3.3.3'\n    testImplementation 'org.mockito:mockito-junit-jupiter:3.3.3'\n    testImplementation 'io.vertx:vertx-codegen:3.9.1'  // workaround for JDK-8152174\n    testImplementation 'software.amazon.awssdk:s3'\n}\n\ngroup = 'org.openmicroscopy'\nversion = '0.2.1-SNAPSHOT'\ndescription = 'omero-ms-zarr'\n\njava {\n    sourceCompatibility = JavaVersion.VERSION_1_8\n}\n\nmainClassName = \"org.openmicroscopy.ms.zarr.ZarrDataService\"\n\napplicationDefaultJvmArgs = [\n    \"-Dvertx.logger-delegate-factory-class-name=io.vertx.core.logging.SLF4JLogDelegateFactory\"\n]\n\nshadowJar {\n    zip64 true\n}\n\npublishing {\n    publications {\n        maven(MavenPublication) {\n            from(components.java)\n        }\n    }\n}\n\ntasks.withType(JavaCompile) {\n    options.encoding = 'UTF-8'\n}\n\ntest {\n    useJUnitPlatform()\n    testLogging {\n        events \"passed\", \"skipped\", \"failed\"\n        maxGranularity 2\n    }\n    if (project.hasProperty('excludeTests')) {\n        exclude project.property('excludeTests')\n    }\n}\n"
+        },
+        "database": null,
+        "build_system": "Gradle",
+        "config_files": {
+            "docker-compose.yml": "version: \"3\"\n\nservices:\n\n  database:\n    image: \"postgres:14\"\n    environment:\n      POSTGRES_USER: omero\n      POSTGRES_DB: omero\n      POSTGRES_PASSWORD: omero\n    networks:\n      - omero\n    volumes:\n      - \"database:/var/lib/postgresql/data\"\n    command:\n      - \"postgres\"\n      - \"-N\"\n      - \"500\"\n\n  omeroserver:\n    image: \"openmicroscopy/omero-server:5.6\"\n    environment:\n      CONFIG_omero_db_host: database\n      CONFIG_omero_db_user: omero\n      CONFIG_omero_db_pass: omero\n      CONFIG_omero_db_name: omero\n      ROOTPASS: omero\n    networks:\n      - omero\n    ports:\n      - \"4063:4063\"\n      - \"4064:4064\"\n    volumes:\n      - \"omero:/OMERO\"\n    ulimits:\n      nofile:\n        soft: 8192\n        hard: 65536\n\n  omeroweb:\n    image: \"openmicroscopy/omero-web-standalone:5.6\"\n    environment:\n      OMEROHOST: omeroserver\n    networks:\n      - omero\n    ports:\n      - \"4080:4080\"\n\n  zarr:\n    build: \".\"\n    environment:\n      CONFIG_omero_db_host: database\n      CONFIG_omero_db_user: omero\n      CONFIG_omero_db_pass: omero\n      CONFIG_omero_db_name: omero\n\n    volumes:\n      - \"omero:/OMERO:ro\"\n    networks:\n      - omero\n    ports:\n      - \"8080:8080\"\n    restart: on-failure\n\nnetworks:\n  omero:\n\nvolumes:\n  database:\n  omero:\n",
+            "Dockerfile": "# 6.3.0-jre8 and 6.3.0-jre11 both result in a null pointer exception\nFROM library/gradle:6.3.0-jre14 as build\n\nWORKDIR /omero-ms-zarr\nCOPY LICENSE README.md build.gradle settings.gradle /omero-ms-zarr/\nRUN gradle build --no-daemon || return 0 # Cache dependencies\nCOPY src /omero-ms-zarr/src/\nRUN gradle build --no-daemon -x test -x javadoc\n\nRUN cd build/distributions && \\\n    unzip omero-ms-zarr-shadow-*.zip && \\\n    mv omero-ms-zarr-shadow-*/ /omero-ms-zarr-shadow/\n\n\nFROM adoptopenjdk/openjdk11:jre-11.0.7_10-alpine\n\nRUN apk add --no-cache bash\nCOPY --from=build /omero-ms-zarr-shadow/ .\n\nEXPOSE 8080\nENTRYPOINT [\"java\", \"-cp\", \"/lib/omero-ms-zarr-0.2.1-SNAPSHOT-all.jar\", \"org.openmicroscopy.ms.zarr.ConfigEnv\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".bumpversion.cfg",
+            ".dockerignore",
+            ".gitignore",
+            ".pre-commit-config.yaml",
+            "Dockerfile",
+            "LICENSE",
+            "README.md",
+            "build.gradle",
+            "docker-compose.yml",
+            "related.md",
+            "settings.gradle",
+            "spec.md",
+            "swagger.yaml"
+        ],
+        "folders": [
+            ".github",
+            "ci",
+            "examples",
+            "src"
+        ]
+    }
+}

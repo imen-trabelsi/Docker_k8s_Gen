@@ -1,0 +1,51 @@
+{
+    "docker_info": {
+        "base_image": "build",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "WORKDIR /src",
+            "COPY [\"src/Services/Enrolling/Enrolling.API/Enrolling.API.csproj\", \"src/Services/Enrolling/Enrolling.API/\"]",
+            "COPY [\"src/Services/Enrolling/Enrolling.Infrastructure/Enrolling.Infrastructure.csproj\", \"src/Services/Enrolling/Enrolling.Infrastructure/\"]",
+            "COPY [\"src/Services/Enrolling/Enrolling.Domain/Enrolling.Domain.csproj\", \"src/Services/Enrolling/Enrolling.Domain/\"]",
+            "COPY [\"src/Libraries/OpenTelemetry/OpenTelemetry.csproj\", \"src/Libraries/OpenTelemetry/\"]",
+            "COPY . .",
+            "WORKDIR \"/src/src/Services/Enrolling/Enrolling.API\"",
+            "WORKDIR /src/src/Services/Enrolling/Enrolling.UnitTests",
+            "WORKDIR /src/src/Services/Enrolling/Enrolling.FunctionalTests",
+            "WORKDIR /app",
+            "COPY --from=publish /app/publish ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"dotnet\",",
+                    "\"Enrolling.API.dll\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "dotnet restore \"src/Services/Enrolling/Enrolling.API/Enrolling.API.csproj\"",
+                ""
+            ],
+            [
+                "dotnet build \"Enrolling.API.csproj\" -c Release -o /app/build",
+                ""
+            ],
+            [
+                "dotnet publish \"Enrolling.API.csproj\" -c Release -o /app/publish",
+                ""
+            ]
+        ]
+    }
+}

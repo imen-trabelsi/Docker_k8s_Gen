@@ -1,0 +1,46 @@
+# Setting base image
+FROM public.ecr.aws/docker/library/node:20-bookworm-slim AS build
+
+# Setting up the working directory in the container
+WORKDIR /app
+
+# Copying the package.json and lock file 
+COPY package.json yarn.lock ./
+
+# Copy common and toggles/webapp directories
+COPY common ./common
+COPY toggles/webapp ./toggles/webapp
+
+# Copy base configuration
+COPY config/tsconfig-base.json ./config/
+COPY content/webapp/package.json ./
+
+# Installing dependencies
+RUN yarn --frozen-lockfile && yarn cache clean
+
+# Building the code
+WORKDIR /app/content/webapp
+COPY content/webapp . 
+RUN yarn build && yarn cache clean
+
+RUN addgroup --system --gid 1001 nodejs \
+
+# Setting Node environment variable
+ENV NODE_ENV=production
+
+# Setting up for a multi-stage Docker build
+FROM public.ecr.aws/docker/library/node:20-bookworm-slim AS prod
+
+# Specifying user to prevent permission issues
+USER nextjs
+
+# Setting up working directory
+WORKDIR /app
+
+# Copying built code from the 'build' stage to the current ('prod') stage
+
+# Exposing the application port
+EXPOSE 3000
+
+# Providing the start command
+CMD ["yarn", "start"]

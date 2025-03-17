@@ -1,0 +1,39 @@
+# Use an official Go runtime as a parent image
+FROM golang:alpine AS builder
+
+# Include necessary build arguments
+ARG COMMIT
+ARG VERSION
+
+# Set work directory
+WORKDIR /app
+
+# Copy the current directory contents into the container at /app and download dependencies using go mod
+COPY go.mod .
+COPY go.sum .
+RUN go mod download
+
+# Copy the rest of the source code
+COPY . .
+
+# build the source code and provide version/commit details
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -tags netgo -ldflags "-w -X main.version=${VERSION} -X main.commit=${COMMIT}" -o app .
+
+# Start a new stage from scratch
+FROM alpine:3.9
+
+# Add needed packages
+RUN apk --no-cache add ca-certificates icu-libs musl
+
+# Set environment variables
+ENV VERSION=${VERSION}
+ENV COVENANT_ROLE=miner
+ENV COVENANT_CONF=config.yaml
+
+# Copy compiled Go binary into our scratch container
+
+# Run the binary
+CMD ["/app/app"]
+
+# Expose port 4661 to the outside world 
+EXPOSE 4661

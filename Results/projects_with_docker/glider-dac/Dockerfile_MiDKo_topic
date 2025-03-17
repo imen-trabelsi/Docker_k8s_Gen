@@ -1,0 +1,42 @@
+# Pull base image
+FROM python:3.8
+
+#LABELS
+LABEL maintainer="youremail@example.com"
+LABEL version="1.0"
+LABEL description="This image contains optimized and secure Dockerfile for a Flask microservice"
+
+# SET ENV variables
+ENV PYTHONPATH="${PYTHONPATH:-}:/glider-dac"
+
+# Set work directory in container
+WORKDIR /glider-dac
+
+# Install necessary packages
+RUN apt-get update && apt-get -y install cron rsync libxml2-dev libudunits2-dev libnetcdf-dev netcdf-bin
+
+# Create necessary directories and set user permissions
+RUN groupadd -g $glider_gid_uid glider && \
+    useradd -u $glider_gid_uid -g $glider_gid_uid glider && \
+    mkdir -p /data/submission /data/data/priv_erddap /data/data/pub_erddap /erddapData/flag /erddapData/hardFlag berkeleydb /data/catalog/priv_erddap && \
+    chown -R glider:glider /glider-dac /data /usr/local/lib/python3.8/site-packages/compliance_checker/data && \
+
+# Install Python dependencies
+COPY requirements.txt .
+RUN pip install -U pip && \
+    pip install --no-cache Cython thredds_crawler numpy==1.19.5 pytest && \
+    pip install --no-cache -r requirements.txt && \
+    pip uninstall -y mongokit && \
+    pip install --no-cache --force-reinstall mongokit-py3==0.9.1.1 && \
+
+# Copy current directory contents into the container
+COPY . /glider-dac
+
+# Set the username to use
+USER glider
+
+# Expose port
+EXPOSE 5000
+
+# Set the command to run when the container starts
+ENTRYPOINT ["gunicorn", "-w", "4", "-b", "0.0.0.0:5000", "app:app"]

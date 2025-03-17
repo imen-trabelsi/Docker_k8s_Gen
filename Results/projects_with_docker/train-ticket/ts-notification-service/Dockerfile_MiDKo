@@ -1,0 +1,21 @@
+# Use base image
+FROM java:8-jre
+
+#Set the working directory
+WORKDIR /app
+
+# Updating the system and install required packages
+RUN apt-get update && apt-get install -y tzdata
+
+# Timezone settings
+RUN echo 'Asia/Shanghai' > /etc/timezone && dpkg-reconfigure -f noninteractive tzdata
+
+# Ensures signals are forwarded to the java process correctly
+ENV JAVA_OPTS="-Djava.security.egd=file:/dev/./urandom"
+
+# Adding the jar file into app folder inside the container
+COPY ./target/ts-notification-service-1.0.jar /app/
+
+EXPOSE 17853
+
+ENTRYPOINT ["java", "-Xmx200m", "-jar", "/app/ts-notification-service-1.0.jar" ]

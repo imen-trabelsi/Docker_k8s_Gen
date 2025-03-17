@@ -1,0 +1,33 @@
+# Build environment
+FROM mcr.microsoft.com/devcontainers/base:bullseye
+
+# Set working directory in the Docker image
+WORKDIR /app
+
+# Add node.js and clean up
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash - && \
+    apt-get update && \
+    apt-get install -y nodejs && \
+    apt-get clean && \
+
+# Install corepack
+RUN npm install -g corepack
+
+# Copy app code to the Docker image
+COPY . /app
+
+# Install app dependencies (only production ones)
+RUN npm ci --only=production
+
+# Expose ports (please specify ports here)
+# EXPOSE 
+
+# This helps to cache the node_modules as a Docker layer
+COPY package.json ./
+
+# Bundle app source
+COPY . .
+
+# Start the app
+CMD [ "node", "src/index.js" ]
+

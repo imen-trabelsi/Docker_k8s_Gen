@@ -1,0 +1,34 @@
+# Use defined maven base image
+FROM maven:3-eclipse-temurin-8 AS build
+WORKDIR /app
+
+# Cache dependencies for faster builds
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+# Copy Settings.xml
+COPY <<EOF /root/.m2/settings.xml
+
+# Copy the rest of the source code
+COPY ./ ./
+
+# Build the application
+RUN --mount=type=cache,target=/root/.m2/repository/ \
+
+# Additional tools installation
+RUN apt-get update && apt-get install -y \
+
+# Copy arthas
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+
+# New stage build to keep the image size small
+FROM eclipse-temurin:8
+WORKDIR /app
+
+# Copy the produced jar file to this stage
+
+# Expose the required port 
+EXPOSE 20000
+
+# Set the entrypoint
+ENTRYPOINT ["java", "-jar", "/app/target/ZuulGateway.jar"]

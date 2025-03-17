@@ -1,0 +1,38 @@
+# Set base image (host OS)
+FROM node:12.14.0-alpine3.9
+
+# Set the working directory in the Docker image
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install required system packages
+RUN apk update && apk upgrade && \
+apk add --no-cache bash git openssh && \
+apk add make && \
+apk add g++ && \
+
+# Switch to our app’s directory and run npm installation 
+RUN npm install -g npm@8.7.0 && \
+npm ci --only=prod && \
+npm ci --legacy-peer-deps && \
+
+# Copy the application files to the Docker image
+COPY . .
+
+# Open the mapped port
+EXPOSE ${PORT:-3707}
+
+# Define the ENV variables
+ENV PORT=${PORT:-3707} \
+    INDYSCAN_API_URL=${INDYSCAN_API_URL:-3708} \
+    LOG_LEVEL=${LOG_LEVEL:-info} \
+    LOG_HTTP_REQUESTS=${LOG_HTTP_REQUESTS:-false} \
+
+# Meta data
+LABEL org.label-schema.schema-version="1.0" \
+      org.label-schema.name="indyscan-webapp" \
+
+# Specify the command to run
+CMD [ "npm", "start" ]

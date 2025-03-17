@@ -1,0 +1,22 @@
+FROM ${BASE_IMAGE}
+
+WORKDIR /CIMonitor
+
+ENV NODE_PATH=/CIMonitor
+ENV NODE_ENV=production
+ENV NODE_PATH=/CIMonitor/app
+
+RUN echo "deb http://deb.debian.org/debian stable main contrib non-free" >> /etc/apt/sources.list \
+&& apt-get --yes update \
+
+COPY ./${QEMU_BINARY}* /usr/bin/
+COPY --from=production-qemu /usr/bin/dumb-init /usr/bin/dumb-init
+COPY . /CIMonitor
+
+RUN npm install
+
+EXPOSE 8080
+
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+
+CMD ["npm", "run", "start"]

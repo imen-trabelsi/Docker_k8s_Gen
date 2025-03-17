@@ -1,0 +1,56 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"icodashboard-space\",\n  \"version\": \"0.0.1\",\n  \"private\": true,\n  \"scripts\": {\n    \"start\": \"nodemon -w ./src -e ts ./src/bin/www --exec ts-node\",\n    \"lint\": \"tslint './src/**/*.ts'\",\n    \"lintFix\": \"tslint --fix './src/**/*.ts'\",\n    \"test\": \"nyc mocha ./src/**/*.spec.ts --require test/prepare.ts\",\n    \"build\": \"tsc -p tsconfig.build.json --outDir dist\",\n    \"serve\": \"node ./dist/bin/www.js\"\n  },\n  \"nyc\": {\n    \"exclude\": [\n      \"src/**/*.spec.ts\"\n    ]\n  },\n  \"dependencies\": {\n    \"abi-decoder\": \"1.0.9\",\n    \"bcrypt-nodejs\": \"0.0.3\",\n    \"bip39\": \"2.4.0\",\n    \"body-parser\": \"~1.15.2\",\n    \"bull\": \"3.3.4\",\n    \"coinpayments\": \"1.1.6\",\n    \"debug\": \"~2.2.0\",\n    \"dotenv\": \"4.0.0\",\n    \"ethereumjs-wallet\": \"0.6.0\",\n    \"express\": \"~4.14.0\",\n    \"http-status\": \"1.2.0\",\n    \"i18next\": \"11.3.3\",\n    \"inversify\": \"4.2.0\",\n    \"inversify-express-utils\": \"4.0.0\",\n    \"joi\": \"13.4.0\",\n    \"jsonwebtoken\": \"^7.2.1\",\n    \"lru-cache\": \"4.1.1\",\n    \"mailcomposer\": \"4.0.2\",\n    \"mailgun-js\": \"0.13.1\",\n    \"mongodb\": \"2.2.33\",\n    \"morgan\": \"1.9.0\",\n    \"node-mailjet\": \"3.2.1\",\n    \"node-uuid\": \"^1.4.7\",\n    \"qr-image\": \"3.2.0\",\n    \"redis\": \"2.8.0\",\n    \"reflect-metadata\": \"0.1.10\",\n    \"rolling-rate-limiter\": \"0.1.9\",\n    \"typeorm\": \"0.1.1\",\n    \"web-request\": \"1.0.7\",\n    \"web3\": \"1.0.0-beta.26\",\n    \"winston\": \"2.4.0\"\n  },\n  \"devDependencies\": {\n    \"@types/bcrypt-nodejs\": \"0.0.30\",\n    \"@types/bull\": \"3.0.2\",\n    \"@types/chai\": \"3.4.34\",\n    \"@types/chai-http\": \"3.0.3\",\n    \"@types/debug\": \"0.0.29\",\n    \"@types/express\": \"4.0.34\",\n    \"@types/faker\": \"4.1.1\",\n    \"@types/i18next\": \"8.4.3\",\n    \"@types/joi\": \"10.4.0\",\n    \"@types/jsonwebtoken\": \"7.2.0\",\n    \"@types/mocha\": \"2.2.38\",\n    \"@types/nock\": \"9.1.3\",\n    \"@types/node-uuid\": \"0.0.28\",\n    \"@types/redis\": \"2.8.6\",\n    \"@types/winston\": \"2.3.8\",\n    \"chai\": \"3.5.0\",\n    \"chai-http\": \"3.0.0\",\n    \"faker\": \"4.1.0\",\n    \"mocha\": \"3.2.0\",\n    \"mocha-prepare\": \"0.1.0\",\n    \"mongodb-restore\": \"1.6.2\",\n    \"nock\": \"9.2.5\",\n    \"nodemon\": \"^1.11.0\",\n    \"nyc\": \"10.0.0\",\n    \"ts-node\": \"3.3.0\",\n    \"tslint\": \"5.7.0\",\n    \"tslint-config-standard\": \"5.0.2\",\n    \"tslint-loader\": \"3.5.3\",\n    \"typemoq\": \"2.0.1\",\n    \"typescript\": \"2.5.3\"\n  }\n}\n"
+        },
+        "database": "MongoDB",
+        "build_system": "npm",
+        "config_files": {
+            ".env.test": "# App\n# COMPANY_NAME is used in emails subjects, kyc providers, errors and during enable 2fa verification\n# COMPANY_NAME=\"secret_tech\"\nENVIRONMENT=test # test, stage, production\nTOKEN_PRICE_USD=1.0\nAPI_URL=\"https://demo-api.icodashboard.space\"\nFRONTEND_URL=\"https://demo.icodashboard.space\"\n\nICO_END_TIMESTAMP=1517443200\n\n# HTTP_SERVER=enabled\n# PORT=3000\n# HTTPS_SERVER=disabled\n# HTTPS_PORT=4000\n# FORCE_HTTPS=disabled\n\n# CLIENT_IP_FORWARD_HEADER=\"x-forwarded-for\"\n\n\n# ORM\nORM_ENTITIES_DIR=\"src/entities/**/*.ts\"\nORM_SUBSCRIBER_DIR=\"src/subscriber/**/*.ts\"\nORM_MIGRATIONS_DIR=\"src/migrations/**/*.ts\"\n\n\n# DB\nMONGO_URL=\"mongodb://mongo:27017/ico-dashboard\"\n# REDIS_URL=\"redis://redis:6379\"\n# REDIS_PREFIX=\"icodashboard_space_\"\n\n\n# Auth and verify services\nAUTH_JWT=\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImQzM2RiMDlhLTVhMjUtNDljOC05NzI1LTQ4MjQ0OGNhZTBhYyIsImxvZ2luIjoidGVuYW50OnRlc3RAdGVzdC5jb20iLCJqdGkiOiJkMzNkYjA5YS01YTI1LTQ5YzgtOTcyNS00ODI0NDhjYWUwYWMxNTIwMzY1OTQ4NDgzIiwiaWF0IjoxNTIwMzY1OTQ4NDgzLCJhdWQiOiJqaW5jb3IuY29tIiwiaXNUZW5hbnQiOnRydWV9.ic0b20tTygzL3pUsmhl70OkIlhv18rtCLAewVVVXB70\"\nAUTH_BASE_URL=\"http://auth:3000\"\nVERIFY_BASE_URL=\"http://verify:3000\"\n\n\n# Smart-contracts\nSC_ABI_FOLDER=\"contracts/default\"\nICO_SC_ADDRESS=\"0x7672210729e053B2462D39CF3746A5d19B405aAD\"\nICO_OLD_SC_ADRESSES=\"\"\nWHITELIST_SC_ADDRESS=\"0x3c97c521cc60e3c6bb8b568d36d7d2f7fa2435fb\"\nTOKEN_ADDRESS=\"0x1a164bd1a4bd6f26726dba43972a91b20e7d93be\"\nWL_OWNER_PK=\"\"\n\n# Test fund\nTEST_FUND_PK=\"\"\n\n\n# RPC setting\nRPC_TYPE=\"http\"\nRPC_ADDRESS=\"https://ropsten.infura.io/ujGcHij7xZIyz2afx4h2\"\nWEB3_RESTORE_START_BLOCK=2015593\nWEB3_BLOCK_OFFSET=200\n\n# DEFAULT_INVEST_GAS=130000\n# PURCHASE_GAS_LIMIT=100000\n\n# Throttler settings\n# THROTTLER_WHITE_LIST=\"\"\n# THROTTLER_INTERVAL=1000\n# THROTTLER_MAX=5\n# THROTTLER_MIN_DIFF=0\n\n\n# Coinpayments settings\n# COINPAYMENTS_API_KEY=\"api_key\"\n# COINPAYMENTS_API_SECRET=\"api_secret\"\n# COINPAYMENTS_API_CURRENCY1=\"ETH\"\n# COINPAYMENTS_API_MERCHANT_ID=\"api_merchant_id\"\n# COINPAYMENTS_API_MERCHANT_SECRET=\"api_merchant_secret\"\n\n\n# Email\n# EMAIL_TEMPLATE_FOLDER=\"default\"\n# EMAIL_FROM=\"noreply@icodashboard.space\"\n# EMAIL_REFERRAL=\"partners@icodashboard.space\"\n\n# Mailgun provider\n# MAILGUN_DOMAIN=\"icodashboard.space\"\n# MAILGUN_API_KEY=\"key-0123456789\"\n\n# mailjet provider\n# MAILJET_API_KEY=\"\"\n# MAILJET_API_SECRET=\"\"\n\n\n# KYC settings\nKYC_STATUS_DEFAULT=\"not_verified\"\nKYC_ENABLED=false\nKYC_PROVIDER=\"JUMIO\"\n\n# Jumio provider\nKYC_JUMIO_BASE_URL=\"http://kyc.example.com\"\nKYC_JUMIO_TOKEN=\"api_token\"\nKYC_JUMIO_SECRET=\"api_secret\"\n# KYC_JUMIO_TOKEN_LIFETIME=5184000\n\n# Shufti Pro provider\nKYC_SHUFTIPRO_CLIENT_ID=\"CLIENTID\"\nKYC_SHUFTIPRO_SECRET_KEY=\"SECRETKEY\"\nKYC_SHUFTIPRO_REDIRECT_URL=\"http://localhost\"\nKYC_SHUFTIPRO_CALLBACK_URL=\"http://localhost\"\nKYC_SHUFTIPRO_ALLOW_RECREATE_SESSION=false\nKYC_SHUFTIPRO_DEFAULT_PHONE=\"+440000000000\"\n\n\n# Logging\nACCESS_LOG=true\n# LOGGING_LEVEL=\"warn\"\n# LOGGING_FORMAT=\"text\"\n# LOGGING_COLORIZE=false\n",
+            "docker-compose.yml": "version: '2'\nservices:\n  ico:\n    image: jincort/backend-ico-dashboard:develop\n    build:\n      context: ./\n      dockerfile: Dockerfile\n    ports:\n      - 80:3000\n      - 3000:3000\n      - 443:4000\n    links:\n      - auth\n      - redis\n      - verify\n      - rpc\n    volumes:\n      - ./:/usr/src/app\n    depends_on:\n      - rpc\n      - mongo\n    tty: true\n\n  auth:\n    image: jincort/backend-auth:production\n    environment:\n      REDIS_HOST: redis\n      REDIS_PORT: 6379\n      FORCE_HTTPS: disabled\n      JWT_KEY: \"uZrJ!xe*xN?!;oU.u*;QOSM+|=4C?WH?6eWPcK/6AkIXIVGQguSA*r\"\n      THROTTLER_WHITE_LIST: \"*\"\n      TENANT_WHITE_LIST: \"*\"\n    ports:\n      - \"3000\"\n      - \"4000\"\n    links:\n      - redis\n\n  redis:\n    image: jincort/backend-redis:production\n    ports:\n      - \"6379\"\n    volumes:\n      - ./storage/redis:/data\n\n  rpc:\n    image: jincort/parity-rpc-dev:latest\n    build:\n      context: ./\n      dockerfile: rpc.dev.Dockerfile\n    ports:\n      - \"8546\"\n\n  verify:\n    image: jincort/backend-verify:dev-62b3a0d\n    environment:\n      REDIS_URL: 'redis://redis:6379'\n      THROTTLER_WHITE_LIST: \"*\"\n    links:\n      - auth\n      - redis\n\n  mongo:\n    image: jincort/backend-mongodb:production\n    volumes:\n        - ./storage/mongodb:/data/db\n    ports:\n      - 27017:27017\n      - 28017:28017",
+            "Dockerfile": "FROM mhart/alpine-node:8.9.1\n\nWORKDIR /usr/src/app\nCOPY . .\nCOPY custom-entrypoint.sh /usr/local/bin/custom-entrypoint.sh\n\nRUN chmod 755 /usr/local/bin/custom-entrypoint.sh && \\\n    addgroup ico && \\\n    adduser -D -G ico ico && \\\n    apk add --update --no-cache git python make g++ curl grep bash && \\\n    npm i -g yarn && \\\n    yarn install\n\nEXPOSE 3000\nEXPOSE 4000\n\nUSER ico\n\nENTRYPOINT [\"/usr/local/bin/custom-entrypoint.sh\"]\nCMD [\"npm\", \"start\"]\n",
+            "Jenkinsfile": "pipeline {\n  agent any\n  stages {\n    stage('Build') {\n      steps {\n        sh 'docker-compose build'\n      }\n    }\n    stage('Deploy') {\n      steps {\n        sh 'docker-compose push'\n      }\n    }\n  }\n}"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            ".env.stage",
+            ".env.test",
+            ".gitignore",
+            ".npmrc",
+            ".nycrc",
+            ".travis.yml",
+            "Dockerfile",
+            "Dockerfile.prod",
+            "Jenkinsfile",
+            "LICENSE",
+            "Logo.png",
+            "README.md",
+            "apiary.apib",
+            "custom-entrypoint.sh",
+            "docker-compose.prod.yml",
+            "docker-compose.stage.yml",
+            "docker-compose.yml",
+            "package.json",
+            "rpc.dev.Dockerfile",
+            "rpc.mainnet.Dockerfile",
+            "rpc.ropsten.Dockerfile",
+            "tsconfig.build.json",
+            "tsconfig.json",
+            "tslint.json",
+            "yarn.lock"
+        ],
+        "folders": [
+            "contracts",
+            "docs",
+            "scripts",
+            "src",
+            "storage",
+            "test"
+        ]
+    }
+}

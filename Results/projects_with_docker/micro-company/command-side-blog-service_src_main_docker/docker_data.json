@@ -1,0 +1,32 @@
+{
+    "docker_info": {
+        "base_image": "eclipse-temurin:11",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8080"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD *.jar /app.jar",
+            "ADD wait-for-it.sh /wait-for-it.sh"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"java\",\"-Dspring.profiles.active=docker\",\"-jar\",\"/app.jar\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "bash -c 'touch /app.jar'",
+                "RUN bash -c 'chmod 777 /wait-for-it.sh'"
+            ]
+        ]
+    }
+}

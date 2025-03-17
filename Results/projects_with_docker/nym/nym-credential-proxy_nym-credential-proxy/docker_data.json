@@ -1,0 +1,38 @@
+{
+    "docker_info": {
+        "base_image": "harbor.nymte.ch/dockerhub/rust:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ./ /usr/src/nym",
+            "WORKDIR /usr/src/nym/nym-credential-proxy/nym-credential-proxy",
+            "WORKDIR /nym",
+            "COPY --from=builder /usr/src/nym/target/release/nym-credential-proxy ./"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"/nym/nym-credential-proxy\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "cargo build --release",
+                ""
+            ],
+            [
+                "apt update && apt install -yy curl ca-certificates",
+                ""
+            ]
+        ]
+    }
+}

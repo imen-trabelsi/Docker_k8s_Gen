@@ -1,0 +1,33 @@
+# Pull the base image
+FROM python:3.6-onbuild
+
+# Update and install dependencies
+RUN apt-get update -y && \
+
+# Create a directory for our application
+RUN mkdir -p /app
+
+# Set the application directory as the default work directory
+WORKDIR /app
+
+# Copy the requirements.txt into the container
+COPY requirements.txt .
+    
+# Install Python dependencies   
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the entire application inside the container
+COPY . .
+
+# Create a directory for configuration
+RUN mkdir -p /config
+
+# Set Environment Variables
+ENV SQLALCHEMY_DATABASE_URI sqlite:////config/tokens.db
+ENV FLASK_DEBUG=1
+
+# Expose the application's port
+EXPOSE 5000
+
+# Specify the command to run
+CMD ["python", "-m", "indexer"]

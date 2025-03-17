@@ -1,0 +1,25 @@
+# Use the base image for Microsoft SQL Server Linux
+FROM microsoft/mssql-server-linux:2017-latest
+
+# Set the necessary environment variables
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
+
+# Set the work directory
+WORKDIR .
+
+# Copy entrypoint and init scripts, then set permissions
+COPY ./deploys/dockers/mssqldb/entrypoint.sh /entrypoint.sh
+COPY ./deploys/dockers/mssqldb/init.sh /init.sh
+RUN ["/bin/bash", "-c", "chmod +x /entrypoint.sh && chmod +x /init.sh"]
+
+# Expose the necessary port
+EXPOSE 1433
+
+# Healthcheck configuration
+HEALTHCHECK --interval=15s CMD /opt/mssql-tools/bin/sqlcmd -U sa -P $SA_PASSWORD -Q "select 1" && grep -q "MSSQL SERVER SUCCESSFULLY STARTED" ./var/opt/mssql/log/errorlog
+
+# Set the command for container startup
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["tail", "-f", "/dev/null"]

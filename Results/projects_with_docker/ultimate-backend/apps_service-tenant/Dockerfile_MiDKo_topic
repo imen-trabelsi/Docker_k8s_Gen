@@ -1,0 +1,28 @@
+# Base image
+FROM node:12-alpine
+
+# Create app directory
+RUN mkdir -p /nest
+WORKDIR /nest
+
+# Install dependencies
+COPY package.json /nest
+RUN yarn global add @nestjs/cli
+RUN yarn install --production=false
+
+# Copy source code to container image
+COPY . .
+
+# Build the application
+RUN nest build proto-schema
+RUN nest build service-tenant
+
+# Set environment variable
+ARG NODE_ENV=production
+ENV NODE_ENV $NODE_ENV
+
+# Expose port
+EXPOSE 50053
+
+# Define command to start application
+CMD ["node", "dist/apps/service-tenant/main.js"]

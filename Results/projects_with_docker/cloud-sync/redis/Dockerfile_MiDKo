@@ -1,0 +1,30 @@
+# Set the base image
+FROM redis:latest
+
+# Set the work directory
+WORKDIR /app
+
+# Copy package and install dependencies
+COPY package.json .
+RUN npm install
+
+# Copy other source code files
+COPY . .
+
+# Expose necessary ports
+EXPOSE 6379
+
+# Set ENV variables if any
+# ENV VARIABLE_NAME=variable_value
+
+# Set the necessary health checks
+# HEALTHCHECK --interval=5s --timeout=5s --retries=5 CMD curl --fail http://localhost:6379/ || exit 1
+
+# Copy Instructions
+COPY redis.conf /usr/local/etc/redis/redis.conf
+
+# Run command
+# RUN command-to_execute
+
+# Final CMD/ENTRYPOINT
+CMD ["redis-server", "/usr/local/etc/redis/redis.conf"]

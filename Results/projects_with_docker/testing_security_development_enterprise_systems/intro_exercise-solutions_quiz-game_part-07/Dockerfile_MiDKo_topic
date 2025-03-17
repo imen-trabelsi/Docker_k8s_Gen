@@ -1,0 +1,29 @@
+# Using the base image provided by the user
+FROM jboss/wildfly:18.0.1.Final
+
+# Update the base image packages
+RUN apt-get update -y && apt-get upgrade -y
+
+# Set the working directory in the Docker image
+WORKDIR /app
+
+# Copy the pom.xml file from your project to the Docker image
+COPY pom.xml .
+
+# Install all the dependencies
+RUN mvn dependency:go-offline -B
+
+# Copy the source code to the Docker image
+COPY src src
+
+# Build the project
+RUN mvn clean package
+
+# Copy the built application to the deployments folder of Wildfly
+COPY target/quizgame.war /opt/jboss/wildfly/standalone/deployments/
+
+# Expose the port the app runs on
+EXPOSE 8080
+
+# Set the startup command to execute the jar
+CMD [ "java", "-jar", "/opt/jboss/wildfly/standalone/deployments/quizgame.war" ]

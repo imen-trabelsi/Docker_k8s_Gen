@@ -1,0 +1,27 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "requirements.txt": "celery==5.1.2\nflower==1.0.0\nredis==3.5.3\nwatchdog==2.1.5\n\n"
+        },
+        "database": "Redis",
+        "build_system": "pip",
+        "config_files": {
+            "docker-compose.yml": "version: \"3.7\"\nservices:\n  web:\n    build:\n      context: ./api\n      dockerfile: Dockerfile\n    restart: always\n    ports:\n     - \"5001:5001\"\n    depends_on:\n      - redis\n    volumes: ['./api:/api']\n  worker:\n    build:\n      context: ./celery-queue\n      dockerfile: Dockerfile\n    command: celery -A tasks worker -l info -E\n    environment:\n      CELERY_BROKER_URL: redis://redis\n      CELERY_RESULT_BACKEND: redis://redis\n    depends_on:\n      - redis\n    volumes: ['./celery-queue:/queue']\n  monitor:\n    build:\n      context: ./celery-queue\n      dockerfile: Dockerfile\n    ports:\n     - \"5555:5555\"\n    command:  ['celery', 'flower', '-A', 'tasks']\n    environment:\n      CELERY_BROKER_URL: redis://redis:6379/0\n      CELERY_RESULT_BACKEND: redis://redis:6379/0\n    depends_on:\n      - redis\n      - worker\n    volumes: ['./celery-queue:/queue']\n  redis:\n    image: redis:alpine\n    ports:\n      - \"6379:6379\"\n",
+            "celery-queue/Dockerfile": "FROM python:3.9-alpine\n\nENV CELERY_BROKER_URL redis://redis:6379/0\nENV CELERY_RESULT_BACKEND redis://redis:6379/0\nENV C_FORCE_ROOT true\n\nCOPY . /queue\nWORKDIR /queue\n\nRUN pip install -U setuptools pip\nRUN pip install -r requirements.txt\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            "Dockerfile",
+            "Dockerfile.dev",
+            "app.py",
+            "requirements.txt",
+            "worker.py"
+        ],
+        "folders": []
+    }
+}

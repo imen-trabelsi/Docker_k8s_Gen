@@ -1,0 +1,31 @@
+# Base Image
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
+
+# Set Work directory
+WORKDIR /ClassifiedAds.Monolith
+
+# Copy csproj and restore as distinct layers
+COPY ./ClassifiedAds.Application/*.csproj ./ClassifiedAds.Application/
+COPY ./ClassifiedAds.CrossCuttingConcerns/*.csproj ./ClassifiedAds.CrossCuttingConcerns/
+COPY ./ClassifiedAds.Domain/*.csproj ./ClassifiedAds.Domain/
+COPY ./ClassifiedAds.Infrastructure/*.csproj ./ClassifiedAds.Infrastructure/
+COPY ./ClassifiedAds.Persistence/*.csproj ./ClassifiedAds.Persistence/
+COPY ./ClassifiedAds.Background/*.csproj ./ClassifiedAds.Background/
+
+RUN dotnet restore ./ClassifiedAds.Application/ClassifiedAds.Application.csproj
+RUN dotnet restore ./ClassifiedAds.Infrastructure/ClassifiedAds.Infrastructure.csproj
+RUN dotnet restore ./ClassifiedAds.Background/ClassifiedAds.Background.csproj
+
+# Copy all files
+COPY . ./
+
+# Publish the project
+RUN dotnet publish ./ClassifiedAds.Background/ClassifiedAds.Background.csproj -c Release -o out
+
+# Start new stage
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
+
+WORKDIR /ClassifiedAds.Monolith
+
+# Set the entry point to dotnet binary
+ENTRYPOINT ["dotnet", "ClassifiedAds.Background.dll"]

@@ -1,0 +1,55 @@
+# Defining node version
+FROM node:12 as builder
+
+# Set our working directory
+WORKDIR /app
+
+# Delete any existing dependencies
+RUN rm -rf /app/node_modules
+
+# Add the rest of the source code files to WORKDIR
+COPY . .
+
+# Copy package files
+COPY package*.json ./
+
+# Install project dependencies
+RUN npm install --silent --progress=false --production
+
+#Copy Redis Configuration files
+COPY conduit/docker-compose.yml /app/conduit/
+COPY conduit/Dockerfile /app/conduit/
+
+#Copy static files
+COPY conduit/public/asset-manifest.json /app/conduit/public/
+
+# Setting environment key-value pairs
+ENV NODE_ENV=production
+
+# Starting the application
+CMD [ "npm", "start"]
+
+# Expose our server port
+EXPOSE 8080
+
+# Create app directory
+RUN mkdir -p /app && chown -R node:node /app
+
+USER node
+
+# Install app dependencies
+RUN npm ci --production
+
+# Bundle app source
+COPY --chown=node:node . .
+
+# Final build stage
+FROM node:12-alpine
+
+WORKDIR /app
+
+# Copy binaries from builder stage
+
+EXPOSE 8080
+
+CMD [ "node", "server.js" ]

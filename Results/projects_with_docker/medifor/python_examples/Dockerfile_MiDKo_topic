@@ -1,0 +1,22 @@
+# Pull the base image
+FROM datamachines/grpc-python:1.15.0
+
+LABEL grpc_version="1.15.0"
+LABEL proto_version="3.6.1"
+LABEL language="python:3.7"
+
+# Set the working directory
+WORKDIR /app
+
+# Copy required files
+COPY . /app
+
+# Install the necessary libraries
+RUN pip install git+https://github.com/mediaforensics/medifor.git
+RUN pip install -r requirements.txt
+
+# Expose port 50051
+EXPOSE 50051
+
+# Start the application
+CMD ["python", "example_analytic.py"]

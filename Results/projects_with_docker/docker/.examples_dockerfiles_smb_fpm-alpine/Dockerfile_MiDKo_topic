@@ -1,0 +1,12 @@
+# Dockerfile
+
+FROM nextcloud:fpm-alpine
+
+# Install necessary dependencies
+RUN apk add --no-cache procps samba-client
+
+# Copy necessary configuration files
+COPY .config /var/www/config
+
+# Final command
+CMD ["php-fpm"]

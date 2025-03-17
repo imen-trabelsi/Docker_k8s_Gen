@@ -1,0 +1,25 @@
+# Use a base image
+FROM maven:3.6-jdk-8-slim as builder
+
+# Set the working directory
+WORKDIR /buildDir
+
+# Add the complete project to the working directory
+COPY . /buildDir
+
+# Run the Maven build
+RUN mvn clean install
+
+# Now, add a new layer on top of the current image
+ FROM openjdk:8-jdk-alpine
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the jar file from builder image, built in the previous stage
+
+# Expose the port on which our app runs
+EXPOSE 8080
+
+# Default command run by the container
+CMD ["java","-jar","./app.jar"]

@@ -1,0 +1,36 @@
+# Base Image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+
+# Set Work Directory
+WORKDIR /app
+
+# Copy Project Files
+COPY ["src/Services/Ordering/Ordering.csproj", "src/Services/Ordering/"]
+
+# Restore Packages 
+RUN dotnet restore "src/Services/Ordering/Ordering.csproj"
+
+# Copy all other source code
+COPY . .
+
+# Move to Project Directory
+WORKDIR "/src/src/Services/Ordering"
+
+# Build Project 
+RUN dotnet build "Ordering.csproj" -c Release -o /app/build
+
+# Publish the Project
+FROM build-env AS publish
+RUN dotnet publish "Ordering.csproj" -c Release -o /app/publish
+
+## Create final image
+FROM mcr.microsoft.com/dotnet/runtime:6.0
+
+WORKDIR /app
+
+# Expose ports
+EXPOSE 80
+EXPOSE 443 
+
+# Entry point to make container executable
+ENTRYPOINT ["dotnet", "Ordering.dll"]

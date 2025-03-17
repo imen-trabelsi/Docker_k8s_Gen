@@ -1,0 +1,23 @@
+# Use the .NET SDK for building the microservice
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+WORKDIR /src
+
+# Copy csproj and restore dependencies
+COPY ["eShop-Learn.sln", "./"]
+
+# Copy the rest of the source code
+COPY . .
+
+# Build the microservice
+RUN dotnet restore "eShop-Learn.sln"
+RUN dotnet publish "src/Services/Identity/Identity.API/Identity.API.csproj" -c Release -o /app/publish --no-restore
+
+# Generate runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+WORKDIR /app
+
+# Expose necessary ports
+EXPOSE 80
+
+# Specify the entry point
+ENTRYPOINT ["dotnet", "Identity.API.dll"]

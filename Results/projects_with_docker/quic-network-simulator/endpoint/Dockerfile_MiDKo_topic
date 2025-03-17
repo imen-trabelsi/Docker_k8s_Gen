@@ -1,0 +1,20 @@
+# Dockerfile
+
+FROM ubuntu:24.04
+
+LABEL maintainer="maintainer@example.com"
+
+# Install necessary utilities
+RUN apt-get update && \
+
+# Copy necessary files and scripts
+COPY setup.sh /setup.sh
+COPY run_endpoint.sh /run_endpoint.sh
+
+# Apply necessary permissions and commands
+RUN chmod +x /setup.sh && \
+    chmod +x /run_endpoint.sh && \
+    wget https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh && \
+
+# Configuration of container startup
+ENTRYPOINT ["/run_endpoint.sh"]

@@ -1,0 +1,41 @@
+# Builder Stage
+FROM maven:3.8.1-openjdk-11 AS builder
+WORKDIR /usr/src/app
+COPY pom.xml .
+RUN mvn -B dependency:go-offline
+COPY src/ ./src/
+RUN mvn -B package
+
+# Extract parts of the build for reuse in layers
+RUN java -Djarmode=layertools -jar target/*.jar extract
+
+# Final Stage
+FROM $REPOSITORY/gs-cloud-base-jre:$TAG as final
+WORKDIR application
+
+# Copy Dependencies
+
+# Copy Application
+
+ENV JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS} -XX:SharedArchiveFile=application.jsa"
+
+# Copy Jar File
+
+# Create tmp directory
+RUN mkdir /tmp/tmpdatadir
+
+ENTRYPOINT ["mkdir","/tmp/tmpdatadir"]
+
+CMD ["java",\
+ "-XX:ArchiveClassesAtExit=application.jsa",\
+ "-Dspring.context.exit=onRefreshed",\
+ "-Dspring.profiles.active=standalone,datadir,offline",\
+ "-Dserver.port=0",\
+ "-Dmanagement.server.port=0",\
+
+RUN rm -rf /tmp/*
+EXPOSE $EXPOSED_PORT
+
+# Health Check
+HEALTHCHECK --interval=30s --timeout=3s \
+CMD wget --quiet --tries=1 --spider http://localhost:$EXPOSED_PORT/api/health || exit 1

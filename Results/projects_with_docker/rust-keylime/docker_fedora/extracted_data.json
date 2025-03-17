@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "Rust",
+        "framework": "Actix",
+        "dependencies": {
+            "Cargo.toml": "[workspace]\nmembers = [\n    \"keylime\",\n    \"keylime-agent\",\n    \"keylime-ima-emulator\",\n]\nresolver = \"2\"\n\n[workspace.package]\nauthors = [\"Keylime Authors\"]\nedition = \"2021\"\nlicense = \"Apache-2.0\"\nrepository = \"https://github.com/keylime/rust-keylime\"\nversion = \"0.2.7\"\n\n[workspace.dependencies]\nactix-rt = \"2\"\nactix-web =  { version = \"4\", default-features = false, features = [\"macros\", \"openssl\"] }\nbase64 = \"0.22\"\ncfg-if = \"1\"\nclap = { version = \"4.5\", features = [\"derive\"] }\nconfig = { version = \"0.13\", default-features = false, features = [\"toml\"] }\nfutures = \"0.3.6\"\nglob = \"0.3\"\nhex = \"0.4\"\nkeylime = { version = \"=0.2.7\", path = \"keylime\" }\nlibc = \"0.2.43\"\nlog = \"0.4\"\nopenssl = \"0.10.15\"\npest = \"2\"\npest_derive = \"2\"\npicky-asn1-der = \"0.4\"\npicky-asn1-x509 = \"0.12\"\npretty_env_logger = \"0.5\"\nreqwest = {version = \"0.12\", default-features = false, features = [\"json\"]}\nserde = \"1.0.80\"\nserde_derive = \"1.0.80\"\nserde_json = { version = \"1.0\", features = [\"raw_value\"] }\nsignal-hook = \"0.3\"\nstatic_assertions = \"1\"\ntempfile = \"3.4.0\"\nthiserror = \"2.0\"\ntokio = {version = \"1\", features = [\"rt\", \"sync\", \"macros\"]}\ntss-esapi = {version = \"7.4.0\", features = [\"generate-bindings\"]}\nuuid = {version = \"1.3\", features = [\"v4\"]}\nzip = {version = \"0.6\", default-features = false, features= [\"deflate\"]}\n"
+        },
+        "database": null,
+        "build_system": "Cargo",
+        "config_files": {
+            "docker-compose.yml": "version: '3.6'\nservices:\n  keylime-verifier:\n    build:\n      context: ./docker/fedora/\n      dockerfile: keylime_py.Dockerfile\n    image: keylime_py\n    hostname: 'keylime-verifier'\n    user: root\n    volumes:\n      - secure-volume:/var/lib/keylime\n    ports:\n        - \"8892:8892\"\n    command: [\n      \"/usr/local/bin/keylime_verifier\"\n    ]\n  keylime-registrar:\n    build:\n      context: ./docker/fedora/\n      dockerfile: keylime_py.Dockerfile\n    image: keylime_py\n    hostname: 'keylime-verifier' # this is a bit of poor workaround, will fix in python code\n    user: root\n    volumes:\n      - secure-volume:/var/lib/keylime\n    ports:\n        - \"8891:8891\"\n        - \"8890:8890\"\n    command: [\"/root/wait.sh\", \"/var/lib/keylime/cv_ca/client-cert.crt\", \"keylime_registrar\"]\n  keylime_agent:\n    build:\n      context: ./docker/fedora/\n      dockerfile: keylime_rust.Dockerfile\n    image: keylime_rust\n    hostname: 'keylime-agent'\n    user: root\n    volumes:\n      - ./target/debug/:/rust-keylime\n    network_mode: host\n    environment:\n    - TCTI=tabrmd:bus_type=system\n    command:\n      - /bin/bash\n      - -c\n      - |\n        mkdir /tmp/tpmdir\n        rm -rf /var/run/dbus\n        mkdir /var/run/dbus\n        dbus-daemon --system\n        ls /etc/dbus-1/system.d/\n        swtpm_setup --tpm2 \\\n            --tpmstate /tmp/tpmdir \\\n            --createek --decryption --create-ek-cert \\\n            --create-platform-cert \\\n            --display\n        swtpm socket --tpm2 \\\n            --tpmstate dir=/tmp/tpmdir \\\n            --flags startup-clear \\\n            --ctrl type=tcp,port=2322 \\\n            --server type=tcp,port=2321 \\\n            --daemon\n        tpm2-abrmd \\\n            --logger=stdout \\\n            --tcti=swtpm: \\\n            --allow-root \\\n            --flush-all &\n        RUST_LOG=keylime_agent=trace /rust-keylime/keylime_agent\nvolumes:\n  secure-volume:\n\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "dbus-policy.conf",
+            "keylime_py.Dockerfile",
+            "keylime_rust.Dockerfile",
+            "wait.sh"
+        ],
+        "folders": []
+    }
+}

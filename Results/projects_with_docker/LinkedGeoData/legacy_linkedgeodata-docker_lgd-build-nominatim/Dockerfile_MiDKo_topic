@@ -1,0 +1,32 @@
+# Step 1: Defining base image
+FROM ubuntu:16.04
+
+# Step 2: Defining environment variables
+ENV NOMINATIM_VERSION v2.5.1
+ENV POSTGRES_VERSION 9.5
+ENV POSTGIS_VERSION 2.2
+ENV DEBIAN_FRONTEND noninteractive
+
+# Step 3: Setting working directory
+WORKDIR /app/nominatim
+
+# Step 4: Installing necessary dependencies
+RUN apt-get update --fix-missing && \
+
+# Step 5: Copying the required files
+COPY target/nominatim.jar .
+
+# Step 6: Unzipping the jar and setting permissions
+RUN unzip nominatim.jar && mv Nominatim src
+RUN chmod +x src/autogen.sh && sleep 1 && cd src && ./autogen.sh && ./configure && make
+
+# Step 7: Defining how to run the container
+CMD ["./src/Nominatim"]
+
+# DevOps best practices call to avoid running containers with root permissions for security reasons. 
+# However, in order to do this, we need to create a new user and provide the necessary permissions to it.
+RUN useradd -ms /bin/bash nominatim
+USER nominatim
+
+# Expose your app's port in your Dockerfile
+EXPOSE 8080

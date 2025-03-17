@@ -1,0 +1,20 @@
+# Start from a lightweight base image
+FROM ruby:2.5.0
+
+# Create directory for the application
+RUN mkdir -p /src
+WORKDIR /src
+
+# Copy Required Files
+COPY Gemfile /src/
+COPY Gemfile.lock /src/
+COPY main.rb /src/
+
+# Dependency installation
+RUN bundle install
+
+# Expose port 3000 for external access
+EXPOSE 3000
+
+# Run the application
+ENTRYPOINT ["ruby", "main.rb"]

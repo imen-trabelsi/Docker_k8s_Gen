@@ -1,0 +1,21 @@
+FROM golang:1.14.1
+
+WORKDIR /src
+COPY ./ ./
+
+RUN groupadd -r emco && useradd -r -g emco emco
+
+WORKDIR /opt/emco
+RUN chown emco:emco /opt/emco -R
+RUN mkdir ./config
+
+COPY --chown=emco ./src/middleend ./
+COPY ./src/tools/emcoui/public/manifest.json ./public
+COPY ./build/Readme.md ./build
+
+ENV NPM_CONFIG_LOGLEVEL warn
+RUN npm install --production
+
+USER emco
+
+CMD ["./middleend"]

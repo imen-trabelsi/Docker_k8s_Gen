@@ -1,0 +1,26 @@
+#Set base image
+FROM node:10.16 
+
+#Set working directory
+WORKDIR /usr/src/app
+
+#Copy package*.json files and src/web
+COPY src/web/package*.json ./
+COPY src/web . 
+
+#Install dependencies
+RUN npm install 
+
+#Copy configuration and static files 
+COPY .env ./
+COPY docker-compose.yml ./
+COPY docker-compose.override.yml ./
+COPY src/bak/web/Dockerfile ./
+COPY src/bak/web/public/manifest.json ./
+COPY assets/demo-cloud-native.xml ./
+
+#Expose Port 
+EXPOSE 3000 
+
+#Provide run command
+CMD [ "npm", "start" ]

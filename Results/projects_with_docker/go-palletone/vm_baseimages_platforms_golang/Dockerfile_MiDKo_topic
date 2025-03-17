@@ -1,0 +1,30 @@
+# Use the base image specified by the user
+FROM palletone/baseimg
+
+# Install depedencies for Go and clean up install files 
+RUN wget -o download.log https://studygolang.com/dl/golang/go1.12.linux-amd64.tar.gz && \
+    tar -C /usr/local -zxvf go1.12.linux-amd64.tar.gz >> download.log && \
+    rm go1.12.linux-amd64.tar.gz download.log && \
+
+# Set the Go Path
+ENV GOPATH=/gopath  
+ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin/:$GOPATH/bin
+
+# Copy the vendor folder to the appropriate directory
+COPY ./vendor /gopath/src/
+
+# Copy the rest of your application code
+COPY . /go/src/app
+
+# Set the working directory
+WORKDIR /go/src/app
+
+# Build the Go App
+RUN go mod download
+RUN go build -o main .
+
+# Expose the port your app runs on
+EXPOSE <provided-port>
+
+# Run the Go app
+CMD ["./main"]

@@ -1,0 +1,77 @@
+{
+    "docker_info": {
+        "base_image": "node:16",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV NODE_ENV production"
+        ],
+        "copy_instructions": [
+            "WORKDIR /opt/streamer-ui-client",
+            "COPY $pwd/packages/client/package.json ./",
+            "COPY $pwd/packages/client/yarn.lock ./",
+            "COPY $pwd/packages/client/.eslintrc.json ./",
+            "COPY $pwd/packages/client/*.less ./",
+            "COPY $pwd/packages/client/*.js ./",
+            "COPY $pwd/packages/client/src ./src",
+            "COPY $pwd/packages/client/public ./public",
+            "COPY $pwd/packages/server/package.json ./",
+            "COPY $pwd/packages/server/yarn.lock ./",
+            "COPY $pwd/packages/server/purge-db.sh ./",
+            "COPY $pwd/packages/server/purge-all-db.sh ./",
+            "COPY $pwd/packages/server/start-server.sh ./",
+            "COPY $pwd/packages/server/start-cron.sh ./",
+            "COPY $pwd/packages/server/*.js ./",
+            "COPY $pwd/packages/server/bin ./bin",
+            "COPY $pwd/packages/server/routes ./routes",
+            "COPY $pwd/packages/server/config ./config",
+            "COPY $pwd/packages/server/cron/crontab /etc/cron.d/purge-db"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"/usr/bin/supervisord\",",
+                    "\"-c\",",
+                    "\"/opt/streamer-ui-server/supervisord.conf\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "yarn install",
+                "COPY $pwd/packages/client/tsconfig.json ./"
+            ],
+            [
+                "yarn build",
+                ""
+            ],
+            [
+                "ulimit -n 1024 && apt-get update && apt-get install -y cron curl supervisor",
+                "WORKDIR /opt/streamer-ui-server"
+            ],
+            [
+                "yarn install",
+                "COPY $pwd/packages/server/supervisord.conf ./"
+            ],
+            [
+                "( chmod +x purge-db.sh )",
+                "RUN ( chmod +x purge-all-db.sh )"
+            ],
+            [
+                "( chmod +x start-server.sh )",
+                "RUN ( chmod +x start-cron.sh )"
+            ],
+            [
+                "( chmod +x /etc/cron.d/purge-db && crontab /etc/cron.d/purge-db )",
+                "COPY --from=build /opt/streamer-ui-client/build /opt/streamer-ui-server/frontend"
+            ]
+        ]
+    }
+}

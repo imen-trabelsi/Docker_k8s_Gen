@@ -1,0 +1,19 @@
+Here's the Kubernetes service manifest using the provided information:
+
+```yaml
+apiVersion: v1
+kind: Service
+metadata:
+  name: microservice-name
+spec:
+  type: ClusterIP
+  ports:
+    - port: 5432
+      targetPort: 5432
+  selector:
+    app: microservice-name
+```
+
+In this manifest, replace 'microservice-name' with an actual name of your microservice. The `selector` field identifies the set of pods to target, it should be the same value that was used in the deployment manifest as `labels`. So, ensure that the actual microservice deployment has a label `app` with the value of `microservice-name`. 
+
+Note: The `targetPort` could be different if your service is listening on a different port inside the container. You would need to adjust that for your specific setup.

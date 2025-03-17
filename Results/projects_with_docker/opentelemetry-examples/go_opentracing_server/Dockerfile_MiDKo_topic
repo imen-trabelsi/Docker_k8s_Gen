@@ -1,0 +1,31 @@
+# Use the base golang image
+FROM golang:latest as builder
+
+# Set the Current Working Directory inside the container
+WORKDIR /app
+
+# Copy go.mod and go.sum files to the workspace
+COPY go.mod go.sum ./
+
+# Download dependencies
+RUN go mod download 
+
+# Copy the server code to our build space
+COPY server.go .
+
+# Build the Go app
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o server .
+
+# Start from a new stage to create a smaller image
+FROM alpine:latest
+
+# Add certificates
+RUN apk --no-cache add ca-certificates
+
+# Copy binary from builder to /root/ in docker container
+
+# Set the Current Working Directory inside the container
+WORKDIR /root/
+
+# Command to run the executable
+CMD ["./server"]

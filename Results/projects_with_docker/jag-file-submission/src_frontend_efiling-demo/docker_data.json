@@ -1,0 +1,65 @@
+{
+    "docker_info": {
+        "base_image": "node:18-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY ./package.json ./yarn.lock ./",
+            "COPY . .",
+            "WORKDIR /usr/share/nginx/html",
+            "COPY ./env.sh .",
+            "COPY ./.env.template .env"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/bin/bash\",",
+                    "\"-c\",",
+                    "\"/usr/share/nginx/html/env.sh",
+                    "&&",
+                    "nginx",
+                    "-g",
+                    "\\\"daemon",
+                    "off;\\\"\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "yarn install --production=true \\",
+                "&& yarn add --dev react-app-rewired # this line makes sure that react-app-rewired scripts will be in the PATH. It can"
+            ],
+            [
+                "yarn build --production=true",
+                ""
+            ],
+            [
+                "rm -rf /usr/share/nginx/html/",
+                "COPY --from=build /app/build /usr/share/nginx/html"
+            ],
+            [
+                "rm /etc/nginx/conf.d/default.conf",
+                "COPY nginx.conf /etc/nginx/conf.d"
+            ],
+            [
+                "chmod g+rwx /var/cache/nginx /var/run /var/log/nginx",
+                "RUN chmod g+rwx /usr/share/nginx/html/"
+            ],
+            [
+                "apk add --no-cache bash",
+                ""
+            ],
+            [
+                "chmod g+rwx env.sh",
+                ""
+            ]
+        ]
+    }
+}

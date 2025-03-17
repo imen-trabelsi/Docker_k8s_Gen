@@ -1,0 +1,45 @@
+# Setup the Base Go Image
+FROM docker.mirror.hashicorp.services/golang:1.19-alpine3.17
+
+# Setup working directory
+WORKDIR /tmp/wp-src
+
+# Add Users
+RUN addgroup waypoint && \
+
+# Setup home directory
+RUN mkdir /data/ && \
+chown -R waypoint:waypoint /data && \
+mkdir -p /run/user/100 \
+&& chown -R waypoint /run/user/100 /home/waypoint \
+
+# Copy go.mod file
+COPY go.mod /tmp/wp-prime/go.mod
+
+# Copy go.sum file
+COPY go.sum /tmp/wp-prime/go.sum
+
+# Download all the dependencies
+RUN go mod download
+
+# Install necessary packages
+RUN apk add --no-cache git gcc libc-dev make
+
+# Copy the source code into the container
+COPY . /tmp/wp-src
+
+# Build the Go app
+RUN go build -o waypoint .
+
+# Entrypoint to run the executable
+ENTRYPOINT ["/tmp/wp-src/waypoint"]
+
+# Set necessary environment variables
+ENV PATH $PATH:/kaniko/bin
+ENV TMPDIR /kaniko/tmp
+ENV USER waypoint
+ENV HOME /home/waypoint
+ENV XDG_RUNTIME_DIR=/run/user/100
+
+# Expose internal docker image port to the host
+EXPOSE 3000

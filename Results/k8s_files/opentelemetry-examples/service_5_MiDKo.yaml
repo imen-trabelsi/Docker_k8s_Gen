@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: external-dns
+  name: external-dns
+spec:
+  ports:
+  - name: http
+    port: 7979
+    protocol: TCP
+    targetPort: 7979
+  selector:
+    app: external-dns
+  type: ClusterIP

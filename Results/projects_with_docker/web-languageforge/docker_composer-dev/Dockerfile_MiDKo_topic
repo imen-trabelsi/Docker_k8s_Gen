@@ -1,0 +1,21 @@
+# set base image (host OS)
+FROM sillsdev/web-languageforge:base-php
+
+# set the working directory in the container
+WORKDIR /work
+
+# copy the dependencies file to the working directory
+COPY src/composer.json src/composer.lock /work/
+
+# install dependencies
+RUN apk add --no-cache nodejs npm
+RUN npm install --production
+
+# set environment variables
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
+# copy the content of the local src directory to the working directory
+COPY . .
+
+# allow user to interact with the app via bash
+CMD ["bash"]

@@ -1,0 +1,28 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "JavaScript",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"app-shell\",\n  \"version\": \"1.0.0\",\n  \"scripts\": {\n    \"serve\": \"parcel index.pug --port 8000\",\n    \"build\": \"parcel build index.pug\"\n  },\n  \"license\": \"MIT\",\n  \"dependencies\": {\n    \"qiankun\": \"^2.0.16\",\n    \"zone.js\": \"^0.10.3\"\n  },\n  \"devDependencies\": {\n    \"parcel-bundler\": \"^1.12.4\",\n    \"pug\": \"^3.0.0\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "mfe/app-shell/.env": "APP_NAME=\"Micro Fullstack\"\n\nENTRY_VUE=\"//localhost:8001\"\nENTRY_REACT=\"//localhost:8002\"\nENTRY_ANGULAR=\"//localhost:8003\"\nENTRY_SVELTE=\"//localhost:8004\"\n",
+            "mfe/app-shell/docker-compose.yml": "version: '3'\n\nservices:\n\n  caddy:\n    image: caddy\n    ports:\n      - \"80:8000\"\n      - \"443:443\"\n",
+            "mfe/app-shell/Dockerfile": "FROM caddy:2-alpine\n\nCOPY Caddyfile /etc/caddy/Caddyfile\nCOPY /dist /usr/share/caddy/dist\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "babel.config.js",
+            "docker-compose.yml",
+            "package.json"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

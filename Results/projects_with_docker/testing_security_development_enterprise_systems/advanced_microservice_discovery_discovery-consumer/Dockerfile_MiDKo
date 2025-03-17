@@ -1,0 +1,26 @@
+# Base Image
+FROM adoptopenjdk/openjdk11:alpine
+
+# Maintain the working directory
+WORKDIR /app
+
+# Copy pom.xml
+COPY pom.xml .
+
+# Copy src folder
+COPY src src
+
+# Build the application
+RUN mvn clean install
+
+# Copy the consumer.jar
+COPY target/consumer.jar .
+
+# Expose the port
+EXPOSE 8080
+
+# Set the active profile
+ENV SPRING_PROFILES_ACTIVE docker
+
+# Run the application
+CMD ["java", "-jar", "consumer.jar"]

@@ -1,0 +1,49 @@
+{
+    "docker_info": {
+        "base_image": "dainst/nlp-components:0.8.1",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root",
+            "nlp"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV LIBRARY_PATH=/lib:/usr/lib",
+            "ENV PIPENV_VENV_IN_PROJECT=true",
+            "ENV LC_ALL C.UTF-8",
+            "ENV LANG C.UTF-8",
+            "ENV PYTHONPATH=\"/usr/src/nlp_components\""
+        ],
+        "copy_instructions": [
+            "COPY docker/cilantro-nlp-worker/pyproject.toml docker/cilantro-nlp-worker/poetry.lock ./",
+            "WORKDIR /app",
+            "COPY utils ./utils",
+            "COPY workers ./workers",
+            "COPY resources ./resources",
+            "COPY docker/cilantro-nlp-worker/entrypoint.sh /entrypoint.sh",
+            "COPY docker/cilantro-nlp-worker/VERSION ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "bash",
+                    "/entrypoint.sh"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "pip3 install 'poetry==1.0.9'",
+                "WORKDIR /poetry"
+            ],
+            [
+                "poetry config virtualenvs.create false \\",
+                "&& poetry install --no-interaction"
+            ]
+        ]
+    }
+}

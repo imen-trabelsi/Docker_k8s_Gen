@@ -1,0 +1,33 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"gutmandb\",\n  \"version\": \"0.0.1\",\n  \"description\": \"Mean starter kit\",\n  \"main\": \"index.js\",\n  \"scripts\": {\n    \"start\": \"nodemon index.js\",\n    \"test\": \"echo \\\"Error: no test specified\\\" && exit 1\"\n  },\n  \"author\": \"Jean-Baptiste Pasquier\",\n  \"license\": \"ISC\",\n  \"dependencies\": {\n    \"adm-zip\": \"0.4.16\",\n    \"axios\": \"1.6.0\",\n    \"bluebird\": \"3.4.6\",\n    \"body-parser\": \"1.20.1\",\n    \"busboy\": \"1.6.0\",\n    \"connect-mongo\": \"3.2.0\",\n    \"cors\": \"2.8.5\",\n    \"express\": \"4.19.2\",\n    \"express-jwt\": \"7.7.7\",\n    \"express-jwt-blacklist\": \"1.1.0\",\n    \"express-session\": \"1.17.1\",\n    \"fs-promise\": \"2.0.2\",\n    \"is_js\": \"0.9.0\",\n    \"jsonwebtoken\": \"9.0.0\",\n    \"lodash\": \"4.17.21\",\n    \"md5-file\": \"3.1.1\",\n    \"method-override\": \"3.0.0\",\n    \"mongoose\": \"8.9.5\",\n    \"morgan\": \"1.10.0\",\n    \"mv\": \"2.1.1\",\n    \"pug\": \"3.0.3\",\n    \"socket.io\": \"2.5.0\",\n    \"socket.io-stream\": \"0.9.1\",\n    \"tar\": \"6.2.1\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.19.3\",\n    \"@babel/core\": \"^7.13.15\",\n    \"@babel/eslint-parser\": \"^7.13.14\",\n    \"@babel/preset-env\": \"^7.13.15\",\n    \"eslint\": \"^9.21.0\",\n    \"eslint-config-google\": \"0.7.1\",\n    \"nodemon\": \"^2.0.20\"\n  }\n}\n"
+        },
+        "database": "MongoDB",
+        "build_system": "npm",
+        "config_files": {
+            "docker-compose.yml": "version: \"3\"\n\nvolumes:\n    mongodb_volume:\n\nservices:\n    nginx:\n        image: nginx:1\n        container_name: production_nginx\n        volumes:\n            - ./conf/nginx/router.conf:/etc/nginx/conf.d/default.conf\n            - ./conf/nginx/snippets:/etc/nginx/snippets\n            - ./conf/nginx/logs/:/var/log/nginx/\n            - /etc/letsencrypt/:/etc/letsencrypt/\n        ports:\n            - 80:80\n            - 443:443\n        restart: always\n    # certbot:\n    #     container_name: certbot\n    #     image: certbot/certbot\n    #     volumes:\n    #         - ./conf/nginx/data/certbot/conf/:/etc/letsencrypt/\n    #         - ./conf/nginx/data/certbot/www/:/var/www/certbot/\n    #     restart: always\n    #     entrypoint: \"/bin/sh -c 'trap exit TERM; while :; do certbot renew; sleep 12h & wait $${!}; done;'\"\n    tagger_client:\n        container_name: tagger_client\n        env_file: ./tagger/.env\n        build:\n            context: ./tagger/\n            dockerfile: ./Dockerfile\n        expose:\n            - \"80\"\n        ports:\n            - 2000:80\n    tagger_backend:\n        container_name: tagger_backend\n        env_file: ./tagger/.env\n        environment:\n            - MONGODB_HOST=mongodb\n        build:\n            context: ./tagger/\n            dockerfile: sources/server/Dockerfile\n        expose:\n            - \"4000\"\n        ports:\n            - 4000:4000\n    #    restart: always\n    images_organizer:\n        container_name: images_organizer\n        build: ./\n        expose:\n            - \"80\"\n        ports:\n            - 3000:80\n    recognition_service:\n        container_name: recognition_service\n        build:\n            context: ./services\n            dockerfile: Dockerfile\n        expose:\n            - \"5000\"\n        ports:\n            - 5000:5000\n        restart: always\n    mongodb:\n        image: mongo:4.2.6\n        volumes:\n            - mongodb_volume:/data/db\n        restart: always\n    faceted_search:\n        container_name: faceted_search\n        environment:\n            - MONGODB_HOST=mongodb\n            - PORT=80\n        build:\n            context: ./faceted_search/\n            dockerfile: ./Dockerfile\n        expose:\n            - \"8000\"\n        ports:\n            - 8000:80\n    rcm:\n        container_name: rcm\n        build:\n            context: ./rcm\n            dockerfile: ./Dockerfile\n        expose:\n            - \"3000\"\n        ports:\n            - 3000:3000\n",
+            "Dockerfile": "FROM node:16-alpine3.15  as builder \r\n\r\nWORKDIR /app/dev\r\n\r\nCOPY package.json .\r\n\r\nRUN apk add --no-cache git\r\n\r\nRUN git --version\r\n\r\nRUN npm -v\r\n\r\n# build app bundles\r\nRUN npm i\r\n\r\nRUN npm install pm2 -g\r\n\r\nCOPY . . \r\n\r\nRUN npm run build\r\n\r\nEXPOSE 80\r\n\r\nCMD [\"pm2-runtime\", \"start\", \"pm2.config.js\", \"--env=production\"]\r\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "README.md",
+            "colors.py",
+            "dockerbuild.sh",
+            "marker.py",
+            "marker_search.py",
+            "ocr.py",
+            "requirements.txt",
+            "server.py",
+            "sticker_search.py"
+        ],
+        "folders": [
+            "testScripts"
+        ]
+    }
+}

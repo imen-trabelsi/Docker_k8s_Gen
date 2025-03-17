@@ -1,0 +1,33 @@
+{
+    "docker_info": {
+        "base_image": "elixir:1.6.4",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "4000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY . ."
+        ],
+        "execution": [],
+        "run": [
+            [
+                "mix local.hex --force",
+                "RUN mix archive.install --force https://github.com/phoenixframework/archives/raw/master/phx_new.ez"
+            ],
+            [
+                "mix local.rebar --force",
+                ""
+            ],
+            [
+                "mix deps.get",
+                "# RUN mix deps.get --only prod"
+            ]
+        ]
+    }
+}

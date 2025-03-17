@@ -1,0 +1,36 @@
+# Use the base image provided by the user
+FROM ${IMAGE_REPO:-lagoon}/yarn-workspace-builder AS base
+
+# Set the environment variables
+ENV LAGOON_VERSION=${LAGOON_VERSION}
+ENV NODE_ENV=production
+
+# Update and install dependencies in the Dockerfile
+RUN apk update && apk add --no-cache \
+    autoconf \
+    g++ \
+    make \
+    nasm \
+
+# Create and set the working directory
+WORKDIR /app/services/webhooks2tasks/
+
+# Install the application dependencies.
+COPY package.json .
+RUN npm install
+
+# Run yarn check and build
+RUN yarn check --verify-tree
+RUN yarn build
+
+# Copy the necessary files from the base image
+COPY --from=yarn-workspace-builder /app /app
+COPY --from=yarn-workspace-builder /app/.env.defaults .
+COPY . .
+
+# Expose necessary ports
+EXPOSE 8080
+
+# Add the correct entry point and execution command
+ENTRYPOINT ["yarn"]
+CMD ["start"]

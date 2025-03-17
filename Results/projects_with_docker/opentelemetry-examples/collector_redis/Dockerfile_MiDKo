@@ -1,0 +1,18 @@
+#Base image
+FROM golang:latest
+
+# Set the Current Working Directory inside the container
+WORKDIR /app
+
+# Copy everything from the current directory to the Workdir
+COPY . .
+
+# Initialize go module and build the application 
+RUN go mod init redis-demo && \
+    go mod tidy && \
+
+# This container exposes port 
+EXPOSE 
+
+# Command to run when starting the container
+CMD ["./load-generator"]

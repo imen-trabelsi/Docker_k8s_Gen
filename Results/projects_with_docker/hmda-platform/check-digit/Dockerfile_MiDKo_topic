@@ -1,0 +1,37 @@
+# Use the specified base image
+FROM jdk:contrast
+
+# Maintainer Information
+LABEL MAINTAINER="Hmda-Ops"
+
+# Set working directory
+WORKDIR /opt/docker
+
+# Ensure system is up to date and install necessary dependencies
+RUN apt-get update && apt-get upgrade -y && apt-get install -y sbt postgresql
+
+# Copy required files
+COPY . .
+
+# Set the necessary build arguments
+ARG TESTING=false
+ENV TESTING=$TESTING
+
+# Run the build
+RUN sbt compile
+
+# Define necessary environment variables
+ENV DB_USER=postgres \
+    DB_PASS=postgres \
+
+# Expose the necessary ports
+EXPOSE 9091
+
+# Include necessary run commands
+RUN chmod -R 755 .
+
+# Define entry point
+ENTRYPOINT ["bin/check-digit"]
+
+# CMD instruction
+CMD []

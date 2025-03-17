@@ -1,0 +1,39 @@
+#Base Image
+FROM node:22-alpine3.20
+
+#Environment Variables
+ENV ODSA_ENV="DEV" \
+    FLASK_ENV="development" \
+    FLASK_APP='app.py' \
+    PYTHONUNBUFFERED=1 \
+
+#Create Working Directory
+WORKDIR /opendsa
+
+#Copying necessary files
+COPY .yarnrc.yml ./
+COPY package.json yarn.lock ./
+COPY requirements.txt requirements.txt
+COPY --from=node /usr/lib /usr/lib
+COPY --from=node /usr/local/share /usr/local/share
+COPY --from=node /usr/local/lib /usr/local/lib
+COPY --from=node /usr/local/include /usr/local/include
+COPY --from=node /usr/local/bin /usr/local/bin
+
+# Updating APK packages and Installing Depenencies
+RUN apk update \
+    && apk add --no-cache bash git curl make \
+    && npm install -g corepack \
+    && yarn install \
+
+# Setting the timezone in docker
+RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone
+
+#Adding rest of the source code and making it default app directory
+COPY . .
+
+# Exposing necessary ports
+EXPOSE 5000
+
+# Set the command to start the app
+CMD ["python3","app.py"]

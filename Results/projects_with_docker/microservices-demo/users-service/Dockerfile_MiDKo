@@ -1,0 +1,23 @@
+# Dockerfile for node based microservice
+FROM node:12
+
+# Create app directory
+WORKDIR /opt/app/users-service
+
+# Copy the package.json and package-lock.json
+COPY package*.json ./
+
+# Install app dependencies
+RUN yarn
+
+# Bundle app source
+COPY . .
+
+# Open the port
+EXPOSE PORT_VALUE
+
+# any build time environment variables
+ENV NODE_ENV=production
+
+# Command to run the app
+CMD [ "yarn", "watch" ]

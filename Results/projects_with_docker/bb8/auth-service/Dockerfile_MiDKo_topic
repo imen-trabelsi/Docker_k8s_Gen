@@ -1,0 +1,26 @@
+# Setting base image
+FROM node:12.16
+
+# Setting working directory in the Docker container
+WORKDIR /usr/app
+
+# Installing node modules and building the application
+COPY package.json .
+RUN yarn
+
+# Copy source code to working directory
+COPY . .
+
+# Build application
+RUN yarn build
+
+# Expose Microservice on port 8080
+EXPOSE 8080
+
+# Define health check
+HEALTHCHECK --interval=5s \
+            --timeout=5s \
+            CMD curl -f http://127.0.0.1:8080/healthz || exit 1
+
+# Run command
+CMD ["yarn", "start:prod"]

@@ -1,0 +1,28 @@
+# Set the base image
+FROM rust:1.67
+
+# Set environment variable
+ENV RUST_LOG info
+
+# Set the work directory
+WORKDIR /usr/src/zksync
+
+# Copy the source code into the Docker image
+COPY . .
+
+# Install dependencies
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+
+# Set up building
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+--mount=type=cache,target=/root/.cache/sccache \
+RUSTC_WRAPPER=/usr/local/cargo/bin/sccache \
+
+# Copy binary from builder stage
+COPY --from=builder /usr/src/zksync/target/release/dev-liquidity-token-watcher /bin/
+
+# Expose ports
+EXPOSE 9975
+
+# Set the entry point 
+ENTRYPOINT ["dev-liquidity-token-watcher"]

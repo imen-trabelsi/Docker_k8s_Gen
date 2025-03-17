@@ -1,0 +1,22 @@
+# Use base image
+FROM adorsys/java:11
+
+# Maintainer
+LABEL maintainer="https://git.adorsys.de/adorsys/xs2a/aspsp-xs2a"
+
+# Set working directory
+WORKDIR /opt/certificate-generator
+
+# Environment variables
+ENV SERVER_PORT 8092
+ENV JAVA_OPTS -Xmx1024m
+ENV JAVA_TOOL_OPTIONS -Xmx1024m -agentlib:jdwp=transport=dt_socket,address=8000,server=y,suspend=n
+
+# Copy jar file to working directory
+COPY ./target/certificate-generator*jar /opt/certificate-generator/certificate-generator.jar
+
+# Expose the server port
+EXPOSE 8092
+
+# Run command
+CMD ["exec", "$JAVA_HOME/bin/java", "$JAVA_OPTS", "-jar", "/opt/certificate-generator/certificate-generator.jar"]

@@ -1,0 +1,26 @@
+# Set base image
+FROM node:14-alpine
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+COPY package*.json ./
+
+# Install app dependencies
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Set environment variable
+# ENV <your_variable_here>=<your_value_here>
+
+# Expose the port
+# EXPOSE <your_port_here>
+
+# Run Commands
+# RUN <your_command_here>
+
+# Final command to run the application
+CMD [ "npm", "start" ]

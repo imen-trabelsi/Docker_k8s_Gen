@@ -1,0 +1,36 @@
+{
+    "docker_info": {
+        "base_image": "python:2.7.16-alpine3.9",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ftgo-order-history.json .",
+            "COPY wait-for-dynamodblocal.sh ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "./wait-for-dynamodblocal.sh",
+                    "&&",
+                    "./create-dynamodb-tables.sh"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "pip install awscli --upgrade",
+                "COPY create-dynamodb-tables.sh ."
+            ],
+            [
+                "chmod +x *.sh",
+                "HEALTHCHECK --interval=10s --retries=10 --timeout=3s CMD [[ -f /tables-created ]]"
+            ]
+        ]
+    }
+}

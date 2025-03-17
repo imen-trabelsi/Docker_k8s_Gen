@@ -1,0 +1,30 @@
+{
+    "docker_info": {
+        "base_image": "node:12",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY package.json /app",
+            "COPY yarn.lock /app",
+            "COPY --from=builder /app/dist /usr/share/nginx/html",
+            "COPY --from=builder /app/default.conf /etc/nginx/conf.d/default.conf"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "yarn install",
+                "ADD . /app"
+            ],
+            [
+                "yarn build",
+                ""
+            ]
+        ]
+    }
+}

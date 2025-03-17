@@ -1,0 +1,23 @@
+# Set the base Image
+FROM nginx
+
+# Copy the static files
+COPY src /usr/share/nginx/html
+
+# Copy the package.json and package-lock.json
+COPY package*.json ./
+
+# Install the dependencies using npm
+RUN npm install
+
+# Copy the other necessary files
+COPY . .
+
+# Copy nginx configuration file
+COPY nginx.prod.conf /etc/nginx/nginx.conf
+
+# Expose the port 80 for the nginx server
+EXPOSE 80
+
+# Start the nginx server
+CMD ["nginx", "-g", "daemon off;"]

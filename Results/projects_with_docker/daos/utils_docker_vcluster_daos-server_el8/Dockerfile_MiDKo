@@ -1,0 +1,33 @@
+FROM ${DAOS_DOCKER_IMAGE_NSP}/daos-base-${LINUX_DISTRO}:${DAOS_DOCKER_IMAGE_TAG}
+
+LABEL maintainer="daos@daos.groups.io"
+
+# Setup build arguments
+ARG LINUX_DISTRO=""
+ARG DAOS_DOCKER_IMAGE_NSP=""
+ARG DAOS_DOCKER_IMAGE_TAG=""
+ARG DAOS_VERSION=""
+ARG DAOS_AUTH=""
+ARG DAOS_HUGEPAGES_NBR=""
+ARG DAOS_IFACE_NAME=""
+ARG DAOS_SCM_SIZE=""
+ARG DAOS_BDEV_SIZE=""
+ARG DAOS_MD_ON_SSD=""
+
+# Copy requirements and run pip
+COPY requirements.txt /tmp/
+RUN pip install -r /tmp/requirements.txt
+
+# Copy configuration files and the microservice
+COPY utils/docker/vcluster/.env utils/docker/vcluster/docker-compose.yml utils/docker/vcluster/daos-server/el8/Dockerfile /tmp/
+COPY . /tmp/
+
+# Additional needed COPY instructions
+COPY daos_server.yml.in /tmp/daos_server.yml.in
+
+# Run commands
+RUN for it in DAOS_VERSION ; do 
+RUN dnf clean all &&\
+RUN for it in DAOS_AUTH DAOS_HUGEPAGES_NBR DAOS_IFACE_NAME DAOS_SCM_SIZE DAOS_BDEV_SIZE DAOS_MD_ON_SSD ; do \
+
+CMD ["python", "/tmp/main.py"]

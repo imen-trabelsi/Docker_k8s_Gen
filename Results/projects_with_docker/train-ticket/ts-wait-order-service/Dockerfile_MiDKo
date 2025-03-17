@@ -1,0 +1,20 @@
+# Set the base image
+FROM java:8-jre
+
+# Author info
+LABEL maintainer="yourname@yourdomain.com"
+
+# Set correct timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Copy the project files into the docker image
+COPY ./target/ts-wait-order-service-1.0.jar /app/
+
+# Specify the working directory
+WORKDIR /app
+
+# Expose the port the app runs on
+EXPOSE 15678
+
+# Set the application's entry point
+CMD ["java", "-Xmx200m", "-jar", "/app/ts-wait-order-service-1.0.jar"]

@@ -1,0 +1,66 @@
+{
+    "docker_info": {
+        "base_image": "base",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "8080"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "GO_VERSION=1.22",
+            "GO_VERSION"
+        ],
+        "envs": [
+            "ENV DEBIAN_FRONTEND='noninteractive' \\",
+            "ENV GO111MODULE=on",
+            "ENV CGO_ENABLED=1"
+        ],
+        "copy_instructions": [
+            "ADD . /app/src",
+            "ADD version.json /app",
+            "COPY --from=builder /go/bin/autograph-edge /usr/local/bin/autograph-edge",
+            "WORKDIR /app"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "/usr/local/bin/autograph-edge"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "echo \"deb http://deb.debian.org/debian/ bookworm-backports main\" > /etc/apt/sources.list.d/bookworm-backports.list",
+                "RUN echo \"deb-src http://deb.debian.org/debian/ bookworm-backports main\" >> /etc/apt/sources.list.d/bookworm-backports.list"
+            ],
+            [
+                "apt-get update && \\",
+                "apt-get -y upgrade &&",
+                "apt-get -y install --no-install-recommends",
+                "clang",
+                "gcc",
+                "libltdl-dev",
+                "git",
+                "golang-${GO_VERSION}",
+                "curl",
+                "ca-certificates &&",
+                "# Cleanup inline with installation to avoid this layer being bloated with"
+            ],
+            [
+                "cd /app/src && go install .",
+                ""
+            ],
+            [
+                "mkdir /app",
+                "ADD autograph-edge.yaml /app"
+            ],
+            [
+                "useradd --uid 10001 --home-dir /app --shell /sbin/nologin app",
+                "USER app"
+            ]
+        ]
+    }
+}

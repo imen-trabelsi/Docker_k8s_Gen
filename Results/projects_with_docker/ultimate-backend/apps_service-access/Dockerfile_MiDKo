@@ -1,0 +1,29 @@
+# Use the official Node.js 12 Alpine image from Docker Hub
+FROM node:12-alpine
+
+# Create a working directory for the application
+WORKDIR /usr/src/app
+
+# Copy the package.json file into the container to install dependencies and then copy the rest of the application into the container
+COPY package.json ./
+RUN npm install
+COPY . .
+
+# Install the necessary dependencies for the application
+RUN yarn global add @nestjs/cli
+RUN yarn install --production=false
+RUN yarn global add rimraf
+RUN yarn global add @nestjs/cli
+
+# Build the application
+RUN nest build proto-schema
+RUN nest build service-access
+
+# Expose port 50089 to enable communication with the outside world
+EXPOSE 50089
+
+# Set environment variables
+ENV NODE_ENV production
+
+# Set the execution command for the application
+CMD [ "node", "dist/apps/service-access/main.js" ]

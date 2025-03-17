@@ -1,0 +1,20 @@
+# Use java:8-jre as the base image
+FROM java:8-jre
+
+# Run timezone changing command
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Create app directory
+RUN mkdir /app
+
+# Copy jar file into the container at /app
+COPY ./target/ts-admin-route-service-1.0.jar /app/ts-admin-route-service-1.0.jar
+
+# Change to /app
+WORKDIR /app
+
+# Expose port 16113 to the outside world
+EXPOSE 16113
+
+# Command to run on container start
+CMD ["java", "-Xmx200m", "-jar", "/app/ts-admin-route-service-1.0.jar"]

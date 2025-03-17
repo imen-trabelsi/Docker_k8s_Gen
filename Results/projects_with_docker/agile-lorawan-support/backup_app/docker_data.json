@@ -1,0 +1,35 @@
+{
+    "docker_info": {
+        "base_image": "python",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV \\"
+        ],
+        "copy_instructions": [
+            "WORKDIR /usr/src/app",
+            "COPY . ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"python\",",
+                    "\"-m\",",
+                    "\"app\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "\\",
+                "pip install paho-mqtt &&",
+                "pip install psycopg2"
+            ]
+        ]
+    }
+}

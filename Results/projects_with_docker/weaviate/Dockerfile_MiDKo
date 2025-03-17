@@ -1,0 +1,35 @@
+# Stage 1 - the build process
+FROM build_base as builder
+
+# Set environment variable
+ENV GO111MODULE=on
+ENV TARGETARCH=${TARGETARCH}
+ENV GIT_BRANCH=unknown
+ENV GIT_REVISION=unknown
+ENV BUILD_USER=unknown
+ENV BUILD_DATE=unknown
+ENV EXTRA_BUILD_ARGS=""
+
+WORKDIR /app
+
+# Install dependencies and build the Go project
+RUN apk add bash ca-certificates git gcc g++ libc-dev
+COPY pyproject.toml ./
+RUN poetry install
+COPY . .
+RUN GOOS=linux GOARCH=$TARGETARCH go build $EXTRA_BUILD_ARGS \
+    -ldflags '-w -extldflags "-static" \
+
+# Stage 2 - the production environment
+FROM alpine:latest  
+
+# Copy our static executable
+# Install necessary packages
+RUN apk add --no-cache --upgrade bc ca-certificates openssl
+
+WORKDIR /app
+RUN mkdir ./modules
+
+ENTRYPOINT ["/bin/weaviate"]
+CMD ["--host", "0.0.0.0", "--port", "8080", "--scheme", "http"]
+EXPOSE 8080

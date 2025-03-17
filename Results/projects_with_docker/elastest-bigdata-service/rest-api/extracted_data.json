@@ -1,0 +1,369 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "Jenkinsfile",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "api.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "bin",
+            "type": "tree"
+        },
+        {
+            "path": "bin/logs",
+            "type": "blob"
+        },
+        {
+            "path": "bin/mkelastestservicejson.py",
+            "type": "blob"
+        },
+        {
+            "path": "bin/run",
+            "type": "blob"
+        },
+        {
+            "path": "bin/run-tests.sh",
+            "type": "blob"
+        },
+        {
+            "path": "bin/startup-linux.sh",
+            "type": "blob"
+        },
+        {
+            "path": "bin/teardown-linux.sh",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "docs",
+            "type": "tree"
+        },
+        {
+            "path": "docs/dev-docs.md",
+            "type": "blob"
+        },
+        {
+            "path": "docs/images",
+            "type": "tree"
+        },
+        {
+            "path": "docs/images/ebs_architecture_diagram.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/user-docs.md",
+            "type": "blob"
+        },
+        {
+            "path": "e2e-test",
+            "type": "tree"
+        },
+        {
+            "path": "e2e-test/Jenkins_original",
+            "type": "blob"
+        },
+        {
+            "path": "e2e-test/Jenkinsfile",
+            "type": "blob"
+        },
+        {
+            "path": "e2e-test/e2etest.py",
+            "type": "blob"
+        },
+        {
+            "path": "e2e-test/seleniume2e.py",
+            "type": "blob"
+        },
+        {
+            "path": "elastestservice.json",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api",
+            "type": "tree"
+        },
+        {
+            "path": "rest-api/.coveragerc",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/.gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/api.json",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/cover",
+            "type": "tree"
+        },
+        {
+            "path": "rest-api/cover/coverage_html.js",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/cover/index.html",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/cover/jquery.ba-throttle-debounce.min.js",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/cover/jquery.hotkeys.js",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/cover/jquery.isonscreen.js",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/cover/jquery.min.js",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/cover/jquery.tablesorter.min.js",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/cover/keybd_closed.png",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/cover/keybd_open.png",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/cover/src___init___py.html",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/cover/src_api_py.html",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/cover/src_runebs_py.html",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/cover/src_settings_py.html",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/cover/status.json",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/cover/style.css",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/logging.conf",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/src",
+            "type": "tree"
+        },
+        {
+            "path": "rest-api/src/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/src/api.py",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/src/requirements.txt",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/src/runebs.py",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/src/settings.py",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/src/setup.py",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/tests",
+            "type": "tree"
+        },
+        {
+            "path": "rest-api/tests/test-requirements.txt",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/tests/test_endpoints.py",
+            "type": "blob"
+        },
+        {
+            "path": "rest-api/tox.ini",
+            "type": "blob"
+        },
+        {
+            "path": "spark",
+            "type": "tree"
+        },
+        {
+            "path": "spark/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "spark/alluxio_conf",
+            "type": "tree"
+        },
+        {
+            "path": "spark/alluxio_conf/alluxio-env.sh.template",
+            "type": "blob"
+        },
+        {
+            "path": "spark/alluxio_conf/alluxio-site.properties",
+            "type": "blob"
+        },
+        {
+            "path": "spark/alluxio_conf/alluxio-site.properties.template",
+            "type": "blob"
+        },
+        {
+            "path": "spark/alluxio_conf/core-site.xml.template",
+            "type": "blob"
+        },
+        {
+            "path": "spark/alluxio_conf/log4j.properties",
+            "type": "blob"
+        },
+        {
+            "path": "spark/alluxio_conf/masters",
+            "type": "blob"
+        },
+        {
+            "path": "spark/alluxio_conf/metrics.properties.template",
+            "type": "blob"
+        },
+        {
+            "path": "spark/alluxio_conf/workers",
+            "type": "blob"
+        },
+        {
+            "path": "spark/hadoop_conf",
+            "type": "tree"
+        },
+        {
+            "path": "spark/hadoop_conf/core-site.xml",
+            "type": "blob"
+        },
+        {
+            "path": "spark/hadoop_conf/hdfs-site.xml",
+            "type": "blob"
+        },
+        {
+            "path": "spark/hadoop_conf/mapred-site.xml",
+            "type": "blob"
+        },
+        {
+            "path": "spark/hadoop_conf/yarn-site.xml",
+            "type": "blob"
+        },
+        {
+            "path": "spark/master.conf",
+            "type": "blob"
+        },
+        {
+            "path": "spark/slave.conf",
+            "type": "blob"
+        },
+        {
+            "path": "spark/spark_conf",
+            "type": "tree"
+        },
+        {
+            "path": "spark/spark_conf/core-site.xml",
+            "type": "blob"
+        },
+        {
+            "path": "spark/spark_conf/docker.properties.template",
+            "type": "blob"
+        },
+        {
+            "path": "spark/spark_conf/fairscheduler.xml.template",
+            "type": "blob"
+        },
+        {
+            "path": "spark/spark_conf/hadoop.env",
+            "type": "blob"
+        },
+        {
+            "path": "spark/spark_conf/hdfs-site.xml",
+            "type": "blob"
+        },
+        {
+            "path": "spark/spark_conf/hive-site.xml",
+            "type": "blob"
+        },
+        {
+            "path": "spark/spark_conf/log4j.properties",
+            "type": "blob"
+        },
+        {
+            "path": "spark/spark_conf/log4j.properties.template",
+            "type": "blob"
+        },
+        {
+            "path": "spark/spark_conf/metrics.properties.template",
+            "type": "blob"
+        },
+        {
+            "path": "spark/spark_conf/slaves.template",
+            "type": "blob"
+        },
+        {
+            "path": "spark/spark_conf/spark-defaults.conf",
+            "type": "blob"
+        },
+        {
+            "path": "spark/spark_conf/spark-defaults.conf.template",
+            "type": "blob"
+        },
+        {
+            "path": "spark/spark_conf/spark-env.sh",
+            "type": "blob"
+        },
+        {
+            "path": "spark/spark_conf/spark-env.sh.template",
+            "type": "blob"
+        }
+    ]
+}

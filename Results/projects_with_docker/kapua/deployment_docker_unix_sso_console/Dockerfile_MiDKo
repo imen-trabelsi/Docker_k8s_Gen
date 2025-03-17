@@ -1,0 +1,30 @@
+# Base Image
+FROM kapua/kapua-console:latest
+
+# Copy Application
+COPY ./ ./
+
+# Copy TLS Certificate
+COPY ../tls.crt /tmp/tls.crt
+
+# Import Certificate
+RUN keytool -noprompt  -importcert -file "/tmp/tls.crt" -alias "ssocert" -keystore "${JAVA_HOME}/lib/security/cacerts" -storepass "changeit"
+
+# Set User
+USER 1000
+
+# Build Application
+RUN mvn clean package
+
+# Setup PostgreSQL Driver
+RUN mkdir -p /app/lib
+ADD https://jdbc.postgresql.org/download/postgresql-42.2.5.jar /app/lib
+
+# Expose Ports
+EXPOSE 8080 8443
+
+# Set Java Params
+ENV JAVA_OPTS="-Xms128m -Xmx256m"
+
+# Run Application
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app/target/app.jar"]

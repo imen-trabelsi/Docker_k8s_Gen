@@ -1,0 +1,23 @@
+# Set the base image
+FROM openjdk:8-jre-alpine
+
+# Set environment variables
+ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \
+    JHIPSTER_SLEEP=0 \
+
+# Create directory for application
+RUN mkdir /app
+WORKDIR /app
+
+# Copy the application's .war file to the container
+COPY *.war /app.war
+
+# Copy the static files
+COPY registry/src/main/resources/logback-spring.xml logback-spring.xml
+
+# Expose the port
+EXPOSE 8761
+
+# command to execute when the docker container starts up 
+CMD echo "The application will start in ${JHIPSTER_SLEEP}s..." && \
+    sleep ${JHIPSTER_SLEEP} && \

@@ -1,0 +1,42 @@
+# First Stage of Multi-Stage Build
+FROM ${IMAGE_BASE_NAME}:base-builder-${BASE_BUILDER_IMAGE_HASH} AS builder
+
+# Set working directory
+WORKDIR /build
+
+# Set Environment Variables
+ENV PATH="/opt/venv/bin:$PATH"
+ENV HOME=/app
+
+# Copy Files 
+COPY . /build/
+
+# Install Dependencies
+RUN python -m venv /opt/venv && \
+    . /opt/venv/bin/activate && \
+    pip install --no-cache-dir -U "pip==22.*" -U "wheel>0.38.0" && \
+    poetry install --no-dev --no-root --no-interaction && \
+    poetry build -f wheel -n && \
+    pip install --no-deps dist/*.whl && \
+
+# Second Stage of Multi-Stage Build
+FROM ${IMAGE_BASE_NAME}:base-${BASE_IMAGE_HASH}
+
+
+WORKDIR /app
+COPY . /app
+
+# Set the correct permissions
+RUN chgrp -R 0 /app && chmod -R g=u /app && chmod o+wr /app
+
+# Run as non-root user
+USER 1001
+
+# Expose the application port
+EXPOSE 5005
+
+# Set the entrypoint
+ENTRYPOINT ["rasa"]
+
+# Set the default command
+CMD ["--help"]

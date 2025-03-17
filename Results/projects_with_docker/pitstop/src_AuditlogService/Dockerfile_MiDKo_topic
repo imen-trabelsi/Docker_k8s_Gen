@@ -1,0 +1,30 @@
+# Start with the base image
+FROM pitstop-dotnet-sdk-base:1.0 AS build-env
+
+# Set the working directory in the image
+WORKDIR /app
+
+# Copy csproj and restore dependencies
+COPY *.csproj ./
+RUN dotnet restore
+
+# Copy the rest of the working directory contents
+COPY . ./
+
+# Builds the application from source
+RUN dotnet publish -c Release -o out
+
+# Generate runtime image
+FROM pitstop-dotnet-sdk-base:1.0
+
+# Set the working directory
+WORKDIR /app
+
+# Copy from the build stage
+
+# Expose the application on port 5000
+EXPOSE 5000
+
+# Configure the entry point of the container
+# This uses the dotnet runtime to run the DLL created at build
+ENTRYPOINT ["dotnet", "Pitstop.AuditlogService.dll"]

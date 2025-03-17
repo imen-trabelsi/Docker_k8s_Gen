@@ -1,0 +1,33 @@
+{
+    "docker_info": {
+        "base_image": "eclipse-mosquitto:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8883"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ./pwd_file /etc/mosquitto/passwd",
+            "COPY ./cert/ca.crt /etc/mosquitto/ca.crt",
+            "COPY ./cert/server.crt /etc/mosquitto/server.crt",
+            "COPY ./cert/server.key /etc/mosquitto/server.key",
+            "COPY mosquitto.conf /mqtt/config/mosquitto.conf"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/usr/sbin/mosquitto\",",
+                    "\"-v\",",
+                    "\"-c\",",
+                    "\"/mqtt/config/mosquitto.conf\"]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

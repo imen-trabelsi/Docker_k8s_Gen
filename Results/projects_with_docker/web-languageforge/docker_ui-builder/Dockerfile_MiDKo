@@ -1,0 +1,30 @@
+# Set the base image
+FROM node:22.2.0-alpine3.18
+
+# Create a directory to hold the microservice
+WORKDIR /data
+
+# Copy the package.json and lock file to our work directory
+COPY package.json pnpm-lock.yaml ./
+
+# Install corepack
+RUN npm install -g corepack@latest && corepack enable
+
+# Install project dependencies
+RUN pnpm install
+
+# Copy remaining project files to the work directory
+COPY typings ./typings/
+COPY webpack.config.js webpack-dev.config.js webpack-prd.config.js tsconfig.json tslint.json ./
+COPY src/angular-app ./src/angular-app
+COPY src/appIcons ./src/appIcons
+COPY src/manifest.json ./src/manifest.json
+COPY src/json ./src/json
+COPY src/sass ./src/sass
+COPY src/Site/views ./src/Site/views
+
+# Expose the required ports
+EXPOSE 8080
+
+# Start the microservice
+CMD ["pnpm", "run", "build:dev:watch"]

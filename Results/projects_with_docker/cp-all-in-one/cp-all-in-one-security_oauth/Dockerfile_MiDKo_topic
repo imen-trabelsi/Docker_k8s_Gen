@@ -1,0 +1,25 @@
+# Set the base image
+FROM confluentinc/cp-server-connect-base:$CONFLUENT_DOCKER_TAG
+
+# Required Build Arguments
+ARG CONFLUENT_DOCKER_TAG
+
+# Environment Variables
+ENV CONFLUENT_DOCKER_TAG=${CONFLUENT_DOCKER_TAG}
+
+# Install necessary dependencies
+RUN confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:0.6.5 \
+
+# Copy the source code into the Docker image
+COPY . .
+
+# Build the project
+RUN mvn clean package
+
+# Expose necessary Ports
+# Replace 8080 with the port your Spring Boot Application runs at 
+EXPOSE 8080
+
+# Command to run the Java application using the built jar file and nolhup
+CMD nohup java -jar target/*.jar > log.txt 2>&1 &
+

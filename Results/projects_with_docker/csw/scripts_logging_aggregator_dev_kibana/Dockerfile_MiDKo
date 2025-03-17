@@ -1,0 +1,28 @@
+# Based on source code and user inputs, here is the Dockerfile
+# Base Image
+FROM docker.elastic.co/kibana/kibana:${ELK_VERSION}
+
+# Copy config files
+COPY docker-compose.yml .
+COPY .env .
+COPY scripts/logging_aggregator/dev/kibana/Dockerfile .
+
+# Setup work directory
+WORKDIR /app
+
+# Copy source code
+COPY . /app
+
+# Install sbt
+RUN apt-get update \
+    && apt-get install -y sbt \
+
+# Compile the project   
+RUN sbt compile
+RUN sbt package
+
+# Expose necessary ports, replace XXXX with actual port numbers
+# EXPOSE XXXX
+
+# Running the application
+ENTRYPOINT ["sbt", "run"]

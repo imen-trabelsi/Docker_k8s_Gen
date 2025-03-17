@@ -1,0 +1,27 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "JavaScript",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"mod-svelte\",\n  \"version\": \"1.0.0\",\n  \"main\": \"index.js\",\n  \"scripts\": {\n    \"serve\": \"webpack-dev-server\",\n    \"build\": \"webpack --env.prod\",\n    \"lint\": \"echo \\\"Error: no lint specified\\\" && exit 1\",\n    \"test\": \"echo \\\"Error: no test specified\\\" && exit 1\"\n  },\n  \"license\": \"MIT\",\n  \"dependencies\": {\n    \"@babel/runtime\": \"^7.10.5\",\n    \"core-js\": \"^3.6.5\",\n    \"single-spa-svelte\": \"^2.0.0\",\n    \"svelte\": \"^3.24.0\",\n    \"svelte-routing\": \"^1.4.2\"\n  },\n  \"devDependencies\": {\n    \"@babel/core\": \"^7.10.5\",\n    \"@babel/plugin-transform-runtime\": \"^7.10.5\",\n    \"@babel/preset-env\": \"^7.10.4\",\n    \"babel-loader\": \"^8.1.0\",\n    \"cache-loader\": \"^4.1.0\",\n    \"copy-webpack-plugin\": \"^6.0.3\",\n    \"css-loader\": \"^4.0.0\",\n    \"file-loader\": \"^6.0.0\",\n    \"html-webpack-plugin\": \"^4.3.0\",\n    \"postcss-loader\": \"^3.0.0\",\n    \"process-envify\": \"^0.1.3\",\n    \"script-ext-html-webpack-plugin\": \"^2.1.4\",\n    \"style-loader\": \"^1.2.1\",\n    \"svelte-loader\": \"^2.13.6\",\n    \"url-loader\": \"^4.1.0\",\n    \"webpack\": \"^4.44.0\",\n    \"webpack-cli\": \"^3.3.12\",\n    \"webpack-dev-server\": \"^3.11.0\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "mfe/docker-compose.yml": "version: '3.8'\n\nservices:\n  shell:\n    image: <DOCKER_ID_USER>/shell:<IMAGE_TAG>\n    build:\n      context: ./app-shell\n      dockerfile: Dockerfile\n\n  vue:\n    image: <DOCKER_ID_USER>/vue:<IMAGE_TAG>\n    build:\n      context: ./mod-vue\n      dockerfile: Dockerfile\n\n  react:\n    image: <DOCKER_ID_USER>/react:<IMAGE_TAG>\n    build:\n      context: ./mod-react\n      dockerfile: Dockerfile\n\n  angular:\n    image: <DOCKER_ID_USER>/angular:<IMAGE_TAG>\n    build:\n      context: ./mod-angular\n      dockerfile: Dockerfile\n\n  svelte:\n    image: <DOCKER_ID_USER>/svelte:<IMAGE_TAG>\n    build:\n      context: ./mod-svelte\n      dockerfile: Dockerfile\n",
+            "mfe/mod-svelte/Dockerfile": "FROM caddy:2-alpine\n\nCOPY Caddyfile /etc/caddy/Caddyfile\nCOPY /dist /usr/share/caddy/dist\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "babel.config.js",
+            "docker-compose.yml",
+            "package.json"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

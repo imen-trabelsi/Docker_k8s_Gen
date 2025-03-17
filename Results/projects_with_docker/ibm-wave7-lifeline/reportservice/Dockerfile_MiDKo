@@ -1,0 +1,20 @@
+# Use OpenJDK 11 as base
+FROM openjdk:11
+
+# Define environment variables
+ENV MONGO_DB_URI=mongodb://localhost:27017/mydb
+
+# Copy the jar file to the Docker image from the local system
+COPY ./target/reportservice-0.0.1-SNAPSHOT.jar /usr/src/reportservice-0.0.1-SNAPSHOT.jar
+
+# Set the current working directory in the image
+WORKDIR /usr/src
+
+# Any files created or modified will be under “/usr/src” directory
+USER root:root
+
+# Set the entrypoint
+ENTRYPOINT ["java","-jar","reportservice-0.0.1-SNAPSHOT.jar"]
+
+# Expose the port
+EXPOSE 8080

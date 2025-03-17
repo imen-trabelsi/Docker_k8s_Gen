@@ -1,0 +1,11 @@
+# use nginx alpine for base image
+FROM nginx:alpine
+
+# Copy custom nginx configuration
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Expose port 80
+EXPOSE 80 
+
+# Starting nginx in the foreground
+CMD ["nginx", "-g", "daemon off;"]

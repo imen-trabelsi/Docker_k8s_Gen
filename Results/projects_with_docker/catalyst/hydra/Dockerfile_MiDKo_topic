@@ -1,0 +1,45 @@
+# Step 1: Using the specified base Image
+FROM oryd/hydra:v1.0.8-alpine AS build
+
+# Updating alpine packages, adding additional packages and making specified directory
+RUN apk update && apk add --update alpine-sdk bash nano
+
+# Defining Environment Variable
+ENV HOST_NAME host_name
+ENV SUPPORTING_FILES /app
+
+# Switching to root
+USER root
+
+# Creating supporting files directory and setting it to working directory
+RUN mkdir -p $SUPPORTING_FILES
+WORKDIR $SUPPORTING_FILES
+
+# Copying required files to image
+COPY . $SUPPORTING_FILES
+
+# Build the application
+RUN npm install
+RUN npm build
+
+# Step 2: Packaging the build artifact into a slim image
+FROM oryd/hydra:v1.0.8-alpine
+
+# Environment setup
+ENV HOST_NAME host_name
+ENV SUPPORTING_FILES /app
+
+# Switching to root
+USER root
+
+# Creating supporting files directory and setting it to working directory
+RUN mkdir -p $SUPPORTING_FILES
+WORKDIR $SUPPORTING_FILES
+
+# Copying build artifacts and other static files from the builder image
+
+# Exposing the necessary port
+EXPOSE 80
+
+# Specify the command to run
+CMD ["npm", "start"]

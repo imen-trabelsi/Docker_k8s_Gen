@@ -1,0 +1,35 @@
+# Start with a base image containing Java runtime
+FROM docker.io/radanalyticsio/openshift-spark
+
+# The application's jar file
+ARG JAR_FILE=target/*.jar
+
+# Add the application's jar to the container
+COPY ${JAR_FILE} app.jar
+COPY ./spark-sql.py   /opt
+COPY ./requirements.txt /opt
+COPY ./entrypoint.sh   /opt
+
+# Change Working Dir
+WORKDIR /opt
+
+# Add User
+USER 1001
+
+# Set necessary environment variables
+ENV SPARK_MASTER_URL "local[*]"
+
+# Expose the port the app runs in
+EXPOSE 8080
+
+# Install necessary packages
+USER root
+RUN yum install python-pip -y
+RUN pip install -r requirements.txt
+USER 1001
+
+# Set Execute Permission
+RUN chmod +x ./entrypoint.sh
+
+# Run the jar with ENTRYPOINT
+ENTRYPOINT ["./entrypoint.sh"]

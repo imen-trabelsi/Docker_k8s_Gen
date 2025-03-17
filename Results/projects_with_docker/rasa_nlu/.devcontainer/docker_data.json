@@ -1,0 +1,33 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/vscode/devcontainers/python:0-${VARIANT}",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "VARIANT=3-bullseye",
+            "NODE_VERSION=\"none\""
+        ],
+        "envs": [
+            "ENV PYTHONFAULTHANDLER=1 \\"
+        ],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "if [ \"${NODE_VERSION}\" != \"nne\" ]; then su vscode -c \"umask 0002 && . /usr/local/share/nvm/nvm.sh && nvm install ${NODE_VERSION} 2>&1\"; fi",
+                ""
+            ],
+            [
+                "pip install poetry==1.1.10 pre-commit",
+                "COPY ../poetry.lock ../pyproject.toml /tmp/pip-tmp/rasa/"
+            ],
+            [
+                "cd /tmp/pip-tmp/rasa && poetry config virtualenvs.create false \\",
+                "&& poetry install --no-interaction --no-ansi --no-root"
+            ]
+        ]
+    }
+}

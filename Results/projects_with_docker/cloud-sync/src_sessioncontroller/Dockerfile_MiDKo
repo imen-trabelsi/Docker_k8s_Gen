@@ -1,0 +1,36 @@
+# Use the official Node.js 12.22.12 image from the Docker Hub
+FROM node:12.22.12
+
+# Add metadata to the image
+LABEL version="2.0.0"
+LABEL description="This is a Spring Boot microservice with Node.js and Redis"
+
+# Create directories for our app
+RUN mkdir -p /usr/src/common
+RUN mkdir -p /usr/src/sessioncontroller
+
+# Set the working directories
+WORKDIR /usr/src/common
+WORKDIR /usr/src/sessioncontroller
+
+# Install dependencies and grunt-cli
+COPY common/ /usr/src/common
+COPY package.json /usr/src/common
+RUN npm install
+RUN npm install grunt-cli -g
+
+# Add app source to image
+COPY sessioncontroller/src /usr/src/sessioncontroller/src
+COPY sessioncontroller/Gruntfile.js /usr/src/sessioncontroller/
+COPY sessioncontroller/package.json /usr/src/sessioncontroller/
+RUN grunt build_lib
+
+# Build the source files
+WORKDIR /usr/src/sessioncontroller/src
+RUN npm install
+
+# expose port 4002
+EXPOSE 4002
+
+# The command that starts our app
+CMD [ "npm", "start" ]

@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: go-grpc-demo-d-gray
+  name: go-grpc-demo-d-gray
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: go-grpc-demo-d-gray
+  template:
+    metadata:
+      labels:
+        app: go-grpc-demo-d-gray
+    spec:
+      containers:
+      - image: registry.cn-hangzhou.aliyuncs.com/mse-governance-demo/go-grpc-demo-d:1.0-multiframe
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+        name: go-grpc-demo-d-gray
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 80
+        resources:
+          limits:
+            cpu: 500m
+            ephemeral-storage: 1Gi
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            ephemeral-storage: 500Mi
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 1000
+          runAsUser: 1000
+      serviceAccountName: default
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: go-grpc-demo-d-gray-service
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: go-grpc-demo-d-gray
+  type: ClusterIP

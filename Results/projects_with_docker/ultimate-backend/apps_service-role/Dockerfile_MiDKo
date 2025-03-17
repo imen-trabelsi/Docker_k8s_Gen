@@ -1,0 +1,30 @@
+# Base Image
+FROM node:12-alpine
+
+# Environment variables
+ENV NODE_ENV $NODE_ENV
+
+# Create app directory
+WORKDIR /nest
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install dependencies
+RUN yarn install --production=false
+
+# Install Nest.js CLI
+RUN yarn global add @nestjs/cli
+
+# Copy all additional Source Code
+COPY . .
+
+# Build the app
+RUN nest build proto-schema
+RUN nest build service-role
+
+# Expose the port the app runs on
+EXPOSE 50052
+
+# Define the command to run the app
+CMD ["node", "dist/apps/service-role/main.js"]

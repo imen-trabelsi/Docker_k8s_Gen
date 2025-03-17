@@ -1,0 +1,26 @@
+# Set the base image
+FROM alpine:3.20.0
+
+# Set the working directory in the Docker image
+WORKDIR /app
+
+# Copy package.json into the Docker image
+COPY package.json ./ 
+
+# Install build system and dependencies, update and upgrade
+RUN apk update && apk upgrade && apk add --update npm postgresql-client
+
+# Install application dependencies
+RUN npm install
+
+# Copy everything from the current directory into the Docker image
+COPY . .
+
+# Copy crontab for root user
+COPY ./crontab /etc/crontabs/root
+
+# Copy backup script
+COPY ./backup.sh .
+
+# Run the application
+CMD ["crond",, "-f",, "-d",, "8"]

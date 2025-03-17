@@ -1,0 +1,43 @@
+# Use the base image provided by the user
+FROM dev as base
+
+# Create app directory
+WORKDIR /go/src/goTemp
+
+# Install app dependencies
+COPY ./go.mod ./go.sum ./
+RUN go mod download
+
+# Build system environment variables
+ENV SRVDIR=promotion
+ENV SRVNAME=${SRVDIR}Server
+
+# MySQL Server health checks
+HEALTHCHECK --interval=5m --timeout=3s CMD pg_isready -q -h localhost -p 5432
+
+# Copy app source code
+COPY ./user/proto ./user/proto
+COPY ./customer/proto ./customer/proto
+COPY ./globalProtos ./globalProtos
+COPY ./globalerrors ./globalerrors
+COPY ./globalUtils ./globalUtils
+COPY ./globalMonitoring ./globalMonitoring
+COPY ./$SRVDIR ./$SRVDIR
+
+# Build the app
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o $SRVNAME ./$SRVDIR/server/
+
+FROM alpine:latest
+
+# Security considerations
+RUN apk --no-cache add ca-certificates
+
+WORKDIR /goTemp
+
+# Copy built app from base
+
+# Expose the specified port
+EXPOSE 2112
+
+# run the app
+CMD [ "./$SRVNAME" ]

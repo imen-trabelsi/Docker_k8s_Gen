@@ -1,0 +1,42 @@
+{
+    "source_code_info": {
+        "language": "Go",
+        "framework": "Go",
+        "dependencies": {
+            "go.mod": "module github.com/buoyantio/emojivoto\n\ngo 1.13\n\nrequire (\n\tcontrib.go.opencensus.io/exporter/ocagent v0.6.0\n\tgithub.com/golang/groupcache v0.0.0-20200121045136-8c9f03a8e57e // indirect\n\tgithub.com/golang/protobuf v1.5.0 // indirect\n\tgithub.com/grpc-ecosystem/go-grpc-prometheus v1.2.0\n\tgithub.com/prometheus/client_golang v1.6.0\n\tgo.opencensus.io v0.22.3\n\tgolang.org/x/sync v0.0.0-20200317015054-43a5402ce75a // indirect\n\tgolang.org/x/sys v0.0.0-20200430082407-1f5687305801 // indirect\n\tgoogle.golang.org/api v0.22.0 // indirect\n\tgoogle.golang.org/grpc v1.41.0\n\tgoogle.golang.org/protobuf v1.27.1\n)\n"
+        },
+        "database": null,
+        "build_system": "go mod",
+        "config_files": {
+            "docker-compose.yml": "version: '3'\n\nservices:\n  web:\n    image: buoyantio/emojivoto-web:v11\n    environment:\n      - WEB_PORT=8080\n      - EMOJISVC_HOST=emoji-svc:8080\n      - VOTINGSVC_HOST=voting-svc:8080\n      - INDEX_BUNDLE=dist/index_bundle.js\n    ports:\n      - \"8080:8080\"\n    depends_on:\n      - voting-svc\n      - emoji-svc\n\n  vote-bot:\n    image: buoyantio/emojivoto-web:v11\n    entrypoint: emojivoto-vote-bot\n    environment:\n      - WEB_HOST=web:8080\n    depends_on:\n      - web\n\n  emoji-svc:\n    image: buoyantio/emojivoto-emoji-svc:v11\n    environment:\n      - GRPC_PORT=8080\n    ports:\n      - \"8081:8080\"\n\n  voting-svc:\n    image: buoyantio/emojivoto-voting-svc:v11\n    environment:\n      - GRPC_PORT=8080\n    ports:\n      - \"8082:8080\"\n",
+            "Dockerfile": "FROM buoyantio/emojivoto-svc-base:v12\n\nARG svc_name\n\nCOPY $svc_name/target/ /usr/local/bin/\n\n# ARG variables arent available for ENTRYPOINT\nENV SVC_NAME $svc_name\nENTRYPOINT cd /usr/local/bin && $SVC_NAME\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".gitignore",
+            "Dockerfile",
+            "Dockerfile-base",
+            "Dockerfile-multi-arch",
+            "LICENSE",
+            "Makefile",
+            "README.md",
+            "common.mk",
+            "docker-compose.yml",
+            "go.mod",
+            "go.sum"
+        ],
+        "folders": [
+            ".github",
+            "assets",
+            "bin",
+            "emojivoto-emoji-svc",
+            "emojivoto-voting-svc",
+            "emojivoto-web",
+            "kustomize",
+            "proto",
+            "training"
+        ]
+    }
+}

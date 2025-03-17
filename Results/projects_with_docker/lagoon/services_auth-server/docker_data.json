@@ -1,0 +1,46 @@
+{
+    "docker_info": {
+        "base_image": "${IMAGE_REPO:-lagoon}/yarn-workspace-builder",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "LAGOON_GIT_BRANCH",
+            "IMAGE_REPO",
+            "UPSTREAM_REPO",
+            "UPSTREAM_TAG",
+            "LAGOON_VERSION"
+        ],
+        "envs": [
+            "ENV LAGOON_VERSION=$LAGOON_VERSION",
+            "ENV NODE_ENV=production \\"
+        ],
+        "copy_instructions": [
+            "COPY --from=yarn-workspace-builder /app /app",
+            "WORKDIR /app/services/auth-server/",
+            "COPY --from=yarn-workspace-builder /app/.env.defaults .",
+            "COPY . ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"yarn\",",
+                    "\"start\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "yarn check --verify-tree",
+                ""
+            ],
+            [
+                "yarn build",
+                ""
+            ]
+        ]
+    }
+}

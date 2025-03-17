@@ -1,0 +1,34 @@
+# == STAGE 1: Build ==
+# Use adoptopenjdk/openjdk11:alpine as the base image
+FROM adoptopenjdk/openjdk11:alpine as build
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy pom.xml and install dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# Copy source code
+COPY src /app/src
+
+# Build the application
+RUN mvn package
+
+# == STAGE 2: Package ==
+# Again from adoptopenjdk/openjdk11:alpine
+FROM adoptopenjdk/openjdk11:alpine
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy jar file from build stage
+
+# Expose port 8080
+EXPOSE 8080
+
+# Run command
+CMD ["java", "-jar", "producer.jar", "--spring.profiles.active=docker"]
+
+
+

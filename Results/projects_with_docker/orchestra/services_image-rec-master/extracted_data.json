@@ -1,0 +1,27 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "requirements.txt": "aiohttp\naioredis\nprotobuf>=3.6.1\n"
+        },
+        "database": "Redis",
+        "build_system": "pip",
+        "config_files": {
+            "services/image-rec-master/Dockerfile": "# Compile the proto files and fetch pip dependencies.\nFROM python:3.7-alpine AS builder\n\nWORKDIR /builder\n\n# gcc and musl-dev are required for the aioredis dependency.\nRUN apk --no-cache add \\\n    gcc \\\n    musl-dev \\\n    protobuf\n\nCOPY common/python/requirements.txt common/requirements.txt\nCOPY image-rec-master/requirements.txt .\n\nRUN pip install -r common/requirements.txt -r requirements.txt\n\nCOPY common/messages/imagery.proto \\\n    common/messages/image_rec.proto \\\n    common/messages/interop.proto \\\n    common/messages/telemetry.proto \\\n    messages/\n\nRUN mkdir dist && protoc --python_out=dist messages/*.proto\n\n# Making the actual image now.\nFROM python:3.7-alpine\n\nWORKDIR /app\n\n# Copy the pip requirements and protobuf messages from above.\nCOPY --from=builder /usr/local/lib/python3.7/site-packages \\\n                    /usr/local/lib/python3.7/site-packages\nCOPY --from=builder /builder/dist/messages messages\n\nCOPY common/python common\nCOPY image-rec-master/service service\n\nENV PORT='8082' \\\n    IMAGERY_HOST='imagery' \\\n    IMAGERY_PORT='8081' \\\n    INTEROP_PROXY_HOST='interop-proxy' \\\n    INTEROP_PROXY_PORT='8000' \\\n    REDIS_HOST='redis' \\\n    REDIS_PORT='6379' \\\n    MAX_AUTO_TARGETS=''\n\nENV PYTHONUNBUFFERED=TRUE\n\nEXPOSE 8082\n\nCMD python -m service\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".gitignore",
+            "Dockerfile",
+            "Makefile",
+            "README.md",
+            "package.json"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

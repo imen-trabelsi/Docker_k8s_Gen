@@ -1,0 +1,31 @@
+# Use the official Microsoft .NET core SDK
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 as build-env
+
+# Set the working directory
+WORKDIR /app
+WORKDIR /src
+
+# Copy .csproj and restore as distinct layers
+COPY ["HostedServices/PlaneService/PlaneService.csproj", "HostedServices/PlaneService/"]
+COPY ["SharedKernel/Utils/Utils.csproj", "SharedKernel/Utils/"]
+COPY ["SharedKernel/Contracts/Contracts.csproj", "SharedKernel/Contracts/"]
+WORKDIR "/src/HostedServices/PlaneService"
+
+RUN dotnet restore "HostedServices/PlaneService/PlaneService.csproj"
+
+# Copy everything else and build
+COPY . .
+RUN dotnet build "PlaneService.csproj" -c Release -o /app/build
+
+FROM build-env as publish
+RUN dotnet publish "PlaneService.csproj" -c Release -o /app/publish
+
+
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+WORKDIR /app
+
+# Expose your application on the specified port
+EXPOSE 81
+
+# Configure your application to run
+ENTRYPOINT ["dotnet", "PlaneService.dll", "--environment=Docker"]

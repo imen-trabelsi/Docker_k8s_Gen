@@ -1,0 +1,29 @@
+# Set base image (host OS)
+FROM maven:3-eclipse-temurin-11
+
+# Set the working directory in the image
+WORKDIR /usr/src/app
+
+# Copy the dependencies file to the working directory
+COPY pom.xml /usr/src/app
+
+# Install dependencies
+RUN mvn dependency:go-offline -B
+
+# Copy the rest of your app's source code from your host to your image filesystem.
+COPY . /usr/src/app
+
+# Install curl and update certificates
+RUN apt-get update && apt-get install -y curl &&  update-ca-certificates -f
+
+# Fetch open telemetry java agent
+RUN curl -o opentelemetry-javaagent.jar https://github.com/open-telemetry/opentelemetry-java-instrumentation/releases/latest/download/opentelemetry-javaagent.jar
+
+# Build the project 
+RUN mvn -f /usr/src/app/pom.xml clean package
+
+# Specifies port to which the container will listen for connections
+EXPOSE 8080
+
+# Run the command inside your image filesystem
+CMD ["mvn", "package", "exec:exec"]

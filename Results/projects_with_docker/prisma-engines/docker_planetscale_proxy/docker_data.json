@@ -1,0 +1,25 @@
+{
+    "docker_info": {
+        "base_image": "ghcr.io/mattrobenolt/ps-http-sim:v0.0.11",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY --from=planetscale-proxy /ps-http-sim /ps-http-sim"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "/ps-http-sim",
+                    "\\"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

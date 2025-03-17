@@ -1,0 +1,33 @@
+# Use the Node.js version 16 image from the Dockerhub
+FROM node:16-alpine3.15
+
+# Create work directory
+WORKDIR /app/dev
+
+# Add necessary build dependencies
+RUN apk add --no-cache git
+
+# Check version of installed software
+RUN git --version
+RUN npm -v
+
+# Copy dependency definitions
+COPY package.json .
+
+# Install dependencies
+RUN npm i
+
+# Install PM2 globally
+RUN npm install pm2 -g
+
+# Copy all local files into the image
+COPY . .
+
+# Build the app
+RUN npm run build
+
+# Expose the port
+EXPOSE 80
+
+# Start the service with PM2 Runtime in production mode
+CMD ["pm2-runtime", "start", "pm2.config.js", "--env=production"]

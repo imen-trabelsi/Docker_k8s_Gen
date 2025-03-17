@@ -1,0 +1,30 @@
+# Use adoptopenjdk/openjdk11:alpine as base image
+FROM adoptopenjdk/openjdk11:alpine AS build
+
+# Set the work directory in Docker
+WORKDIR /usr/src/app
+
+# Copy Maven configuration file to the Docker context
+COPY pom.xml .
+
+# download dependencies as described in pom.xml
+RUN mvn dependency:go-offline
+
+# Copy the rest of the application source code
+COPY src /usr/src/app/src
+
+# Build the application
+RUN mvn package
+
+# New Build Stage
+FROM adoptopenjdk/openjdk11:alpine
+
+WORKDIR /app
+
+# Copy over the built artifact from the previous stage
+
+# Set the CMD to execute
+CMD ["java", "-jar", "app.jar"]
+
+# Expose the necessary port
+EXPOSE 8080

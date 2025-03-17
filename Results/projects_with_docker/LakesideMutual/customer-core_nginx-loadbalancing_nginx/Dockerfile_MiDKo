@@ -1,0 +1,35 @@
+# Base image
+FROM nginx:latest as builder
+
+# Install maven
+RUN apt-get update \
+
+# Set the working directory
+WORKDIR /app
+
+# Add pom.xml and source code
+COPY pom.xml .
+COPY src/ ./src/
+
+# Build the application
+RUN mvn clean install
+
+# Copy static resources to Nginx server
+RUN mv target/*.jar /usr/share/nginx/html
+
+# Use Nginx for serving content 
+FROM nginx:latest
+
+# Set working directory
+WORKDIR /app
+
+# This is to replace the default conf of nginx
+COPY nginx-loadbalancing/nginx/nginx.conf /etc/nginx/nginx.conf
+
+# Copy the jar we built in the first stage
+
+# Expose the port
+EXPOSE 80
+
+# Include the necessary instructions for running the application
+CMD ["nginx", "-g", "daemon off;"]

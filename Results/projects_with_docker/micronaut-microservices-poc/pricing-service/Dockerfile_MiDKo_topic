@@ -1,0 +1,26 @@
+# Base Image
+FROM adoptopenjdk/openjdk14:jre-14.0.2_12-alpine
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Copy the pom.xml file
+COPY pom.xml ./
+
+# Install app dependencies
+RUN mvn verify clean --fail-never
+
+# Rest of the project
+COPY . . 
+
+# Build the project
+RUN mvn -DskipTests clean package
+
+# Copy built jar
+COPY --from=0 target/pricing-service*.jar pricing-service.jar
+
+# Expose the necessary port
+EXPOSE 8080
+
+# Run the jar
+ENTRYPOINT ["java","-jar","pricing-service.jar"]

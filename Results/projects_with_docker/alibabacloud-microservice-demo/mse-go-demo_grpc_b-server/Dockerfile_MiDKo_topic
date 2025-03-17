@@ -1,0 +1,19 @@
+# Stage 1 - Build
+FROM maven:3.8.1-openjdk-11 as build
+WORKDIR /workspace
+COPY pom.xml .
+RUN mvn dependency:go-offline
+COPY src ./src
+RUN mvn package -DskipTests
+
+# Stage 2 - Package
+FROM golang:1.19-alpine3.16
+WORKDIR /workspace
+COPY docker-compose.yml mse-go-demo/grpc/b-server/Dockerfile .
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+RUN apk --update add gcc libc-dev
+RUN --mount=type=cache,target=/go \
+RUN go build -buildmode=pie -ldflags "-linkmode external -extldflags -static -w" -o /workspace
+CMD ["/b-server"]
+
+EXPOSE 50051

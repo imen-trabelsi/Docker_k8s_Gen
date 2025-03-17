@@ -1,0 +1,38 @@
+# Use the base image
+FROM alpine:3.16
+
+# Define Build Arguments
+ARG BUILD_DATE
+ARG NAME
+ARG VCS_REF
+ARG VERSION
+
+# Define Labels
+LABEL maintainer="barcus@tou.nu"
+LABEL org.label-schema.schema-version="1.0"
+LABEL org.label-schema.build-date=$BUILD_DATE
+LABEL org.label-schema.name=$NAME
+LABEL org.label-schema.vcs-ref=$VCS_REF
+LABEL org.label-schema.version=$VERSION
+
+# Update the package list and install the necessary packages with RUN and APK
+RUN apk add --no-cache bareos bareos-storage tar
+
+# Copy the entrypoint script from the current directory (of Docker host) into the image
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+
+# Give execute permission for the entrypoint script
+RUN chmod u+x /docker-entrypoint.sh
+
+# Create directory and update the ownership
+RUN mkdir /run/bareos && chown bareos /run/bareos
+
+# Backup the original config directory
+RUN tar czf /bareos-sd.tgz /etc/bareos/bareos-sd.d
+
+# Expose the necessary port
+EXPOSE 9103
+
+# Define the entrypoint or execute command
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["/usr/sbin/bareos-sd","-u","bareos","-f"]

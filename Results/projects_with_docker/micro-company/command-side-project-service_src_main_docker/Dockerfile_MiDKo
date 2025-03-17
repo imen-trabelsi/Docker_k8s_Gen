@@ -1,0 +1,21 @@
+# Use base java image
+FROM eclipse-temurin:11
+
+# Make port 8082 available to the world outside this container
+EXPOSE 8082
+
+# Add .jar file to the container
+COPY *.jar /app.jar
+
+# Add wait-for-it.sh file to the container
+COPY wait-for-it.sh /wait-for-it.sh
+
+# Make sure our app.jar file is executable
+RUN bash -c 'touch /app.jar'
+RUN bash -c 'chmod 777 /wait-for-it.sh'
+
+# Set the active profile
+ENV SPRING_PROFILES_ACTIVE docker
+
+# Execute the jar file
+ENTRYPOINT ["java", "-Dspring.profiles.active=docker", "-jar", "/app.jar"]

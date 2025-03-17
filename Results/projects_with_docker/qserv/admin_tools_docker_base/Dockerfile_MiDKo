@@ -1,0 +1,29 @@
+# Final stage
+FROM almalinux:9 AS final
+
+# Copy the necessary files across
+# Note that this assumes these files exist in the locations specified
+COPY --from=ghcr.io/astral-sh/uv:latest /uv /uvx /bin/
+COPY --from=lite-build /usr/local/lib64/liblog4cxx.so /usr/local/lib64/
+COPY --from=lite-build /usr/local/lib/libantlr4-runtime.so /usr/local/lib/
+COPY --from=lite-build /usr/local/bin/mysql-proxy /usr/local/bin/
+COPY --from=lite-build /usr/local/lib/libmysql-*.so /usr/local/lib/
+COPY --from=lite-build /usr/local/lib/mysql-proxy/lua/*.so /usr/local/lib/mysql-proxy/lua/
+COPY --from=lite-build /usr/local/lib/mysql-proxy/plugins/*.so /usr/local/lib/mysql-proxy/plugins/
+COPY --from=lite-build /usr/local/include/xrootd/ /usr/local/include/
+COPY --from=lite-build /usr/local/lib64/libXrd*.so /usr/local/lib64/
+COPY --from=lite-build /usr/local/bin/xrootd /usr/local/bin/
+COPY --from=lite-build /usr/local/bin/cmsd /usr/local/bin/
+COPY --from=lite-build /usr/local/bin/xrdfs /usr/local/bin/
+COPY --from=lite-build /usr/local/lib64/libcpp-httplib.so /usr/local/lib64/
+COPY --from=lite-build /usr/local/lib64/libaws-*.so /usr/local/lib64/
+COPY --from=lite-build /usr/local/lib64/libs2n.so /usr/local/lib64/
+
+# Work directory
+WORKDIR /app
+
+# Expose ports
+EXPOSE 8000
+
+# Entry point
+ENTRYPOINT ["tail","-f","/dev/null"]

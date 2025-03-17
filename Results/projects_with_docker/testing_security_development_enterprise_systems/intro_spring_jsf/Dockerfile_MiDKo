@@ -1,0 +1,21 @@
+# Use base image
+FROM adoptopenjdk/openjdk11:alpine
+
+# Set working directory in the container
+WORKDIR /app
+
+# Copy pom.xml and source code to the container
+COPY pom.xml .
+COPY src/ ./src/
+
+# Build the application
+RUN ./mvnw package
+
+# Strip down to only the essentials of the build
+RUN mvn clean package
+
+# Copy the jar file to the container
+COPY target/spring-jsf-exec.jar .
+
+# Default command to execute
+CMD ["java", "-jar", "spring-jsf-exec.jar"]

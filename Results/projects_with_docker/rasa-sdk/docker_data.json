@@ -1,0 +1,93 @@
+{
+    "docker_info": {
+        "base_image": "base",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "5055"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "POETRY_VERSION=1.8.2"
+        ],
+        "envs": [
+            "ENV POETRY_VERSION=$POETRY_VERSION",
+            "ENV PATH=\"/opt/venv/bin:$PATH\""
+        ],
+        "copy_instructions": [
+            "COPY . /app/",
+            "WORKDIR /app",
+            "WORKDIR /wheels",
+            "COPY ./entrypoint.sh /app/",
+            "COPY --from=python_builder /opt/venv /opt/venv",
+            "WORKDIR /app"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"./entrypoint.sh\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"start\",",
+                    "\"--actions\",",
+                    "\"actions\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update -qq \\",
+                "# Make sure that all security updates are installed"
+            ],
+            [
+                "update-alternatives --install /usr/bin/python python /usr/bin/python3 100 \\",
+                "&& update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 100"
+            ],
+            [
+                "apt-get update -qq \\",
+                "&& apt-get install -y --no-install-recommends",
+                "curl",
+                "&& apt-get autoremove -y"
+            ],
+            [
+                "curl -sSL https://install.python-poetry.org | python",
+                "ENV PATH=\"/root/.local/bin:/opt/venv/bin:${PATH}\""
+            ],
+            [
+                "python -m venv /opt/venv && \\",
+                ". /opt/venv/bin/activate &&",
+                "pip install --no-cache-dir -U pip &&",
+                "pip install --no-cache-dir wheel &&",
+                "poetry install --no-dev --no-root --no-interaction"
+            ],
+            [
+                ". /opt/venv/bin/activate && poetry build -f wheel -n \\",
+                "&& pip install --no-cache-dir --no-deps dist/*.whl",
+                "&& mkdir /wheels",
+                "&& poetry export -f requirements.txt --without-hashes --output /wheels/requirements.txt",
+                "&& poetry run pip wheel --wheel-dir=/wheels -r /wheels/requirements.txt",
+                "&& find /app/dist -maxdepth 1 -mindepth 1 -name '*.whl' -print0 | xargs -0 -I {} mv {} /wheels/"
+            ],
+            [
+                "find . -name '*.whl' -maxdepth 1 -exec basename {} \\; | awk -F - '{ gsub(\"_\", \"-\", $1); print $1 }' | uniq > /wheels/requirements.txt \\",
+                "&& rm -rf /opt/venv",
+                "&& python -m venv /opt/venv",
+                "&& . /opt/venv/bin/activate",
+                "&& pip install --no-cache-dir -U pip",
+                "&& pip install --no-cache-dir --no-index --find-links=/wheels -r /wheels/requirements.txt",
+                "&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*",
+                "&& rm -rf /wheels",
+                "&& rm -rf /root/.cache/pip/*"
+            ],
+            [
+                "chgrp -R 0 /app && chmod -R g=u /app",
+                "USER 1001"
+            ]
+        ]
+    }
+}

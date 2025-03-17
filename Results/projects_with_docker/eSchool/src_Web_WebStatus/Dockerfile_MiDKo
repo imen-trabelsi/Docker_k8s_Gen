@@ -1,0 +1,26 @@
+# Base Image
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+WORKDIR /src
+
+# Restore
+COPY ["src/Web/WebStatus/WebStatus.csproj", "src/Web/WebStatus/"]
+RUN dotnet restore "src/Web/WebStatus/WebStatus.csproj"
+
+# Copy everything else and build
+COPY . .
+WORKDIR "/src/src/Web/WebStatus"
+RUN dotnet build "WebStatus.csproj" -c Release -o /app/build
+
+# Publish
+FROM build AS publish
+RUN dotnet publish "WebStatus.csproj" -c Release -o /app/publish
+
+# Final stage/image
+FROM build AS final
+WORKDIR /app
+
+# Expose the port
+EXPOSE 80
+
+# Start the application
+ENTRYPOINT ["dotnet", "WebStatus.dll"]

@@ -1,0 +1,15 @@
+FROM golang:1.10
+
+ENV PROTOC_VERSION 3.5.1 
+
+WORKDIR /go/src/github.com/tilt-dev/servantes/fe
+
+COPY . .
+
+RUN apt update && apt install -y unzip time make \
+    && wget https://github.com/google/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip \
+    && unzip protoc-${PROTOC_VERSION}-linux-x86_64.zip -d protoc \
+    && mv protoc/bin/protoc /usr/bin/protoc \
+    && go get github.com/golang/protobuf/protoc-gen-go \
+
+ENTRYPOINT /go/bin/fe

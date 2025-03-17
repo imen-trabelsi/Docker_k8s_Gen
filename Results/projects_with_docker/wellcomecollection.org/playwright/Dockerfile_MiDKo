@@ -1,0 +1,23 @@
+FROM mcr.microsoft.com/playwright:v1.46.0
+
+WORKDIR /usr/src/app
+
+COPY package.json ./ 
+
+RUN yarn install --production=true && \
+
+
+WORKDIR /usr/src/app/webapp/playwright
+
+COPY static/README.md ./static/README.md
+COPY assets/README.md ./assets/README.md
+COPY assets/icons/browserconfig.xml ./assets/icons/browserconfig.xml
+COPY assets/icons/manifest.json ./assets/icons/manifest.json
+COPY assets/package.json ./assets/package.json
+COPY content/webapp/components/AudioPlayer/README.md ./content/webapp/components/AudioPlayer/README.md
+COPY content/webapp/components/BackToResults/README.md ./content/webapp/components/BackToResults/README.md
+COPY content/webapp/components/Contact/README.md ./content/webapp/components/Contact/README.md
+COPY content/webapp/components/Contributors/README.md ./content/webapp/components/Contributors/README.md
+COPY content/webapp/components/CopyButtons/README.md ./content/webapp/components/CopyButtons/README.md
+
+CMD ["true"]

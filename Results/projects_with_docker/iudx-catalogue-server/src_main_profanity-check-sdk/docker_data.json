@@ -1,0 +1,38 @@
+{
+    "docker_info": {
+        "base_image": "python:3.8-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /usr/share/app",
+            "COPY requirements.txt .",
+            "COPY . /usr/share/app/"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"python\",\"-W\",",
+                    "\"ignore\",",
+                    "\"main.py\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update \\",
+                "&& /usr/local/bin/python -m pip install --upgrade pip",
+                "&& pip install --no-cache-dir  -r requirements.txt"
+            ],
+            [
+                "useradd -r -u 1001 -g root profanity-user",
+                "USER profanity-user"
+            ]
+        ]
+    }
+}

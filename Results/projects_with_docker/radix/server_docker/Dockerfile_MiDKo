@@ -1,0 +1,33 @@
+#Base Image
+FROM limit0/php56:imagick-latest
+
+#Working Directory
+WORKDIR /app
+
+#Add all project files to docker
+COPY . /app
+
+#Environment variable
+ENV SYMFONY_ENV=dev
+ENV APP_ENV=dev
+
+#Install project dependencies
+RUN curl -sS https://getcomposer.org/installer | php \
+    && mv composer.phar /usr/local/bin/composer \
+
+#Copy Instructions
+COPY docker/vhost.conf /etc/apache2/sites-available/000-default.conf
+COPY docker/php.ini /usr/local/etc/php/conf.d/zzz_php.ini
+COPY docker/entrypoint.sh /app/entrypoint.sh
+
+#Give permissions to enterpoint.sh
+RUN chmod +x /app/entrypoint.sh
+
+#Run Commands
+RUN setcap CAP_NET_BIND_SERVICE=+eip /usr/sbin/apache2
+
+#Specify User
+USER www-data
+
+#Execute Entrypoint Script
+CMD ["/app/entrypoint.sh"]

@@ -1,0 +1,28 @@
+# Use specified base image
+FROM public.ecr.aws/docker/library/node:20-bookworm-slim
+
+# Create app directory
+WORKDIR /usr/src/app/webapp
+
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY package*.json ./
+
+RUN apt-get update && apt-get install -yq --no-install-recommends \
+libasound2 libatk-bridge2.0-0 libatk1.0-0 libatspi2.0-0 libc6 libcairo2 libcups2 libdbus-1-3 \
+libdrm2 libexpat1 libgbm1 libgcc1 libglib2.0-0 libnspr4 libnss3 libpango-1.0-0 libpangocairo-1.0-0 \
+libstdc++6 libuuid1 libx11-6 libx11-xcb1 libxcb-dri3-0 libxcb1 libxcomposite1 libxcursor1 libxdamage1 \
+libxext6 libxfixes3 libxi6 libxkbcommon0 libxrandr2 libxrender1 libxshmfence1 libxss1 libxtst6 \
+yarn && \
+yarn write-report --no-sandbox && \
+
+# Bundle app source
+COPY . .
+
+# Add webapp contents to the Docker image
+COPY ./webapp /usr/src/app/webapp
+
+# Set the command to run your app using CMD which keeps the container running.
+CMD ["true"]
+

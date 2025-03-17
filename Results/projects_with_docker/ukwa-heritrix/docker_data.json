@@ -1,0 +1,61 @@
+{
+    "docker_info": {
+        "base_image": "maven:3-jdk-8",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8443"
+        ],
+        "user": [
+            "heritrix"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV FOREGROUND=true \\",
+            "ENV MONITRIX_ENABLE=false \\",
+            "ENV MAVEN_CONFIG=/home/heritrix/.m2"
+        ],
+        "copy_instructions": [
+            "COPY src/main/resources/GeoLite2-City_20200908/GeoLite2-City.mmdb .",
+            "COPY .mvn /bl-heritrix-modules/.mvn",
+            "COPY pom.xml /bl-heritrix-modules/pom.xml",
+            "COPY src /bl-heritrix-modules/src",
+            "COPY docker/filebeat.yml /etc/filebeat/filebeat.yml",
+            "COPY docker/logging.properties /h3-bin/conf/logging.properties",
+            "COPY docker/bin/* /h3-bin/bin/",
+            "COPY jobs /jobs",
+            "WORKDIR /home/heritrix"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"/h3-bin/bin/start\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "\\",
+                "curl -L -O https://download.elastic.co/beats/filebeat/filebeat_1.0.0-rc1_amd64.deb &&",
+                "dpkg -i filebeat_1.0.0-rc1_amd64.deb"
+            ],
+            [
+                "mvn -B -f /bl-heritrix-modules/pom.xml -s /usr/share/maven/ref/settings-docker.xml dependency:resolve-plugins dependency:go-offline",
+                "#"
+            ],
+            [
+                "cd /bl-heritrix-modules && \\",
+                "mvn -B -s /usr/share/maven/ref/settings-docker.xml -DskipTests install &&",
+                "cp -r /bl-heritrix-modules/target/dist/heritrix-* /h3-bin"
+            ],
+            [
+                "addgroup --gid 1001 heritrix && adduser --uid 1001 --ingroup heritrix heritrix",
+                "RUN mkdir -p /heritrix && mkdir -p /output && mkdir -p /home/heritrix && chown -R heritrix /h3-bin /jobs /output /heritrix /home/heritrix"
+            ]
+        ]
+    }
+}

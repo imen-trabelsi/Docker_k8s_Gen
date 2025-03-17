@@ -1,0 +1,75 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.24.0-bullseye",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [
+            "org.opencontainers.image.title=\"build-image\""
+        ],
+        "health_checks": [],
+        "build_args": [
+            "goproxyValue",
+            "revision"
+        ],
+        "envs": [
+            "ENV GOPROXY=${goproxyValue}",
+            "ENV SHFMT_VERSION=3.2.4",
+            "ENV HUGO_VERSION=v0.101.0",
+            "ENV NODE_PATH=/usr/lib/node_modules",
+            "ENV GOCACHE=/go/cache"
+        ],
+        "copy_instructions": [
+            "COPY build.sh /"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/build.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && apt-get install -y curl file gettext jq unzip protobuf-compiler libprotobuf-dev && \\",
+                "rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*"
+            ],
+            [
+                "curl -sL https://deb.nodesource.com/setup_18.x | bash -",
+                "RUN apt-get install -y nodejs && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*"
+            ],
+            [
+                "npm install -g postcss-cli@7.1.2 autoprefixer@9.8.5",
+                ""
+            ],
+            [
+                "GOARCH=$(go env GOARCH) && \\",
+                "if [ \"$GOARCH\" = \"amd64\" ]; then",
+                "DIGEST=3f5a47f8fec27fae3e06d611559a2063f5d27e4b9501171dde9959b8c60a3538;",
+                "elif [ \"$GOARCH\" = \"arm64\" ]; then",
+                "DIGEST=6474d9cc08a1c9fe2ef4be7a004951998e3067d46cf55a011ddd5ff7bfab3de6;",
+                "fi &&",
+                "URL=https://github.com/mvdan/sh/releases/download/v${SHFMT_VERSION}/shfmt_v${SHFMT_VERSION}_linux_${GOARCH};",
+                "curl -fsSLo shfmt \"${URL}\" &&",
+                "echo \"$DIGEST  shfmt\" | sha256sum -c &&",
+                "chmod +x shfmt &&",
+                "mv shfmt /usr/bin"
+            ],
+            [
+                "curl -sfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh| sh -s -- -b /usr/bin v1.61.0",
+                ""
+            ],
+            [
+                "go install github.com/client9/misspell/cmd/misspell@v0.3.4 &&\\",
+                "go install github.com/golang/protobuf/protoc-gen-go@v1.3.1 &&",
+                "go install github.com/gogo/protobuf/protoc-gen-gogoslick@v1.3.0 &&",
+                "go install github.com/weaveworks/tools/cover@bdd647e92546027e12cdde3ae0714bb495e43013 &&",
+                "go install github.com/fatih/faillint@v1.13.0 &&",
+                "go install github.com/campoy/embedmd@v1.0.0 &&",
+                "go install --tags extended github.com/gohugoio/hugo@${HUGO_VERSION} &&",
+                "rm -rf /go/pkg /go/src /root/.cache"
+            ]
+        ]
+    }
+}

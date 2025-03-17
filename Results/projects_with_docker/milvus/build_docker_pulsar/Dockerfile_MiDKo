@@ -1,0 +1,33 @@
+# Base Image
+FROM adoptopenjdk:11-jdk-hotspot
+
+# Environment Variables
+ENV PULSAR_HOME=/pulsar
+ENV PATH=$PULSAR_HOME/bin:$PATH
+ENV PULSAR_VERSION 2.8.2
+
+# Add User
+RUN groupadd --system --gid=9999 pulsar && useradd --system --home-dir $PULSAR_HOME --uid=9999 --gid=pulsar pulsar
+WORKDIR $PULSAR_HOME
+
+# Install dependencies and Pulsar
+RUN set -ex; \
+    apt-get update && apt-get install -y wget python3 python3-pip; \
+    wget -O pulsar.tgz "https://archive.apache.org/dist/pulsar/pulsar-${PULSAR_VERSION}/apache-pulsar-${PULSAR_VERSION}-bin.tar.gz"; \
+    tar -xf pulsar.tgz --strip-components=1; \
+    rm pulsar.tgz; \
+    chown -R pulsar:pulsar .; \
+
+USER pulsar
+
+# Copy Files
+COPY apply-config-from-env.py bin/
+COPY .env .
+COPY docker-compose.yml .
+COPY build/docker/pulsar/Dockerfile .
+
+# Expose Port
+EXPOSE 6650
+
+# Start Command
+CMD ["bin/pulsar","standalone","--no-functions-worker","--no-stream-storage"]

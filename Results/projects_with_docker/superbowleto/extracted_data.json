@@ -1,0 +1,44 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"superbowleto\",\n  \"version\": \"1.0.0\",\n  \"description\": \"A simple microservice to issue, register and manage boletos\",\n  \"main\": \"index.js\",\n  \"private\": true,\n  \"scripts\": {\n    \"lint\": \"eslint 'test/**/*.js' 'src/**/*.js'\",\n    \"test-ci\": \"mkdir reports && nyc ava --verbose --serial 'test/**/*.js' --tap | ./node_modules/.bin/tap-xunit > ./reports/ava.xml && npm run export-coverage\",\n    \"export-coverage\": \"nyc report --reporter=lcov --report-dir=./coverage/\",\n    \"test\": \"nyc ava --verbose --serial 'test/**/*.js'\",\n    \"test-e2e\": \"ava --verbose --serial 'test/e2e/**/*.js'\",\n    \"test-functional\": \"ava --verbose --serial 'test/functional/**/*.js'\",\n    \"test-integration\": \"ava --verbose --serial 'test/integration/**/*.js'\",\n    \"test-unit\": \"ava --verbose 'test/unit/**/*.js'\",\n    \"migrate\": \"node_modules/.bin/sequelize db:migrate --config src/config/database.js --migrations-path src/database/migrations/\",\n    \"seed\": \"node_modules/.bin/sequelize db:seed:all --config src/config/database.js --seeders-path src/database/seeders/\",\n    \"migrate_seed\": \"npm run migrate && npm run seed\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/pagarme/superbowleto.git\"\n  },\n  \"keywords\": [\n    \"boleto\",\n    \"microservice\"\n  ],\n  \"author\": \"Pagar.me Pagamentos S/A <@pagarme>\",\n  \"bugs\": {\n    \"url\": \"https://github.com/pagarme/superbowleto/issues\"\n  },\n  \"homepage\": \"https://github.com/pagarme/superbowleto#readme\",\n  \"dependencies\": {\n    \"aws-sdk\": \"2.368.0\",\n    \"axios\": \"0.16.0\",\n    \"bluebird\": \"3.5.0\",\n    \"body-parser\": \"1.18.2\",\n    \"cuid\": \"1.3.8\",\n    \"dotenv\": \"5.0.1\",\n    \"escriba\": \"2.7.0\",\n    \"express\": \"4.16.2\",\n    \"joi\": \"14.3.0\",\n    \"log4js\": \"3.0.6\",\n    \"moment\": \"https://github.com/pagarme/moment/archive/0.0.5.tar.gz\",\n    \"moment-timezone\": \"0.5.26\",\n    \"newrelic\": \"4.11.0\",\n    \"dd-trace\": \"0.14.0\",\n    \"node-boleto\": \"2.2.2\",\n    \"nodecredstash\": \"1.1.0\",\n    \"pg\": \"7.7.1\",\n    \"ramda\": \"0.23.0\",\n    \"sequelize\": \"4.41.2\",\n    \"sequelize-cli\": \"4.0.0\",\n    \"source-map-support\": \"0.4.15\",\n    \"sqs-quooler\": \"1.3.0\"\n  },\n  \"devDependencies\": {\n    \"ava\": \"0.25.0\",\n    \"chai\": \"3.5.0\",\n    \"chai-subset\": \"1.5.0\",\n    \"eslint\": \"4.14.0\",\n    \"eslint-config-pagarme-base\": \"2.0.0\",\n    \"eslint-plugin-import\": \"2.14.0\",\n    \"nock\": \"13.0.5\",\n    \"nyc\": \"13.1.0\",\n    \"sinon\": \"2.3.2\",\n    \"tap-xunit\": \"2.4.1\"\n  }\n}\n"
+        },
+        "database": "PostgreSQL",
+        "build_system": "npm",
+        "config_files": {
+            "docker-compose.yml": "version: '2.1'\n\nservices:\n  postgres:\n    image: postgres:12.8-alpine\n    ports:\n      - 5432\n    environment:\n      - POSTGRES_USER=postgres\n      - POSTGRES_PASSWORD=touchdown1!\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready -U postgres\"]\n      interval: 10s\n      timeout: 5s\n      retries: 5\n\n  yopa:\n    image: 697525377503.dkr.ecr.us-east-1.amazonaws.com/pay-docker-base-images:pagarme-yopa\n    ports:\n      - 47195\n    volumes:\n      - ./yopa-config.yml:/tmp/yopa-in/config.yml:ro\n\n  test:\n    build: .\n    command: npm test\n    environment:\n      - API_ENV=test\n    volumes:\n      - .:/superbowleto\n      - /superbowleto/node_modules\n    depends_on:\n      postgres:\n        condition: service_healthy\n      superbowleto-web:\n        condition: service_started\n    links:\n      - postgres\n      - yopa\n      - superbowleto-web\n\n  lint:\n    build: .\n    entrypoint: npm run lint\n    environment:\n      - API_ENV=test\n    volumes:\n      - .:/superbowleto\n      - /superbowleto/node_modules\n\n  migrate:\n    build: .\n    entrypoint: npm run migrate_seed\n    environment:\n      - API_ENV=test\n    volumes:\n      - .:/superbowleto\n      - /superbowleto/node_modules\n    depends_on:\n      postgres:\n        condition: service_healthy\n\n  superbowleto-web:\n    build: .\n    entrypoint: node src/bin/server.js\n    ports:\n      - \"3000:3000\"\n    environment:\n      - API_ENV=test\n      - PORT=3000\n    volumes:\n      - .:/superbowleto\n      - /superbowleto/node_modules\n    depends_on:\n      - postgres\n      - yopa\n    links:\n      - postgres\n      - yopa\n\n  superbowleto-worker:\n    build: .\n    entrypoint: node src/bin/worker.js\n    environment:\n      - API_ENV=test\n    volumes:\n      - .:/superbowleto\n      - /superbowleto/node_modules\n    depends_on:\n      - postgres\n      - yopa\n    links:\n      - postgres\n      - yopa\n",
+            "Dockerfile": "FROM 697525377503.dkr.ecr.us-east-1.amazonaws.com/pay-docker-base-images:pagarme-node8.9\n\nCOPY package.json /superbowleto/package.json\nCOPY package-lock.json /superbowleto/package-lock.json\nWORKDIR /superbowleto\n\nRUN npm install\n\nEXPOSE 3000\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".editorconfig",
+            ".env.example",
+            ".eslintrc",
+            ".gitignore",
+            ".npmrc",
+            "CONTRIBUTING.md",
+            "Dockerfile",
+            "Dockerfile.prod",
+            "LICENSE",
+            "Makefile",
+            "README.md",
+            "docker-compose.yml",
+            "newrelic.js",
+            "package-lock.json",
+            "package.json",
+            "sonar-project.properties",
+            "yopa-config.yml"
+        ],
+        "folders": [
+            ".github",
+            "docs",
+            "script",
+            "src",
+            "test"
+        ]
+    }
+}

@@ -1,0 +1,56 @@
+# Base Image
+FROM alchemyfr/phraseanet-base:1.2.2
+
+# Copy application files
+COPY --from=composer:2.1.6 /usr/bin/composer /usr/bin/composer
+WORKDIR /var/alchemy/Phraseanet
+COPY docker/caching/composer.* ./
+COPY . .
+COPY --from=builder --chown=app /var/alchemy/Phraseanet /var/alchemy/Phraseanet
+COPY ./docker/phraseanet/root /
+
+# Install NPM and SSH
+RUN cd /tmp \
+&& curl -O https://nodejs.org/download/release/v10.24.1/node-v10.24.1-linux-x64.tar.gz \
+&& tar -xvf node-v10.24.1-linux-x64.tar.gz \
+
+# Installing other required system packages
+RUN apt-get update -y && apt-get install -y yarn nano vim iputils-ping zsh ssh telnet autoconf libtool python3 pkg-config \
+&& apt-get clean \
+
+# Installing DevOps tools
+RUN git clone https://github.com/robbyrussell/oh-my-zsh.git /bootstrap/.oh-my-zsh
+
+# Application directory setup and permissions
+RUN mkdir -p /var/alchemy/Phraseanet && chown -R app:app /var/alchemy \
+
+# Install project dependencies
+RUN composer install --prefer-dist --no-dev --no-progress --classmap-authoritative --no-interaction --no-scripts \
+
+# SSH config and Plugin install
+RUN if [ ! -z "${SSH_PRIVATE_KEY}" ]; then mkdir -p ~/.ssh && echo "${SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa; fi \
+
+# Installing supervisor and logrotate
+RUN apt-get update && apt-get install -y --no-install-recommends supervisor logrotate \
+&& mkdir -p /var/log/supervisor && chown -R app: /var/log/supervisor \
+&& apt-get clean && rm -rf /var/lib/apt/lists \
+
+# Creating user 'app'
+RUN adduser --uid 1000 --disabled-password app
+
+# Installing other required system packages
+RUN apt-get update && apt-get install -y apt-transport-https ca-certificates gnupg2 wget nginx zlib1g-dev automake git libmcrypt-dev libzmq3-dev libtool locales gettext mcrypt libldap2-dev \
+
+# Set user
+USER app
+
+# Setting health check
+HEALTHCHECK CMD wget --spider http://127.0.0.1/login || nginx -s reload || exit 1
+HEALTHCHECK CMD wget --spider http://127.0.0.1/ || nginx -s reload || exit 1
+
+# Expose the Server port
+EXPOSE 80
+
+# Set the entrypoint 
+ENTRYPOINT ["/bootstrap/entrypoint.sh"]
+CMD ["/bootstrap/bin/start-servers.sh"]

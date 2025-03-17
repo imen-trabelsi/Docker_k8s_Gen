@@ -1,0 +1,21 @@
+# Dockerfile
+
+FROM logstash:2.1
+
+# Installing plugins
+RUN /opt/logstash/bin/plugin install logstash-filter-translate && \
+
+# Copying configuration files
+COPY logstash /logstash
+
+# Setting user
+USER logstash
+
+# Exposing ports
+EXPOSE 5514
+
+# Setting work directory
+WORKDIR /logstash
+
+# Execution command
+CMD ["logstash", "-f", "/logstash/conf.d", "-w", "1"]

@@ -1,0 +1,26 @@
+# Using the specified base image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+# Copy instructions
+WORKDIR /app
+COPY . /app
+
+WORKDIR /src
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+
+RUN dotnet restore "eShop-Learn.sln"
+   
+# Build the project
+RUN dotnet publish --no-restore "Catalog.API.csproj" -c Release -o /app/publish
+
+# Switch to a smaller runtime image for the final image to shrink the image size
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+
+# Copy the built app to the runtime image
+WORKDIR /app
+
+# Open the specified port
+EXPOSE 80
+
+# Set the entrypoint
+ENTRYPOINT ["dotnet", "Catalog.API.dll"]

@@ -1,0 +1,22 @@
+# Use the node:10-alpine as our base image
+FROM node:10-alpine
+
+# Set work directory to /usr/src/app
+WORKDIR /usr/src/app
+
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+COPY package*.json ./
+RUN npm install
+
+# If you are building your code for production
+RUN npm run build
+
+# Bundle app source code
+COPY . .
+
+# The project uses Spring boot, so we can expose the standard port 8080
+EXPOSE 8080
+
+# Run the application with npm start
+CMD [ "npm", "run", "start" ]

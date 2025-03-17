@@ -1,0 +1,23 @@
+# Step 1: Set base image
+FROM node:alpine
+
+# Step 2: Set working directory
+WORKDIR /app
+
+# Step 3: Copy app
+COPY . /app
+
+# Step 4: Install dependencies
+RUN npm install -g postgraphile
+RUN npm install -g postgraphile-plugin-connection-filter
+
+# Step 5: Add configuration files
+COPY docker/graphile/.env /app
+COPY docker/graphile/docker-compose.yml /app
+COPY docker/graphile/graphql/Dockerfile /app
+
+# Step 6: Expose ports
+EXPOSE 5000
+
+# Step 7: Set ENTRYPOINT
+ENTRYPOINT ["postgraphile", "-n", "0.0.0.0"]

@@ -1,0 +1,14 @@
+# Define base image
+FROM adoptopenjdk/openjdk11:alpine
+
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
+
+# Add a volume pointing to /tmp
+VOLUME /tmp
+
+# Copy the dependent jar file directly
+COPY target/user-collections.jar app.jar
+
+# Run the jar file 
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]

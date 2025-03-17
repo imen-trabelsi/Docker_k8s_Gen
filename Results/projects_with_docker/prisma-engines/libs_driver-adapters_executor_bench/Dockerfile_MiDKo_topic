@@ -1,0 +1,39 @@
+# Start with the official NodeJS 14.16.1 image from the Docker Hub
+FROM node:14.16.1
+
+# Create a separate user to avoid running the container as root (security best practice)
+RUN useradd -m app
+
+# Install dependencies, including postgres client 
+RUN apt-get update && apt-get install -y postgresql-client 
+
+# Set user as the newly created user
+USER app
+
+# Set the directory in the docker image to which app is to be copied
+WORKDIR /home/app
+
+# Copy package.json and package-lock.json files to the docker image 
+COPY package*.json ./
+
+# Install all the node dependencies specified in package.json
+RUN npm install
+
+# Copy all other project files to the docker image
+COPY --chown=app:app . .
+
+# Set necessary environment variables
+ENV NODE_ENV=production \
+
+# Expose the port on which the microservice runs
+EXPOSE 8080
+
+# Accpet connections on the specified port
+CMD ["node", ".", "-p", "8080"]
+
+# Run the sql seed file
+COPY seed.sql.gz .
+RUN gunzip seed.sql.gz && \
+
+# Run the app
+CMD [ "npm", "start" ]

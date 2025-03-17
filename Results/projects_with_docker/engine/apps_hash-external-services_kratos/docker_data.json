@@ -1,0 +1,69 @@
+{
+    "docker_info": {
+        "base_image": "oryd/kratos:v1.2.0",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root",
+            "ory"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "ENV",
+            "API_SECRET=secret",
+            "API_CALLBACK_URL=\"http://localhost:5001/kratos-after-registration\""
+        ],
+        "envs": [
+            "ENV ENV=$ENV",
+            "ENV API_SECRET=$API_SECRET",
+            "ENV API_CALLBACK_URL=$API_CALLBACK_URL"
+        ],
+        "copy_instructions": [
+            "COPY ./templates /etc/config/kratos/templates",
+            "COPY ./hooks /etc/config/kratos/hooks",
+            "COPY ./identity.schema.json /etc/config/kratos/",
+            "COPY kratos.$ENV.yml /etc/config/kratos/kratos.$ENV.yml",
+            "ADD https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem /home/ory/.postgresql/root.crt"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"kratos\",",
+                    "\"-c\",",
+                    "\"/etc/config/kratos/kratos.yml\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"serve\",",
+                    "\"--watch-courier\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --no-cache yq=~4",
+                ""
+            ],
+            [
+                "mkdir -p /etc/config/kratos && \\",
+                "mkdir -p /home/ory/.postgresql"
+            ],
+            [
+                "yq -i '.selfservice.flows.registration.after.password.hooks[0].config.auth.config.value |= strenv(API_SECRET)' /etc/config/kratos/kratos.$ENV.yml",
+                "RUN yq -i '.selfservice.flows.registration.after.password.hooks[0].config.url |= strenv(API_CALLBACK_URL)' /etc/config/kratos/kratos.$ENV.yml"
+            ],
+            [
+                "ln /etc/config/kratos/kratos.$ENV.yml /etc/config/kratos/kratos.yml",
+                ""
+            ],
+            [
+                "chown -R ory:ory /home/ory && \\",
+                "chmod a+r /home/ory/.postgresql"
+            ]
+        ]
+    }
+}

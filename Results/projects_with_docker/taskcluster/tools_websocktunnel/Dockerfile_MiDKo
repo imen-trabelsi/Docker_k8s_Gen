@@ -1,0 +1,31 @@
+# Use scratch as base image as per user requirement
+FROM scratch
+
+# copy the latest build version 
+COPY websocktunnel /websocktunnel
+
+# Here, websocktunnel as there are no other specified dependencies
+WORKDIR /websocktunnel
+
+# Given that npm is the build system, we can infer a package.json exists to manage the project's dependencies
+COPY package.json ./
+
+# Install dependencies using npm
+RUN npm install
+
+# Copy rest of the project to the WORKDIR
+COPY . .
+
+# Expose necessary ports here if any
+# EXPOSE 
+
+# Run health checks. Can be setup in case of any health check URLs
+# HEALTHCHECK 
+
+# For security and user setup, set a non root user to run the microservice
+# USER 
+
+ENV NODE_ENV=production
+
+# Use the specified entrypoint
+ENTRYPOINT ["/websocktunnel"]

@@ -1,0 +1,23 @@
+# Use Node.js base image from Docker Hub
+FROM codefarm/appnodebase:0.0.0
+
+# Specify the working directory
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# If building code for production
+# RUN npm ci --only=production
+
+# Bundle application source to Docker image
+COPY . .
+
+# Expose port to the Docker host, so it can access it
+EXPOSE 8080
+
+# Default command to execute on the start of this Docker container
+CMD [ "npm", "start" ]

@@ -1,0 +1,50 @@
+# This is stage 1 where we build our application
+FROM --platform=${BUILDPLATFORM} as builder
+
+# Sets the current working directory to /src
+WORKDIR /src/
+
+# Set the environment variables
+ENV MIX_ENV=${BUILD_ENV}
+ENV LANG C.UTF-8
+
+# Updates the package list, and installs necessary libraries and packages
+RUN apt-get update --allow-releaseinfo-change -y && \
+    apt-get install -y build-essential git openssl ca-certificates inotify-tools && \
+
+# Adds relevant directories and files to the working directory /src
+COPY mix.exs mix.lock ./
+COPY . .
+
+# Fetches and compiles application dependencies
+RUN mix local.hex --force && mix local.rebar --force && \
+RUN mix do compile, release
+
+# Copies the built application to /rel directory
+RUN mkdir -p /rel && cp -r _build/$BUILD_ENV/rel /rel
+RUN if [ -f "./entrypoint.sh" ]; then \
+    cp ./entrypoint.sh /rel/entrypoint.sh; \
+    else \
+    echo '#!/bin/bash' >> /rel/entrypoint.sh; \
+    echo 'exec $@' >> /rel/entrypoint.sh; \
+    fi; \
+
+# Stage 2 where we prepare our microservice for deployment
+FROM --platform=${BUILDPLATFORM} as release
+
+# Installs necessary packages
+RUN apt-get -qq update -y && apt-get -qq install openssl ca-certificates && apt-get clean && rm -f /var/lib/apt/lists/*_*
+
+# Set the working directory to /app
+WORKDIR /app/
+
+# Copies files from the builder stage to /app
+
+RUN APP_NAME=$(ls | head -n 1) && \
+
+# Changes the current user to nobody
+USER nobody
+
+# Sets the command for container to execute when it starts
+ENTRYPOINT ["/bin/sh", "-c", "./entrypoint.sh"]
+CMD ["./astarte-service", "start"]

@@ -1,0 +1,31 @@
+# Dockerfile
+
+FROM debian:stable-slim
+
+# Environment Variables
+ENV DEBIAN_FRONTEND noninteractive
+ENV LD_PRELOAD /usr/src/rootfs_prefix/rootfs_prefix.so
+
+# Copy Instructions
+COPY 50docker-apt-conf /etc/apt/apt.conf.d/
+COPY rootfs_prefix/ /usr/src/rootfs_prefix/
+COPY collectd.conf /etc/collectd/collectd.conf
+COPY run-collectd.sh /usr/local/sbin/run-collectd.sh
+
+# Install dependencies and Build instructions
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y collectd-core collectd-utils build-essential zsh && \
+    make -C /usr/src/rootfs_prefix/ && \
+    apt-get --purge remove -y build-essential && \
+    apt-get clean && \
+
+# Health check (assuming it's a web service and it has /health endpoint which returns 200)
+HEALTHCHECK CMD curl --fail http://localhost:9103/health || exit 1
+
+# Set execution permissions
+RUN chmod u+x /usr/local/sbin/run-collectd.sh
+
+# Expose the necessary port and set the entrypoint
+EXPOSE 9103
+ENTRYPOINT ["/usr/local/sbin/run-collectd.sh", "8"]

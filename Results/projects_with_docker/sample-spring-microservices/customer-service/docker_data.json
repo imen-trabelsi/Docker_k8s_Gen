@@ -1,0 +1,28 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:8-jdk-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3333"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD target/customer-service.jar customer-service.jar"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"java\",",
+                    "\"-jar\",",
+                    "\"/customer-service.jar\"]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

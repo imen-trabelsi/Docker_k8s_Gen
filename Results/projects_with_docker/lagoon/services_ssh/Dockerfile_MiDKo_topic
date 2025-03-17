@@ -1,0 +1,56 @@
+# Use base image 
+FROM ${UPSTREAM_REPO:-uselagoon}/commons:${UPSTREAM_TAG:-latest}
+
+# Set environment variable
+ENV LAGOON_VERSION=$LAGOON_VERSION
+ENV ENV=/home/.bashrc
+ENV LAGOON=ssh
+ENV USER_NAME=lagoon
+
+# Set work directory
+WORKDIR /app
+
+# Copy dependencies file
+COPY package.json .
+
+# Install dependencies
+RUN npm install
+
+# Copy all files into container
+COPY . .
+
+# Expose needed ports
+EXPOSE 2020
+
+#Build Arguments
+ARG UPSTREAM_REPO
+ARG UPSTREAM_TAG
+ARG LAGOON_VERSION
+ARG DEBIAN_FRONTEND=noninteractive
+
+#Set Labels
+LABEL maintainer="amazee.io"
+
+RUN chmod g+w /etc/passwd
+RUN mkdir -p /home
+RUN apt-get update && apt-get install -y build-essential ssh curl vim jq python3-jwt
+RUN curl -Lo kubectl "https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/${architecture}/kubectl" && chmod +x kubectl && mv kubectl /usr/bin/kubectl
+RUN mkdir /tmp/libnss-ato && tar -xzf /tmp/libnss-ato-master.tar.gz -C /tmp/libnss-ato --strip-components=1
+RUN cd /tmp/libnss-ato/ && make && make install && rm -rf /tmp/libnss-ato-master.tar.gz /tmp/libnss-ato
+RUN apt-get remove --purge -y build-essential && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
+RUN rm -f /bin/sh && ln -s /bin/bash /bin/sh
+
+RUN fix-permissions /home/token.sh
+RUN fix-permissions /home/grant.sh
+RUN fix-permissions /etc/ssh/ && fix-permissions /run/
+RUN mkdir -p /var/run/sshd && chmod 700 /var/run/sshd
+
+RUN chmod 755 /authorize.sh
+
+RUN touch /authorize.env && fix-permissions /authorize.env
+
+RUN mkdir -p /home/.kube && fix-permissions /home/.kube
+
+# Set entrypoint
+CMD ["/sbin/tini", "--", "/lagoon/entrypoints.sh"]
+ENTRYPOINT ["/usr/sbin/sshd", "-e", "-D", "-f", "/etc/ssh/sshd_config"]

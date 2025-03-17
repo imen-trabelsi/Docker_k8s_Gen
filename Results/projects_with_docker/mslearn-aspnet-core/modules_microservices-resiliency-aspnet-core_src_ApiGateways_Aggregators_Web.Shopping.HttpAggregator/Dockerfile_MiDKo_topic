@@ -1,0 +1,22 @@
+# Use Microsoft's official build .NET image.
+FROM mcr.microsoft.com/dotnet/sdk:6.0 as build
+
+WORKDIR /src
+
+# Copy csproj and restore as distinct layers
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+
+# Copy everything else and publish app
+COPY . .
+WORKDIR "/src/src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator"
+RUN dotnet restore "eShop-Learn.sln"
+RUN dotnet publish --no-restore "Web.Shopping.HttpAggregator.csproj" -c Release -o /app/publish
+
+# Start from a .NET runtime image
+FROM mcr.microsoft.com/dotnet/runtime:6.0 AS runtime
+WORKDIR /app
+
+# Expose port 80 for the app
+EXPOSE 80
+
+ENTRYPOINT ["dotnet", "Web.Shopping.HttpAggregator.dll"]

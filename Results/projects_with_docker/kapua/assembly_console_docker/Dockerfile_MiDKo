@@ -1,0 +1,27 @@
+# The base docker image has Java and jetty already installed
+FROM @docker.account@/jetty-base
+
+# Set environment variables
+ENV BROKER_ADDR broker
+ENV BROKER_PORT 1883
+ENV DATASTORE_ADDR es:9200
+ENV SQL_DB_ADDR db
+ENV SQL_DB_PORT 3306
+ENV SERVICE_BROKER_ADDR failover:(amqp://events-broker:5672)?jms.sendTimeout=1000
+ENV JOB_ENGINE_BASE_ADDR http://job-engine:8080/v1
+ENV JAVA_OPTS "-Dcommons.db.schema.update=true"
+
+# Copy maven dependencies
+COPY maven /
+
+# Change owner and permission for jetty
+RUN chown -R 1000:0 /opt/jetty /var/opt/jetty \
+
+# As Jetty runs on port 8080, expose this port
+EXPOSE 8080
+
+# Switch to non-root user for better security
+USER 1000
+
+# Command to start our Spring Boot app
+CMD ["/var/opt/jetty/run-console"]

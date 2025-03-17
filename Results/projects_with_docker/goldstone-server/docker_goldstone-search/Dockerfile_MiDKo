@@ -1,0 +1,26 @@
+# Pull the base image
+FROM solinea/elasticsearch:1.7.1
+
+# Set the working directory
+WORKDIR /app
+# Set Environment variables
+ENV ES_CLUSTERNAME="goldstone"
+ENV ES_JAVA_OPTS
+
+#Installing dependencies
+RUN pip install -r setup.py
+
+#Installing plugins
+RUN plugin install mobz/elasticsearch-head \
+
+# Copy the application
+COPY config /usr/share/elasticsearch/config
+
+# Expose the port 9200
+EXPOSE 9200
+
+# Install the app
+RUN python setup.py install
+
+# Command to execute 
+CMD ["python", "/app/main.py"]

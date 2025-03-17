@@ -1,0 +1,40 @@
+{
+    "docker_info": {
+        "base_image": "node:22.13.1",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app/ui",
+            "COPY yarn.lock package.json ./"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"yarn\"",
+                    "]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"start:docker\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "corepack enable && \\",
+                "yarn"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,31 @@
+# Base image
+FROM debian:buster-slim 
+
+# Set working directory
+WORKDIR /usr/src/zksync
+
+# Set up environment variables
+ENV RUSTUP_HOME=/usr/local/rustup 
+ENV ZKSYNC_HOME=/usr/src/zksync
+ENV PATH="${ZKSYNC_HOME}/bin:${PATH}"
+
+# Copy files
+COPY . .
+COPY docker/exit-tool/configs /usr/src/configs
+COPY docker/exit-tool/exit-tool-entry.sh /usr/local/bin/
+
+# Install dependencies
+RUN apt-get update \
+    && apt-get install -y bash git npm postgresql openssl libssl-dev gcc g++ curl libpq-dev pkg-config software-properties-common axel \
+    && curl -sL https://deb.nodesource.com/setup_14.x | bash - \
+    && apt-get install -y nodejs \
+    && apt-get install -y libpq5 ca-certificates \
+    && rm -rf /var/lib/apt/lists/* \
+    && npm install -g yarn \
+    && curl https://sh.rustup.rs -sSf | bash -s -- -y \
+    && cargo install diesel_cli --no-default-features --features postgres \
+    && cargo install --version==0.5.6 sqlx-cli \
+    && cargo build --release \
+
+# Execute command
+CMD ["npm", "start"]

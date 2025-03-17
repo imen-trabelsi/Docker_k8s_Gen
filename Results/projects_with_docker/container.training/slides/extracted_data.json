@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "requirements.txt": "# This is for netlify\nPyYAML\njinja2\n"
+        },
+        "database": null,
+        "build_system": "pip",
+        "config_files": {
+            "slides/Dockerfile": "FROM alpine:3.11\nRUN apk add --no-cache entr py3-pip git zip\nCOPY requirements.txt .\nRUN pip3 install -r requirements.txt\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "webui.js"
+        ],
+        "folders": [
+            "files"
+        ]
+    }
+}

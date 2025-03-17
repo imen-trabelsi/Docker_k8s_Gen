@@ -1,0 +1,537 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".github",
+            "type": "tree"
+        },
+        {
+            "path": ".github/ISSUE_TEMPLATE",
+            "type": "tree"
+        },
+        {
+            "path": ".github/ISSUE_TEMPLATE/feature_request.md",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows",
+            "type": "tree"
+        },
+        {
+            "path": ".github/workflows/black.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/test_build.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/unit_tests.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": ".pre-commit-config.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "CONTRIBUTING.md",
+            "type": "blob"
+        },
+        {
+            "path": "LICENSE",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "check_ports.sh",
+            "type": "blob"
+        },
+        {
+            "path": "container-storage",
+            "type": "tree"
+        },
+        {
+            "path": "container-storage/1.jpg",
+            "type": "blob"
+        },
+        {
+            "path": "container-storage/2.jpg",
+            "type": "blob"
+        },
+        {
+            "path": "container-storage/3.jpg",
+            "type": "blob"
+        },
+        {
+            "path": "container-storage/4.jpg",
+            "type": "blob"
+        },
+        {
+            "path": "container-storage/5.jpg",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.test-github.yml",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "docker-grafana",
+            "type": "tree"
+        },
+        {
+            "path": "docker-grafana/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "docker-grafana/configuration.env",
+            "type": "blob"
+        },
+        {
+            "path": "docker-grafana/datasources",
+            "type": "tree"
+        },
+        {
+            "path": "docker-grafana/datasources/influx.json",
+            "type": "blob"
+        },
+        {
+            "path": "docker-grafana/entrypoint.sh",
+            "type": "blob"
+        },
+        {
+            "path": "docker-influxdb",
+            "type": "tree"
+        },
+        {
+            "path": "docker-influxdb/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "docker-influxdb/configuration.env",
+            "type": "blob"
+        },
+        {
+            "path": "docker-influxdb/entrypoint.sh",
+            "type": "blob"
+        },
+        {
+            "path": "docker-mosquitto",
+            "type": "tree"
+        },
+        {
+            "path": "docker-mosquitto/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "docker-python-pypy",
+            "type": "tree"
+        },
+        {
+            "path": "docker-python-pypy/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "docker-python",
+            "type": "tree"
+        },
+        {
+            "path": "docker-python/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "docker-redis",
+            "type": "tree"
+        },
+        {
+            "path": "docker-redis/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "docker-redis/redis.conf",
+            "type": "blob"
+        },
+        {
+            "path": "import.sh",
+            "type": "blob"
+        },
+        {
+            "path": "krakend.json",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes",
+            "type": "tree"
+        },
+        {
+            "path": "kubernetes/fulltext-search-deplyment.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/fulltext-serarch-service.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/mongodb-deplyment.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/mongodb-service.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/random-demo-deplyment.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/random-demo-service.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "python",
+            "type": "tree"
+        },
+        {
+            "path": "python/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "python/baesian",
+            "type": "tree"
+        },
+        {
+            "path": "python/baesian/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "python/baesian/baesian.py",
+            "type": "blob"
+        },
+        {
+            "path": "python/bookcollection",
+            "type": "tree"
+        },
+        {
+            "path": "python/bookcollection/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "python/bookcollection/bookcollection.py",
+            "type": "blob"
+        },
+        {
+            "path": "python/bookcollection/requirements.txt",
+            "type": "blob"
+        },
+        {
+            "path": "python/common",
+            "type": "tree"
+        },
+        {
+            "path": "python/common/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "python/common/utils.py",
+            "type": "blob"
+        },
+        {
+            "path": "python/diagrams_generator.py",
+            "type": "blob"
+        },
+        {
+            "path": "python/fastapidemo",
+            "type": "tree"
+        },
+        {
+            "path": "python/fastapidemo/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "python/fastapidemo/requirements.txt",
+            "type": "blob"
+        },
+        {
+            "path": "python/fastapidemo/users-fastapi.py",
+            "type": "blob"
+        },
+        {
+            "path": "python/fulltextsearch",
+            "type": "tree"
+        },
+        {
+            "path": "python/fulltextsearch/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "python/fulltextsearch/fulltext_search.py",
+            "type": "blob"
+        },
+        {
+            "path": "python/geolocation",
+            "type": "tree"
+        },
+        {
+            "path": "python/geolocation/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "python/geolocation/geolocation_search.py",
+            "type": "blob"
+        },
+        {
+            "path": "python/geolocation/requirements-geolocation.txt",
+            "type": "blob"
+        },
+        {
+            "path": "python/graphql",
+            "type": "tree"
+        },
+        {
+            "path": "python/graphql/requirements.txt",
+            "type": "blob"
+        },
+        {
+            "path": "python/graphql/schema.graphql",
+            "type": "blob"
+        },
+        {
+            "path": "python/graphql/users.py",
+            "type": "blob"
+        },
+        {
+            "path": "python/mqtt",
+            "type": "tree"
+        },
+        {
+            "path": "python/mqtt/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "python/mqtt/mqtt.py",
+            "type": "blob"
+        },
+        {
+            "path": "python/mqtt/requirements-mqtt.txt",
+            "type": "blob"
+        },
+        {
+            "path": "python/photo",
+            "type": "tree"
+        },
+        {
+            "path": "python/photo/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "python/photo/photo_process.py",
+            "type": "blob"
+        },
+        {
+            "path": "python/photo/requirements-photo.txt",
+            "type": "blob"
+        },
+        {
+            "path": "python/python_app.log",
+            "type": "blob"
+        },
+        {
+            "path": "python/random",
+            "type": "tree"
+        },
+        {
+            "path": "python/random/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "python/random/random_demo.py",
+            "type": "blob"
+        },
+        {
+            "path": "python/requirements-dev.txt",
+            "type": "blob"
+        },
+        {
+            "path": "python/requirements.txt",
+            "type": "blob"
+        },
+        {
+            "path": "python/tictactoe",
+            "type": "tree"
+        },
+        {
+            "path": "python/tictactoe/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "python/tictactoe/template",
+            "type": "tree"
+        },
+        {
+            "path": "python/tictactoe/template/tictactoe.html",
+            "type": "blob"
+        },
+        {
+            "path": "python/tictactoe/tictactoe.py",
+            "type": "blob"
+        },
+        {
+            "path": "python/users",
+            "type": "tree"
+        },
+        {
+            "path": "python/users/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "python/users/caching.py",
+            "type": "blob"
+        },
+        {
+            "path": "python/users/users.py",
+            "type": "blob"
+        },
+        {
+            "path": "resources",
+            "type": "tree"
+        },
+        {
+            "path": "resources/autogenerated.png",
+            "type": "blob"
+        },
+        {
+            "path": "resources/diagram.jpg",
+            "type": "blob"
+        },
+        {
+            "path": "resources/diagram.odp",
+            "type": "blob"
+        },
+        {
+            "path": "resources/grafana.png",
+            "type": "blob"
+        },
+        {
+            "path": "secrets",
+            "type": "tree"
+        },
+        {
+            "path": "secrets/mqtt_pass.txt",
+            "type": "blob"
+        },
+        {
+            "path": "secrets/mqtt_user.txt",
+            "type": "blob"
+        },
+        {
+            "path": "secrets/redis_pass.txt",
+            "type": "blob"
+        },
+        {
+            "path": "stresstest-locusts",
+            "type": "tree"
+        },
+        {
+            "path": "stresstest-locusts/baesian.py",
+            "type": "blob"
+        },
+        {
+            "path": "stresstest-locusts/fulltext_search.py",
+            "type": "blob"
+        },
+        {
+            "path": "stresstest-locusts/geolocation_search.py",
+            "type": "blob"
+        },
+        {
+            "path": "stresstest-locusts/random_demo.py",
+            "type": "blob"
+        },
+        {
+            "path": "stresstest-locusts/users.py",
+            "type": "blob"
+        },
+        {
+            "path": "test.txt",
+            "type": "blob"
+        },
+        {
+            "path": "tests",
+            "type": "tree"
+        },
+        {
+            "path": "tests/conftest.py",
+            "type": "blob"
+        },
+        {
+            "path": "tests/requirements.txt",
+            "type": "blob"
+        },
+        {
+            "path": "tests/resources",
+            "type": "tree"
+        },
+        {
+            "path": "tests/resources/test.jpg",
+            "type": "blob"
+        },
+        {
+            "path": "tests/test_0_users.py",
+            "type": "blob"
+        },
+        {
+            "path": "tests/test_baesian.py",
+            "type": "blob"
+        },
+        {
+            "path": "tests/test_bookcollection.py",
+            "type": "blob"
+        },
+        {
+            "path": "tests/test_fulltext_search.py",
+            "type": "blob"
+        },
+        {
+            "path": "tests/test_geolocation_search.py",
+            "type": "blob"
+        },
+        {
+            "path": "tests/test_mqtt.py",
+            "type": "blob"
+        },
+        {
+            "path": "tests/test_photo.py",
+            "type": "blob"
+        },
+        {
+            "path": "tests/test_random_demo.py",
+            "type": "blob"
+        },
+        {
+            "path": "tests/utils.py",
+            "type": "blob"
+        },
+        {
+            "path": "wait_until_up.sh",
+            "type": "blob"
+        }
+    ]
+}

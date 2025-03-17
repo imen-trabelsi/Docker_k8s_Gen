@@ -1,0 +1,31 @@
+# Set the Base Image
+FROM alpine:3.20.0
+
+# Installing necessary packages
+RUN apk update && apk upgrade && apk add postgresql-client nodejs npm
+
+# Create app directory
+WORKDIR /app
+
+# Installing app dependencies
+COPY package*.json ./
+
+RUN npm install
+# If you are building your code for development using package-lock.json
+# RUN npm install
+
+# Bundle app source into the Docker image
+COPY . .
+
+# Copying user-provided files
+COPY ./crontab /etc/crontabs/root
+COPY ./backup.sh .
+
+# Set necessary permissions
+RUN chmod +x ./backup.sh
+
+# The port that this container will expose
+EXPOSE 8080
+
+# The command to start the microservice
+CMD [ "crond", "-f", "-d", "8" ]

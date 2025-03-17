@@ -1,0 +1,46 @@
+# Use base image
+FROM $BASE_CONTAINER
+
+# Labels
+LABEL maintainer="Jupyter"
+
+# Setting Environments
+ENV APACHE_SPARK_VERSION="${spark_version}" \
+    SPARK_HOME=/usr/local/spark \
+    SPARK_OPTS="--driver-java-options=-Xms1024M --driver-java-options=-Xmx4096M --driver-java-options=-Dlog4j.logLevel=info" \
+    BASE_CONTAINER=jupyter/scipy-notebook \
+    spark_version="3.0.1" \
+    hadoop_version="3.2" \
+    spark_checksum="E8B47C5B658E0FBC1E57EEA06262649D8418AE2B2765E44DA53AAF50094877D17297CC5F0B9B35DF2CEEF830F19AA31D7E56EAD950BBE7F8830D6874F88CFC3C" \
+
+# Requirement of preparing the environment
+USER root
+RUN apt-get -y update && \
+    apt-get install --no-install-recommends -y "openjdk-${openjdk_version}-jre-headless" ca-certificates-java && \
+    wget -q $(wget -qO- https://www.apache.org/dyn/closer.lua/spark/spark-${APACHE_SPARK_VERSION}/spark-${APACHE_SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz\?as_json | \
+    python -c "import sys, json; content=json.load(sys.stdin); print(content['preferred']+content['path_info'])") && \
+    echo "${spark_checksum} *spark-${APACHE_SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz" | sha512sum -c - && \
+
+# Unpacking and setting links
+WORKDIR /usr/local
+RUN tar xzf "spark-${APACHE_SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz" -C /usr/local --owner root --group root --no-same-owner && \
+    rm "spark-${APACHE_SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz" && \
+    ln -s "spark-${APACHE_SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}" spark && \
+    # Add a link in the before_notebook hook in order to source automatically PYTHONPATH
+    cp -p "$SPARK_HOME/conf/spark-defaults.conf.template" "$SPARK_HOME/conf/spark-defaults.conf" && \
+    echo 'spark.driver.extraJavaOptions="-Dio.netty.tryReflectionSetAccessible=true"' >> $SPARK_HOME/conf/spark-defaults.conf && \
+
+# Installing dependencies
+RUN conda install --quiet --yes --satisfied-skip-solve 'pyarrow=2.0.*' && \
+    conda clean --all -f -y && \
+    fix-permissions "${CONDA_DIR}" && \
+
+# Copying necessary directories
+WORKDIR $HOME
+COPY . $HOME
+
+# Starting point
+WORKDIR /tmp
+
+# Switch to nb user
+USER $NB_UID

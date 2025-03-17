@@ -1,0 +1,48 @@
+{
+    "docker_info": {
+        "base_image": "node:10-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8079"
+        ],
+        "user": [
+            "myuser"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV NODE_ENV \"production\"",
+            "ENV PORT 8079"
+        ],
+        "copy_instructions": [
+            "WORKDIR /usr/src/app",
+            "COPY package.json /usr/src/app/",
+            "COPY yarn.lock /usr/src/app/",
+            "COPY . /usr/src/app"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/usr/local/bin/npm\",",
+                    "\"start\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "addgroup mygroup && adduser -D -G mygroup myuser && mkdir -p /usr/src/app && chown -R myuser /usr/src/app",
+                ""
+            ],
+            [
+                "chown myuser /usr/src/app/yarn.lock",
+                ""
+            ],
+            [
+                "yarn install",
+                ""
+            ]
+        ]
+    }
+}

@@ -1,0 +1,34 @@
+# Base Image
+FROM adoptopenjdk/openjdk11:alpine AS builder
+
+WORKDIR /workspace/app
+
+# Copy pom.xml file
+COPY pom.xml .
+
+COPY src src
+
+# Build the project and production ready artifact
+RUN mvn clean install
+
+
+# Final Stage
+FROM adoptopenjdk/openjdk11:alpine
+
+# Variables
+ENV API_GATEWAY=/usr/src/api-gateway
+ARG JAR_FILE=api-gateway.jar
+
+# Create app directory
+WORKDIR $API_GATEWAY
+
+# Copy the jar file
+
+# Copy necessary files
+COPY target/api-gateway.jar .
+
+# Expose necessary port(s)
+EXPOSE 8080
+
+# Run the jar file
+ENTRYPOINT ["java","-jar","api-gateway.jar"]

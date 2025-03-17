@@ -1,0 +1,46 @@
+# Use the base image suggested by the user.
+FROM rabbitmq
+
+# Add metadata to an image. 
+LABEL maintainer="Maintainer Name"
+
+# Set the working directory in the Docker image
+WORKDIR /usr/src/app
+
+# Install dependencies like Rust, Cargo and other tools required for building the Spring Boot application.
+RUN set -ex && \
+    apt-get update && \
+    apt-get --yes --no-install-recommends && \
+    apt-get install rustc && \
+    apt-get install cargo && \
+    apt-get install redis-server && \
+
+# Copy the Cargo.toml file and build dependencies first for efficient caching. (Your Cargo.toml will most likely change less often than your source code.)
+COPY ./Cargo.toml ./Cargo.toml
+
+# This dummy build is to get the dependencies cached, source code changes won't invalidate Docker's caching of the build stage as long as dependencies aren't updated.
+RUN mkdir src && \
+    echo 'fn main() {println!("If you see this, the build broke!");}' > src/main.rs && \
+    cargo build --release && \
+
+# Now, we copy the rest of the source code, and recompile. (Since the dependencies are already built, this only compiles our own source code, which is very fast.)
+COPY ./ .
+
+# Build an optimized executable binary with the release profile.
+RUN cargo build --release
+
+# Run commands required by the user.
+RUN rabbitmq-plugins enable rabbitmq_management
+
+# Copy necessary config files and scripts.
+COPY rabbitmqadmin /
+COPY definitions.json /etc/rabbitmq/
+COPY definitions.json /
+COPY import_config.sh /
+COPY entrypoint.sh /
+
+# Expose the ports required for the application.
+EXPOSE 5672 15672
+
+# Define the output binaries location, and define the ENTRYPOINT which will be started when the Docker container starts.
+ENTRYPOINT [ "/usr/src/app/entrypoint.sh" ]

@@ -1,0 +1,20 @@
+# Use openjdk 8 as base image
+FROM openjdk:8-jre
+
+# Creating volume for temporary file storage
+VOLUME /tmp
+
+# Add the Spring Boot app to the container
+COPY abixen-platform-eureka.jar app.jar
+
+# Set necessary settings
+RUN sh -c 'touch /app.jar'
+RUN bash -c 'touch /app.jar'
+
+ENV JAVA_OPTS=""
+
+# Expose the port
+EXPOSE 8761
+
+# Set the start command
+ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -Dabixen.services.eureka.uri=discovery -jar /app.jar" ]

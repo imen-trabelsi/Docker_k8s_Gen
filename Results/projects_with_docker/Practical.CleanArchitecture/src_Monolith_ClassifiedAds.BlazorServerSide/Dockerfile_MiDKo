@@ -1,0 +1,25 @@
+# Please note that there's a discrepancy between specified framework (Node.js) and the information provided by the user (dotnet). Here, I'm writing a Dockerfile based on provided information, assuming we're dealing with a .NET application.
+
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
+
+WORKDIR /ClassifiedAds.Monolith
+COPY ./ClassifiedAds.Application/*.csproj ./ClassifiedAds.Application/
+COPY ./ClassifiedAds.CrossCuttingConcerns/*.csproj ./ClassifiedAds.CrossCuttingConcerns/
+COPY ./ClassifiedAds.Domain/*.csproj ./ClassifiedAds.Domain/
+COPY ./ClassifiedAds.Infrastructure/*.csproj ./ClassifiedAds.Infrastructure/
+COPY ./ClassifiedAds.Persistence/*.csproj ./ClassifiedAds.Persistence/
+COPY ./ClassifiedAds.Blazor.Modules/*.csproj ./ClassifiedAds.Blazor.Modules/
+COPY ./ClassifiedAds.BlazorServerSide/*.csproj ./ClassifiedAds.BlazorServerSide/
+COPY . ./
+
+RUN dotnet restore ./ClassifiedAds.Application/ClassifiedAds.Application.csproj
+RUN dotnet restore ./ClassifiedAds.Infrastructure/ClassifiedAds.Infrastructure.csproj
+RUN dotnet restore ./ClassifiedAds.BlazorServerSide/ClassifiedAds.BlazorServerSide.csproj
+
+RUN dotnet publish ./ClassifiedAds.BlazorServerSide/ClassifiedAds.BlazorServerSide.csproj -c Release -o out
+
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
+WORKDIR /app
+
+
+ENTRYPOINT ["dotnet", "ClassifiedAds.BlazorServerSide.dll"]

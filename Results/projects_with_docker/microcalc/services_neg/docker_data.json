@@ -1,0 +1,41 @@
+{
+    "docker_info": {
+        "base_image": "microsoft/dotnet:2.1-sdk",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV ASPNETCORE_ENVIRONMENT=production"
+        ],
+        "copy_instructions": [
+            "COPY app.csproj /app/",
+            "WORKDIR /app",
+            "COPY . /app",
+            "COPY --from=builder /app/output /app"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"dotnet\",",
+                    "\"/app/app.dll\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "dotnet restore",
+                ""
+            ],
+            [
+                "dotnet publish -c Release -o output",
+                ""
+            ]
+        ]
+    }
+}

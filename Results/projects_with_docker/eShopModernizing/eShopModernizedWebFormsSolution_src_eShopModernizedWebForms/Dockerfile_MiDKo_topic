@@ -1,0 +1,12 @@
+# Use the provided base image
+FROM mcr.microsoft.com/dotnet/framework/aspnet:4.7.2
+
+# Set environment variables
+ENV ASPNETCORE_URLS=http://+:80
+
+# Copy application files
+WORKDIR /inetpub/wwwroot
+COPY ${source:-obj/Docker/publish} .
+
+# Expose the correct Port
+EXPOSE 80

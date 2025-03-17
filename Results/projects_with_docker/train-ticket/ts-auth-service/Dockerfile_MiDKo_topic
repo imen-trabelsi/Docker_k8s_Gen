@@ -1,0 +1,37 @@
+# Step 1: Define the argument for the base image
+FROM java:8-jre as builder
+
+# Step 2: Specify the work directory in the container
+WORKDIR /app
+
+# Step 3: Copy pom.xml and .env file
+COPY pom.xml .env ./
+
+# Step 4: Copy source code to container
+COPY src/ /app/src
+
+# Step 5: Build with maven
+RUN mvn clean package
+
+# Step 6: Only keep the lib and the necessary files (data classes & application properties) in the current
+RUN mvn dependency:copy-dependencies
+
+# Step 7: Create the final image
+FROM java:8-jre
+
+# Step 8: Specify the work directory in the container
+WORKDIR /app
+
+# Step 9: Run Commands
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime &&\
+
+# Step 10: Copy from builder the lib folder with the necessary dependencies and the built jar
+
+# Step 11: Add the service's jar to the container
+COPY ./target/ts-auth-service-1.0.jar /app/
+
+# Step 12: Expose the ports
+EXPOSE 12349
+
+# Step 13: Set the entry point (this container will be executable)
+ENTRYPOINT ["java", "-Xmx200m", "-jar", "/app/ts-auth-service-1.0.jar"]

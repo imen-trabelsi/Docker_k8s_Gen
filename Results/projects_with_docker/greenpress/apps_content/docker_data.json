@@ -1,0 +1,38 @@
+{
+    "docker_info": {
+        "base_image": "node:13.3.0",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "$PORT"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV NODE_ENV=production"
+        ],
+        "copy_instructions": [
+            "COPY . ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "npm",
+                    "start"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir /app",
+                "WORKDIR /app"
+            ],
+            [
+                "npm install",
+                "ENV PORT=9001"
+            ]
+        ]
+    }
+}

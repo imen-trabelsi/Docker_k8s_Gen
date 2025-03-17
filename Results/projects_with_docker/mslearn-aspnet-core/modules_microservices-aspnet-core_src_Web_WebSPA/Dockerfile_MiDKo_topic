@@ -1,0 +1,37 @@
+# Set Base Image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+
+# Set NodeJS Image
+ARG NODE_IMAGE=node:12.20.2
+FROM ${NODE_IMAGE} as node-build
+WORKDIR /web/src
+
+# Install App Dependencies
+COPY src/Web/WebSPA/Client/package.json .
+COPY src/Web/WebSPA/Client/package-lock.json .
+RUN npm install
+COPY src/Web/WebSPA/Client .
+RUN npm run build:prod
+
+# Copy Files and Folders
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+#... Repeat this COPY for all the csproj files ...
+COPY . .
+
+# Restore dotnet packages
+RUN dotnet restore "eShop-Learn.sln"
+
+# Build App
+RUN dotnet publish --no-restore "WebSPA.csproj" -c Release -o /app/publish
+
+# FOR FINAL IMAGE
+FROM mcr.microsoft.com/dotnet/sdk:6.0
+
+WORKDIR /app
+
+# Exposed Ports
+EXPOSE 80
+
+# Container start command
+ENTRYPOINT ["dotnet", "WebSPA.dll"]

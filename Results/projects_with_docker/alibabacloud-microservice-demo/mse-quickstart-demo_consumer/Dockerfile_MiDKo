@@ -1,0 +1,13 @@
+# Choose the base image
+FROM openjdk:8-jre-alpine
+
+# Copy the project files
+WORKDIR /app
+COPY /target/consumer-1.0.0.jar /app
+
+# Expose the app port
+EXPOSE 20001
+
+# Define the start command
+ENTRYPOINT ["sh", "-c"]
+CMD ["java", "-jar", "/app/consumer-1.0.0.jar"]

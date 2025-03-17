@@ -1,0 +1,39 @@
+{
+    "docker_info": {
+        "base_image": "claranet/php:1.1.14-php7.2.11",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [
+            "org.label-schema.name=\"claranet/spryker-demoshop\""
+        ],
+        "health_checks": [],
+        "build_args": [
+            "ENABLE_JENKINS_BUILD=false"
+        ],
+        "envs": [
+            "ENV NPM_ARGS=\"--with-dev\" \\",
+            "ENV STATIC_FILES_YVES=\"path/within/repo path2/within/repo\" \\",
+            "ENV APPLICATION_ENV=\"development\" \\",
+            "ENV ENABLE_PROPEL_DIFF=\"true\" \\",
+            "ENV RABBITMQ_HOST=\"rabbitmq\" \\",
+            "ENV JENKINS_HOST=\"jenkins\" \\",
+            "ENV STORAGE_REDIS_HOST=\"storage-redis\" \\",
+            "ENV ELASTICSEARCH_HOST=\"elasticsearch\" \\"
+        ],
+        "copy_instructions": [
+            "COPY docker/etc /etc/",
+            "COPY . ${WORKDIR}/"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "/entrypoint.sh build deps",
+                ""
+            ],
+            [
+                "if [ \"${ENABLE_JENKINS_BUILD}\" = \"true\" ]; then /entrypoint.sh build jenkins; fi"
+            ]
+        ]
+    }
+}

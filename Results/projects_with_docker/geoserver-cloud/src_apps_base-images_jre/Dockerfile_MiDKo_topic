@@ -1,0 +1,40 @@
+# Use the defined base image.
+FROM eclipse-temurin:21-jre
+
+# Labels
+LABEL maintainer="GeoServer"
+
+# Set the current working directory inside the docker image.
+WORKDIR /app
+
+#Copy pom.xml and download dependencies first to take advantage of Docker layering
+COPY pom.xml .
+RUN mkdir -p /root/.m2 && mvn dependency:go-offline -B
+
+#Copy application source and build the application
+COPY src src
+RUN mvn package -DskipTests
+
+# Change the ownership and permissions of the application directory.
+RUN chmod 755 -R /app && chown -R :0 /app
+
+# Install necessary packages and clean up.
+RUN apk add --no-cache bash postgresql-libs && \
+
+# Copy the built jar file from the host to the Docker image.
+COPY target/*.jar app.jar
+
+# Set the JAVA environment variables.
+ENV JAVA_OPTS=""
+ENV DEFAULT_JAVA_TOOL_OPTIONS=""
+ENV JAVA_TOOL_OPTIONS="${DEFAULT_JAVA_TOOL_OPTIONS}"
+
+# Define and expose necessary ports.
+EXPOSE 8080
+
+# Set the entry point script.
+RUN chmod +x /__cacert_entrypoint.sh
+ENTRYPOINT ["USE_SYSTEM_CA_CERTS=true","/__cacert_entrypoint.sh"]
+
+# Define the command that will be executed when the Docker container starts.
+CMD ["java","-jar","/app/app.jar","${JAVA_OPTS}"]

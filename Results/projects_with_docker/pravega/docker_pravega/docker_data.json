@@ -1,0 +1,39 @@
+{
+    "docker_info": {
+        "base_image": "adoptopenjdk/openjdk11:jre-11.0.13_8-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "9090"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /opt/pravega",
+            "COPY pravega/ /opt/pravega/",
+            "COPY scripts/ /opt/pravega/scripts/"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"/opt/pravega/scripts/entrypoint.sh\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk --update --no-cache add \\",
+                "#used in readiness and liveness probes"
+            ],
+            [
+                "chmod +x -R /opt/pravega/scripts/",
+                ""
+            ]
+        ]
+    }
+}

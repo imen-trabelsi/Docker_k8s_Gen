@@ -1,0 +1,32 @@
+# Stage 1 - the build process
+FROM ${UPSTREAM_REPO:-uselagoon}/commons:${UPSTREAM_TAG:-latest} AS builder
+WORKDIR /app
+COPY package.json ./
+RUN npm install --only=production
+COPY . .
+
+# Stage 2 - the production environment
+FROM ${UPSTREAM_REPO:-uselagoon}/commons:${UPSTREAM_TAG:-latest}
+WORKDIR /app
+
+RUN apk add --no-cache \
+
+RUN rm /etc/nginx/http.d/default.conf && \
+mkdir -p /run/nginx && \
+adduser --disabled-password --home /git git && \
+ssh-keygen -A && \
+sed -E -i.bak -e 's/[# ]+UsePAM.*/UsePAM yes/g' /etc/ssh/sshd_config && \
+mkdir -m 700 /git/.ssh && \
+
+COPY service/fcgiwrap.sh /etc/service/fcgiwrap/run
+COPY service/nginx.sh /etc/service/nginx/run
+COPY service/sshd.sh /etc/service/sshd/run
+COPY nginx/git /etc/nginx/http.d/git.conf
+COPY entrypoint.sh /usr/sbin/entrypoint.sh
+
+RUN chmod +x /etc/service/fcgiwrap/run /etc/service/nginx/run /etc/service/sshd/run /usr/sbin/entrypoint.sh
+
+EXPOSE 80
+
+ENTRYPOINT ["/sbin/tini", "--", "/usr/sbin/entrypoint.sh"]
+CMD ["npm", "start"]

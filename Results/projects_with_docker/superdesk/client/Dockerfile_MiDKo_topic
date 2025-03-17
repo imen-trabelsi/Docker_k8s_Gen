@@ -1,0 +1,28 @@
+# Here is your Dockerfile:
+
+FROM node:14 AS build
+
+WORKDIR /tmp/client
+COPY . . 
+
+# Installing dependencies:
+RUN npm ci 
+RUN npm run build
+
+FROM nginx:stable-alpine
+RUN rm /etc/nginx/conf.d/default.conf
+COPY ./docker/nginx.conf /etc/nginx/nginx.conf
+WORKDIR /opt/superdesk/client/dist
+
+COPY ./docker/superdesk_vhost.conf /etc/nginx/sites-enabled/superdesk.conf
+COPY ./docker/start.sh /opt/superdesk/start.sh
+
+# Setting the permissions of the script to make sure it can be executed
+RUN chmod +x /opt/superdesk/start.sh
+
+# Exposing the necessary ports (replace the XXXX with the actual port number(s))
+# EXPOSE XXXX
+
+#The entry point and commands
+ENTRYPOINT ["/opt/superdesk/start.sh"]
+CMD ["nginx", "-g", "daemon off;"]

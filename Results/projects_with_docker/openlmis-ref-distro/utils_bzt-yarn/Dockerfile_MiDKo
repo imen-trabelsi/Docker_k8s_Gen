@@ -1,0 +1,23 @@
+FROM blazemeter/taurus:1.15.1
+
+WORKDIR /app
+
+COPY ./ ./app
+
+RUN apt-get update -y && \
+    apt-get install -y python-pip python-dev build-essential libpq-dev && \
+    curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+    apt-get update -y && \
+    apt-get install yarn -y && \
+    yarn install && \
+
+ENV FLASK_APP run.py
+ENV FLASK_RUN_HOST 0.0.0.0
+
+RUN chmod +x ./entrypoint.sh
+ENTRYPOINT ["/app/entrypoint.sh"]
+
+CMD flask run
+
+EXPOSE 5000

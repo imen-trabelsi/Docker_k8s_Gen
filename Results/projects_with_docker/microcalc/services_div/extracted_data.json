@@ -1,0 +1,33 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Flask",
+        "dependencies": {
+            "requirements.txt": "Flask~=1.1.1\nflask-restful~=0.3.7"
+        },
+        "database": null,
+        "build_system": "pip",
+        "config_files": {
+            ".env": "IMAGE_PREFIX=foly/microcalc",
+            "docker-compose.yml": "version: '3'\n\nservices:\n  parser:\n    build: services/parser\n    image: ${IMAGE_PREFIX}-parser\n    environment:\n      ADD_HOST: add\n      ADD_PORT: 3000\n      ADD_URI: /api/v1/add\n\n      SUB_HOST: sub\n      SUB_PORT: 8000\n      SUB_URI: /api/v1/sub\n\n      DIV_HOST: div\n      DIV_PORT: 5000\n      DIV_URI: /api/v1/div\n\n      MULT_HOST: mult\n      MULT_PORT: 8080\n      MULT_URI: /api/v1/mult\n\n      NEG_HOST: neg\n      NEG_PORT: 80\n      NEG_URI: /api/v1/neg\n\n      POW_HOST: pow\n      POW_PORT: 3000\n      POW_URI: /api/v1/pow\n\n      MOD_HOST: mod\n      MOD_PORT: 8080\n      MOD_URI: /api/v1/mod\n    ports:\n    - 8080:8080\n    depends_on:\n    - add\n    - sub\n    - div\n    - mult\n    - neg\n    - pow\n    - mod\n  add:\n    build: services/add\n    image: ${IMAGE_PREFIX}-add\n    environment:\n      DEBUG: 'express*,app'\n  sub:\n    build: services/sub\n    image: ${IMAGE_PREFIX}-sub\n  div:\n    build: services/div\n    image: ${IMAGE_PREFIX}-div\n  mult:\n    build: services/mult\n    image: ${IMAGE_PREFIX}-mult\n    environment:\n      GIN_MODE: debug\n  neg:\n    build: services/neg\n    image: ${IMAGE_PREFIX}-neg\n    environment:\n      ASPNETCORE_ENVIRONMENT: development\n      ASPNETCORE_MULT_ENDPOINT: 'http://mult:8080/api/v1/mult'\n    depends_on:\n    - mult\n  pow:\n    build: services/pow\n    image: ${IMAGE_PREFIX}-pow\n    environment:\n      DEBUG: 'express*,app'\n      MULT_ENDPOINT: 'http://mult:8080/api/v1/mult'\n    depends_on:\n    - mult\n  mod:\n    build: services/mod\n    image: ${IMAGE_PREFIX}-mod\n    environment:\n      MC_MULT_ENDPOINT: 'http://mult:8080/api/v1/mult'\n      MC_DIV_ENDPOINT: 'http://div:5000/api/v1/div'\n      MC_SUB_ENDPOINT: 'http://sub:8000/api/v1/sub'\n    depends_on:\n    - mult\n    - div\n    - sub",
+            "services/div/Dockerfile": "FROM python:3-alpine\n\nCOPY requirements.txt /app/\nWORKDIR /app\nRUN pip install -r requirements.txt\n\nCOPY . /app\n\nEXPOSE 5000\nCMD [\"python\", \"main.py\"]"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            ".gitignore",
+            "Dockerfile",
+            "Program.cs",
+            "Startup.cs",
+            "app.csproj",
+            "appsettings.Development.json",
+            "appsettings.json"
+        ],
+        "folders": [
+            "Controllers",
+            "Properties"
+        ]
+    }
+}

@@ -1,0 +1,28 @@
+# Start with a base image
+FROM microsoft/windowsservercore
+
+# Expose ports
+EXPOSE 8081 10250 10251 10252 10253 10254
+
+# Copy package.json and install dependencies
+COPY package.json c:\\app
+WORKDIR c:\\app
+RUN npm install
+
+# Copy other source code files
+COPY . c:\\app
+
+# Additional copy instructions
+ADD https://aka.ms/cosmosdb-emulator c:\\CosmosDBEmulator\\AzureCosmosDB.Emulator.msi
+COPY package_scripts\\startemu.cmd c:\\CosmosDBEmulator\\startemu.cmd
+COPY package_scripts\\getaddr.ps1 c:\\CosmosDBEmulator\\getaddr.ps1
+COPY package_scripts\\exportcert.ps1 c:\\CosmosDBEmulator\\exportcert.ps1
+COPY package_scripts\\importcert.ps1 c:\\CosmosDBEmulator\\importcert.ps1
+
+# Run command
+RUN echo "Starting Installer"
+RUN powershell.exe -Command $ErrorActionPreference = 'Stop'; Start-Process 'msiexec.exe' -ArgumentList '/i','c:\\CosmosDBEmulator\\AzureCosmosDB.Emulator.msi','/qn' -Wait
+RUN echo "Installer Done"
+
+# Set the default command to run our server
+CMD ["node", "server.js"]

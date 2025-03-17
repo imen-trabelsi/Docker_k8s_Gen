@@ -1,0 +1,25 @@
+# Use the base image specified by the user
+FROM ${BASE_IMAGE}
+
+# Set environment variables
+ENV BASE_IMAGE=${BASE_IMAGE}
+ENV SHA=${COMMIT_SHA}
+
+# Health Check
+HEALTHCHECK --interval=1s --timeout=1s --retries=5 --start-period=5s CMD /runner/config/healthcheck.sh
+
+# Switch to non-root user for security reasons
+USER nobody
+
+# Labels
+LABEL maintainer="jon@jaggersoft.com"
+
+# Set working directory
+WORKDIR /runner
+
+# Copy all files from the project into the image
+COPY . .
+
+# Command to run when the container starts
+ENTRYPOINT ["/sbin/tini", "-g", "--"]
+CMD [ "/runner/config/up.sh" ]

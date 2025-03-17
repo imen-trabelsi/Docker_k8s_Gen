@@ -1,0 +1,37 @@
+# Using Base Image
+FROM nodesource/centos7:0.10.45
+
+# Update system packages
+RUN yum -y update && yum clean all
+
+# Install build tools
+RUN yum -y install tar gzip
+
+# Create app directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# Java version
+ENV JAVA_VERSION 8
+
+# Maven version
+ENV MAVEN_VERSION 3.6.3
+
+# Install Maven
+RUN yum -y install maven
+
+# Installing Java
+RUN yum install -y java-1.${JAVA_VERSION}.0-openjdk-devel
+
+# Install app dependencies
+COPY ./pom.xml .
+RUN ["mvn", "dependency:resolve"]
+
+# Bundle app source
+COPY . .
+
+# Expose port
+EXPOSE 8181
+
+# Command to be executed
+CMD ["mvn", "spring-boot:run"]

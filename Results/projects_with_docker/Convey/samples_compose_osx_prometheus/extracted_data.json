@@ -1,0 +1,2561 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".github",
+            "type": "tree"
+        },
+        {
+            "path": ".github/workflows",
+            "type": "tree"
+        },
+        {
+            "path": ".github/workflows/main.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": ".travis.yml",
+            "type": "blob"
+        },
+        {
+            "path": "Convey.sln",
+            "type": "blob"
+        },
+        {
+            "path": "LICENSE",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "samples",
+            "type": "tree"
+        },
+        {
+            "path": "samples/Conveyor.Services.Deliveries",
+            "type": "tree"
+        },
+        {
+            "path": "samples/Conveyor.Services.Deliveries/Conveyor.Services.Deliveries.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Deliveries/Events",
+            "type": "tree"
+        },
+        {
+            "path": "samples/Conveyor.Services.Deliveries/Events/DeliveryStarted.cs",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Deliveries/Events/External",
+            "type": "tree"
+        },
+        {
+            "path": "samples/Conveyor.Services.Deliveries/Events/External/Handlers",
+            "type": "tree"
+        },
+        {
+            "path": "samples/Conveyor.Services.Deliveries/Events/External/Handlers/OrderCreatedHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Deliveries/Events/External/OrderCreated.cs",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Deliveries/ExceptionToResponseMapper.cs",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Deliveries/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Deliveries/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "samples/Conveyor.Services.Deliveries/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Deliveries/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders",
+            "type": "tree"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/Commands",
+            "type": "tree"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/Commands/CreateOrder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/Commands/Handlers",
+            "type": "tree"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/Commands/Handlers/CreateOrderHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/Controllers/OrdersController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/Conveyor.Services.Orders.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/DTO",
+            "type": "tree"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/DTO/OrderDto.cs",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/DTO/PricingDto.cs",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/Domain",
+            "type": "tree"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/Domain/Order.cs",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/Events",
+            "type": "tree"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/Events/External",
+            "type": "tree"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/Events/External/DeliveryStarted.cs",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/Events/External/Handlers",
+            "type": "tree"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/Events/External/Handlers/DeliveryStartedHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/Events/OrderCreated.cs",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/ExceptionToResponseMapper.cs",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/Queries",
+            "type": "tree"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/Queries/GetOrder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/Queries/Handlers",
+            "type": "tree"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/Queries/Handlers/GetOrderHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/Services",
+            "type": "tree"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/Services/IPricingServiceClient.cs",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/Services/PricingServiceClient.cs",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Orders/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Pricing",
+            "type": "tree"
+        },
+        {
+            "path": "samples/Conveyor.Services.Pricing/Conveyor.Services.Pricing.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Pricing/DTO",
+            "type": "tree"
+        },
+        {
+            "path": "samples/Conveyor.Services.Pricing/DTO/PricingDto.cs",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Pricing/ExceptionToResponseMapper.cs",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Pricing/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Pricing/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Pricing/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "samples/Conveyor.Services.Pricing/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Pricing/Queries",
+            "type": "tree"
+        },
+        {
+            "path": "samples/Conveyor.Services.Pricing/Queries/GetOrderPricing.cs",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.Services.Pricing/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "samples/Conveyor.rest",
+            "type": "blob"
+        },
+        {
+            "path": "samples/compose",
+            "type": "tree"
+        },
+        {
+            "path": "samples/compose/lin",
+            "type": "tree"
+        },
+        {
+            "path": "samples/compose/lin/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "samples/compose/lin/prometheus",
+            "type": "tree"
+        },
+        {
+            "path": "samples/compose/lin/prometheus/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "samples/compose/lin/prometheus/prometheus.yml",
+            "type": "blob"
+        },
+        {
+            "path": "samples/compose/osx",
+            "type": "tree"
+        },
+        {
+            "path": "samples/compose/osx/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "samples/compose/osx/prometheus",
+            "type": "tree"
+        },
+        {
+            "path": "samples/compose/osx/prometheus/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "samples/compose/osx/prometheus/prometheus.yml",
+            "type": "blob"
+        },
+        {
+            "path": "samples/compose/win",
+            "type": "tree"
+        },
+        {
+            "path": "samples/compose/win/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "samples/compose/win/prometheus",
+            "type": "tree"
+        },
+        {
+            "path": "samples/compose/win/prometheus/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "samples/compose/win/prometheus/prometheus.yml",
+            "type": "blob"
+        },
+        {
+            "path": "scripts",
+            "type": "tree"
+        },
+        {
+            "path": "scripts/pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Auth.Distributed",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Auth.Distributed/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Auth.Distributed/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Auth.Distributed/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Auth.Distributed/src/Convey.Auth.Distributed",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Auth.Distributed/src/Convey.Auth.Distributed/Convey.Auth.Distributed.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Auth.Distributed/src/Convey.Auth.Distributed/DistributedAccessTokenService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Auth.Distributed/src/Convey.Auth.Distributed/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Auth",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Auth/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Auth/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Auth/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Auth/src/Convey.Auth",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Auth/src/Convey.Auth/AccessTokenValidatorMiddleware.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Auth/src/Convey.Auth/AuthAttribute.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Auth/src/Convey.Auth/Builders",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Auth/src/Convey.Auth/Builders/JwtOptionsBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Auth/src/Convey.Auth/Convey.Auth.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Auth/src/Convey.Auth/Dates",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Auth/src/Convey.Auth/Dates/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Auth/src/Convey.Auth/DisabledAuthenticationPolicyEvaluator.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Auth/src/Convey.Auth/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Auth/src/Convey.Auth/Handlers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Auth/src/Convey.Auth/Handlers/JwtHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Auth/src/Convey.Auth/IAccessTokenService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Auth/src/Convey.Auth/IJwtHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Auth/src/Convey.Auth/IJwtOptionsBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Auth/src/Convey.Auth/JsonWebToken.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Auth/src/Convey.Auth/JsonWebTokenPayload.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Auth/src/Convey.Auth/JwtAuthAttribute.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Auth/src/Convey.Auth/JwtOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Auth/src/Convey.Auth/Services",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Auth/src/Convey.Auth/Services/InMemoryAccessTokenService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Commands",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.CQRS.Commands/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.CQRS.Commands/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Commands/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.CQRS.Commands/src/Convey.CQRS.Commands",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.CQRS.Commands/src/Convey.CQRS.Commands/Convey.CQRS.Commands.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Commands/src/Convey.CQRS.Commands/Dispatchers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.CQRS.Commands/src/Convey.CQRS.Commands/Dispatchers/CommandDispatcher.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Commands/src/Convey.CQRS.Commands/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Commands/src/Convey.CQRS.Commands/ICommand.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Commands/src/Convey.CQRS.Commands/ICommandDispatcher.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Commands/src/Convey.CQRS.Commands/ICommandHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Events",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.CQRS.Events/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.CQRS.Events/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Events/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.CQRS.Events/src/Convey.CQRS.Events",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.CQRS.Events/src/Convey.CQRS.Events/Convey.CQRS.Events.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Events/src/Convey.CQRS.Events/Dispatchers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.CQRS.Events/src/Convey.CQRS.Events/Dispatchers/EventDispatcher.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Events/src/Convey.CQRS.Events/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Events/src/Convey.CQRS.Events/IEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Events/src/Convey.CQRS.Events/IEventDispatcher.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Events/src/Convey.CQRS.Events/IEventHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Events/src/Convey.CQRS.Events/IRejectedEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Events/src/Convey.CQRS.Events/RejectedEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Queries",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.CQRS.Queries/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.CQRS.Queries/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Queries/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.CQRS.Queries/src/Convey.CQRS.Queries",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.CQRS.Queries/src/Convey.CQRS.Queries/Convey.CQRS.Queries.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Queries/src/Convey.CQRS.Queries/Dispatchers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.CQRS.Queries/src/Convey.CQRS.Queries/Dispatchers/QueryDispatcher.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Queries/src/Convey.CQRS.Queries/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Queries/src/Convey.CQRS.Queries/IFilter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Queries/src/Convey.CQRS.Queries/IPagedFilter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Queries/src/Convey.CQRS.Queries/IPagedQuery.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Queries/src/Convey.CQRS.Queries/IQuery.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Queries/src/Convey.CQRS.Queries/IQueryDispatcher.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Queries/src/Convey.CQRS.Queries/IQueryHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Queries/src/Convey.CQRS.Queries/PagedQueryBase.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Queries/src/Convey.CQRS.Queries/PagedResult.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.CQRS.Queries/src/Convey.CQRS.Queries/PagedResultBase.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/Builders",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/Builders/ConsulOptionsBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/ConsulOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/Convey.Discovery.Consul.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/Http",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/Http/ConsulHttpClient.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/IConsulHttpClient.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/IConsulOptionsBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/IConsulService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/IConsulServicesRegistry.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/MessageHandlers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/MessageHandlers/ConsulServiceDiscoveryMessageHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/MessageHandlers/ConsulServiceNotFoundException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/Models/Connect.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/Models/Proxy.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/Models/ServiceAgent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/Models/ServiceCheck.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/Models/ServiceRegistration.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/Models/SidecarService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/Models/Upstream.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/Models/Weights.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/Services",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/Services/ConsulHostedService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/Services/ConsulService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Discovery.Consul/src/Convey.Discovery.Consul/Services/ConsulServicesRegistry.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Docs.Swagger",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Docs.Swagger/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Docs.Swagger/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Docs.Swagger/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Docs.Swagger/src/Convey.Docs.Swagger",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Docs.Swagger/src/Convey.Docs.Swagger/Builders",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Docs.Swagger/src/Convey.Docs.Swagger/Builders/SwaggerOptionsBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Docs.Swagger/src/Convey.Docs.Swagger/Convey.Docs.Swagger.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Docs.Swagger/src/Convey.Docs.Swagger/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Docs.Swagger/src/Convey.Docs.Swagger/ISwaggerOptionsBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Docs.Swagger/src/Convey.Docs.Swagger/SwaggerOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.HTTP.RestEase",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.HTTP.RestEase/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.HTTP.RestEase/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.HTTP.RestEase/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.HTTP.RestEase/src/Convey.HTTP.RestEase",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.HTTP.RestEase/src/Convey.HTTP.RestEase/Builders",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.HTTP.RestEase/src/Convey.HTTP.RestEase/Builders/RestEaseOptionsBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.HTTP.RestEase/src/Convey.HTTP.RestEase/Convey.HTTP.RestEase.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.HTTP.RestEase/src/Convey.HTTP.RestEase/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.HTTP.RestEase/src/Convey.HTTP.RestEase/IRestEaseOptionsBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.HTTP.RestEase/src/Convey.HTTP.RestEase/IRestEaseServiceBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.HTTP.RestEase/src/Convey.HTTP.RestEase/RestEaseOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.HTTP.RestEase/src/Convey.HTTP.RestEase/RestEaseServiceNotFoundException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.HTTP.RestEase/src/Convey.HTTP.RestEase/Serializers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.HTTP.RestEase/src/Convey.HTTP.RestEase/Serializers/QueryParamSerializer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.HTTP",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.HTTP/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.HTTP/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.HTTP/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.HTTP/src/Convey.HTTP",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.HTTP/src/Convey.HTTP/Convey.HTTP.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.HTTP/src/Convey.HTTP/ConveyHttpClient.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.HTTP/src/Convey.HTTP/ConveyHttpLoggingFilter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.HTTP/src/Convey.HTTP/ConveyLoggingScopeHttpMessageHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.HTTP/src/Convey.HTTP/EmptyCorrelationContextFactory.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.HTTP/src/Convey.HTTP/EmptyCorrelationIdFactory.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.HTTP/src/Convey.HTTP/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.HTTP/src/Convey.HTTP/HttpClientOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.HTTP/src/Convey.HTTP/HttpResult.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.HTTP/src/Convey.HTTP/ICorrelationContextFactory.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.HTTP/src/Convey.HTTP/ICorrelationIdFactory.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.HTTP/src/Convey.HTTP/IHttpClient.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.HTTP/src/Convey.HTTP/IHttpClientSerializer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.HTTP/src/Convey.HTTP/SystemTextJsonHttpClientSerializer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.LoadBalancing.Fabio",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.LoadBalancing.Fabio/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.LoadBalancing.Fabio/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.LoadBalancing.Fabio/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.LoadBalancing.Fabio/src/Convey.LoadBalancing.Fabio",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.LoadBalancing.Fabio/src/Convey.LoadBalancing.Fabio/Builders",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.LoadBalancing.Fabio/src/Convey.LoadBalancing.Fabio/Builders/FabioOptionsBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.LoadBalancing.Fabio/src/Convey.LoadBalancing.Fabio/Convey.LoadBalancing.Fabio.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.LoadBalancing.Fabio/src/Convey.LoadBalancing.Fabio/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.LoadBalancing.Fabio/src/Convey.LoadBalancing.Fabio/FabioOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.LoadBalancing.Fabio/src/Convey.LoadBalancing.Fabio/Http",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.LoadBalancing.Fabio/src/Convey.LoadBalancing.Fabio/Http/FabioHttpClient.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.LoadBalancing.Fabio/src/Convey.LoadBalancing.Fabio/IFabioHttpClient.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.LoadBalancing.Fabio/src/Convey.LoadBalancing.Fabio/IFabioOptionsBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.LoadBalancing.Fabio/src/Convey.LoadBalancing.Fabio/MessageHandlers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.LoadBalancing.Fabio/src/Convey.LoadBalancing.Fabio/MessageHandlers/FabioMessageHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Logging.CQRS",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Logging.CQRS/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Logging.CQRS/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Logging.CQRS/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Logging.CQRS/src/Convey.Logging.CQRS",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Logging.CQRS/src/Convey.Logging.CQRS/Convey.Logging.CQRS.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Logging.CQRS/src/Convey.Logging.CQRS/Decorators",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Logging.CQRS/src/Convey.Logging.CQRS/Decorators/CommandHandlerLoggingDecorator.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Logging.CQRS/src/Convey.Logging.CQRS/Decorators/EventHandlerLoggingDecorator.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Logging.CQRS/src/Convey.Logging.CQRS/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Logging.CQRS/src/Convey.Logging.CQRS/HandlerLogTemplate.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Logging.CQRS/src/Convey.Logging.CQRS/IMessageToLogTemplateMapper.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Logging",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Logging/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Logging/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Logging/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Logging/src/Convey.Logging",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Logging/src/Convey.Logging/Convey.Logging.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Logging/src/Convey.Logging/CorrelationContextLoggingMiddleware.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Logging/src/Convey.Logging/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Logging/src/Convey.Logging/LoggerOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Logging/src/Convey.Logging/LoggingService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Logging/src/Convey.Logging/Options",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Logging/src/Convey.Logging/Options/ConsoleOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Logging/src/Convey.Logging/Options/ElkOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Logging/src/Convey.Logging/Options/FileOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Logging/src/Convey.Logging/Options/LokiOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Logging/src/Convey.Logging/Options/SeqOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.CQRS",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.CQRS/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.CQRS/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.CQRS/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.CQRS/src/Convey.MessageBrokers.CQRS",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.CQRS/src/Convey.MessageBrokers.CQRS/Convey.MessageBrokers.CQRS.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.CQRS/src/Convey.MessageBrokers.CQRS/Dispatchers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.CQRS/src/Convey.MessageBrokers.CQRS/Dispatchers/ServiceBusMessageDispatcher.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.CQRS/src/Convey.MessageBrokers.CQRS/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox.EntityFramework",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox.EntityFramework/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox.EntityFramework/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox.EntityFramework/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox.EntityFramework/src/Convey.MessageBrokers.Outbox.EntityFramework",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox.EntityFramework/src/Convey.MessageBrokers.Outbox.EntityFramework/Convey.MessageBrokers.Outbox.EntityFramework.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox.EntityFramework/src/Convey.MessageBrokers.Outbox.EntityFramework/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox.EntityFramework/src/Convey.MessageBrokers.Outbox.EntityFramework/Internals",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox.EntityFramework/src/Convey.MessageBrokers.Outbox.EntityFramework/Internals/EntityFrameworkMessageOutbox.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox.Mongo",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox.Mongo/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox.Mongo/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox.Mongo/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox.Mongo/src/Convey.MessageBrokers.Outbox.Mongo",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox.Mongo/src/Convey.MessageBrokers.Outbox.Mongo/Convey.MessageBrokers.Outbox.Mongo.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox.Mongo/src/Convey.MessageBrokers.Outbox.Mongo/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox.Mongo/src/Convey.MessageBrokers.Outbox.Mongo/Internals",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox.Mongo/src/Convey.MessageBrokers.Outbox.Mongo/Internals/MongoMessageOutbox.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox.Mongo/src/Convey.MessageBrokers.Outbox.Mongo/Internals/MongoOutboxInitializer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox/src/Convey.MessageBrokers.Outbox",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox/src/Convey.MessageBrokers.Outbox/Configurators",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox/src/Convey.MessageBrokers.Outbox/Configurators/MessageOutboxConfigurator.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox/src/Convey.MessageBrokers.Outbox/Convey.MessageBrokers.Outbox.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox/src/Convey.MessageBrokers.Outbox/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox/src/Convey.MessageBrokers.Outbox/IMessageOutbox.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox/src/Convey.MessageBrokers.Outbox/IMessageOutboxAccessor.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox/src/Convey.MessageBrokers.Outbox/IMessageOutboxConfigurator.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox/src/Convey.MessageBrokers.Outbox/Messages",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox/src/Convey.MessageBrokers.Outbox/Messages/InboxMessage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox/src/Convey.MessageBrokers.Outbox/Messages/OutboxMessage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox/src/Convey.MessageBrokers.Outbox/Outbox",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox/src/Convey.MessageBrokers.Outbox/Outbox/InMemoryMessageOutbox.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox/src/Convey.MessageBrokers.Outbox/OutboxOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox/src/Convey.MessageBrokers.Outbox/Processors",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.Outbox/src/Convey.MessageBrokers.Outbox/Processors/OutboxProcessor.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Clients",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Clients/RabbitMqClient.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/ConsumerConnection.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Contexts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Contexts/ContextProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Conventions",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Conventions/ConventionsBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Conventions/ConventionsProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Conventions/MessageConventions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/ConventionsRegistry.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Convey.MessageBrokers.RabbitMQ.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/FailedMessage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/IContextProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/IConventions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/IConventionsBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/IConventionsProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/IConventionsRegistry.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/IExceptionToFailedMessageMapper.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/IExceptionToMessageMapper.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/IRabbitMqClient.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/IRabbitMqPlugin.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/IRabbitMqPluginsRegistry.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/IRabbitMqSerializer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Initializers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Initializers/RabbitMqExchangeInitializer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Internals",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Internals/RabbitMqBackgroundService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/MessageSubscribersChannel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Plugins",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Plugins/IRabbitMqPluginAccessor.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Plugins/IRabbitMqPluginsExecutor.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Plugins/IRabbitMqPluginsRegistryAccessor.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Plugins/RabbitMqPluginChain.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Plugins/RabbitMqPluginExecutor.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Plugins/RabbitMqPluginsRegistry.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/ProducerConnection.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Publishers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Publishers/RabbitMqPublisher.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/RabbitMqMessageProcessingTimeoutException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/RabbitMqOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/RabbitMqPlugin.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Serializers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Serializers/NewtonsoftJsonRabbitMqSerializer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Serializers/SystemTextJsonJsonRabbitMqSerializer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Subscribers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Subscribers/IMessageSubscriber.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Subscribers/MessageSubscriber.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Subscribers/MessageSubscriberAction.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers.RabbitMQ/src/Convey.MessageBrokers.RabbitMQ/Subscribers/RabbitMqSubscriber.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers/src/Convey.MessageBrokers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.MessageBrokers/src/Convey.MessageBrokers/Convey.MessageBrokers.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers/src/Convey.MessageBrokers/CorrelationContextAccessor.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers/src/Convey.MessageBrokers/IBusPublisher.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers/src/Convey.MessageBrokers/IBusSubscriber.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers/src/Convey.MessageBrokers/ICorrelationContextAccessor.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers/src/Convey.MessageBrokers/IMessageProperties.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers/src/Convey.MessageBrokers/IMessagePropertiesAccessor.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers/src/Convey.MessageBrokers/MessageAttribute.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers/src/Convey.MessageBrokers/MessageProperties.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.MessageBrokers/src/Convey.MessageBrokers/MessagePropertiesAccessor.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Metrics.AppMetrics",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Metrics.AppMetrics/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Metrics.AppMetrics/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Metrics.AppMetrics/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Metrics.AppMetrics/src/Convey.Metrics.AppMetrics",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Metrics.AppMetrics/src/Convey.Metrics.AppMetrics/Builders",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Metrics.AppMetrics/src/Convey.Metrics.AppMetrics/Builders/MetricsOptionsBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Metrics.AppMetrics/src/Convey.Metrics.AppMetrics/Convey.Metrics.AppMetrics.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Metrics.AppMetrics/src/Convey.Metrics.AppMetrics/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Metrics.AppMetrics/src/Convey.Metrics.AppMetrics/IMetricsOptionsBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Metrics.AppMetrics/src/Convey.Metrics.AppMetrics/MetricsOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Metrics.Prometheus",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Metrics.Prometheus/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Metrics.Prometheus/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Metrics.Prometheus/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Metrics.Prometheus/src/Convey.Metrics.Prometheus",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Metrics.Prometheus/src/Convey.Metrics.Prometheus/Convey.Metrics.Prometheus.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Metrics.Prometheus/src/Convey.Metrics.Prometheus/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Metrics.Prometheus/src/Convey.Metrics.Prometheus/Internals",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Metrics.Prometheus/src/Convey.Metrics.Prometheus/Internals/PrometheusJob.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Metrics.Prometheus/src/Convey.Metrics.Prometheus/Internals/PrometheusMiddleware.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Metrics.Prometheus/src/Convey.Metrics.Prometheus/PrometheusOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.MongoDB",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.MongoDB/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.MongoDB/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.MongoDB/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.MongoDB/src/Convey.Persistence.MongoDB",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.MongoDB/src/Convey.Persistence.MongoDB/Builders",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.MongoDB/src/Convey.Persistence.MongoDB/Builders/MongoDbOptionsBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.MongoDB/src/Convey.Persistence.MongoDB/Convey.Persistence.MongoDB.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.MongoDB/src/Convey.Persistence.MongoDB/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.MongoDB/src/Convey.Persistence.MongoDB/Factories",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.MongoDB/src/Convey.Persistence.MongoDB/Factories/MongoSessionFactory.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.MongoDB/src/Convey.Persistence.MongoDB/IMongoDbInitializer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.MongoDB/src/Convey.Persistence.MongoDB/IMongoDbOptionsBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.MongoDB/src/Convey.Persistence.MongoDB/IMongoDbSeeder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.MongoDB/src/Convey.Persistence.MongoDB/IMongoRepository.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.MongoDB/src/Convey.Persistence.MongoDB/IMongoSessionFactory.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.MongoDB/src/Convey.Persistence.MongoDB/Initializers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.MongoDB/src/Convey.Persistence.MongoDB/Initializers/MongoDbInitializer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.MongoDB/src/Convey.Persistence.MongoDB/MongoDbOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.MongoDB/src/Convey.Persistence.MongoDB/Pagination.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.MongoDB/src/Convey.Persistence.MongoDB/Repositories",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.MongoDB/src/Convey.Persistence.MongoDB/Repositories/MongoRepository.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.MongoDB/src/Convey.Persistence.MongoDB/Seeders",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.MongoDB/src/Convey.Persistence.MongoDB/Seeders/MongoDbSeeder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/Auth",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/Auth/AuthData.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/Auth/AuthManager.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/Auth/AuthRequestBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/Auth/IAuthManager.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/Auth/IAuthRequestBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/Client",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/Client/IOcsClient.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/Client/OcsClient.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/Convey.Persistence.OpenStack.OCS.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/Http",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/Http/HttpMethodExtended.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/Http/HttpRequestBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/Http/IHttpRequestBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/OcsOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/OcsTypes",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/OcsTypes/Definition",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/OcsTypes/Definition/IOperationResult.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/OcsTypes/Definition/OperationResult.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/OcsTypes/Definition/OperationStatus.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/OcsTypes/ObjectMapper.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/OcsTypes/OcsObjectMetadata.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/OpenStack",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/OpenStack/Requests",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/OpenStack/Requests/AuthRequest.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/OpenStack/Responses",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/OpenStack/Responses/ObjectMetadata.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/RequestHandler",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/RequestHandler/HttpRequestResult.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/RequestHandler/IRequestHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.OpenStack.OCS/src/Convey.Persistence.OpenStack.OCS/RequestHandler/RequestHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.Redis",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.Redis/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.Redis/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.Redis/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.Redis/src/Convey.Persistence.Redis",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.Redis/src/Convey.Persistence.Redis/Builders",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Persistence.Redis/src/Convey.Persistence.Redis/Builders/RedisOptionsBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.Redis/src/Convey.Persistence.Redis/Convey.Persistence.Redis.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.Redis/src/Convey.Persistence.Redis/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.Redis/src/Convey.Persistence.Redis/IRedisOptionsBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Persistence.Redis/src/Convey.Persistence.Redis/RedisOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Secrets.Vault",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Secrets.Vault/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Secrets.Vault/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Secrets.Vault/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Secrets.Vault/src/Convey.Secrets.Vault",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Secrets.Vault/src/Convey.Secrets.Vault/Convey.Secrets.Vault.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Secrets.Vault/src/Convey.Secrets.Vault/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Secrets.Vault/src/Convey.Secrets.Vault/ICertificatesIssuer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Secrets.Vault/src/Convey.Secrets.Vault/ICertificatesService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Secrets.Vault/src/Convey.Secrets.Vault/IKeyValueSecrets.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Secrets.Vault/src/Convey.Secrets.Vault/ILeaseService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Secrets.Vault/src/Convey.Secrets.Vault/Internals",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Secrets.Vault/src/Convey.Secrets.Vault/Internals/CertificatesIssuer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Secrets.Vault/src/Convey.Secrets.Vault/Internals/CertificatesService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Secrets.Vault/src/Convey.Secrets.Vault/Internals/EmptyCertificatesIssuer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Secrets.Vault/src/Convey.Secrets.Vault/Internals/KeyValueSecrets.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Secrets.Vault/src/Convey.Secrets.Vault/Internals/LeaseService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Secrets.Vault/src/Convey.Secrets.Vault/Internals/VaultHostedService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Secrets.Vault/src/Convey.Secrets.Vault/JsonParser.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Secrets.Vault/src/Convey.Secrets.Vault/LeaseData.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Secrets.Vault/src/Convey.Secrets.Vault/UserCredentials.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Secrets.Vault/src/Convey.Secrets.Vault/VaultAuthTypeNotSupportedException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Secrets.Vault/src/Convey.Secrets.Vault/VaultException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Secrets.Vault/src/Convey.Secrets.Vault/VaultOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Security",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Security/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Security/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Security/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Security/src/Convey.Security",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Security/src/Convey.Security/Convey.Security.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Security/src/Convey.Security/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Security/src/Convey.Security/IEncryptor.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Security/src/Convey.Security/IHasher.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Security/src/Convey.Security/ISigner.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Security/src/Convey.Security/Internals",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Security/src/Convey.Security/Internals/Encryptor.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Security/src/Convey.Security/Internals/Hasher.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Security/src/Convey.Security/Internals/Signer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Tracing.Jaeger.RabbitMQ",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Tracing.Jaeger.RabbitMQ/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Tracing.Jaeger.RabbitMQ/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Tracing.Jaeger.RabbitMQ/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Tracing.Jaeger.RabbitMQ/src/Convey.Tracing.Jaeger.RabbitMQ",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Tracing.Jaeger.RabbitMQ/src/Convey.Tracing.Jaeger.RabbitMQ/Convey.Tracing.Jaeger.RabbitMQ.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Tracing.Jaeger.RabbitMQ/src/Convey.Tracing.Jaeger.RabbitMQ/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Tracing.Jaeger.RabbitMQ/src/Convey.Tracing.Jaeger.RabbitMQ/Plugins",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Tracing.Jaeger.RabbitMQ/src/Convey.Tracing.Jaeger.RabbitMQ/Plugins/JaegerPlugin.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Tracing.Jaeger",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Tracing.Jaeger/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Tracing.Jaeger/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Tracing.Jaeger/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Tracing.Jaeger/src/Convey.Tracing.Jaeger",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Tracing.Jaeger/src/Convey.Tracing.Jaeger/Builders",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Tracing.Jaeger/src/Convey.Tracing.Jaeger/Builders/JaegerOptionsBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Tracing.Jaeger/src/Convey.Tracing.Jaeger/Convey.Tracing.Jaeger.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Tracing.Jaeger/src/Convey.Tracing.Jaeger/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Tracing.Jaeger/src/Convey.Tracing.Jaeger/IJaegerOptionsBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Tracing.Jaeger/src/Convey.Tracing.Jaeger/JaegerOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.Tracing.Jaeger/src/Convey.Tracing.Jaeger/Tracers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.Tracing.Jaeger/src/Convey.Tracing.Jaeger/Tracers/ConveyDefaultTracer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi.CQRS",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.WebApi.CQRS/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.WebApi.CQRS/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi.CQRS/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.WebApi.CQRS/src/Convey.WebApi.CQRS",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.WebApi.CQRS/src/Convey.WebApi.CQRS/Builders",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.WebApi.CQRS/src/Convey.WebApi.CQRS/Builders/DispatcherEndpointsBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi.CQRS/src/Convey.WebApi.CQRS/Convey.WebApi.CQRS.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi.CQRS/src/Convey.WebApi.CQRS/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi.CQRS/src/Convey.WebApi.CQRS/IDispatcher.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi.CQRS/src/Convey.WebApi.CQRS/IDispatcherEndpointsBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi.CQRS/src/Convey.WebApi.CQRS/InMemoryDispatcher.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi.CQRS/src/Convey.WebApi.CQRS/Middlewares",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.WebApi.CQRS/src/Convey.WebApi.CQRS/Middlewares/PublicContractsMiddleware.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi.CQRS/src/Convey.WebApi.CQRS/PublicContractAttribute.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi.Security",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.WebApi.Security/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.WebApi.Security/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi.Security/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.WebApi.Security/src/Convey.WebApi.Security",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.WebApi.Security/src/Convey.WebApi.Security/CertificateMiddleware.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi.Security/src/Convey.WebApi.Security/Convey.WebApi.Security.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi.Security/src/Convey.WebApi.Security/DefaultCertificatePermissionValidator.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi.Security/src/Convey.WebApi.Security/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi.Security/src/Convey.WebApi.Security/ICertificatePermissionValidator.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi.Security/src/Convey.WebApi.Security/SecurityOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi.Swagger",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.WebApi.Swagger/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.WebApi.Swagger/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi.Swagger/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.WebApi.Swagger/src/Convey.WebApi.Swagger",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.WebApi.Swagger/src/Convey.WebApi.Swagger/Convey.WebApi.Swagger.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi.Swagger/src/Convey.WebApi.Swagger/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi.Swagger/src/Convey.WebApi.Swagger/Filters",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.WebApi.Swagger/src/Convey.WebApi.Swagger/Filters/WebApiDocumentFilter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.WebApi/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.WebApi/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.WebApi/src/Convey.WebApi",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.WebApi/src/Convey.WebApi/Convey.WebApi.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi/src/Convey.WebApi/ConveyFormatterResolver.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi/src/Convey.WebApi/EndpointsBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi/src/Convey.WebApi/Exceptions",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.WebApi/src/Convey.WebApi/Exceptions/ErrorHandlerMiddleware.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi/src/Convey.WebApi/Exceptions/ExceptionResponse.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi/src/Convey.WebApi/Exceptions/IExceptionToResponseMapper.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi/src/Convey.WebApi/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi/src/Convey.WebApi/Formatters",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.WebApi/src/Convey.WebApi/Formatters/JsonInputFormatter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi/src/Convey.WebApi/Formatters/JsonOutputFormatter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi/src/Convey.WebApi/Helpers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.WebApi/src/Convey.WebApi/Helpers/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi/src/Convey.WebApi/IEndpointsBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi/src/Convey.WebApi/Parsers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.WebApi/src/Convey.WebApi/Parsers/JsonParser.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi/src/Convey.WebApi/Requests",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey.WebApi/src/Convey.WebApi/Requests/IRequest.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi/src/Convey.WebApi/Requests/IRequestDispatcher.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi/src/Convey.WebApi/Requests/IRequestHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi/src/Convey.WebApi/Requests/RequestDispatcher.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi/src/Convey.WebApi/WebApiEndpointDefinition.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey.WebApi/src/Convey.WebApi/WebApiOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey/scripts/dotnet-pack.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey/src/Convey",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey/src/Convey/Convey.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey/src/Convey/ConveyBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey/src/Convey/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey/src/Convey/IConveyBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey/src/Convey/IServiceId.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey/src/Convey/ServiceId.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey/src/Convey/Types",
+            "type": "tree"
+        },
+        {
+            "path": "src/Convey/src/Convey/Types/AppOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey/src/Convey/Types/DecoratorAttribute.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey/src/Convey/Types/IIdentifiable.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey/src/Convey/Types/IInitializer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey/src/Convey/Types/IStartupInitializer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Convey/src/Convey/Types/StartupInitializer.cs",
+            "type": "blob"
+        }
+    ]
+}

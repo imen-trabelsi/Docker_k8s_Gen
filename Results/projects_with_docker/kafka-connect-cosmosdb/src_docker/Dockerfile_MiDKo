@@ -1,0 +1,21 @@
+FROM confluentinc/cp-kafka-connect:6.0.0
+
+WORKDIR /app
+
+COPY pom.xml ./
+
+RUN mvn dependency:go-offline -B
+
+COPY src /app/src
+
+RUN mvn package -DskipTests
+
+COPY src/docker/resources/sink-uuid-smt.example.json /etc/kafka-connect/
+COPY src/docker/resources/sink.example.json /etc/kafka-connect/
+COPY src/docker/resources/source.example.json /etc/kafka-connect/
+
+COPY connectors/ /etc/kafka-connect/jars
+
+RUN confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:latest
+
+CMD ["java","-jar","/app/target/my-app-1.0.0.jar"]

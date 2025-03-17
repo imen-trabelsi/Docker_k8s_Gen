@@ -1,0 +1,33 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Django",
+        "dependencies": {
+            "requirements.txt": "backcall==0.1.0\ndataclasses==0.6\ndecorator==4.4.0\nDjango==3.0.9\ndjangorestframework==3.11.0\nentrypoints==0.3\nflake8==3.7.7\ngunicorn==19.9.0\nipython-genutils==0.2.0\njedi==0.13.3\nmccabe==0.6.1\nparso==0.3.4\npexpect==4.6.0\npickleshare==0.7.5\nprompt-toolkit==2.0.9\nptyprocess==0.6.0\npycodestyle==2.5.0\npyflakes==2.1.1\nPygments==2.3.1\npymongo==3.7.2\npytz==2018.9\nsix==1.12.0\nsqlparse==0.2.4\ntraitlets==4.3.2\nwcwidth==0.1.7\ndj-database-url==0.5.0\npsycopg2==2.8.3\ndjango-extensions==2.2.5\nWerkzeug==0.16.0\ncoreapi==2.3.3\nPyYAML==5.1.2\ndrf-yasg==1.17.0\ncoverage==5.0.1\ndjango-cors-headers==3.2.1\ncelery==4.4.0\nredis==3.3.11\nPillow==7.0.0\ndjango-filter==2.2.0\ndjango-annoying==0.10.6\n\nsentry-sdk==0.16.3\n"
+        },
+        "database": "PostgreSQL",
+        "build_system": "pip",
+        "config_files": {
+            "docker-compose.yml": "version: '3.4'\n\nservices:\n  admin_app:\n    image: ldelelis/mockserver:develop\n    restart: always\n    command: gunicorn -w4 -b 0.0.0.0:8000 --chdir ./mockserver mockserver.wsgi\n    environment:\n      - IS_ADMIN_API=true\n      - DATABASE_URL=postgres://mockserver:changeme@db:5432/mocks-api\n      - DEBUG=True\n    volumes:\n      - .:/www\n      - static_volume:/usr/src/app/mockserver/static\n    depends_on:\n      - db\n    labels:\n      traefik.enable: \"true\"\n      traefik.frontend.passHostHeaders: \"true\"\n      traefik.http.services.admin_app.loadbalancer.server.port: \"8000\"\n      traefik.http.routers.admin_app.rule: Host(`localhost`)\n\n  mocks_app:\n    image: ldelelis/mockserver:develop\n    restart: always\n    command: gunicorn -w4 -b 0.0.0.0:8000 --chdir ./mockserver mockserver.wsgi\n    environment:\n      - DATABASE_URL=postgres://mockserver:changeme@db:5432/mocks-api\n      - DEBUG=True\n    volumes:\n      - .:/www\n    depends_on:\n      - db\n    labels:\n      traefik.enable: \"true\"\n      traefik.frontend.passHostHeaders: \"true\"\n      traefik.http.services.mocks_app.loadbalancer.server.port: \"8000\"\n      traefik.http.routers.mocks_app.rule: HostRegexp(`{org:[a-zA-Z0-9]+}.{proj:[a-zA-Z]+}.localhost`)\n\n  tasks:\n    image: ldelelis/mockserver:develop\n    restart: always\n    command: celery worker -A mockserver --workdir mockserver -l info\n    environment:\n      - CELERY_BROKER_URL=redis://cache:6379/1\n      - DEBUG=False\n    depends_on:\n      - cache\n\n  traefik:\n    image: traefik:v2.0\n    restart: always\n    ports:\n      - \"8000:80\"\n    volumes:\n      - \"/var/run/docker.sock:/var/run/docker.sock:ro\"\n    command:\n      - \"--providers.docker\"\n    depends_on:\n      - admin_app\n      - mocks_app\n\n  nginx:\n    image: nginx:latest\n    restart: always\n    volumes:\n      - ./conf:/etc/nginx/conf.d\n      - static_volume:/www/mockserver/static\n    depends_on:\n      - traefik\n    labels:\n      traefik.enable: \"true\"\n      traefik.frontend.passHostHeaders: \"true\"\n      traefik.http.routers.nginx.rule: Host(`localhost`) && PathPrefix(`/static`)\n\n  db:\n    image: postgres:12\n    restart: always\n    environment:\n      - POSTGRES_DB=mocks-api\n      - POSTGRES_USER=mockserver\n      - POSTGRES_PASSWORD=changeme\n    volumes:\n      - postgres:/var/lib/postgresql/data\n\n  cache:\n    image: redis:6\n    restart: always\n\nvolumes:\n  static_volume:\n  postgres:\n",
+            "Dockerfile": "FROM python:3.7 as build\n\nLABEL maintainer=\"Lucio Delelis <ldelelis@est.frba.utn.edu.ar>\"\n\nCOPY requirements.txt /\nRUN pip wheel --no-cache-dir --no-deps --wheel-dir /wheels -r requirements.txt\n\nFROM python:3.7-slim\n\nWORKDIR /usr/src/app\nCOPY --from=build /wheels /wheels\nCOPY --from=build /requirements.txt .\n\nRUN pip install --no-cache /wheels/*\n\nRUN apt update && \\\n    apt install -y libpq-dev && \\\n    rm /var/lib/apt/lists/* -rf\n\nCOPY . /usr/src/app\nENV PYTHONUNBUFFERED 1\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".flake8",
+            ".gitignore",
+            ".travis.yml",
+            "Dockerfile",
+            "LICENSE",
+            "README.md",
+            "docker-compose.yml",
+            "requirements.txt"
+        ],
+        "folders": [
+            ".github",
+            "conf",
+            "mockserver"
+        ]
+    }
+}

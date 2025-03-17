@@ -1,0 +1,21 @@
+# Step 1: Build
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+
+COPY . .
+RUN curl -o- https://raw.githubusercontent.com/creationix/nvm/v0.33.2/install.sh | bash \
+    && . ~/.nvm/nvm.sh \
+    && nvm install --lts \
+    && npm install -g npm@6 \
+    && npm install \
+    && npm run build:prod \
+    && dotnet restore "eShop-Learn.sln" \
+
+# Step 2: Runtime
+FROM mcr.microsoft.com/dotnet/runtime:6.0 
+
+WORKDIR /app
+
+ENTRYPOINT ["dotnet", "WebSPA.dll"]
+
+EXPOSE 80

@@ -1,0 +1,31 @@
+# Use the specified base image
+FROM openjdk:8-jre-alpine
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy jar file into the WORKDIR
+COPY /target/cartservice-provider-1.0.0-SNAPSHOT.jar /app
+
+# Optimize Dockerfile by reducing the number of layers being created
+# Use chmod to give execute permissions on the Jar file
+RUN chmod +x /app/cartservice-provider-1.0.0-SNAPSHOT.jar
+
+# Specify the user to execute the RUN command
+USER root
+
+# Set necessary environment variables, if any.
+# ENV VAR_NAME=var_value
+
+# Expose necessary ports for the application to function correctly
+EXPOSE 8080
+
+# Define and set healthcheck, if user specified any.
+# HEALTHCHECK CMD curl --fail http://localhost:8080/ || exit 1
+
+# Set necessary labels.
+# LABEL key=value
+
+# Specify the command to run when the container is started
+ENTRYPOINT ["sh", "-c"]
+CMD ["java", "-jar", "/app/cartservice-provider-1.0.0-SNAPSHOT.jar"]

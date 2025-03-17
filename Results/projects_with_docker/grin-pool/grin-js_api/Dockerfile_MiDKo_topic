@@ -1,0 +1,45 @@
+# Base Image
+FROM node:latest AS build-stage
+
+# Set Work Directory
+WORKDIR /api
+
+# Copy Instructions
+COPY py/. /py/
+COPY code/. /api/
+COPY entrypoint.sh /
+
+# Dependencies Installation
+RUN apt-get update && apt-get --no-install-recommends --yes install \
+    build-essential \
+    libssl-dev \
+    vim \
+    net-tools \
+    psmisc \
+    htop \
+    curl \
+    telnet \
+    python3-pip \
+
+# Install pip packages
+RUN pip3 install -r /py/requirements.txt
+
+# Install Node dependencies
+RUN yarn global add forever && yarn
+
+# Environment Variables
+ENV NODE_ENV=production
+
+# Build the Rust app
+COPY ./api /api
+WORKDIR /api
+RUN cargo build --release
+
+# Multi-stage build: Create a lean production image
+FROM node:alpine AS prod-stage
+WORKDIR /app
+COPY entrypoint.sh /app
+RUN chmod +x /app/entrypoint.sh
+
+# Set Entrypoint
+CMD ["/app/entrypoint.sh"]

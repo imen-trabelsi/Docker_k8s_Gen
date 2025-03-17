@@ -1,0 +1,48 @@
+{
+    "docker_info": {
+        "base_image": "alpine:3.15",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "9100"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY docker-entrypoint.sh /docker-entrypoint.sh"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/docker-entrypoint.sh\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/usr/sbin/nginx\",",
+                    "\"-g\",",
+                    "\"daemon",
+                    "off;\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --no-cache bareos-webui-nginx",
+                ""
+            ],
+            [
+                "chmod u+x /docker-entrypoint.sh",
+                "RUN tar cfvz /bareos-webui-config.tgz /etc/bareos-webui"
+            ],
+            [
+                "tar cfvz /bareos-webui-code.tgz /usr/share/bareos-webui",
+                "RUN mkdir -p /run/nginx"
+            ]
+        ]
+    }
+}

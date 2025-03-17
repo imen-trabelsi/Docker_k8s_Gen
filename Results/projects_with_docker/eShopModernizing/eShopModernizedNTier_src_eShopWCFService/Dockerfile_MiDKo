@@ -1,0 +1,13 @@
+# Use Microsoft's WCF base image
+FROM mcr.microsoft.com/dotnet/framework/wcf:4.7.2
+
+# Set the working directory in the container
+WORKDIR /inetpub/wwwroot
+
+# Copy the project files into the working directory
+COPY ${source:-obj/Docker/publish} .
+
+# Expose port 80 for the application to be accessible externally
+EXPOSE 80
+
+

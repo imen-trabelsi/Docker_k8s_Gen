@@ -1,0 +1,14 @@
+# Set the base image to SDK 8.0 built on alpine
+FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine
+
+# Set the working directory in the image to /dotnetapp
+WORKDIR /dotnetapp
+
+# Copy local source to the current location
+COPY . .
+
+# Generate the release build, optimize it and output it to the out directory
+RUN dotnet publish -c Release -o out
+
+# Define the entry point of the application
+ENTRYPOINT ["dotnet", "out/serilog-example.dll"]

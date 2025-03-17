@@ -1,0 +1,26 @@
+# Start from the base image provided by the user
+FROM jjanzic/docker-python3-opencv:opencv-4.0.1
+
+# Set environment variable as per user provided data
+ENV NAME insearch
+ENV FLASK_APP /app/server.py
+
+# Set the default directory for the container to /app
+WORKDIR /app
+
+# Copy the dependencies file to the working directory
+COPY requirements.txt /app
+
+# Install dependencies
+RUN apt-get update && apt-get install -y \
+tesseract-ocr \
+tesseract-ocr-eng libdmtx-* \
+
+# Copy the content of the local source directory to the working directory
+COPY . /app
+
+# Set the container's listening port to 5000 as mentioned by the user
+EXPOSE 5000
+
+# Define the command that will be executed when a container is started
+CMD ["flask", "run", "--host=0.0.0.0"]

@@ -1,0 +1,57 @@
+# Elixir + Phoenix release build stage
+# Image to use
+FROM builder-deps AS builder
+
+# Environment
+ENV MIX_ENV="prod"
+ENV MIX_HOME=/opt/mix
+ENV DISABLE_INDEXER=${DISABLE_INDEXER}
+ENV DISABLE_API=${DISABLE_API}
+ENV API_V1_READ_METHODS_DISABLED=${API_V1_READ_METHODS_DISABLED}
+ENV API_V1_WRITE_METHODS_DISABLED=${API_V1_WRITE_METHODS_DISABLED}
+ENV CHAIN_TYPE=${CHAIN_TYPE}
+ENV BRIDGED_TOKENS_ENABLED=${BRIDGED_TOKENS_ENABLED}
+ENV MUD_INDEXER_ENABLED=${MUD_INDEXER_ENABLED}
+ENV SHRINK_INTERNAL_TRANSACTIONS_ENABLED=${SHRINK_INTERNAL_TRANSACTIONS_ENABLED}
+ENV API_GRAPHQL_MAX_COMPLEXITY=${API_GRAPHQL_MAX_COMPLEXITY}
+ENV RELEASE_VERSION=${RELEASE_VERSION}
+ENV BLOCKSCOUT_VERSION=${BLOCKSCOUT_VERSION}
+
+# Set app dir
+WORKDIR /app
+
+# Copy files for mix
+COPY mix.exs mix.lock ./
+COPY apps/block_scout_web/mix.exs ./apps/block_scout_web/
+COPY apps/explorer/mix.exs ./apps/explorer/
+COPY apps/ethereum_jsonrpc/mix.exs ./apps/ethereum_jsonrpc/
+COPY apps/indexer/mix.exs ./apps/indexer/
+COPY apps/utils/mix.exs ./apps/utils/
+COPY apps/nft_media_handler/mix.exs ./apps/nft_media_handler/
+COPY config ./config
+COPY rel ./rel
+COPY apps ./apps
+
+# Dependencies
+RUN apk --no-cache --update add \
+RUN mix local.hex --force
+RUN mix do deps.get, local.rebar --force, deps.compile --skip-umbrella-children
+RUN mix compile
+
+# Build release
+RUN mkdir -p /opt/release && \
+mix release blockscout && \
+
+# Create blockscout user
+RUN apk --no-cache --update add jq curl && \
+addgroup --system --gid ${BLOCKSCOUT_GID} ${BLOCKSCOUT_GROUP} && \
+RUN mkdir dets && mkdir temp && chown -R ${BLOCKSCOUT_USER}:${BLOCKSCOUT_GROUP} /app
+
+# Create a final deployment image
+FROM builder-deps
+
+# Copy files from the builder stage
+WORKDIR /app
+
+# Deploy as blockscout user
+USER ${BLOCKSCOUT_USER}:${BLOCKSCOUT_GROUP}

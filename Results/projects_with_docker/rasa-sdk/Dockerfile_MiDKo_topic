@@ -1,0 +1,50 @@
+FROM base AS python_builder
+
+ENV POETRY_VERSION=1.8.2
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Create virtual environment
+RUN python -m venv /opt/venv
+
+WORKDIR /app
+
+RUN apt-get update -qq \
+    && update-alternatives --install /usr/bin/python python /usr/bin/python3 100 \
+    && update-alternatives --install /usr/bin/pip pip /usr/bin/pip3 100 \
+    && apt-get install -y --no-install-recommends curl \
+
+COPY . /app/
+
+# Install the project
+RUN . /opt/venv/bin/activate && poetry install --no-root --no-dev
+
+WORKDIR /wheels
+
+RUN . /opt/venv/bin/activate && poetry build -f wheel -n \
+    && pip install --no-cache-dir --no-deps dist/*.whl \
+    && mkdir /wheels \
+    && poetry export -f requirements.txt --without-hashes --output /wheels/requirements.txt \
+    && poetry run pip wheel --wheel-dir=/wheels -r /wheels/requirements.txt \
+
+WORKDIR /app
+
+RUN find . -name '*.whl' -maxdepth 1 -exec basename {} \; | awk -F - '{ gsub("_", "-", $1); print $1 }' | uniq > /wheels/requirements.txt \
+    && rm -rf /opt/venv \
+    && python -m venv /opt/venv \
+    && . /opt/venv/bin/activate \
+    && pip install --no-cache-dir -U pip \
+    && pip install --no-cache-dir --no-index --find-links=/wheels -r /wheels/requirements.txt \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && rm -rf /wheels \
+
+# Set permissions on /app
+RUN chgrp -R 0 /app && chmod -R g=u /app
+
+USER 1001
+
+# Expose Rasa server port
+EXPOSE 5055
+
+# Create entrypoint and command
+ENTRYPOINT ["./entrypoint.sh"]
+CMD ["start", "--actions", "actions"]

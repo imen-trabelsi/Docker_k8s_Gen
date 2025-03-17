@@ -1,0 +1,41 @@
+{
+    "docker_info": {
+        "base_image": "${UPSTREAM_REPO:-uselagoon}/commons:${UPSTREAM_TAG:-latest}",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV JWTSECRET=super-secret-string \\"
+        ],
+        "copy_instructions": [
+            "COPY api-data /home/api-data",
+            "COPY minio-data /home/minio-data",
+            "COPY data-init-push.sh create_jwt.py /home/"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/sbin/tini\",",
+                    "\"--\",",
+                    "\"/home/data-init-push.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --no-cache \\",
+                "bash",
+                "curl",
+                "gettext",
+                "minio-client",
+                "moreutils",
+                "py3-jwt",
+                "wget"
+            ]
+        ]
+    }
+}

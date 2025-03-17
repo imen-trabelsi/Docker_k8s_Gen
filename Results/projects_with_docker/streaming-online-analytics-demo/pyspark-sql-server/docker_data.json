@@ -1,0 +1,39 @@
+{
+    "docker_info": {
+        "base_image": "docker.io/radanalyticsio/openshift-spark",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8080"
+        ],
+        "user": [
+            "root",
+            "1001"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV SPARK_MASTER_URL \"local[*]\""
+        ],
+        "copy_instructions": [
+            "ADD ./spark-sql.py   /opt",
+            "ADD ./requirements.txt /opt",
+            "ADD ./entrypoint.sh   /opt",
+            "WORKDIR /opt"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"./entrypoint.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "yum install python-pip -y",
+                "RUN pip install -r requirements.txt"
+            ]
+        ]
+    }
+}

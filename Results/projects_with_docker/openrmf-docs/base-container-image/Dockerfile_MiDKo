@@ -1,0 +1,24 @@
+# Use alpine as base image
+FROM docker.io/alpine:3.21.3
+
+# Package Installation
+RUN apk update && apk upgrade && \
+    apk add --no-cache ca-certificates openssh libstdc++ libintl icu \
+    libunwind nghttp2-libs libidn krb5-libs libuuid lttng-ust zlib \
+
+# Copying the necessary certifications
+COPY ./ca-root/ /usr/local/share/ca-certificates/
+
+# Update certificates
+RUN update-ca-certificates
+
+# Below is just placeholder assuming the project contains a runnable jar
+# Copy the app jar to the container
+COPY /path-to/your-app.jar /app.jar
+
+# Expose the web port - assuming web application
+EXPOSE 8080
+
+# Run the Microservice
+ENTRYPOINT java -jar /app.jar
+

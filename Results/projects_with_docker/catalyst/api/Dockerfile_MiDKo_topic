@@ -1,0 +1,36 @@
+# Use the official lightweight Node.js 12-alpine image as base.
+# https://hub.docker.com/_/node
+FROM node:12-alpine
+
+# Set environment variables
+ENV SUPPORTING_FILES /app
+
+# Run commands
+RUN apk update && \
+    apk add --update alpine-sdk build-base bash python nano && \
+    npm i -g pnpm && \
+    mkdir -p $SUPPORTING_FILES && \
+
+# Setup working directory.
+WORKDIR $SUPPORTING_FILES
+
+# Copy package.json into the working directory.
+COPY package.json .
+
+# Install necessary packages.
+RUN pnpm install
+
+# Test the service
+RUN npm run test
+
+# Build the service
+RUN npm run build
+
+# Copy the entire service into the working directory.
+COPY . $SUPPORTING_FILES
+
+# Expose the application on Port 8080
+EXPOSE 8080
+
+# Start the application
+CMD ["npm", "start"]

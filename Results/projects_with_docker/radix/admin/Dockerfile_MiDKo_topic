@@ -1,0 +1,24 @@
+# Start with a base image containing Node.js runtime
+FROM node:14 
+
+# Set the working directory in the Docker image
+WORKDIR /usr/src/app 
+
+# Copy package.json and package-lock.json (if available)
+COPY package*.json ./ 
+
+# Install dependencies from package.json
+RUN npm install 
+
+# If you are building your code for production
+# RUN npm ci --only=production 
+
+# Bundle app source inside Docker image
+COPY . . 
+
+# Expose the listening port of your app
+EXPOSE 8080 
+
+# Define the command to run your app using CMD
+CMD [ "node", "server.js" ] 
+

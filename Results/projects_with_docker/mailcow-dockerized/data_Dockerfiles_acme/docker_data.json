@@ -1,0 +1,53 @@
+{
+    "docker_info": {
+        "base_image": "alpine:3.20",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [
+            "maintainer"
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY acme.sh /srv/acme.sh",
+            "COPY functions.sh /srv/functions.sh",
+            "COPY obtain-certificate.sh /srv/obtain-certificate.sh",
+            "COPY reload-configurations.sh /srv/reload-configurations.sh",
+            "COPY expand6.sh /srv/expand6.sh"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/sbin/tini\",",
+                    "\"-g\",",
+                    "\"--\",",
+                    "\"/srv/acme.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk upgrade --no-cache \\",
+                "&& apk add --update --no-cache",
+                "bash",
+                "curl",
+                "openssl",
+                "bind-tools",
+                "jq",
+                "mariadb-client",
+                "redis",
+                "tini",
+                "tzdata",
+                "python3",
+                "acme-tiny --repository=http://dl-cdn.alpinelinux.org/alpine/edge/community/"
+            ],
+            [
+                "chmod +x /srv/*.sh",
+                ""
+            ]
+        ]
+    }
+}

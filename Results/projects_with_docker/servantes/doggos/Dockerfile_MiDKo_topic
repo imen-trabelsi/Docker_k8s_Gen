@@ -1,0 +1,21 @@
+# Set the Base Image
+FROM golang:1.17-alpine
+
+# Set the Current Working Directory inside the container
+WORKDIR /app
+
+# Copy go.mod and download dependencies
+COPY go.mod .
+RUN go mod download
+
+# Copy the source from the current directory to the Working Directory inside the container
+COPY . .
+
+# Build the Go app
+RUN cd /go/src/github.com/tilt-dev/servantes/doggos && go install .
+
+# Expose port 8080 to the outside
+EXPOSE 8080
+
+# Command to run the executable
+ENTRYPOINT ["/go/bin/doggos"]

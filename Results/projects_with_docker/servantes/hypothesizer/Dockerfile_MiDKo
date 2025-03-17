@@ -1,0 +1,17 @@
+# Use alpine python base image as mentioned by user
+FROM python:3.6-alpine
+
+# Set the work directory to /app
+WORKDIR /app
+
+# Adds our application code to the Docker image
+COPY . /app
+
+# Install pip requirements
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Our service runs on port 5000, you may need to adjust this according to your app's config
+EXPOSE 5000
+
+# Set the default command for the container
+CMD ["python", "app.py"]

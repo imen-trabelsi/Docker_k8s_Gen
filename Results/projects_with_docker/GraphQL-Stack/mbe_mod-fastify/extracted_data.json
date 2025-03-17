@@ -1,0 +1,26 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"mod-fastify\",\n  \"version\": \"1.0.0\",\n  \"scripts\": {\n    \"serve\": \"nodemon src/index.js --exec babel-node\",\n    \"build\": \"babel src -d dist --ignore **/__tests__/**,**/__mocks__/**\",\n    \"lint\": \"echo \\\"Error: no lint specified\\\" && exit 1\",\n    \"test\": \"echo \\\"Error: no test specified\\\" && exit 1\"\n  },\n  \"main\": \"index.js\",\n  \"license\": \"MIT\",\n  \"dependencies\": {\n    \"@assemblyscript/loader\": \"^0.14.3\",\n    \"fastify\": \"^3.1.1\",\n    \"fastify-cors\": \"^4.1.0\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"^7.10.5\",\n    \"@babel/core\": \"^7.10.5\",\n    \"@babel/node\": \"^7.10.5\",\n    \"@babel/preset-env\": \"^7.10.4\",\n    \"babel-plugin-root-import\": \"^6.5.0\",\n    \"nodemon\": \"^2.0.4\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "mbe/mod-fastify/Dockerfile": "FROM node:14-alpine\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "babel.config.js",
+            "docker-compose.yml",
+            "package.json"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

@@ -1,0 +1,25 @@
+# Start with base openjdk image
+FROM openjdk:8-jre-alpine
+
+# Copy the pom.xml into the image
+WORKDIR /app
+COPY pom.xml .
+
+# Install dependencies
+RUN apk add maven
+
+# Copy the source code into the image
+COPY src/ /app/src/
+
+# Build the application
+RUN mvn clean package -DskipTests
+
+# Copy the build output into the target directory
+COPY target/cartservice-provider-1.0.0-SNAPSHOT.jar /app/target/
+
+# Expose service on port 8080
+EXPOSE 8080
+
+# Start the Spring Boot application
+ENTRYPOINT ["sh", "-c"]
+CMD ["java", "-jar", "/app/target/cartservice-provider-1.0.0-SNAPSHOT.jar"]

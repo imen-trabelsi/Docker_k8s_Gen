@@ -1,0 +1,51 @@
+# Start from a slim python image
+FROM python:3.10-slim
+LABEL description="Aether"
+
+WORKDIR /code
+
+# Updates repositories and installs wget and other necessary packages 
+RUN apt-get update && \
+     apt-get install -y --no-install-recommends wget && \ 
+
+# Setting Python's buffer to make Docker logs real-time 
+ENV PYTHONUNBUFFERED=1
+
+# Set Python virtual environment 
+ENV VIRTUAL_ENV=/var/run/aether/venv 
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+# Build Arguments
+ARG VERSION=0.0.0
+ARG GIT_REVISION
+
+# Environmental variables
+ENV BUILD_DEPS="build-essential"
+
+# Create a separate user for increased security
+RUN adduser --disabled-password --gecos "" aether
+
+# Copy the requirements.txt file into the container
+COPY ./conf/docker/* /tmp/
+COPY --chown=aether:aether ./conf/pip /code/conf/pip
+COPY entrypoint.sh /code/entrypoint.sh
+COPY --chown=aether:aether ./ /code
+
+# Make the entrypoint.sh file executable 
+RUN chmod +x /code/entrypoint.sh
+
+# Change the user to aether
+USER aether
+
+# Install all the dependencies 
+RUN /tmp/setup.sh && \
+    mkdir -p $VIRTUAL_ENV && \
+    python3 -m venv $VIRTUAL_ENV && \
+    pip install -q --upgrade pip && \
+
+# Store the version and git revision in separate files that can be accessed by the container
+RUN mkdir -p /var/tmp && \
+    echo $VERSION > /var/tmp/VERSION && \
+
+# Define the command to be executed when the container is started 
+ENTRYPOINT ["/code/entrypoint.sh"]

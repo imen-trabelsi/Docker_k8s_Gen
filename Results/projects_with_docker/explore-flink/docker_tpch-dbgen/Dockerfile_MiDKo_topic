@@ -1,0 +1,31 @@
+# Using gcc as base image.
+FROM gcc:latest
+
+LABEL maintainer="your-name" description="Spring Boot microservice Dockerfile"
+
+# Set up environment variable
+ENV PORT=8080
+
+# Set up the working directory in the container.
+WORKDIR /opt
+
+# Copy files from the project to the filesystem of the project.
+COPY ./generate-tpch-dbgen.sh /opt/generate-tpch-dbgen.sh
+COPY ./pom.xml /opt/pom.xml
+COPY ./docker/tpch-dbgen/Dockerfile /opt/docker/tpch-dbgen/Dockerfile
+
+# Set permissions for the generate script.
+RUN chmod +x /opt/generate-tpch-dbgen.sh
+
+# Install maven for building the code.
+RUN apt-get update && \
+    apt-get install -y maven && \
+
+# Build the project.
+RUN mvn clean install
+
+# Expose Port for the application
+EXPOSE 8080
+
+# Set entrypoint for the Docker image.
+ENTRYPOINT ["/bin/sh","/opt/generate-tpch-dbgen.sh"]

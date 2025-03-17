@@ -1,0 +1,25 @@
+# Dockerfile
+FROM osrm/osrm-backend:v5.23.0
+
+# Updating the source list
+RUN sed -i s/deb.debian.org/archive.debian.org/g /etc/apt/sources.list
+RUN sed -i 's|security.debian.org|archive.debian.org/|g' /etc/apt/sources.list
+RUN sed -i '/stretch-updates/d' /etc/apt/sources.list
+RUN apt-get update && apt-get install -y openssl wget
+
+# Establishing the working directory
+WORKDIR /usr/src/app
+
+# Copy package.json and install dependencies
+COPY package.json ./
+RUN npm install
+
+# Copy the rest of the source code.
+COPY . ./
+
+# Copy start script and set permissions
+COPY ./start.sh /usr/local/bin/osrm-start
+RUN chmod +x /usr/local/bin/osrm-start
+
+# Start the application
+CMD ["osrm-start"]

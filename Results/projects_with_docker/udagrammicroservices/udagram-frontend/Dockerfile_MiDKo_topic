@@ -1,0 +1,31 @@
+# You should choose the version number of beevelop/ionic
+FROM beevelop/ionic as ionic
+
+# Specify working directory
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install app dependencies
+RUN npm ci
+
+
+# Copies everything over
+COPY . .
+
+# Create a new virtual group/app with -r option (-r create a system account with no home directory and does not allow log in)
+# Then changes files ownership in the working directory (all files should be owned by the app user)
+RUN addgroup -S app && adduser -S app -G app \
+
+# Using the user app, that we just created
+USER app
+
+# Build the app
+RUN ionic build
+
+# Copies the built app to the Nginx directory (ready to be served)
+FROM nginx:1.19-alpine
+
+# Set command
+CMD ["npm", "start"]

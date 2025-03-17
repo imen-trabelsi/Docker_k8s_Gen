@@ -1,0 +1,31 @@
+# Use base image
+FROM debian:10
+
+# Set environment variables
+ENV container=docker
+ENV LC_ALL=C
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Install necessary tools
+RUN apt-get update \
+&& apt-get install -y systemd \
+&& apt-get clean \
+&& rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+&& rm -f /lib/systemd/system/multi-user.target.wants/* \
+/etc/systemd/system/*.wants/* \
+/lib/systemd/system/local-fs.target.wants/* \
+/lib/systemd/system/sockets.target.wants/*udev* \
+/lib/systemd/system/sockets.target.wants/*initctl* \
+/lib/systemd/system/sysinit.target.wants/systemd-tmpfiles-setup* \
+
+# Copy the Go build files and install dependencies
+COPY . .
+RUN go mod download
+
+# Build the Go app
+WORKDIR /app
+COPY . .. 
+RUN go build -o main .
+
+# Execute the app using CMD
+CMD ["/lib/systemd/systemd"]

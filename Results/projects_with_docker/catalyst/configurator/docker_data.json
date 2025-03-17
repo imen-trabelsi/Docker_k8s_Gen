@@ -1,0 +1,57 @@
+{
+    "docker_info": {
+        "base_image": "oryd/hydra:$HYDRA_VERSION",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "HYDRA_VERSION",
+            "KETO_VERSION",
+            "OATHKEEPER_VERSION"
+        ],
+        "envs": [
+            "ENV BUILD_DEPS=\"gettext\"  \\"
+        ],
+        "copy_instructions": [
+            "COPY --from=0 /usr/bin/hydra /usr/bin/hydra",
+            "COPY --from=1 /usr/bin/keto /usr/bin/keto",
+            "COPY --from=2 /usr/bin/oathkeeper /usr/bin/oathkeeper",
+            "ADD ./config /config",
+            "ADD ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf",
+            "ADD ./scripts /scripts"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/usr/bin/supervisord\",",
+                    "\"-c\",",
+                    "\"/etc/supervisor/conf.d/supervisord.conf\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "TIME_DEPS=\"libintl python3 py-pip supervisor bash curl\"",
+                ""
+            ],
+            [
+                "set -x && \\",
+                "apk add --no-cache --update $RUNTIME_DEPS &&",
+                "apk add --virtual build_deps $BUILD_DEPS &&",
+                "cp /usr/bin/envsubst /usr/local/bin/envsubst &&",
+                "apk del build_deps"
+            ],
+            [
+                "pip install --upgrade pip",
+                "# RUN apk add --no-cache supervisor bash curl"
+            ],
+            [
+                "pip install supervisor-stdout",
+                ""
+            ]
+        ]
+    }
+}

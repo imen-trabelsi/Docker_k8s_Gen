@@ -1,0 +1,19 @@
+# First we build the application
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /build
+COPY . .
+RUN dotnet restore "eShop-Learn.sln"
+RUN dotnet publish --no-restore "Web.Shopping.HttpAggregator.csproj" -c Release -o /publish
+    
+# Then we create the final image
+FROM mcr.microsoft.com/dotnet/sdk:6.0
+WORKDIR /app
+
+# Copy built application from previous stage
+
+# Expose the necessary port
+EXPOSE 80
+
+# Set the entry point
+ENTRYPOINT ["dotnet", "Web.Shopping.HttpAggregator.dll"]
+

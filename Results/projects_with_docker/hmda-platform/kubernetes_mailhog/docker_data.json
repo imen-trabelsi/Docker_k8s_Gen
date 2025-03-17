@@ -1,0 +1,23 @@
+{
+    "docker_info": {
+        "base_image": "mailhog/mailhog:v1.0.1",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root",
+            "mailhog"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "apk update",
+                "RUN apk upgrade"
+            ]
+        ]
+    }
+}

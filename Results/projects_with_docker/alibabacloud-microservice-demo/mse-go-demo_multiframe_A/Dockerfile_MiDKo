@@ -1,0 +1,20 @@
+# Alpine base image
+FROM registry-cn-hangzhou.ack.aliyuncs.com/dev/alpine:3.18-update@sha256:f2f97bbc6f3173044292cbf8d306ca31b4356a5f2eb54701fc97f64065b412cf
+
+# Installing bash shell for debugging purposes
+RUN apk add --no-cache bash
+
+# Creating directory A
+WORKDIR /A
+
+# Copying all files into image
+COPY . .
+
+# Installing Maven
+RUN apk add --no-cache maven
+
+# Build with Maven
+RUN mvn clean install
+
+# Running the app  
+ENTRYPOINT ["/A"]

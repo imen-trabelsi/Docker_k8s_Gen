@@ -1,0 +1,17 @@
+# Set the base image
+FROM golang:1.22
+
+# Set the working directory in the container
+WORKDIR /go/src/gitlab.com/remp/remp/Beam/go
+
+# Copy the build file to the container
+COPY build /usr/local/bin/
+
+# Run necessary commands and install necessary dependencies
+RUN go install golang.org/x/tools/cmd/goimports@latest
+RUN mkdir -p /src/build
+RUN mkdir -p /go/src/gitlab.com/remp/remp/Beam/go
+RUN chmod +x /usr/local/bin/build
+
+# Execute command
+CMD ["build"]

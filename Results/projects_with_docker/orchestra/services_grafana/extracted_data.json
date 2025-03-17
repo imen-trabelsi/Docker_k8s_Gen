@@ -1,0 +1,27 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"forward-interop\",\n  \"version\": \"0.1.0\",\n  \"main\": \"lib/service.js\",\n  \"private\": true,\n  \"license\": \"MIT\",\n  \"scripts\": {\n    \"start\": \"node ./bin/start-service\",\n    \"build\": \"babel src --out-dir lib\",\n    \"build-msg\": \"mkdir -p lib && pbjs -t static-module --es6 --keep-case -o src/messages.js src/messages/*.proto\",\n    \"test\": \"jest\",\n    \"lint\": \"eslint src test --ignore-pattern src/messages.js\"\n  },\n  \"dependencies\": {\n    \"common-nodejs\": \"file:src/common\",\n    \"koa\": \"^2.5.1\",\n    \"koa-protobuf\": \"^0.1.0\",\n    \"koa-router\": \"^7.4.0\",\n    \"protobufjs\": \"~6.8.6\",\n    \"source-map-support\": \"^0.5.6\",\n    \"superagent\": \"^3.8.3\",\n    \"superagent-protobuf\": \"^0.1.0\"\n  },\n  \"devDependencies\": {\n    \"babel-cli\": \"^6.26.0\",\n    \"babel-plugin-add-module-exports\": \"^0.2.1\",\n    \"babel-plugin-source-map-support\": \"^2.0.1\",\n    \"babel-preset-env\": \"^1.6.1\",\n    \"eslint\": \"^5.3.0\",\n    \"eslint-plugin-jest\": \"^21.20.2\",\n    \"jest\": \"^23.3.0\",\n    \"lolex\": \"^2.7.1\",\n    \"nock\": \"^9.5.0\",\n    \"supertest\": \"^3.1.0\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "services/grafana/Dockerfile": "FROM grafana/grafana\n\nCOPY grafana/provisioning /etc/grafana/provisioning\n\n# Grafana's Dockerfile uses ENTRYPOINT so we have to override\n# ENTRYPOINT ourselves instead of using CMD. Sigh.\nENTRYPOINT envsubst \"$INFLUX_HOST $INFLUX_PORT $DB_NAME\" \\\n        < /etc/grafana/provisioning/datasources/datasource.yaml \\\n        > /etc/grafana/provisioning/datasources/datasource.yaml && \\\n    /run.sh\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".gitignore",
+            "Dockerfile",
+            "Makefile",
+            "README.md",
+            "package.json"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

@@ -1,0 +1,47 @@
+# Use the official lightweight Node.js 12 image with Linux Alpine.
+# https://hub.docker.com/_/node
+FROM node:12-alpine
+
+# Create and set the working directory
+WORKDIR /app
+
+# Ensure correct environment variable
+ENV NODE_ENV=production \
+
+# Copy application dependency manifests to the container image and install all dependencies that our 
+# application will use
+COPY package*.json ./
+RUN apk --no-cache add \
+    make \
+    g++ \
+    python-dev \
+
+# Copy source code to our workdir
+COPY . .
+
+# Copy static files
+WORKDIR /builder
+COPY common/nodejs/package.json src/common/
+COPY pong/package.json .
+COPY common/messages/stats.proto \
+COPY common/nodejs src/common
+COPY pong .
+WORKDIR /app
+COPY --from=builder /builder/node_modules/raw-socket node_modules/raw-socket
+COPY common/nodejs/package.json src/common/
+COPY pong/package.json .
+COPY --from=builder /builder/lib lib
+COPY /pong/bin bin
+
+# Build our Node.js application using npm
+RUN npm run build-msg
+RUN npm run build
+
+# Install the production dependencies.
+RUN npm install --only=production
+
+# Expose the port
+EXPOSE 7000
+
+# Define the command to start the container
+CMD [ "npm", "start" ]

@@ -1,0 +1,32 @@
+# set the base image
+FROM rust:1.67
+
+# specify the working directory inside docker image
+WORKDIR /usr/src/zksync
+
+# copy all files to the working directory
+COPY . .
+
+# install dependencies and update system
+RUN apt update
+RUN apt install openssl -y
+
+# install sccache for caching build outputs
+RUN --mount=type=cache,target=/usr/local/cargo/registry cargo install sccache
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+--mount=type=cache,target=/root/.cache/sccache \
+
+# build the application in release mode
+RUN cargo build --release
+
+# copy the built application
+COPY --from=builder /usr/src/zksync/target/release/zksync_event_listener /bin/
+
+# expose the port
+EXPOSE 9977
+
+# set the environment variable
+ENV PATH="/usr/local/cargo/bin:${PATH}"
+
+# set the entry point
+ENTRYPOINT ["zksync_event_listener"]

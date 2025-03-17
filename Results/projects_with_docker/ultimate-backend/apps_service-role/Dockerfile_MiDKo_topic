@@ -1,0 +1,31 @@
+# Starting from node:12-alpine as our base image
+FROM node:12-alpine
+
+# Setting up the NODE_ENV and working directory
+ENV NODE_ENV=production
+WORKDIR /nest
+
+# Updating the system and installing necessary dependencies
+RUN apk update && apk add --no-cache bash git
+
+# Adding global dependencies for @nestjs/cli
+RUN yarn global add @nestjs/cli
+
+# Copying the project files
+COPY . .
+
+# Installing npm dependencies
+RUN yarn install --production=false
+
+# Building proto-schema and service-role
+RUN nest build proto-schema
+RUN nest build service-role
+
+# Exposing the necessary ports
+EXPOSE 50052
+
+# Specify the user to avoid running the container as root
+USER node
+
+# Running the app
+CMD ["node", "dist/apps/service-role/main.js"]

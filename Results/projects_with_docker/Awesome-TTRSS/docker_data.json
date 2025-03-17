@@ -1,0 +1,85 @@
+{
+    "docker_info": {
+        "base_image": "docker.io/alpine:3.21",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [
+            "maintainer=\"Henry<hi@henry.wang>\""
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV ALLOW_PORTS=\"80,443\"",
+            "ENV SELF_URL_PATH=http://localhost:181",
+            "ENV DB_NAME=ttrss",
+            "ENV DB_USER=ttrss",
+            "ENV DB_PASS=ttrss",
+            "ENV LD_PRELOAD=\"/usr/lib/preloadable_libiconv.so php\"",
+            "ENV DB_HOST=database.postgres",
+            "ENV DB_PORT=5432",
+            "ENV DB_USER=postgres",
+            "ENV DB_PASS=ttrss",
+            "ENV DB_NAME=ttrss",
+            "ENV SELF_URL_PATH=http://localhost:181",
+            "ENV ENABLE_PLUGINS=auth_internal,fever",
+            "ENV SESSION_COOKIE_LIFETIME=24",
+            "ENV SINGLE_USER_MODE=false",
+            "ENV LOG_DESTINATION=sql",
+            "ENV FEED_LOG_QUIET=false"
+        ],
+        "copy_instructions": [
+            "WORKDIR /var/www",
+            "ADD https://gitlab.tt-rss.org/api/v4/projects/20/repository/branches/master /var/www/ttrss-version",
+            "WORKDIR /var/www/plugins.local",
+            "ADD https://raw.githubusercontent.com/jangernert/FeedReader/master/data/tt-rss-feedreader-plugin/api_feedreader/init.php api_feedreader/",
+            "WORKDIR /var/www/themes.local",
+            "WORKDIR /var/www",
+            "COPY ./docker-entrypoint.sh /docker-entrypoint.sh",
+            "COPY src/wait-for.sh /wait-for.sh",
+            "COPY src/ttrss.nginx.conf /etc/nginx/nginx.conf",
+            "COPY src/initialize.php /initialize.php",
+            "COPY src/s6/ /etc/s6/",
+            "COPY --from=builder /var/www /var/www"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"sh\",",
+                    "\"/docker-entrypoint.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --update tar curl git \\",
+                "&& rm -rf /var/www/*",
+                "&& git clone https://git.tt-rss.org/fox/tt-rss --depth=1 /var/www"
+            ],
+            [
+                "mkdir /var/www/plugins/fever mercury_fulltext feediron opencc api_newsplus options_per_feed remove_iframe_sandbox wallabag_v2 auth_oidc freshapi && \\",
+                "## Fever"
+            ],
+            [
+                "curl -sL https://github.com/levito/tt-rss-feedly-theme/archive/master.tar.gz | \\",
+                "tar xzvpf - --strip-components=1 --wildcards -C . tt-rss-feedly-theme-master/feedly*.css tt-rss-feedly-theme-master/feedly/fonts &&",
+                "## RSSHub"
+            ],
+            [
+                "chmod -x /wait-for.sh && chmod -x /docker-entrypoint.sh && apk add --update --no-cache git nginx s6 curl sudo tzdata \\",
+                "php82 php82-fpm php82-ctype php82-curl php82-dom php82-exif php82-fileinfo php82-gd php82-iconv php82-intl php82-json php82-mbstring php82-opcache",
+                "php82-openssl php82-pcntl php82-pdo php82-pdo_pgsql php82-phar php82-pecl-apcu php82-posix php82-session php82-simplexml php82-sockets php82-tokenizer php82-xml php82-xmlwriter php82-zip",
+                "php82-gmp php82-pecl-imagick",
+                "ca-certificates && rm -rf /var/cache/apk/*",
+                "# Update libiconv as the default version is too low"
+            ],
+            [
+                "chown nobody:nginx -R /var/www \\",
+                "&& git config --global --add safe.directory /var/www"
+            ]
+        ]
+    }
+}

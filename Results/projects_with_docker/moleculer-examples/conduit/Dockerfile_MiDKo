@@ -1,0 +1,26 @@
+#Start with base image node 12
+FROM node:12
+
+#Set the directory in the Docker side
+WORKDIR /app
+
+#Add the application files, copy all javascript source files, assets, and configs
+COPY /public /app/public
+COPY /services /app/services
+COPY /views /app/views
+COPY /models /app/models
+COPY /mixins /app/mixins
+COPY moleculer.config.js /app
+COPY package*.json ./
+
+#Install the modules
+RUN npm install --silent --progress=false --production
+
+#add environment variables
+ENV NODE_ENV=production
+
+#Expose the application on port 3000
+EXPOSE 3000
+
+#Start the application
+CMD ["npm", "start"]

@@ -1,0 +1,28 @@
+# Use golang base image
+FROM golang:1.17-alpine AS builder
+
+# Set the Current Working Directory inside the container
+WORKDIR /go/src/github.com/tilt-dev/servantes/vigoda
+
+# Copy everything from the current directory to the working directory inside the container
+COPY . /go/src/github.com/tilt-dev/servantes/vigoda
+
+# Download dependencies
+RUN go mod download
+
+# Build the Go app
+RUN go install .
+
+###########################################################
+
+FROM alpine:latest
+
+WORKDIR /app
+
+# Copy the Pre-built binary file from the previous stage
+
+# This container exposes port 80 to the outside world
+EXPOSE 80
+
+# Run the binary program produced by `go install`
+ENTRYPOINT ["/app/vigoda"]

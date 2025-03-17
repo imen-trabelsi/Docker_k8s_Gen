@@ -1,0 +1,27 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "JavaScript",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"mfe\",\n  \"version\": \"1.0.0\",\n  \"scripts\": {\n    \"bootstrap\": \"lerna bootstrap\",\n    \"serve\": \"lerna run --parallel serve\",\n    \"build\": \"lerna run --parallel build\",\n    \"lint\": \"echo \\\"Error: no lint specified\\\" && exit 1\",\n    \"test\": \"echo \\\"Error: no test specified\\\" && exit 1\"\n  },\n  \"license\": \"MIT\",\n  \"devDependencies\": {\n    \"lerna\": \"^3.22.1\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "mfe/docker-compose.yml": "version: '3.8'\n\nservices:\n  shell:\n    image: <DOCKER_ID_USER>/shell:<IMAGE_TAG>\n    build:\n      context: ./app-shell\n      dockerfile: Dockerfile\n\n  vue:\n    image: <DOCKER_ID_USER>/vue:<IMAGE_TAG>\n    build:\n      context: ./mod-vue\n      dockerfile: Dockerfile\n\n  react:\n    image: <DOCKER_ID_USER>/react:<IMAGE_TAG>\n    build:\n      context: ./mod-react\n      dockerfile: Dockerfile\n\n  angular:\n    image: <DOCKER_ID_USER>/angular:<IMAGE_TAG>\n    build:\n      context: ./mod-angular\n      dockerfile: Dockerfile\n\n  svelte:\n    image: <DOCKER_ID_USER>/svelte:<IMAGE_TAG>\n    build:\n      context: ./mod-svelte\n      dockerfile: Dockerfile\n",
+            "mfe/Dockerfile": "FROM caddy:2-alpine\n\nCOPY source dest\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "babel.config.js",
+            "docker-compose.yml",
+            "package.json"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

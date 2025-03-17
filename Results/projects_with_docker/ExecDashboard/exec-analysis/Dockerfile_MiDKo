@@ -1,0 +1,32 @@
+# Specify the base image
+FROM openjdk:8-jdk-alpine
+
+# Specify the maintainer of the Dockerfile
+LABEL maintainer="docker@maven.apache.org"
+
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
+
+# The application's jar file
+ARG JAR_FILE=target/*.jar
+
+# Add a volume pointing to /tmp
+VOLUME /tmp
+
+# Make directory in docker container
+RUN mkdir -p /var/app/config
+
+# Copy the application's jar to the container
+COPY ${JAR_FILE} /var/app/analysis.jar
+
+# Add pom.xml and install dependancies
+COPY pom.xml /tmp/pom.xml
+RUN mvn install
+
+# Add the application's resources into the container
+COPY src/main/resources/* /var/app/config/
+
+# Update entrypoint of docker image
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.data.mongodb.uri=mongodb://mongoserver/db","-jar","/var/app/analysis.jar","--spring.config.location=/var/app/config/application.properties"]
+
+

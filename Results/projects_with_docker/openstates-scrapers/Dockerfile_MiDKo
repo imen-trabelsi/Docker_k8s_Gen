@@ -1,0 +1,40 @@
+#Use python slim image
+FROM python:3.9-slim
+
+# Set environment variable
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONIOENCODING='utf-8'
+ENV LANG='C.UTF-8'
+ENV PYTHONPATH=./scrapers
+ENV OPENSSL_CONF=/opt/openstates/openstates/openssl.cnf
+
+# Set labels
+LABEL maintainer="James"
+
+# Add dependencies and source code to container
+COPY poetry.lock /opt/openstates/openstates/
+COPY pyproject.toml /opt/openstates/openstates/
+COPY . /opt/openstates/openstates/
+COPY docker_entrypoint.sh /opt/openstates/entrypoint.sh
+
+# Set working directory
+WORKDIR /opt/openstates/openstates/
+
+# Install dependencies
+RUN apt-get update -qq \
+&& curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg -o /usr/share/keyrings/githubcli-archive-keyring.gpg \
+&& chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" > /etc/apt/sources.list.d/github-cli.list \
+&& apt-get update -qq \
+&& DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends gh \
+pip --no-cache-dir --disable-pip-version-check install wheel \
+
+# Do some cleanup
+RUN poetry install --no-root \
+&& rm -r /root/.cache/pypoetry/cache /root/.cache/pypoetry/artifacts/ \
+&& apt-get autoremove -y -qq \
+&& apt-get clean \
+
+# Entrypoint
+ENTRYPOINT ["/bin/bash", "/opt/openstates/entrypoint.sh"]

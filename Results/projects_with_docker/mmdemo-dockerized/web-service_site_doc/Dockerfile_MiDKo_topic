@@ -1,0 +1,29 @@
+# The base image
+FROM ubuntu:14.04
+
+# Set environment variables
+ENV DEBIAN_FRONTEND noninteractive
+WORKDIR /build
+
+# Dependencies
+RUN apt-get update && apt-get install -y git npm nodejs openjdk-7-jre
+RUN ln -s /usr/bin/nodejs /usr/local/bin/node
+
+# Add package.json and install the required node modules
+COPY package.json /build/package.json
+RUN npm install
+
+# Copy application code
+COPY . /build
+
+# Set working directory
+WORKDIR /build
+
+# Making sure that all JavaScript files get copied to the /build directory
+COPY * .js /build/
+
+# Expose the web server port
+EXPOSE 80
+
+# Run the application
+CMD ./node_modules/gulp/bin/gulp.js serve

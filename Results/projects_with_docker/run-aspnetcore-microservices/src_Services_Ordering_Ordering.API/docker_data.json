@@ -1,0 +1,56 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/sdk:8.0",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "8080",
+            "8081"
+        ],
+        "user": [
+            "app"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "BUILD_CONFIGURATION=Release",
+            "BUILD_CONFIGURATION=Release"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "WORKDIR /src",
+            "COPY [\"Services/Ordering/Ordering.API/Ordering.API.csproj\", \"Services/Ordering/Ordering.API/\"]",
+            "COPY [\"Services/Ordering/Ordering.Application/Ordering.Application.csproj\", \"Services/Ordering/Ordering.Application/\"]",
+            "COPY [\"BuildingBlocks/BuildingBlocks.Messaging/BuildingBlocks.Messaging.csproj\", \"BuildingBlocks/BuildingBlocks.Messaging/\"]",
+            "COPY [\"BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj\", \"BuildingBlocks/BuildingBlocks/\"]",
+            "COPY [\"Services/Ordering/Ordering.Domain/Ordering.Domain.csproj\", \"Services/Ordering/Ordering.Domain/\"]",
+            "COPY [\"Services/Ordering/Ordering.Infrastructure/Ordering.Infrastructure.csproj\", \"Services/Ordering/Ordering.Infrastructure/\"]",
+            "WORKDIR \"/src/Services/Ordering/Ordering.API\"",
+            "WORKDIR /app",
+            "COPY --from=publish /app/publish ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"dotnet\",",
+                    "\"Ordering.API.dll\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "dotnet restore \"./Services/Ordering/Ordering.API/./Ordering.API.csproj\"",
+                "COPY . ."
+            ],
+            [
+                "dotnet build \"./Ordering.API.csproj\" -c $BUILD_CONFIGURATION -o /app/build",
+                ""
+            ],
+            [
+                "dotnet publish \"./Ordering.API.csproj\" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false",
+                ""
+            ]
+        ]
+    }
+}

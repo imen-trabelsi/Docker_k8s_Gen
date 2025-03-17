@@ -1,0 +1,29 @@
+# Base Image
+FROM mrrm/web.go AS builder
+RUN mkdir -p /app
+
+# Copy the project source
+COPY ./src/main/main.go /app/
+
+# Set the working directory
+WORKDIR /app
+
+# Build the Go binary
+RUN go build
+
+# Stage 2 - the production environment
+FROM openjdk:8-jdk-alpine
+
+# Set necessary environment variables for Spring boot application to run inside docker container
+ENV SPRING_BOOT_PROFILE=docker
+
+# Change directory inside the container
+WORKDIR /app
+
+# Copy the jar file produced by mvn install / mvn package from target to the root directory of the image
+
+# Expose the ports the app is running on
+EXPOSE 12862
+
+# Set the startup command to execute the jar
+CMD ["./app"]

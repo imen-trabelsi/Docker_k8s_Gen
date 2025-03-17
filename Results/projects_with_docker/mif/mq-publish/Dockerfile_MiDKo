@@ -1,0 +1,20 @@
+# Start with a base image, using OpenJDK 11 JRE as specified
+FROM openjdk:11-jre
+
+WORKDIR /app
+
+# Copy the POM file and Source code
+COPY pom.xml ./
+COPY src ./src
+
+# Use Maven to build the project
+RUN mvn -f pom.xml clean install
+
+# Copy JAR file
+COPY target/mq-publish-1.0-SNAPSHOT.jar ./app.jar
+
+# Expose the necessary port(s)
+EXPOSE 8080
+
+# Set the entry point command to run when Docker container starts
+CMD ["java", "-jar", "-Dspring.profiles.active=docker", "./app.jar"]

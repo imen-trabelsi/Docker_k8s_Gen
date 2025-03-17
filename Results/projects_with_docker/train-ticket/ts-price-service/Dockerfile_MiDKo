@@ -1,0 +1,12 @@
+#Dockerfile
+
+FROM java:8-jre
+
+WORKDIR /app
+COPY ./target/ts-price-service-1.0.jar /app/
+
+EXPOSE 16579
+
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+CMD ["java", "-Xmx200m", "-jar", "/app/ts-price-service-1.0.jar"]

@@ -1,0 +1,29 @@
+# Use node.js 23-slim as base image
+FROM node:23-slim
+
+# Set Environment Variables
+ENV DEBIAN_FRONTEND=noninteractive \
+
+# Install the necessary packages
+RUN apt-get -qq -y update && apt-get -qq -y install rsync
+
+# Create a working directory
+RUN mkdir /alephui
+WORKDIR /alephui
+
+# Copy required files
+COPY .prettierrc /alephui/.prettierrc
+COPY tsconfig.json /alephui/tsconfig.json
+COPY package.json /alephui/
+COPY package-lock.json /alephui/
+COPY craco.config.js /alephui/
+COPY i18n /alephui/i18n
+COPY public /alephui/public
+COPY src /alephui/src
+
+# Building the Node.js backend
+RUN npm install
+RUN cp -R /alephui/node_modules/ /node_modules
+
+# Starting the application
+CMD ["npm", "start"]

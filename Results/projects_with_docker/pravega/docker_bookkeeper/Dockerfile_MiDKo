@@ -1,0 +1,39 @@
+# Using apache/bookkeeper:4.15.3 as the base image
+FROM apache/bookkeeper:4.15.3
+
+# Set the environment variables
+ENV JAVA_HOME=/usr/lib/jvm/java-11 
+
+# Set the arguments
+ARG BK_VERSION=4.15.3
+ARG DISTRO_NAME=bookkeeper-all-${BK_VERSION}-bin
+
+# Set the working directory
+WORKDIR /opt/bookkeeper
+
+# Install the necessary packages and dependencies
+RUN set -x \
+  && yum install -y iproute wget \
+  && cd /opt \
+  && wget -q "https://archive.apache.org/dist/bookkeeper/bookkeeper-${BK_VERSION}/${DISTRO_NAME}.tar.gz" \
+  && wget -q "https://archive.apache.org/dist/bookkeeper/bookkeeper-${BK_VERSION}/${DISTRO_NAME}.tar.gz.asc" \
+  && wget -q "https://archive.apache.org/dist/bookkeeper/bookkeeper-${BK_VERSION}/${DISTRO_NAME}.tar.gz.sha512" \
+  && sha512sum -c ${DISTRO_NAME}.tar.gz.sha512 \
+  && wget https://dist.apache.org/repos/dist/release/bookkeeper/KEYS \
+  && gpg --import KEYS \
+  && gpg --batch --verify "$DISTRO_NAME.tar.gz.asc" "$DISTRO_NAME.tar.gz" \
+  && tar -xzf "$DISTRO_NAME.tar.gz" \
+  && cp -r bookkeeper-all-${BK_VERSION}/* /opt/bookkeeper/ \
+  && rm -rf "bookkeeper-all-${BK_VERSION}" "$DISTRO_NAME.tar.gz" "$DISTRO_NAME.tar.gz.asc" "$DISTRO_NAME.tar.gz.sha512" \
+  && yum clean all \
+
+# Copy the necessary files into the docker image
+COPY entrypoint.sh /opt/bookkeeper/scripts/pravega_entrypoint.sh
+COPY entrypoint.sh /opt/bookkeeper/entrypoint.sh
+
+# Set the healthchecks
+HEALTHCHECK --interval=10s --timeout=60s CMD /bin/bash /opt/bookkeeper/scripts/healthcheck.sh
+
+# Set the execution command
+ENTRYPOINT ["/bin/bash", "/opt/bookkeeper/scripts/pravega_entrypoint.sh"]
+CMD ["bookie"]

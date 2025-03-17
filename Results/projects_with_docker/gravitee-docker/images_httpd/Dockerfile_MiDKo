@@ -1,0 +1,38 @@
+# Start with base image
+FROM centos:7
+
+# Define maintainer label
+LABEL maintainer="contact@graviteesource.com"
+
+# Update the system, install basic packages and clean up
+RUN yum -y update && \
+    yum install -y wget zip unzip nc httpd \
+    && yum clean all \
+
+# Set the working directory
+WORKDIR /app
+
+# Copy current directory contents into the container at /app
+COPY . /app
+
+# Keep Python from generating .pyc files in the container
+ENV PYTHONDONTWRITEBYTECODE 1
+
+# Turn off buffering for easier container logging
+ENV PYTHONUNBUFFERED 1
+
+#Install pip
+RUN curl "https://bootstrap.pypa.io/get-pip.py" -o "get-pip.py"
+RUN python get-pip.py
+
+# We copy just the requirements.txt first to leverage Docker cache
+COPY ./requirements.txt /app/requirements.txt
+
+# Install application requirements
+RUN pip install -r requirements.txt
+
+#Expose port 80
+EXPOSE 80
+
+# Run the application:
+CMD ["python", "-m", "httpd"]

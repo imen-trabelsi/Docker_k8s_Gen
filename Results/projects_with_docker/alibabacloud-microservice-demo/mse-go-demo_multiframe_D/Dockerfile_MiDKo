@@ -1,0 +1,26 @@
+# Base image
+FROM registry-cn-hangzhou.ack.aliyuncs.com/dev/alpine:3.18-update@sha256:f2f97bbc6f3173044292cbf8d306ca31b4356a5f2eb54701fc97f64065b412cf as builder
+
+# Update and install dependencies
+RUN apk add --no-cache bash && \
+    apk --update add gcc libc-dev && \
+
+# Set working directory in the container
+WORKDIR /
+
+# Copy over files
+COPY ./pom.xml ./pom.xml
+COPY ./src ./src
+
+# Build the application
+RUN mvn clean install
+
+# Copy the microservice
+COPY . /D
+
+# Run commands
+RUN apk add --no-cache bash
+RUN apk --update add gcc libc-dev
+
+# Set entrypoint
+ENTRYPOINT ["/D"]

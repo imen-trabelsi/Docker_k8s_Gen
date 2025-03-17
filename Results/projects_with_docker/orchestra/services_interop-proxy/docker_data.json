@@ -1,0 +1,61 @@
+{
+    "docker_info": {
+        "base_image": "elixir:1.8-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV MIX_ENV=prod",
+            "ENV LANG=\"C.UTF-8\""
+        ],
+        "copy_instructions": [
+            "WORKDIR /builder",
+            "COPY interop-proxy/mix.exs .",
+            "COPY interop-proxy .",
+            "COPY common/messages lib/messages",
+            "WORKDIR /app",
+            "COPY --from=builder /builder/interop_proxy.tar.gz ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "/app/bin/interop_proxy",
+                    "foreground"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mix local.hex --force && mix local.rebar --force",
+                ""
+            ],
+            [
+                "mix deps.get && mix deps.compile",
+                ""
+            ],
+            [
+                "mix compile && mix deps.clean mime --build && mix release",
+                ""
+            ],
+            [
+                "cp _build/prod/rel/interop_proxy/releases/*/interop_proxy.tar.gz .",
+                ""
+            ],
+            [
+                "apk --no-cache add \\",
+                "bash",
+                "libssl1.1"
+            ],
+            [
+                "tar -xzf interop_proxy.tar.gz && \\",
+                "rm -rf interop_proxy.tar.gz"
+            ]
+        ]
+    }
+}

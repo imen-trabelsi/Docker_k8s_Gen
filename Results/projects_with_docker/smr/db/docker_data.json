@@ -1,0 +1,17 @@
+{
+    "docker_info": {
+        "base_image": "flyway/flyway:10.14.0-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ./patches/ /flyway/sql/"
+        ],
+        "execution": [],
+        "run": []
+    }
+}

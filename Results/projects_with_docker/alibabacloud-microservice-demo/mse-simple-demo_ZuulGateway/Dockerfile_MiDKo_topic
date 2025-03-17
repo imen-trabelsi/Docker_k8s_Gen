@@ -1,0 +1,34 @@
+# Start with the base image that contains the Java and Maven environments
+FROM maven:3-eclipse-temurin-8 AS build
+
+# Set up the working directory
+WORKDIR /app
+
+# Copy the project files to the image
+COPY ./ ./
+
+# Run the Maven build
+RUN --mount=type=cache,target=/root/.m2/repository/ \
+
+# Run necessary system packages update
+RUN apt-get update && apt-get install -y \
+
+# Start a new stage for the target executable image
+FROM maven:3-eclipse-temurin-8 AS run
+
+# Copy the global settings for Maven
+COPY <<EOF /root/.m2/settings.xml
+
+# Copy the built jar file from the build stage to the current stage
+
+# Copy Arthas, a Java diagnostic tool 
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+
+# Set the working directory
+WORKDIR /app
+
+# Expose the necessary port
+EXPOSE 20000
+
+# Set the entrypoint command
+ENTRYPOINT ["java","-jar","/app/target/ZuulGateway.jar"]

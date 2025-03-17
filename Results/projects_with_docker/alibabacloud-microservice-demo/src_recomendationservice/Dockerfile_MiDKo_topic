@@ -1,0 +1,28 @@
+# Start with the base image specified by the user
+FROM registry.cn-beijing.aliyuncs.com/edas_unified/jct_dw_8_4_4:0.1 AS builder
+
+# Copy all necessary files for the build
+COPY . /app
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+
+# Build the project using Maven
+RUN mvn -f pom.xml clean package
+
+FROM registry.cn-beijing.aliyuncs.com/edas_unified/jct_dw_8_4_4:0.1
+
+# Copy necessary files from the builder stage
+
+# Copy files as specified by user
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+WORKDIR /app
+COPY /recomendationservice-provider/target/recomendationservice-provider-1.0.0-SNAPSHOT.jar /app
+COPY /start.sh /app
+
+# Set the executing command
+CMD ["/app/start.sh"]
+
+# Expose necessary port
+EXPOSE 8080
+

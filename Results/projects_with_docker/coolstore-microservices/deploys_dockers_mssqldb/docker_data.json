@@ -1,0 +1,47 @@
+{
+    "docker_info": {
+        "base_image": "microsoft/mssql-server-linux:2017-latest",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "1433"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [
+            "HEALTHCHECK --interval=15s CMD /opt/mssql-tools/bin/sqlcmd -U sa -P $SA_PASSWORD -Q \"select 1\" && grep -q \"MSSQL SERVER SUCCESSFULLY STARTED\" ./var/opt/mssql/log/errorlog"
+        ],
+        "build_args": [],
+        "envs": [
+            "ENV LANG en_US.UTF-8",
+            "ENV LANGUAGE en_US:en",
+            "ENV LC_ALL en_US.UTF-8"
+        ],
+        "copy_instructions": [
+            "WORKDIR .",
+            "ADD ./deploys/dockers/mssqldb/entrypoint.sh /entrypoint.sh",
+            "ADD ./deploys/dockers/mssqldb/init.sh /init.sh"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/entrypoint.sh\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"tail",
+                    "-f",
+                    "/dev/null\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "[\"/bin/bash\", \"-c\", \"chmod +x /entrypoint.sh && chmod +x /init.sh\"]",
+                ""
+            ]
+        ]
+    }
+}

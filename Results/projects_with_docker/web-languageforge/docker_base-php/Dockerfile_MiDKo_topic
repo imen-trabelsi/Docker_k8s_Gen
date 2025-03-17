@@ -1,0 +1,29 @@
+# Base Image
+FROM php:7.4-apache
+
+# Update System
+RUN apt-get update && apt-get -y install gnupg git p7zip-full unzip curl tini ffmpeg
+
+# Install MongoDB and MongoDB tools
+RUN curl -fsSL https://www.mongodb.org/static/pgp/server-6.0.asc | gpg -o /usr/share/keyrings/mongodb-server-6.0.gpg --dearmor && \
+    echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg ] http://repo.mongodb.org/apt/debian bullseye/mongodb-org/6.0 main" | tee /etc/apt/sources.list.d/mongodb-org-6.0.list && \
+
+# Install PHP Extensions
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/local/bin/
+RUN install-php-extensions mongodb intl
+
+# Application Code Copy
+COPY ./ ./ 
+
+# Apache Moduls
+RUN a2enmod headers rewrite
+COPY docker/base-php/000-default.conf /etc/apache2/sites-enabled
+
+# PHP configuration
+COPY docker/base-php/customizations.php.ini $PHP_INI_DIR/conf.d/
+
+# Install application packages
+RUN npm install
+
+# Execute the Application
+CMD ["npm", "start"]

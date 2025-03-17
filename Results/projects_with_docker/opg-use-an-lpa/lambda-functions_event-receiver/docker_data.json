@@ -1,0 +1,38 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.23.4-alpine",
+        "multi_stage_build": true,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY go.mod go.sum ./",
+            "COPY app/ ./",
+            "COPY internal/ ./internal",
+            "WORKDIR /var/task",
+            "COPY --from=base /go/bin/main ./main"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"./main\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "go mod download",
+                ""
+            ],
+            [
+                "CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /go/bin/main ./",
+                ""
+            ]
+        ]
+    }
+}

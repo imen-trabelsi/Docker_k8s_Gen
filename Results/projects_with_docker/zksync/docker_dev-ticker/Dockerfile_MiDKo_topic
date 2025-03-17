@@ -1,0 +1,36 @@
+# Fetch base image
+FROM rust:1.67 AS builder
+
+# Set working directory
+WORKDIR /usr/src/zksync
+
+# Copy entire project into Docker context
+COPY . .
+
+# Install necessary commands and build tools
+RUN apt update && \
+
+# Install sccache to enable further caching
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+
+# Execute sccache and build the server 
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    --mount=type=cache,target=/root/.cache/sccache \
+    RUSTC_WRAPPER=/usr/local/cargo/bin/sccache \
+
+# Second stage to copy dependencies and build outputs from previous stage
+FROM debian:buster-slim
+
+# Set environment variable
+ENV RUST_LOG info
+
+# Set working directory
+WORKDIR /usr/src/zksync
+
+# Copy necessary files from previous stage
+
+# Expose ports
+EXPOSE 9876
+
+# Set default command
+ENTRYPOINT ["dev-ticker-server"]

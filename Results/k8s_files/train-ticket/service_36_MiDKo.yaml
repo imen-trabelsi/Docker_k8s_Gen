@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ts-train-food-service
+  name: ts-train-food-service
+spec:
+  ports:
+  - port: 19999
+    protocol: TCP
+    targetPort: 19999
+  selector:
+    app: ts-train-food-service
+  type: ClusterIP

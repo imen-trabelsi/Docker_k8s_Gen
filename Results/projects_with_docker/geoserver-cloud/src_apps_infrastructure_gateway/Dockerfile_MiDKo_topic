@@ -1,0 +1,33 @@
+#build stage
+FROM maven:3.6.0-jdk-11-slim AS build
+WORKDIR /app
+COPY . /app
+RUN mvn -f pom.xml clean package
+
+FROM $REPOSITORY/gs-cloud-base-jre:$TAG
+WORKDIR /app
+
+# set JVM options and environment variables
+ENV JAVA_TOOL_OPTIONS="${DEFAULT_JAVA_TOOL_OPTIONS} -XX:SharedArchiveFile=application.jsa"
+
+# Copy instructions from user input
+COPY --from=builder dependencies/ ./
+COPY --from=builder snapshot-dependencies/ ./
+COPY --from=builder spring-boot-loader/ ./
+
+RUN java -Djarmode=layertools -jar application.jar extract
+COPY --from=builder application/ ./
+
+# Optimized run command
+RUN java -XX:ArchiveClassesAtExit=application.jsa \
+-Dspring.context.exit=onRefreshed \
+-Dspring.profiles.active=standalone \
+-Dserver.port=0 -Dmanagement.server.port=0 \
+
+# Clear unnecessary files
+RUN rm -rf /tmp/*
+
+# Port exposure
+EXPOSE 8080
+
+ENTRYPOINT ["java","-jar","/app/application.jar"]

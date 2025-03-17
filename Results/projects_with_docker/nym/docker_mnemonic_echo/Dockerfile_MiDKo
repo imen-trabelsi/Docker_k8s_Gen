@@ -1,0 +1,35 @@
+# Set the base image to alpine
+FROM node:alpine
+
+# Create app directory
+WORKDIR /app
+
+# Properly handles signals from the docker stop command
+STOPSIGNAL SIGTERM
+
+# Copy package.json for installing dependencies
+COPY package.json .
+
+# Install dependencies
+RUN npm install
+
+# Copy the remaining application code
+COPY . .
+
+# Copy the entrypoint script
+COPY ./entrypoint.sh /entrypoint.sh
+
+# Execute permissions to the entrypoint.sh file
+RUN chmod +x /entrypoint.sh
+
+# Health check instruction
+# Assuming the application exposes a health endpoint on /health route
+# HEALTHCHECK CMD curl --fail http://localhost:3000/health || exit 1
+
+# Define the command to run the app 
+# Replacing cmd: /entrypoint.sh with ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["/entrypoint.sh"]
+
+# Expose port
+# Assuming the application runs on port 3000
+EXPOSE 3000

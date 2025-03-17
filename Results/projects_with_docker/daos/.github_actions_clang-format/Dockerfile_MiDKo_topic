@@ -1,0 +1,25 @@
+# Dockerfile
+FROM fedora:38
+
+# Update the base image
+RUN dnf -y update 
+
+# Install the required packages
+RUN dnf -y install python3-pip clang-tools-extra git-clang-format
+
+# Add the project directory into the container
+COPY . /app
+
+# Set the working directory
+WORKDIR /app
+
+# Install the dependencies
+RUN pip3 install -r requirements.txt
+
+# Copy the custom entrypoint script and give it the necessary permissions
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Execute the entrypoint
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["python3", "-m", "app"]

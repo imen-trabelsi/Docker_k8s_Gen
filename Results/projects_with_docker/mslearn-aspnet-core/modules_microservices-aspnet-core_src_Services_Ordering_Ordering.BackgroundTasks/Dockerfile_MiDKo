@@ -1,0 +1,17 @@
+# Stage 1 - Build
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+COPY ["NuGet.config", "./"]
+COPY ["eShop-Learn.sln", "./"]
+COPY src/ ./
+RUN dotnet restore "eShop-Learn.sln"
+
+WORKDIR "/src/src/Services/Ordering/Ordering.BackgroundTasks"
+RUN dotnet publish --no-restore "Ordering.BackgroundTasks.csproj" -c Release -o /app/publish
+
+# Stage 2 - Produce final image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
+WORKDIR /app
+EXPOSE 80
+USER nobody:nogroup
+ENTRYPOINT ["dotnet", "Ordering.BackgroundTasks.dll"]

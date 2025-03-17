@@ -1,0 +1,35 @@
+# Base image
+FROM eclipse-temurin:11
+
+# Set the current working directory in the Docker image
+WORKDIR /app
+
+# Copy pom.xml and local repository to the working directory
+COPY ./pom.xml ./pom.xml
+
+# Build the application with Maven
+RUN mvn clean install
+
+# Copy the application (and its jar) to the working directory
+COPY *.jar /app.jar
+
+# Copy the wait for it shell script to the working directory
+COPY wait-for-it.sh /wait-for-it.sh
+
+# Grant execution privileges to the shell script
+RUN chmod 777 /wait-for-it.sh 
+
+# Create a user with lesser privileges
+RUN useradd -ms /bin/bash joedoe
+
+# Log in as joedoe user
+USER joedoe
+
+# Expose port 8761
+EXPOSE 8761
+
+# Include healthcheck
+HEALTHCHECK CMD curl --fail http://localhost:8761/actuator/health || exit 1 
+
+# Command to execute
+CMD ["java","-Dspring.profiles.active=docker","-jar","/app.jar"]

@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "JavaScript",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"artifactory\",\n  \"version\": \"0.0.0\",\n  \"description\": \"Artifactory OSS for Code Farm\",\n  \"scripts\": {\n    \"build\": \"../../bs/build.sh\",\n    \"load\": \"../../bs/load.sh\",\n    \"unload\": \"../../bs/unload.sh\",\n    \"shell\": \"../../bs/run_cmd.sh bash\",\n    \"start\": \"../../bs/start.sh -p 8081:8081 --net=\\\"host\\\" -d\",\n    \"stop\": \"../../bs/stop.sh\"\n  },\n  \"author\": \"Marcus Christensson <marcus.christensson@combitech.se>\",\n  \"license\": \"MIT\"\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "src/containers/artifactory/Dockerfile": "# Documentation: https://www.jfrog.com/confluence/display/RTF/Installing+with+Docker\nFROM docker.bintray.io/jfrog/artifactory-oss:latest\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            "Dockerfile",
+            "package.json",
+            "yarn.lock"
+        ],
+        "folders": []
+    }
+}

@@ -1,0 +1,32 @@
+# Base Image
+FROM docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}
+
+# Setting up work directory
+WORKDIR /usr/share/elasticsearch
+
+# Copying required files
+COPY elastic-stack/elasticsearch/config/elasticsearch.yml config/
+COPY elastic-stack/setup/entrypoint.sh /entrypoint.sh
+
+# Setting up environment variable
+ENV ELASTIC_VERSION ${ELASTIC_VERSION}
+
+# Marking the script as executable
+RUN chmod +x /entrypoint.sh
+
+# Exposing necessary ports
+EXPOSE 9200 9300
+
+# Setting up health checks
+HEALTHCHECK CMD curl --fail http://localhost:9200/_cluster/health || exit 1
+
+# Applying user given configurations if any.
+# Since not provided in the question, it is kept as placeholder. Update it as needed.
+# ENV ...
+
+# Applying Labels
+# Since not mentioned in the question, it is kept as placeholder. Update it as needed.
+# LABEL ...
+
+# Setting up the default command
+ENTRYPOINT ["/entrypoint.sh"]

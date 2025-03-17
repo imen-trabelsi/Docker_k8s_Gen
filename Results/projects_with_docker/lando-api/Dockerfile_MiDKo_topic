@@ -1,0 +1,45 @@
+# Use python 3.9 as a base image
+FROM python:3.9
+
+# Add a new group and user
+RUN addgroup --gid 10001 app && adduser --disabled-password --uid 10001 --gid 10001 --home /app --gecos "app,,," app
+
+# Set the working directory
+WORKDIR /app
+
+# Copy requirements.txt
+COPY requirements.txt /python_requirements.txt
+
+# Upgrade pip and install dependencies
+RUN pip install pip --upgrade
+RUN pip install --no-cache -r /python_requirements.txt
+
+# Copy migrations
+COPY migrations /migrations
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+    MOZBUILD_STATE_PATH=/app/.mozbuild \
+    UWSGI_MODULE=landoapi.wsgi:app \
+
+# Copy source code
+COPY . /app
+
+# Add app user to the app directory
+RUN chown -R app:app /app
+
+# Create repos directory
+RUN mkdir /repos
+
+# Install the application
+RUN cd / && pip install --no-cache /app
+
+# Switch to the app user
+USER app
+
+# Expose port 9000 to the outside world
+EXPOSE 9000
+
+# Set entrypoint and cmd
+ENTRYPOINT ["lando-cli"]
+CMD ["uwsgi"]

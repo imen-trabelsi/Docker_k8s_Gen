@@ -1,0 +1,33 @@
+{
+    "docker_info": {
+        "base_image": "node:4-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY files/ /files/",
+            "COPY webui.js /"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"node\",",
+                    "\"webui.js\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "npm install express",
+                "RUN npm install redis@3"
+            ]
+        ]
+    }
+}

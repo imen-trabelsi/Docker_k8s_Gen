@@ -1,0 +1,20 @@
+# Using the base image provided by the user
+FROM openfrontier/gerrit:latest
+
+# Set the work directory in the docker image file system.
+WORKDIR /usr/src/gerrit
+
+# Add package.json and package-lock.json (or yarn.lock) file to the root directory of the app
+COPY package.json yarn.lock ./
+
+# Install all the dependencies
+RUN npm install
+
+# Bundle app source into the docker image
+COPY . .
+
+# Expose the application on the specific port
+EXPOSE 8080
+
+# Define the command to start the container
+CMD ["npm", "start"]

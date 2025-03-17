@@ -1,0 +1,32 @@
+# We start off from the golang:1.14.1 base image as specified by the user
+FROM golang:1.14.1 AS builder 
+
+# We set /src as our working directory
+WORKDIR /src
+
+# We copy all the files from our source to /src
+COPY ./ ./
+
+# Setting the working directory in the container
+WORKDIR /opt/emco
+
+# Adding a group and user 'emco' to run our service
+RUN groupadd -r emco && useradd -r -g emco emco
+
+# Changing the ownership of /opt/emco to emco
+RUN chown emco:emco /opt/emco -R
+
+# Make a config directory
+RUN mkdir ./config
+
+# Copy the built application file from builder stage to the final image
+
+# Switching to user 'emco'
+USER emco
+
+# Building the project
+RUN npm install 
+RUN make all
+
+# Command to start the service
+CMD ["./middleend"]

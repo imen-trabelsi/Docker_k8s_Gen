@@ -1,0 +1,45 @@
+# Use the Python image
+FROM brisedev/worker-dev:2.5.0
+
+# Set environment variables
+ARG BRISE_EVENT_SERVICE_HOST
+ARG BRISE_EVENT_SERVICE_AMQP_PORT
+ARG BRISE_EVENT_SERVICE_GUI_PORT
+ARG BRISE_DATABASE_HOST
+ARG BRISE_DATABASE_PORT
+ARG BRISE_DATABASE_NAME
+ARG BRISE_DATABASE_USER
+ARG BRISE_DATABASE_PASS
+
+# Export environment variables
+ENV BRISE_EVENT_SERVICE_HOST ${BRISE_EVENT_SERVICE_HOST}
+ENV BRISE_EVENT_SERVICE_AMQP_PORT ${BRISE_EVENT_SERVICE_AMQP_PORT}
+ENV BRISE_EVENT_SERVICE_GUI_PORT ${BRISE_EVENT_SERVICE_GUI_PORT}
+ENV BRISE_DATABASE_HOST ${BRISE_DATABASE_HOST}
+ENV BRISE_DATABASE_PORT ${BRISE_DATABASE_PORT}
+ENV BRISE_DATABASE_NAME ${BRISE_DATABASE_NAME}
+ENV BRISE_DATABASE_USER ${BRISE_DATABASE_USER}
+ENV BRISE_DATABASE_PASS ${BRISE_DATABASE_PASS}
+
+WORKDIR /home/w_user
+
+# Add a new user
+RUN useradd -ms /bin/bash w_user && echo "w_user:w_user" | chpasswd && adduser w_user sudo
+
+# Copy files
+COPY . /home/w_user
+
+# Give ownership of directory to w_user
+RUN chown -R w_user:w_user /home/w_user
+
+# Switch to w_user
+USER w_user
+
+# Install dependencies
+RUN pip install -r requirements.txt
+
+# Expose ports
+EXPOSE ${BRISE_EVENT_SERVICE_GUI_PORT}
+
+# Execute the command
+CMD ["dockerize", "-wait", "http://${BRISE_EVENT_SERVICE_HOST}:${BRISE_EVENT_SERVICE_GUI_PORT}", "python3.7", "-u", "./intro.py"]

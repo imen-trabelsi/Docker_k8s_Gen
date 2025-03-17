@@ -1,0 +1,29 @@
+# Base Image
+FROM dragonwell-registry.cn-hangzhou.cr.aliyuncs.com/dragonwell/dragonwell:8-extended-ga-centos
+
+# Set working directory
+WORKDIR /app
+
+# Set necessary environment variables
+ENV JAVA_OPTS=""
+ENV APP_JAR="checkoutservice-provider-1.0.0-SNAPSHOT.jar"
+
+# Copy arthas tools
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+
+# Copy application JAR and startup script
+COPY /checkoutservice-provider/target/${APP_JAR} .
+COPY /start.sh .
+
+# Set permissions to execute start script
+RUN chmod +x start.sh
+
+# Running a non-root user, if necessary
+# RUN addgroup -S app && adduser -S app -G app 
+# USER app
+
+# Expose application port
+EXPOSE 8080
+
+# Command to start the service via script
+ENTRYPOINT ["/app/start.sh"]

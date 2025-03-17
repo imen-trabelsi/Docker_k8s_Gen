@@ -1,0 +1,28 @@
+# Set the base image
+FROM openjdk:21-slim-buster
+
+# Label the image
+LABEL maintainer="username@example.com"
+
+# Expose the necessary ports
+EXPOSE 8090 61613 61616
+
+# Copy all the necessary files
+COPY .mvn .mvn
+COPY mvnw .
+COPY pom.xml .
+
+# Install all dependencies
+RUN ./mvnw -B dependency:go-offline
+
+# Copy src after the dependencies to cache them
+COPY src src
+
+# Package the application
+RUN ./mvnw -B package
+
+# Copy the jar file
+COPY --from=build target/policy-management-backend-0.0.2-SNAPSHOT.jar .
+
+# Set the entrypoint command
+ENTRYPOINT ["java", "-jar", "policy-management-backend-0.0.2-SNAPSHOT.jar"]

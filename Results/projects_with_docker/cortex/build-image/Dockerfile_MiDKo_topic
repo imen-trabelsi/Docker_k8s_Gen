@@ -1,0 +1,42 @@
+# Base Image
+FROM golang:1.24.0-bullseye
+
+# Setting up environment variables
+ENV GOPROXY=${goproxyValue}
+ENV SHFMT_VERSION=3.2.4
+ENV HUGO_VERSION=v0.101.0
+ENV NODE_PATH=/usr/lib/node_modules
+ENV GOCACHE=/go/cache
+
+# Update System Packages and Install essentials
+RUN apt-get update && apt-get install -y curl file gettext jq unzip protobuf-compiler libprotobuf-dev && \
+
+# Install NodeJs
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
+RUN apt-get install -y nodejs && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+RUN npm install -g postcss-cli@7.1.2 autoprefixer@9.8.5
+
+# Install dependencies
+COPY go.mod .
+RUN go mod download
+
+# Copy build script
+COPY build.sh /
+
+# Pre-build step
+RUN bash /build.sh
+
+# Copy files
+COPY . .
+
+# Build the Go app
+RUN go build -o main .
+
+# Expose port
+EXPOSE $PORT_ID
+
+# Command to run the app
+ENTRYPOINT ["/build.sh"]
+
+# Labels
+LABEL org.opencontainers.image.title="build-image"

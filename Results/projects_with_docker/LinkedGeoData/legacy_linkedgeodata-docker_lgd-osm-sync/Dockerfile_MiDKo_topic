@@ -1,0 +1,27 @@
+# Dockerfile
+FROM ubuntu:16.04
+ENV DEBIAN_FRONTEND noninteractive
+
+# Update the system
+RUN apt-get -y update --fix-missing && apt-get install -y postgresql-9.5-postgis-2.2 wget sudo curl osmosis gettext-base osmctools
+
+# Add key and repository for linkedgeodata
+RUN wget -qO - http://cstadler.aksw.org/repos/apt/conf/packages.precise.gpg.key  | sudo apt-key add -
+RUN echo 'deb http://cstadler.aksw.org/repos/apt precise main contrib non-free' | sudo tee -a /etc/apt/sources.list.d/cstadler.aksw.org.list
+RUN apt update
+RUN apt install -y linkedgeodata
+
+# Create app directory
+WORKDIR /app/linkedgeodata
+COPY start.sh .
+COPY wait-for-postgres.sh .
+COPY configuration.txt.dist .
+
+# Make the necessary scripts executable
+RUN chmod +x ./start.sh ./wait-for-postgres.sh
+
+# Put in a pause to allow for database initialization
+RUN sleep 3
+
+# Create entrypoint
+ENTRYPOINT ["./wait-for-postgres.sh", "./start.sh"]

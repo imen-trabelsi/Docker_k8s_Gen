@@ -1,0 +1,28 @@
+# Use the base image
+FROM ghcr.io/sillsdev/lfmerge:2.0.141
+
+# Updating the container
+RUN apt-get update && apt-get upgrade -y
+
+# Install npm
+RUN apt-get install -y npm
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Install app dependencies
+COPY package*.json ./
+
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Connect with MongoDB
+ENV MONGO_DB_URL=mongodb://localhost:27017/microserviceDb
+
+# Expose the port number you want your app to run on
+EXPOSE 8080
+
+# Start the application
+CMD [ "npm", "start" ]

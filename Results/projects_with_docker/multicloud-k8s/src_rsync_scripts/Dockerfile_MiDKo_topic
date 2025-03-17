@@ -1,0 +1,46 @@
+FROM ubuntu:18.04
+
+LABEL maintainer="onap"
+
+# Set env variables
+ENV http_proxy $HTTP_PROXY
+ENV https_proxy $HTTPS_PROXY
+ENV no_proxy $NO_PROXY
+
+# Build Args
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
+
+# User settings
+RUN groupadd -r onap && useradd -r -g onap onap
+USER onap
+
+WORKDIR /opt/multicloud/k8s/rsync
+COPY --chown=onap ./rsync ./
+
+# Update the OS and install necessary packages
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends git curl xz-utils && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+
+# Install Go and set the environment variables and dependencies 
+ENV GO111MODULE=on
+RUN curl -sSL https://dl.google.com/go/go1.13.4.linux-amd64.tar.gz | tar -v -C /usr/local -xz
+ENV PATH="/usr/local/go/bin:${PATH}"
+
+# Copy Go dependencies file
+COPY go.mod go.mod
+
+# Download all the dependencies that are specified in
+# the go.mod file.
+RUN go mod download
+
+# Copy rest of the files
+COPY . .
+
+# Expose port
+EXPOSE 9016
+
+# Run Command
+CMD ["./rsync"]

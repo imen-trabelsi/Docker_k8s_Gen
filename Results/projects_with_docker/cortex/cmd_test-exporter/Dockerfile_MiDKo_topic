@@ -1,0 +1,31 @@
+# Use a slim version of Go based on alpine:3.19
+FROM golang:alpine3.19 as builder
+
+WORKDIR /app
+
+# Copy go.mod and download dependencies
+COPY go.mod ./
+RUN go mod download
+
+# Copy the code into the container
+COPY . .
+
+# Build the application
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=$TARGETARCH go build -ldflags="-w -s" -o ./test-exporter ./cmd/test-exporter 
+
+
+# Use a separate stage for running the application to keep the final image small
+FROM alpine:3.19
+
+# Set environment variables for security considerations here
+
+# Add Runtime dependencies
+RUN apk add --no-cache ca-certificates
+
+# Copy the binary from the build stage
+
+# Set entrypoint command
+ENTRYPOINT ["/test-exporter"]
+
+# Labels for the final image
+LABEL org.opencontainers.image.title="test-exporter"

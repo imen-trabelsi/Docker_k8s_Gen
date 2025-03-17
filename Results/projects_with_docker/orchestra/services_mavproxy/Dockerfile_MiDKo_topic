@@ -1,0 +1,29 @@
+# Use the base image specified by the user
+FROM python:2-alpine
+
+# Copy package.json and install app dependencies
+COPY package.json ./
+RUN apk update && \
+    apk upgrade && \
+    apk --no-cache add \
+    py-lxml \
+    gcc \
+    libxml2 \
+    libxml2-dev \
+    libxslt \
+    libxslt-dev \
+    libc-dev && \
+    pip install mavproxy && \
+    npm install && \
+
+# Copy all static files
+COPY . .
+
+# Copy our custom entrypoint.sh over
+COPY mavproxy/entrypoint.sh .
+
+# Make the entrypoint.sh executable
+RUN chmod +x ./entrypoint.sh
+
+# Run the entrypoint.sh when the container starts
+ENTRYPOINT [ "sh", "entrypoint.sh" ]

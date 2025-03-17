@@ -1,0 +1,25 @@
+# Define the base image
+FROM gliderlabs/alpine
+
+# Maintainer
+LABEL maintainer="ns.gavalas@gmail.com"
+LABEL version="0.1.0"
+LABEL description="Builds"
+
+# Update packages and install python and pip
+RUN apk --update add python py-pip openssl ca-certificates xz && pip install -r /app/src/requirements.txt
+
+# Set the working directory
+WORKDIR /app
+
+# Copy source files to the working directory
+COPY . /app
+
+# Environment Variable
+ENV EBS_PORT 5000
+
+# Expose Port
+EXPOSE 5000
+
+#Run command
+CMD ["/usr/bin/python", "/app/src/runebs.py"]

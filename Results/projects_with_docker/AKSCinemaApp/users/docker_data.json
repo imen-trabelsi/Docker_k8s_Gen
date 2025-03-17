@@ -1,0 +1,47 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.15.6-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "elf"
+        ],
+        "labels": [
+            "language=\"golang\"",
+            "org.opencontainers.image.source"
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /opt/app/",
+            "COPY go.mod .",
+            "COPY go.sum .",
+            "COPY . .",
+            "COPY --from=builder /etc/passwd /etc/passwd",
+            "COPY --from=builder --chown=elf:1000 /go/bin/cinema-users /cinema-users"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"./cinema-users\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "adduser -D -g '' elf",
+                "# create workspace"
+            ],
+            [
+                "go mod download",
+                "RUN go mod verify"
+            ],
+            [
+                "CGO_ENABLED=0 GOOS=linux go build -ldflags=\"-w -s\" -a -installsuffix cgo -o /go/bin/cinema-users ./cmd/app",
+                ""
+            ]
+        ]
+    }
+}

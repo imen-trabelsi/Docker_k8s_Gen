@@ -1,0 +1,31 @@
+# Use the base Image
+FROM quay.io/azavea/openjdk-gdal:2.4-jdk8-slim
+
+# Set the working directory
+WORKDIR /var/lib/rf
+
+# Create user with no password
+RUN adduser --system --disabled-password --home /var/lib/rf --shell /sbin/nologin --disabled-password --group rf
+
+# Adjusting permissions for the user
+RUN chown -R rf:rf /var/lib/rf
+RUN chmod 755 /var/lib/rf
+
+# Become 'rf' user
+USER rf
+
+# Copy files from target location to the specified location in the container
+COPY ./target/scala-2.12/backsplash-assembly.jar /var/lib/rf/
+
+# Expose the necessary port
+EXPOSE <Port Number>
+
+# Execution Command
+ENTRYPOINT ["java"]
+
+# Your actual command 
+CMD ["-XX:+UnlockExperimentalVMOptions", "-XX:+UseCGroupMemoryLimitForHeap", "-jar", "backsplash-assembly.jar"]
+
+# Required Environment Variable
+# Add environment variable here. Example:
+# ENV POSTGRES_URL=postgresql://username:password@localhost:5432/postgres

@@ -1,0 +1,28 @@
+# Starting from a base image
+FROM openjdk:11 AS build
+
+# Set the working directory
+WORKDIR /app
+
+# Copying pom.xml file to the Docker context
+COPY pom.xml .
+
+# Download only the dependencies needed for the project
+RUN mvn dependency:go-offline -B
+
+# Copying source code to the Docker context
+COPY src src
+
+# Building the project and packaging the app
+RUN mvn clean package -DskipTests
+
+# Start a new stage with a new base image
+FROM openjdk:11-jre-slim
+
+# Setting the work directory for the application
+WORKDIR /app
+
+# Copy the jar file from first stage to the slim one
+
+# Set the startup command to execute the jar, ensuring the java application can start
+ENTRYPOINT ["java","-jar","/usr/src/search-service-0.0.1-Snapshot.jar"]

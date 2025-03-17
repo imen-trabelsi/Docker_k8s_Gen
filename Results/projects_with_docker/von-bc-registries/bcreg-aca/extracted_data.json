@@ -1,0 +1,22 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Flask",
+        "dependencies": {
+            "requirements.txt": "flask\nrequests\npyyaml\ngunicorn\ngevent\n"
+        },
+        "database": null,
+        "build_system": "pip",
+        "config_files": {
+            "bcreg-aca/Dockerfile": "FROM bcgovimages/von-image:py36-1.9-0\n\nWORKDIR $HOME\n\n# `ADD --chown=` is not available in OpenShift yet.\n# ADD --chown=indy:indy . $HOME\nADD . $HOME\n\nRUN pip3 install --no-cache-dir -r requirements.txt\n\nUSER root\n\n# Add the indy uesr to the root group.\nRUN usermod -a -G root indy\n\nARG entrypoint=\"${HOME}/docker-entrypoint.sh\"\n\nENV HOST_IP 0.0.0.0\nENV HOST_PORT 8000\nENV INDY_GENESIS_PATH \"${HOME}/genesis\"\n\nRUN chown -R indy:root \"${HOME}\" \\\n    && chmod -R ug+rw \"${HOME}\" \\\n    && chmod ug+x \"${entrypoint}\"\n\nUSER indy\n\n# HEALTHCHECK is unnecessary when hosted in OpenShift\n# HEALTHCHECK --interval=60s --timeout=5s --start-period=120s \\\n#     CMD wget -q --spider http://localhost:${HOST_PORT}/health || exit 1\n\nSTOPSIGNAL SIGINT\n\nWORKDIR $HOME/src\nENTRYPOINT [\"bash\", \"../docker-entrypoint.sh\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "1-init-dbs.sh",
+            "Dockerfile"
+        ],
+        "folders": []
+    }
+}

@@ -1,0 +1,26 @@
+# Use official base image of Node.js Alpine
+FROM node:alpine
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Add curl in the specified image
+RUN apk add --no-cache curl\
+
+# Copy package.json to the working directory
+COPY package.json ./
+
+# Install package dependencies
+RUN npm install
+
+# Copy assets/demo-cloud-native.xml to the working directory
+COPY assets/demo-cloud-native.xml ./
+
+# Copy the rest of the application to the working directory
+COPY . .
+
+# Expose the app on port 8080
+EXPOSE 8080
+
+# Start the application
+CMD ["npm", "start"]

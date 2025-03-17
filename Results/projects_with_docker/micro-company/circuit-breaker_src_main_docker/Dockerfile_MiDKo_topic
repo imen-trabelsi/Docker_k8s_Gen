@@ -1,0 +1,23 @@
+# This is the resolver stage, it will resolve all Maven dependencies
+FROM maven:3.8.2-openjdk-11-slim AS builder
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# This is the builder stage where Maven builds the application
+COPY src ./src
+RUN mvn package
+
+# Final stage where the application is run
+FROM eclipse-temurin:11
+LABEL maintainer="maintainer@example.com"
+
+COPY wait-for-it.sh /wait-for-it.sh
+
+RUN bash -c 'touch /app.jar' && \
+
+ENV JAVA_OPTS=""
+
+EXPOSE 6161
+
+ENTRYPOINT [ "sh", "-c", "java -Dspring.profiles.active=docker $JAVA_OPTS -jar /app.jar" ]

@@ -1,0 +1,27 @@
+# Use maven:3.9.9-eclipse-temurin-17 as base image
+FROM maven:3.9.9-eclipse-temurin-17 AS build
+
+# Set the working directory
+WORKDIR /app
+
+# Copy pom.xml and source code to the working directory
+COPY ./pom.xml ./
+COPY src ./src/
+
+# Copy required files
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+
+# Configure maven settings file
+COPY <<EOF /root/.m2/settings.xml
+
+# Add necessary utilities
+RUN apt-get update && apt-get install -y \
+
+# Build the application
+RUN --mount=type=cache,target=/root/.m2/repository/ \
+
+# Expose ports 
+EXPOSE 20000
+
+# Run the application
+ENTRYPOINT ["java","-jar","/app/target/SpringCloudGateway.jar"]

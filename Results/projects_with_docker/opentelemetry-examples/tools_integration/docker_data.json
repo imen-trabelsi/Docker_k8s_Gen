@@ -1,0 +1,33 @@
+{
+    "docker_info": {
+        "base_image": "python:3-alpine3.15",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD requirements.txt requirements.txt",
+            "ADD test.py /app/test.py",
+            "ADD generate_config.py /app/generate_config.py"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"opentelemetry-instrument\",",
+                    "\"pytest\",",
+                    "\"/app/test.py\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "pip install -r requirements.txt",
+                ""
+            ]
+        ]
+    }
+}

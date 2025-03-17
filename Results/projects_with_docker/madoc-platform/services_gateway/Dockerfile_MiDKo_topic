@@ -1,0 +1,22 @@
+# Set the base image
+FROM nginx:stable-alpine
+
+# Make www directory the working directory
+WORKDIR /www
+
+# Copy dependencies file
+COPY yarn.lock ./
+
+# Install dependencies
+RUN yarn install --production && yarn cache clean
+
+# Copy necessary files
+COPY ./nginx.conf /etc/nginx/nginx.conf
+COPY ./conf.d /etc/nginx/conf.d
+COPY ./www /www
+
+# Expose the necessary ports
+EXPOSE 80 
+
+# Set the container's command
+CMD ["nginx", "-g", "daemon off;"]

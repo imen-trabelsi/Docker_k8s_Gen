@@ -1,0 +1,23 @@
+# Use the openjdk 8 as base image
+FROM openjdk:8-jdk-alpine
+
+# Update and install openssl
+RUN apk add --no-cache openssl
+
+# Environment variable for dockerize version
+ENV DOCKERIZE_VERSION v0.6.1
+
+# Download and install dockerize
+RUN wget -q https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+
+# Copy JAR file into the image
+ARG JAR_FILE
+COPY ${JAR_FILE} app.jar
+
+# Expose port 8080
+EXPOSE 8080
+
+# Command to execute at runtime
+CMD ["java", "-jar", "/app.jar"]
+

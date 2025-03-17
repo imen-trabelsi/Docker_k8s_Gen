@@ -1,0 +1,45 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.23.3-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "$PORT"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "PORT",
+            "ENV"
+        ],
+        "envs": [
+            "ENV JAVA_CMD=\"/app/main\""
+        ],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY go.mod ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/app/main\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir /app",
+                "ADD . /app"
+            ],
+            [
+                "go mod download",
+                "COPY . ."
+            ],
+            [
+                "go build -o main ./posts-api",
+                "ENV ENVIRONMENT=$ENV"
+            ]
+        ]
+    }
+}

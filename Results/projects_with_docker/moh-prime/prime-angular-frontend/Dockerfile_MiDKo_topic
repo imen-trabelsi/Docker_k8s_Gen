@@ -1,0 +1,33 @@
+# Define the base image 
+FROM node:14.16
+
+# Define environment variables
+ENV NODE_ROOT /usr/src/app
+ENV REDIRECT_URL $REDIRECT_URL
+
+# Create working directory
+RUN mkdir -p /usr/src/app
+
+# Set the working directory
+WORKDIR /usr/src/app
+
+# Copy files to the working directory
+COPY . .
+COPY nginx.conf /etc/nginx/
+COPY nginxdev.conf /etc/nginx/nginx.template.conf
+COPY entrypoint.sh /
+COPY ./entrypoint.sh /
+
+# Update packages and install dependencies
+RUN printenv && \
+    apt-get update && \
+    RUN npm install @angular/cli -g &&
+    chmod +x /entrypoint.sh && \
+    RUN yarn && \
+    npm install && \
+
+# Expose port
+EXPOSE 80
+
+# Define the command to run 
+ENTRYPOINT ["/entrypoint.sh"]

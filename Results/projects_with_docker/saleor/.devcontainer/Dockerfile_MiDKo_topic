@@ -1,0 +1,42 @@
+# Dockerfile
+
+# Start from the python image
+FROM mcr.microsoft.com/devcontainers/python:3.12
+
+# Create a working directory
+WORKDIR /app
+
+# Install necessary dependencies 
+RUN apt-get update \
+&& apt-get install -y \
+libffi8 \
+libgdk-pixbuf2.0-0 \
+liblcms2-2 \
+libopenjp2-7 \
+libssl3 \
+libtiff6 \
+libwebp7 \
+libpq5 \
+shared-mime-info \
+mime-support \
+pipx \
+
+# Install poetry and ensure application uses system python packages
+RUN pipx install poetry==2.0.1
+RUN poetry config virtualenvs.create false 
+
+# Set Environment variable
+ENV PYTHONUNBUFFERED=1
+
+# Copy files
+COPY poetry.lock pyproject.toml /app/
+
+# Install dependencies
+RUN poetry sync
+
+# Copy remaining source code files into the image
+COPY . /app
+
+# Define default command to run on container start
+# This will be application specific, example: CMD ["python", "manage.py", "runserver"]
+CMD ["python", "your_appstart_command"]

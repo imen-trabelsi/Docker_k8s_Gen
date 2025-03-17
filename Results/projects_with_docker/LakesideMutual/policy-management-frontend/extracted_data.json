@@ -1,0 +1,33 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"policy-management-frontend\",\n  \"version\": \"1.0.0\",\n  \"private\": true,\n  \"scripts\": {\n    \"prestart\": \"react-env --prefix VUE_APP\",\n    \"start\": \"vue-cli-service serve --open\",\n    \"build\": \"vue-cli-service build\"\n  },\n  \"dependencies\": {\n    \"moment\": \"^2.29.4\",\n    \"semantic-ui-css\": \"^2.5.0\",\n    \"semantic-ui-vue\": \"^0.11.0\",\n    \"vue\": \"^2.6.14\",\n    \"vue-router\": \"^3.5.3\"\n  },\n  \"devDependencies\": {\n    \"@beam-australia/react-env\": \"^3.1.1\",\n    \"@vue/cli-plugin-babel\": \"^4.5.15\",\n    \"@vue/cli-service\": \"^4.5.15\",\n    \"babel-eslint\": \"^10.1.0\",\n    \"vue-template-compiler\": \"^2.6.14\"\n  },\n  \"eslintConfig\": {\n    \"root\": true,\n    \"env\": {\n      \"node\": true\n    },\n    \"extends\": [\n      \"plugin:vue/essential\",\n      \"eslint:recommended\"\n    ],\n    \"rules\": {\n      \"no-unused-vars\": \"off\",\n      \"no-console\": \"off\"\n    },\n    \"parserOptions\": {\n      \"parser\": \"babel-eslint\"\n    }\n  },\n  \"postcss\": {\n    \"plugins\": {\n      \"autoprefixer\": {}\n    }\n  },\n  \"browserslist\": [\n    \"> 1%\",\n    \"last 2 versions\",\n    \"not ie <= 8\"\n  ]\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "policy-management-frontend/.env": "VUE_APP_POLICY_MANAGEMENT_BACKEND=http://localhost:8090",
+            "docker-compose.yml": "#\n# This is a docker-compose file to build and start all Lakeside Mutual\n# applications in a single command. Note that the applications will all\n# run in production mode, so there won't be any live-reloading of changes\n# or other development features. For development, we recommend to start\n# the applications invidually or use the run_all_applications scripts.\n#\n# To build the Docker images:\n#   docker-compose build\n#\n# To run the applications:\n#   docker-compose up\n#\n# Note that you might have to adjust the REACT_APP_ and VUE_APP environment\n# variables pointing to the backend services, depending on your hosting\n# environment. By default, they point to localhost, which is fine when running \n# the services locally. In a cloud deployment, these should be changed to the \n# public domainname of the respective backend service.\n# \n# To shut down the applications, simply terminate the previous command.\n#\n\nversion: \"3\"\nservices:\n  spring-boot-admin:\n    build: spring-boot-admin\n    image: lakesidemutual/spring-boot-admin\n    ports:\n      - \"9000:9000\"\n\n  customer-core:\n    build: customer-core\n    image: lakesidemutual/customer-core\n    environment:\n      - \"SPRING_BOOT_ADMIN_CLIENT_URL=http://spring-boot-admin:9000\"\n    ports:\n      - \"8110:8110\"\n\n  customer-management-backend:\n    build: customer-management-backend\n    image: lakesidemutual/customer-management-backend\n    depends_on:\n      - customer-core\n    environment:\n      - \"CUSTOMERCORE_BASEURL=http://customer-core:8110\"\n      - \"SPRING_BOOT_ADMIN_CLIENT_URL=http://spring-boot-admin:9000\"\n    ports:\n      - \"8100:8100\"\n\n  customer-management-frontend:\n    build: customer-management-frontend\n    image: lakesidemutual/customer-management-frontend\n    depends_on:\n      - customer-management-backend\n    environment:\n      - \"REACT_APP_CUSTOMER_SELF_SERVICE_BACKEND=http://localhost:8080\"\n      - \"REACT_APP_CUSTOMER_MANAGEMENT_BACKEND=http://localhost:8100\"\n      - \"REACT_APP_POLICY_MANAGEMENT_FRONTEND=http://localhost:3010\"\n    ports:\n      - \"3020:80\"\n\n  policy-management-backend:\n    build: policy-management-backend\n    image: lakesidemutual/policy-management-backend\n    depends_on:\n      - customer-core\n    environment:\n      - \"CUSTOMERCORE_BASEURL=http://customer-core:8110\"\n      - \"SPRING_BOOT_ADMIN_CLIENT_URL=http://spring-boot-admin:9000\"\n    ports:\n      - \"8090:8090\"\n      - \"61613:61613\"\n      - \"61616:61616\"\n\n  policy-management-frontend:\n    build: policy-management-frontend\n    image: lakesidemutual/policy-management-frontend\n    depends_on:\n      - policy-management-backend\n    environment:\n      - \"VUE_APP_POLICY_MANAGEMENT_BACKEND=http://localhost:8090\"\n    ports:\n      - \"3010:80\"\n\n  customer-self-service-backend:\n    build: customer-self-service-backend\n    image: lakesidemutual/customer-self-service-backend\n    depends_on:\n      - customer-core\n      - policy-management-backend\n    environment:\n      - \"CUSTOMERCORE_BASEURL=http://customer-core:8110\"\n      - \"POLICYMANAGEMENT_TCPBROKERBINDADDRESS=tcp://policy-management-backend:61616\"\n      - \"SPRING_BOOT_ADMIN_CLIENT_URL=http://spring-boot-admin:9000\"\n    ports:\n      - \"8080:8080\"\n\n  customer-self-service-frontend:\n    build: customer-self-service-frontend\n    image: lakesidemutual/customer-self-service-frontend\n    depends_on:\n      - customer-self-service-backend\n      - customer-management-backend\n      - policy-management-backend\n    environment:\n      - \"REACT_APP_CUSTOMER_SELF_SERVICE_BACKEND=http://localhost:8080\"\n      - \"REACT_APP_POLICY_MANAGEMENT_BACKEND=http://localhost:8090\"\n      - \"REACT_APP_CUSTOMER_MANAGEMENT_BACKEND=http://localhost:8100\"\n    ports:\n      - \"3000:80\"\n      \n  risk-management-server:\n    build: risk-management-server\n    image: lakesidemutual/risk-management-server\n    depends_on:\n      - policy-management-backend\n    environment:\n      - \"ACTIVEMQ_HOST=policy-management-backend\"\n      - \"ACTIVEMQ_PORT=61613\"\n    ports:\n      - \"50051:50051\"\n",
+            "policy-management-frontend/Dockerfile": "FROM node:16 as build\nWORKDIR /usr/src/app\nCOPY package.json ./\nCOPY package-lock.json ./\nRUN npm install\nCOPY . ./\nRUN npm run build\n\nFROM nginx:stable-alpine\nCOPY nginx.vh.default.conf /etc/nginx/conf.d/default.conf\nCOPY --from=build /usr/src/app/dist /usr/share/nginx/html\nEXPOSE 80\nWORKDIR /usr/share/nginx/html\n\nRUN apk add --no-cache nodejs npm\nRUN npm install -g @beam-australia/react-env@3.1.1\nADD .env ./\nADD entrypoint.sh /var/entrypoint.sh\nENTRYPOINT [\"/var/entrypoint.sh\"]\n\nCMD [\"nginx\", \"-g\", \"daemon off;\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".gitignore",
+            "Dockerfile",
+            "LICENSE.md",
+            "README.md",
+            "mvnw",
+            "mvnw.cmd",
+            "pom.xml"
+        ],
+        "folders": [
+            ".mvn",
+            "nginx-loadbalancing",
+            "src"
+        ]
+    }
+}

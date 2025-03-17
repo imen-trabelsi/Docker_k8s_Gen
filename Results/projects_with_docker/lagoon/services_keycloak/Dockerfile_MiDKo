@@ -1,0 +1,51 @@
+# First Stage: Building application
+FROM registry.access.redhat.com/ubi9 as builder
+USER root
+WORKDIR /build
+COPY custom-mapper/. .
+COPY package.json .
+RUN npm install \
+
+# Second Stage: Setting up microservice
+FROM registry.access.redhat.com/ubi9
+LABEL maintainer="amazee.io"
+WORKDIR /app
+
+# Set environment variables
+ENV LAGOON_VERSION=$LAGOON_VERSION
+ENV DATABASE_VENDOR=$DATABASE_VENDOR
+ENV LAGOON=keycloak
+ENV TMPDIR=/tmp 
+ENV=/home/.bashrc 
+
+# Run commands
+RUN mkdir -p /mnt/rootfs \
+    && dnf install --installroot /mnt/rootfs nc jq openssl curl unzip --releasever 9 --setopt install_weak_deps=false --nodocs -y; dnf --installroot /mnt/rootfs clean all \
+    && chmod g+w /etc/passwd \
+    && mkdir -p /home \
+    && rm -f /bin/sh && ln -s /bin/bash /bin/sh \
+    && curl -sL https://github.com/krallin/tini/releases/download/v0.19.0/tini-${architecture} -o /sbin/tini && chmod a+x /sbin/tini \
+    && cd /opt \
+    && curl -O https://download.newrelic.com/newrelic/java-agent/newrelic-agent/current/newrelic-java.zip \
+    && unzip newrelic-java.zip \
+    && rm newrelic-java.zip \
+    && curl -sSLo /opt/keycloak/providers/keycloak-home-idp-discovery.jar https://github.com/sventorben/keycloak-home-idp-discovery/releases/download/v26.0.1/keycloak-home-idp-discovery.jar \
+
+# Copy instructions
+COPY custom-mapper/. .
+COPY javascript /tmp/lagoon-scripts
+COPY --from=ubi-micro-build /mnt/rootfs /
+COPY --from=commons /lagoon /lagoon
+COPY --from=commons /bin/fix-permissions /bin/ep /bin/docker-sleep /bin/
+COPY --from=commons /home /home
+COPY entrypoints/kc-startup.sh /lagoon/kc-startup.sh
+COPY entrypoints/wait-for-mariadb.sh /lagoon/entrypoints/98-wait-for-mariadb.sh
+COPY entrypoints/default-keycloak-entrypoint.sh /lagoon/entrypoints/99-default-keycloak-entrypoint.sh
+COPY startup-scripts /opt/keycloak/startup-scripts
+COPY themes/lagoon /opt/keycloak/themes/lagoon
+COPY --from=commons /tmp/lagoon-scripts.jar /opt/keycloak/providers/lagoon-scripts.jar
+COPY lagoon-realm-base-import.json /lagoon/seed/lagoon-realm-base-import.json
+
+# Execution instructions
+ENTRYPOINT ["/sbin/tini", "--", "/lagoon/entrypoints.bash"]
+CMD ["start"]

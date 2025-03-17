@@ -1,0 +1,28 @@
+# Step 1: Using the provided base image
+FROM adorsys/java:11
+
+# Step 2: Setting the correct environment variables as per the user input
+ENV JAVA_OPTS -Xmx1024m -Dserver.port=8080
+ENV JAVA_TOOL_OPTIONS -Xmx1024m
+
+# Step 3: Adding metadata to the image
+LABEL maintainer="https://git.adorsys.de/adorsys/xs2a/aspsp-xs2a"
+
+# Step 4: Setting up the work directory
+WORKDIR /opt/xs2a-embedded-starter
+
+# Step 5: Copying the correct files into the image
+COPY ./target/xs2a-embedded-starter-exec.jar /opt/xs2a-embedded-starter/xs2a-embedded-starter.jar
+
+# Step 6: Creating necessary directories with the correct permissions and setting up the user
+RUN mkdir -p /opt/xs2a-embedded-starter/logs/ && chmod 777 /opt/xs2a-embedded-starter/logs/ && \
+    useradd -u 1001 nonrootuser && \
+
+# Step 7: Switching to the non-root user for security
+USER 1001
+
+# Step 8: Exposing the specified port
+EXPOSE 8080
+
+# Step 9: Setting the startup command for the container
+CMD [ "exec", "$JAVA_HOME/bin/java", "$JAVA_OPTS", "-jar", "/opt/xs2a-embedded-starter/xs2a-embedded-starter.jar" ]

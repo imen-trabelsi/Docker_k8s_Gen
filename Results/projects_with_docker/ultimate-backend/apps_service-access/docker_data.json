@@ -1,0 +1,53 @@
+{
+    "docker_info": {
+        "base_image": "node:12-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "50089"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "NODE_ENV=production"
+        ],
+        "envs": [
+            "ENV NODE_ENV $NODE_ENV"
+        ],
+        "copy_instructions": [
+            "WORKDIR /usr/src/app",
+            "COPY . ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"node\",",
+                    "\"dist/apps/service-access/main.js\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p /usr/src/app",
+                "ADD . /usr/src/app"
+            ],
+            [
+                "yarn global add @nestjs/cli",
+                ""
+            ],
+            [
+                "yarn install --production=false",
+                ""
+            ],
+            [
+                "yarn global add rimraf",
+                "RUN yarn global add @nestjs/cli"
+            ],
+            [
+                "nest build proto-schema",
+                "RUN nest build service-access"
+            ]
+        ]
+    }
+}

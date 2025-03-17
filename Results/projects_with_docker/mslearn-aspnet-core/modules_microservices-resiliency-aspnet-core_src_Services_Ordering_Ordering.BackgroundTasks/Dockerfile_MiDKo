@@ -1,0 +1,28 @@
+# Base Image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+# Set up working dir
+WORKDIR /app
+WORKDIR /src
+
+# Copy Projects
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+# Repeat above COPY line for each of the .csproj files listed above, replacing paths as necessary
+
+# Copy NuGet config and solution
+COPY ["NuGet.config", "./"]
+COPY ["docker-compose.dcproj", "./"]
+COPY ["eShop-Learn.sln", "./"]
+
+# Install dependencies and build the app
+RUN dotnet restore "eShop-Learn.sln"
+RUN dotnet publish --no-restore "Ordering.BackgroundTasks.csproj" -c Release -o /app/publish
+
+# Setting up final stage based on .NET Runtime
+FROM mcr.microsoft.com/dotnet/runtime:6.0 AS final
+WORKDIR /app
+
+# Copy built app from previous stage
+
+# Entry point to run the app using dotnet
+ENTRYPOINT ["dotnet", "Ordering.BackgroundTasks.dll"]

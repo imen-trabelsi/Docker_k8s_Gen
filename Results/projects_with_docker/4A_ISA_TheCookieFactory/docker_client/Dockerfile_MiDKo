@@ -1,0 +1,14 @@
+# Using base image openjdk:8
+FROM openjdk:8
+
+# Copy instruction provided by user
+COPY ./tcf-client-1.0-SNAPSHOT-jar-with-dependencies.jar ./tcf-client.jar
+
+# Setting the environment variable for java
+ENV JAVA_OPTS=""
+
+# Execution point provided by user
+ENTRYPOINT ["java",, "-jar",, "./tcf-client.jar"]
+
+# Command line
+CMD ["localhost",, "8080"]

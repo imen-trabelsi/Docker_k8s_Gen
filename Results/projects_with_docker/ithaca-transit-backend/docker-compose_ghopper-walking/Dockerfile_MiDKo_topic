@@ -1,0 +1,51 @@
+# Define the base image
+FROM maven:3.6.0-jdk-8-alpine as builder
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Copy the current directory contents into the container
+COPY . .
+
+# Clone the necessary repositories
+RUN apk add git && \
+    git clone --single-branch -b tcat-map https://github.com/cuappdev/ithaca-transit-backend.git /usr/src/app && \
+    git clone --single-branch -b 0.12 https://github.com/graphhopper/graphhopper.git && \
+    ./graphhopper.sh --action build && \
+
+# Set the working directory for graphhopper
+WORKDIR /usr/src/app/graphhopper
+
+# Copy the configuration file
+COPY config.yml .
+
+# Installing packages
+RUN npm install
+
+# Building app
+RUN npm run build
+
+# After building src code, prepare a stripped down production container
+FROM node:12-alpine
+
+# Security optimization
+RUN addgroup -S app && adduser -S app -G app
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Set user rights
+RUN chown -R app:app /usr/src/
+
+# Use the created user
+USER app
+
+# Copy node modules dependencies
+
+# Copy built source code
+
+# Expose port 8987
+EXPOSE 8987
+
+# Run the app
+CMD [ "java", "-Xmx1g", "-Xms1g", "-jar", "web/target/graphhopper-web-*.jar", "server", "config.yml" ]

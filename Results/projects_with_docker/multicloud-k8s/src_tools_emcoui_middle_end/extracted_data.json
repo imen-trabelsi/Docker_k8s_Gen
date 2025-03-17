@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "JavaScript",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"onap4k8s-ui\",\n  \"version\": \"0.1.0\",\n  \"private\": true,\n  \"dependencies\": {\n    \"@material-ui/core\": \"^4.11.0\",\n    \"@material-ui/icons\": \"^4.9.1\",\n    \"@material-ui/lab\": \"^4.0.0-alpha.56\",\n    \"@rjsf/core\": \"^2.0.0\",\n    \"@rjsf/material-ui\": \"^2.0.0\",\n    \"@testing-library/jest-dom\": \"^4.2.4\",\n    \"@testing-library/react\": \"^9.5.0\",\n    \"@testing-library/user-event\": \"^7.2.1\",\n    \"axios\": \"^0.19.2\",\n    \"formik\": \"^2.1.4\",\n    \"http-proxy-middleware\": \"^1.0.4\",\n    \"react\": \"^16.13.1\",\n    \"react-dom\": \"^16.13.1\",\n    \"react-router-dom\": \"^5.1.2\",\n    \"react-scripts\": \"^3.4.3\",\n    \"yup\": \"^0.29.1\"\n  },\n  \"scripts\": {\n    \"start\": \"react-scripts start\",\n    \"build\": \"react-scripts build\",\n    \"test\": \"react-scripts test\",\n    \"eject\": \"react-scripts eject\"\n  },\n  \"eslintConfig\": {\n    \"extends\": \"react-app\"\n  },\n  \"browserslist\": {\n    \"production\": [\n      \">0.2%\",\n      \"not dead\",\n      \"not op_mini all\"\n    ],\n    \"development\": [\n      \"last 1 chrome version\",\n      \"last 1 firefox version\",\n      \"last 1 safari version\"\n    ]\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "src/tools/emcoui/middle_end/Dockerfile": "#=======================================================================\n# Copyright (c) 2017-2020 Aarna Networks, Inc.\n# All rights reserved.\n# ======================================================================\n# Licensed under the Apache License, Version 2.0 (the \"License\");\n# you may not use this file except in compliance with the License.\n# You may obtain a copy of the License at\n#           http://www.apache.org/licenses/LICENSE-2.0\n# Unless required by applicable law or agreed to in writing, software\n# distributed under the License is distributed on an \"AS IS\" BASIS,\n# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.\n# See the License for the specific language governing permissions and\n# limitations under the License.\n# ========================================================================\n\nFROM golang:1.14.1\n\n# Set the Current Working Directory inside the container\nWORKDIR /src\nCOPY ./ ./\nRUN make all \n\n# Build the Go app\nFROM ubuntu:16.04\nWORKDIR /opt/emco\nRUN groupadd -r emco && useradd -r -g emco emco\nRUN chown emco:emco /opt/emco -R\nRUN mkdir ./config\nCOPY --chown=emco --from=0 /src/middleend ./\n\n# Command to run the executable\nCMD [\"./middleend\"]\n"
+        },
+        "static_files": {
+            "src/tools/emcoui/public/manifest.json": "{\n  \"short_name\": \"React App\",\n  \"name\": \"Create React App Sample\",\n  \"icons\": [\n    {\n      \"src\": \"favicon.ico\",\n      \"sizes\": \"64x64 32x32 24x24 16x16\",\n      \"type\": \"image/x-icon\"\n    },\n    {\n      \"src\": \"logo192.png\",\n      \"type\": \"image/png\",\n      \"sizes\": \"192x192\"\n    },\n    {\n      \"src\": \"logo512.png\",\n      \"type\": \"image/png\",\n      \"sizes\": \"512x512\"\n    }\n  ],\n  \"start_url\": \".\",\n  \"display\": \"standalone\",\n  \"theme_color\": \"#000000\",\n  \"background_color\": \"#ffffff\"\n}\n",
+            "build/Readme.md": "##########################################\n# Steps for building v2 API Docker Image\n##########################################\n\n    `$cd k8s`\n\n    `$docker build -f build/Dockerfile . -t emco`\n"
+        }
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile"
+        ],
+        "folders": []
+    }
+}

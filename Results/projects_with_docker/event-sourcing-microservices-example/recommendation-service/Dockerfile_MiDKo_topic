@@ -1,0 +1,24 @@
+# Specify base image
+FROM openjdk:17-alpine AS builder
+
+WORKDIR application
+
+# Copy required files for building the microservice
+COPY pom.xml .
+COPY src ./src
+
+# Build the microservice 
+RUN mvn clean install -DskipTests
+
+FROM openjdk:17-alpine
+
+WORKDIR /usr/share/myservice
+
+# Copy the generated JAR file to the working directory
+ARG JAR_FILE
+
+# Expose the specified port
+EXPOSE 8080
+
+# specify the entry point and command
+CMD ["java", "-jar", "/usr/share/myservice/myservice.jar"]

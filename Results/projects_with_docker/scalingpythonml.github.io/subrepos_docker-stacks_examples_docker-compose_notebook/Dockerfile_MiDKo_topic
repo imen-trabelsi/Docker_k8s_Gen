@@ -1,0 +1,32 @@
+# Base Image
+FROM jupyter/minimal-notebook:55d5ca6be183
+
+# Maintainer
+LABEL maintainer="maintainer@domain.com"
+
+# Set Environment variables
+ENV NB_USER=root
+ENV NB_UID=$NB_UID
+ENV NB_GID=$NB_GID
+
+# Setting work directory
+WORKDIR /usr/src/app
+
+# Copy over configuration file
+COPY subrepos/docker-stacks/examples/docker-compose/notebook/Dockerfile .
+
+# Install dependencies
+COPY Gemfile Gemfile.lock ./
+RUN bundle install
+
+# Copy over necessary static files
+COPY . .
+
+# Expose the necessary port
+EXPOSE 80
+
+# Add the database driver for PostgreSQL
+RUN apt-get update -y && apt-get install libpq-dev -y && apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+# Run the server command
+CMD ["rails", "server", "-b", "0.0.0.0"]

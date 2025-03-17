@@ -1,0 +1,24 @@
+# Start from the base image provided by the user
+FROM openjdk:21-slim AS builder
+
+WORKDIR /usr/local/booking
+
+# Copy all necessary files into the Docker image
+COPY . .
+
+# Use Maven to build the project
+RUN mvn clean package -DskipTests
+
+# Start a new stage to get a clean image without build-specific dependencies
+FROM openjdk:21-slim
+
+# Set correct environment variables
+ENV authDomain=rbp-auth \
+    messageDomain=rbp-message \
+
+WORKDIR /usr/local/booking
+
+# Copy only the necessary artifacts from the previous stage
+
+# Initiate entry point
+ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=$profile", "-Dhoneycomb.beeline.write-key=${HONEYCOMB_API_KEY}", "target/restful-booker-platform-booking-*.jar","-D"]

@@ -1,0 +1,25 @@
+# Select base image
+FROM golang:1.23.3-alpine AS build-stage
+
+# Set work directory
+WORKDIR /app
+
+# Copy go.mod file and download dependencies
+COPY go.mod .
+RUN go mod download
+
+# Copy entire source code
+COPY . .
+
+# Building the source code
+RUN go build -o main ./posts-api
+
+# Setting up environment variable
+ENV ENVIRONMENT=$ENV
+ENV JAVA_CMD="/app/main"
+
+# Running the application
+CMD ["/app/main"]
+
+# Exposing service port
+EXPOSE $PORT

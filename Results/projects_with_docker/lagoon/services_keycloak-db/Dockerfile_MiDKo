@@ -1,0 +1,40 @@
+# Base image
+FROM ${UPSTREAM_REPO:-uselagoon}/mariadb-10.6:${UPSTREAM_TAG:-latest}
+
+# ensuring "mysql" user
+USER root
+RUN useradd -ms /bin/bash mysql
+
+# Updating base image and installing necessary tools
+RUN apt-get update \
+ && apt-get install -y curl gnupg --no-install-recommends \
+ && curl -sL https://deb.nodesource.com/setup_14.x | bash - \
+ && apt-get install -y nodejs \
+ && apt-get purge -y --auto-remove curl gnupg \
+
+# create a directory inside the container
+WORKDIR /usr/src/app
+
+# copy package.json into the current directory inside the container
+COPY package.json .
+
+# install the dependencies from package.json
+RUN npm install
+
+# Copy additional files
+COPY my_query-cache.cnf /etc/mysql/conf.d/my_query-cache.cnf
+COPY password-entrypoint.bash /lagoon/entrypoints/55-generate-env.sh
+
+# Configure environment variables
+ARG LAGOON_VERSION
+ENV LAGOON_VERSION=${LAGOON_VERSION}
+ENV MARIADB_DATABASE=keycloak
+
+# fix permissions
+RUN fix-permissions /etc/mysql/conf.d/
+
+# set command to run your application
+CMD ["npm", "start"]
+
+# Specify the user to execute all commands
+USER mysql

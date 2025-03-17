@@ -1,0 +1,21 @@
+# Use the specified base image
+FROM rabbitmq:3.13.7-management
+
+# Set work directory 
+WORKDIR /usr/src/app
+
+# Update and install necessary packages
+RUN apt-get update && apt-get install -y gettext
+
+# Copy requirements to the docker image
+COPY .pylint-conf /usr/src/app
+
+# Install any project dependencies
+RUN pip install --no-cache-dir -r .pylint-conf
+
+# Copy the rest of source code to the docker image
+COPY . /usr/src/app
+
+# Add commands to run the server. 
+# This will automatically start during container startup
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

@@ -1,0 +1,21 @@
+#Stage 1 - Build
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS builder
+WORKDIR /src
+
+COPY ["HostedServices/PlaneService/PlaneService.csproj", "HostedServices/PlaneService/"]
+COPY ["SharedKernel/Utils/Utils.csproj", "SharedKernel/Utils/"]
+COPY ["SharedKernel/Contracts/Contracts.csproj", "SharedKernel/Contracts/"]
+
+RUN dotnet restore "HostedServices/PlaneService/PlaneService.csproj"
+
+COPY . .
+WORKDIR "/src/HostedServices/PlaneService"
+RUN dotnet build "PlaneService.csproj" -c Release -o /app/build
+
+RUN dotnet publish "PlaneService.csproj" -c Release -o /app/publish
+
+#Stage 2 - Generate runtime image
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+WORKDIR /app
+EXPOSE 81
+ENTRYPOINT ["dotnet", "PlaneService.dll", "--environment=Docker"]

@@ -1,0 +1,33 @@
+# Based on the user-provided base image
+FROM claranet/php:1.1.14-php7.2.11
+
+# Set work directory
+WORKDIR /app
+
+# Set environment variables
+ENV NPM_ARGS="--with-dev" \ 
+  STATIC_FILES_YVES="path/within/repo path2/within/repo" \
+  APPLICATION_ENV="development" \
+  ENABLE_PROPEL_DIFF="true" \
+  RABBITMQ_HOST="rabbitmq" \
+  JENKINS_HOST="jenkins" \ 
+  STORAGE_REDIS_HOST="storage-redis" \
+
+# Copy necessary files
+COPY docker/etc /etc/
+COPY . ${WORKDIR}/
+
+# Ensure that package.json is available before running npm install
+COPY package.json ./
+
+# Add tzdata for timezone support and install dependencies
+RUN apk add --no-cache tzdata && \
+
+# Add necessary exposure to port
+EXPOSE 80
+
+# Add labels
+LABEL org.label-schema.name="claranet/spryker-demoshop"
+
+# Run entrypoint script
+CMD [ "/entrypoint.sh", "build", "deps" ]

@@ -1,0 +1,22 @@
+# Using the ruby base image with version 2.5.0
+FROM ruby:2.5.0
+
+# Creating a new directory and making it as working directory
+RUN mkdir -p /src
+WORKDIR /src
+
+# Copying the Gemfile in order to install dependencies
+COPY Gemfile /src/
+COPY Gemfile.lock /src/
+
+# Installing the dependencies using bundler
+RUN bundle install
+
+# Copying the source code to the docker image
+COPY main.rb  /src/
+
+# Exposing the port 3000 to be accessible from outside
+EXPOSE 3000
+
+# Setting the command to start the application
+CMD ["ruby", "main.rb"]

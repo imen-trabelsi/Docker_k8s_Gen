@@ -1,0 +1,32 @@
+# Specify the base image
+FROM mysql:5.7
+
+# Meta data
+LABEL maintainer="Debezium"
+
+# Set environment variables
+ENV MYSQL_ROOT_PASSWORD=debezium
+ENV MYSQL_USER=mysqluser
+ENV MYSQL_PASSWORD=mysqlpw
+
+# Copy project files into the docker image
+COPY mysql.cnf /etc/mysql/conf.d/
+COPY import-data.sql /docker-entrypoint-initdb.d/
+COPY pom.xml /usr/app/
+COPY src /usr/app/src
+
+# Define working directory
+WORKDIR /usr/app
+
+# Install Maven
+RUN apt-get update
+RUN apt-get install -y maven
+
+# Compile the Spring boot application
+RUN mvn clean install
+
+# Expose service port
+EXPOSE 3306
+
+# Startup command
+CMD ["java", "-jar", "target/microservice-0.0.1-SNAPSHOT.jar"]

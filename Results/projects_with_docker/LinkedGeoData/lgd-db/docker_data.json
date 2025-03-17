@@ -1,0 +1,41 @@
+{
+    "docker_info": {
+        "base_image": "postgis/postgis:14-3.2-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY etc/postgresql/14/main/postgresql.conf.dist /conf/",
+            "COPY target/nominatim.so /lgd/nominatim/module/nominatim.so",
+            "COPY start.sh ./start.sh"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"./start.sh\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"postgres\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add gettext",
+                ""
+            ],
+            [
+                "chmod +x ./start.sh",
+                ""
+            ]
+        ]
+    }
+}

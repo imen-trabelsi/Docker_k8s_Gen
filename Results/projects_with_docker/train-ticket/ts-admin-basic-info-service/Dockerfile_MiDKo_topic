@@ -1,0 +1,17 @@
+# Specify the base image
+FROM java:8-jre
+
+# Add a work directory
+WORKDIR /app
+
+# Copy application JAR
+COPY ./target/ts-admin-basic-info-service-1.0.jar /app/
+
+# Set time zone for the container
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+
+# Expose application port
+EXPOSE 18767
+
+# Specify the command to run the application
+ENTRYPOINT ["java", "-Xmx200m", "-jar", "/app/ts-admin-basic-info-service-1.0.jar"]

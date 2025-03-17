@@ -1,0 +1,42 @@
+# Set the base image to eclipse-temurin:11
+FROM eclipse-temurin:11
+
+# Set working directory in the container
+WORKDIR /app
+
+# Add system level dependencies
+RUN apt-get update && apt-get install -y maven
+
+# Copy pom.xml and Source Code to Work Directory
+COPY pom.xml .
+COPY src ./src
+
+# Maven: Resolve Dependencies
+RUN mvn dependency:go-offline -B
+
+# Maven: Build the JAR file
+RUN mvn package -DskipTests
+
+# Add the jar file to container
+COPY target/*.jar /app.jar
+
+# Add wait-for-it.sh file to container
+COPY wait-for-it.sh /wait-for-it.sh
+
+# Provide necessary permissions to the script
+RUN bash -c 'chmod 777 /wait-for-it.sh'
+
+# Healthcheck to check if the container is running properly
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD [ "java", "-jar", "/app.jar", "--actuator/health" ]
+
+# Expose the port
+EXPOSE 8081
+
+# Set the active profile
+ENV SPRING_PROFILES_ACTIVE docker
+
+# Run the jar file 
+CMD ["java","-Dspring.profiles.active=docker","-jar","/app.jar"]
+
+# Touch the jar file so it has a new timestamp
+RUN bash -c 'touch /app.jar'

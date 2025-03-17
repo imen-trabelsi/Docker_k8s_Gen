@@ -1,0 +1,44 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/sdk:6.0",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "WORKDIR /src",
+            "COPY . .",
+            "WORKDIR /app",
+            "COPY --from=publish /app ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"dotnet\",",
+                    "\"GhostNetwork.Gateway.Api.dll\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "dotnet restore GhostNetwork.Gateway.Api/GhostNetwork.Gateway.Api.csproj",
+                "WORKDIR /src/GhostNetwork.Gateway.Api"
+            ],
+            [
+                "dotnet build GhostNetwork.Gateway.Api.csproj -c Release -o /app",
+                ""
+            ],
+            [
+                "dotnet publish GhostNetwork.Gateway.Api.csproj -c Release -o /app",
+                ""
+            ]
+        ]
+    }
+}

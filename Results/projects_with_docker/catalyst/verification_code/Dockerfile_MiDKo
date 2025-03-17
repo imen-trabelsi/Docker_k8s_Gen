@@ -1,0 +1,39 @@
+# Start with the base image
+FROM node:12-alpine
+
+# Installing necessary build dependencies
+RUN apk update && apk add --update alpine-sdk build-base bash python nano postgresql-client
+
+# Set environment variables
+ENV SUPPORTING_FILES /app
+ENV PATH /app/node_modules/.bin:${PATH}
+
+# Make directories
+RUN mkdir -p ${SUPPORTING_FILES}
+RUN mkdir -p /node_modules
+
+# Set work directory
+WORKDIR ${SUPPORTING_FILES}
+
+# Add package.json to work directory
+COPY package.json ${SUPPORTING_FILES}
+
+# Globally install pnpm and install dependencies using pnpm
+RUN npm i -g pnpm
+COPY package.json package-lock.json ./
+RUN pnpm install
+
+# Copy all supporting files
+COPY . ${SUPPORTING_FILES}
+
+# Run tests and build script
+RUN npm run test
+RUN npm run build
+
+# Expose ports, replace 'XXXX' with the appropriate port number
+EXPOSE XXXX
+
+# CMD or ENTRYPOINT, replace 'XXXX' with the appropriate command
+# CMD [ "npm", "start" ]
+# or
+# ENTRYPOINT [ "npm", "start" ]

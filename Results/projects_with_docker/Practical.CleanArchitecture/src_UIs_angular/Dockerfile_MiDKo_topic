@@ -1,0 +1,32 @@
+# Base Image
+FROM node:10.16.0-alpine AS builder
+
+# Create app directory
+WORKDIR /ng-app
+
+# Install app dependencies
+COPY package.json ./
+RUN npm i && mv ./node_modules ./ng-app
+
+# Bundle app source
+COPY . .
+
+# Build the application
+RUN npm run build
+
+# Start from a new stage to create a slim final image
+FROM nginx:alpine
+
+# Remove default nginx files
+RUN rm -rf /usr/share/nginx/html/*
+
+# Copy the build files from the build stage
+
+# Copy the configuration file
+COPY ./config/nginx.conf /etc/nginx/conf.d/default.conf
+
+# Expose the listening port
+EXPOSE 80
+
+# Define the command that should be executed
+CMD ["nginx", "-g", "daemon off;"]

@@ -1,0 +1,25 @@
+## Stage 1: Build with node 
+FROM node:16-alpine AS builder
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Install app dependencies
+COPY package*.json ./
+RUN npm install
+
+# Bundle app source 
+COPY . .
+
+# Build the application
+RUN npm run build
+
+## Stage 2: Production 
+FROM caddy:2-alpine
+
+WORKDIR /usr/share/caddy
+
+# Copy Caddyfile configuration and the built application from previous stage
+COPY Caddyfile /etc/caddy/Caddyfile
+COPY mfe/mod-vue/docker-compose.yml mfe/mod-vue/docker-compose.yml
+COPY mfe/mod-vue/Dockerfile mfe/mod-vue/Dockerfile

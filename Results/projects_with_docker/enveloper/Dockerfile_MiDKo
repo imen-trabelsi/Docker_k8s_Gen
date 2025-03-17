@@ -1,0 +1,57 @@
+####### Base Image #########
+FROM php:7.4-fpm-alpine3.12
+
+######## Variables #########
+ARG APCU_VERSION=5.1.18
+
+######## PHP Extensions #########
+RUN apk update --no-cache \
+    && apk add openssl \
+    && apk add ca-certificates \
+    && apk add zlib-dev \
+    && apk add bash \
+    && apk add nginx=1.18.0-r0 \
+    && apk add zip \
+    && apk add libzip-dev=1.6.1-r1 \
+    && apk add unzip \
+    && docker-php-source extract \
+    && docker-php-ext-install zip \
+    && docker-php-ext-install bcmath \
+    && pecl install apcu-${APCU_VERSION} \
+    && docker-php-ext-enable apcu \
+    && docker-php-source delete \
+    && rm -rf /tmp/* /var/cache/apk/* \
+    && wget https://raw.githubusercontent.com/chrismytton/shoreman/380e745d1c2cd7bc163a1485ee57b20c76395198/shoreman.sh \
+    && chmod +x shoreman.sh && mv shoreman.sh /usr/local/bin/shoreman \
+    && cp /app/infrastructure/php-fpm/php-fpm.conf /usr/local/etc/php-fpm.conf \
+    && cp /app/infrastructure/php-fpm/www.conf /usr/local/etc/php-fpm.d/www.conf \
+    && cp /app/infrastructure/nginx/nginx.conf /etc/nginx/nginx.conf \
+    && cp /app/infrastructure/nginx/vhost.conf /etc/nginx/conf.d/default.conf \
+
+######## Directory and File Permissions #########
+RUN addgroup enveloper && adduser -D -G enveloper enveloper \
+    && chown -R enveloper:enveloper \
+    /app \
+    /var/lib/nginx \
+
+######## Vendor and Dependencies #########
+COPY --from=composer:1.6 /usr/bin/composer /usr/bin/composer
+COPY composer.json /app/
+COPY composer.lock /app/
+WORKDIR /app
+RUN composer install --optimize-autoloader --no-interaction --ignore-platform-reqs --no-scripts
+
+######## Application #########
+COPY app/AppKernel.php /app/app/
+COPY app/AppCache.php /app/app/
+COPY . /app
+
+######## Environment Variables #########
+ENV SYMFONY_ENV prod
+
+######## Network Ports #########
+EXPOSE 8080
+
+######## Runtime Configuration #########
+USER enveloper:enveloper
+CMD ["/usr/local/bin/shoreman"]

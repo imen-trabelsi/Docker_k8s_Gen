@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Java",
+        "dependencies": {
+            "build.gradle.kts": "plugins {\n    java\n    jacoco\n\n    id(\"org.unbroken-dome.test-sets\") version \"4.0.0\"\n    id(\"com.github.johnrengelman.shadow\") version \"7.1.2\"\n    id(\"com.diffplug.spotless\") version \"6.12.0\"\n    id(\"com.github.spotbugs\") version \"5.0.13\"\n    id(\"com.avast.gradle.docker-compose\") version \"0.16.11\"\n    id(\"com.github.ben-manes.versions\") version \"0.44.0\"\n}\n\njava {\n    sourceCompatibility = JavaVersion.VERSION_11\n    targetCompatibility = JavaVersion.VERSION_11\n}\n\nrepositories { mavenCentral() }\n\ntestSets { create(\"integrationTest\") }\n\ndependencies {\n    val flinkVersion = \"1.16.0\"\n    compileOnly(\"org.apache.flink:flink-java:$flinkVersion\")\n    compileOnly(\"org.apache.flink:flink-streaming-java:$flinkVersion\")\n\n    val junitVersion = \"5.9.1\"\n    testImplementation(\"org.junit.jupiter:junit-jupiter-api:$junitVersion\")\n    testImplementation(\"org.apache.flink:flink-test-utils:$flinkVersion\")\n    testImplementation(\"org.assertj:assertj-core:3.23.1\")\n    testImplementation(\"org.mockito:mockito-junit-jupiter:4.9.0\")\n\n    testRuntimeOnly(\"org.junit.jupiter:junit-jupiter-engine:$junitVersion\")\n    testRuntimeOnly(\"org.slf4j:slf4j-simple:2.0.5\")\n\n    val integrationTestImplementation by configurations\n    integrationTestImplementation(\"com.mashape.unirest:unirest-java:1.4.9\")\n    integrationTestImplementation(\"org.awaitility:awaitility:4.2.0\")\n    integrationTestImplementation(\"com.github.docker-java:docker-java:3.2.14\")\n}\n\ntasks {\n    withType(Test::class).configureEach { useJUnitPlatform() }\n    \"jacocoTestReport\"(JacocoReport::class) {\n        reports {\n            xml.required.set(true)\n            html.required.set(true)\n        }\n    }\n    \"check\" { dependsOn(\"jacocoTestReport\") }\n}\n\ndockerCompose {\n    isRequiredBy(tasks[\"integrationTest\"])\n    setProjectName(null)\n}\n\nspotless {\n    java { googleJavaFormat() }\n    kotlinGradle { ktlint() }\n}\n"
+        },
+        "database": null,
+        "build_system": "Gradle",
+        "config_files": {
+            "collector/flink/docker-compose.yml": "version: \"3.9\"\n\nservices:\n  otel-collector:\n    image: otel/opentelemetry-collector-contrib:0.64.0\n    hostname: otel-collector\n    restart: always\n    command: [ \"--config=/conf/collector.yaml\" ]\n    volumes:\n      - ./collector.yaml:/conf/collector.yaml:rw\n    environment:\n      LS_ACCESS_TOKEN: ${LS_ACCESS_TOKEN}\n\n  job-cluster:\n    build: .\n    container_name: job-cluster\n    ports:\n      - \"8081:8081\"\n      - \"9249:9249\"\n    volumes:\n      - state:/state\n    command: standalone-job --job-classname com.github.mbode.flink_prometheus_example.PrometheusExampleJob --job-id 00000000000000000000000000000000\n    environment:\n      - |\n        FLINK_PROPERTIES=\n        jobmanager.rpc.address: job-cluster\n        state.checkpoints.dir: file:///state\n  taskmanager1:\n    build: .\n    container_name: taskmanager1\n    ports:\n      - \"9250:9249\"\n    volumes:\n      - state:/state\n    command: taskmanager\n    environment:\n      - |\n        FLINK_PROPERTIES=\n        jobmanager.rpc.address: job-cluster\n        state.checkpoints.dir: file:///state\n  taskmanager2:\n    build: .\n    container_name: taskmanager2\n    ports:\n      - \"9251:9249\"\n    volumes:\n      - state:/state\n    command: taskmanager\n    environment:\n      - |\n        FLINK_PROPERTIES=\n        jobmanager.rpc.address: job-cluster\n        state.checkpoints.dir: file:///state\n\nvolumes:\n  state:\n",
+            "collector/flink/Dockerfile": "FROM gradle:7.5.1-jdk11 as builder\nCOPY . .\nRUN gradle shadowJar\n\nFROM flink:1.16.0-java11\nRUN echo \"metrics.reporters: prom\" >> \"$FLINK_HOME/conf/flink-conf.yaml\"; \\\n    echo \"metrics.reporter.prom.factory.class: org.apache.flink.metrics.prometheus.PrometheusReporterFactory\" >> \"$FLINK_HOME/conf/flink-conf.yaml\"\nCOPY --from=builder /home/gradle/build/libs/*.jar $FLINK_HOME/usrlib/\nRUN mkdir /state && chown flink:flink /state  # workaround for https://github.com/docker/compose/issues/3270\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "collector.yml",
+            "docker-compose.yml"
+        ],
+        "folders": []
+    }
+}

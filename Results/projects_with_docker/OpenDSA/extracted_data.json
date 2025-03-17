@@ -1,0 +1,57 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Flask",
+        "dependencies": {
+            "requirements.txt": "beautifulsoup4==4.8.2\nxmltodict==0.12.0\ndocutils==0.19\nsphinx==6.1\nhieroglyph==2.1.0\npylint==2.5.3\nFlask==2.0.3\nWerkzeug>=2.2,<3.0\nFlask-AutoIndex==0.6.6\ngunicorn==20.1.0\nsphinxcontrib.jquery==4.1"
+        },
+        "database": null,
+        "build_system": "pip",
+        "config_files": {
+            "docker-compose.yml": "services:\n  opendsa:\n    build:\n      context: .\n      dockerfile: Dockerfile\n    image: opendsa/opendsa:latest\n    volumes:\n      - .:/opendsa\n    ports:\n      - 8080:8080\n    expose:\n      - 8080\n    labels:\n      traefik.http.routers.opendsa.rule: Host(`opendsa.localhost.devcom.vt.edu`)\n      traefik.http.services.opendsa.loadbalancer.server.port: 8080\n\n  deforms:\n    profiles: ['deforms']\n    build:\n      context: .\n      dockerfile: Dockerfile.deforms\n    image: opendsa/deforms:latest\n    volumes:\n      - .:/opendsa\n    ports:\n      - 8081:8080\n    expose:\n      - 8081\n    depends_on:\n      - proxy\n    labels:\n      traefik.http.routers.deforms.rule: Host(`deforms.localhost.devcom.vt.edu`)\n      traefik.http.services.deforms.loadbalancer.server.port: 8080\n\n  proxy:\n    image: code.vt.edu:5005/devcom/devcom-localhost-proxy:traefik-2.3\n    ports:\n      - 80:80\n      - 443:443\n      - 127.0.0.1:8000:8080\n    volumes:\n      - /var/run/docker.sock:/var/run/docker.sock\n    networks:\n      default:\n        aliases: # Ensure all container-to-container HTTP requests go through the proxy\n          - opendsa.localhost.devcom.vt.edu\n          - deforms.localhost.devcom.vt.edu\n",
+            "Dockerfile": "FROM node:22-alpine3.20 AS node\nFROM python:3.9-alpine3.20\n\nARG ODSA_ENV=\"DEV\"\nENV ODSA_ENV=${ODSA_ENV}\n\nARG FLASK_ENV=\"development\"\nENV FLASK_ENV=${FLASK_ENV}\nARG FLASK_APP='app.py'\nENV FLASK_APP=${FLASK_APP}\n\nENV PYTHONUNBUFFERED=1\nENV TZ=America/New_York\nRUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone\n\nRUN apk update\nRUN apk add --no-cache bash git curl make\n\nCOPY --from=node /usr/lib /usr/lib\nCOPY --from=node /usr/local/share /usr/local/share\nCOPY --from=node /usr/local/lib /usr/local/lib\nCOPY --from=node /usr/local/include /usr/local/include\nCOPY --from=node /usr/local/bin /usr/local/bin\n\nWORKDIR /opendsa\n\nRUN npm install -g corepack\nCOPY .yarnrc.yml ./\nCOPY package.json yarn.lock ./\nRUN yarn install\n\nCOPY requirements.txt requirements.txt\nRUN pip3 install -r requirements.txt\n\nCMD [\"make\", \"help\", \"webserver\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".eslintrc",
+            ".gitattributes",
+            ".gitignore",
+            ".pnp.cjs",
+            ".pnp.loader.mjs",
+            ".readthedocs.yml",
+            ".yarnrc.yml",
+            "Dockerfile",
+            "Dockerfile.deforms",
+            "Dockerfile.server",
+            "MIT-license.txt",
+            "Makefile",
+            "README.md",
+            "app.py",
+            "docker-compose.yml",
+            "eslint.config.mjs",
+            "package.json",
+            "requirements-deforms.txt",
+            "requirements-server.txt",
+            "requirements.txt",
+            "yarn.lock"
+        ],
+        "folders": [
+            ".github",
+            "AV",
+            "DataStructures",
+            "Doc",
+            "Exercises",
+            "Fig",
+            "RST",
+            "SourceCode",
+            "Storyboard",
+            "config",
+            "github",
+            "khan-exercises",
+            "lib",
+            "tools"
+        ]
+    }
+}

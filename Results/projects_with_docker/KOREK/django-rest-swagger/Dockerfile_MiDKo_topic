@@ -1,0 +1,35 @@
+# Use python 3.7 image
+FROM python:3.7
+
+# Create base directory
+RUN mkdir /code
+
+# Copying the requirements to the container
+COPY requirements.txt /code
+
+# Set work directory to /code/myapp
+WORKDIR /code/myapp
+
+# Update & install dependencies
+RUN apt-get update && apt-get install -y vim postgresql-client binutils libproj-dev gdal-bin
+
+# Install Python requirements
+RUN pip install -r /code/requirements.txt
+
+# Add the current directory contents into the container at /code
+COPY . /code
+
+# Change the ownership and permission of the code directory
+RUN chown -R www-data:www-data /code && chmod -R 755 /code
+
+# Modify user permissions
+RUN usermod -u 1000 www-data
+RUN usermod -a -G staff www-data
+
+# Expose the application on port 8000
+EXPOSE 8000
+
+# Use bash as entrypoint and wait for the Postgres to start up before
+# running the Django server
+ENTRYPOINT ["bash", "-c", "while ! pg_isready -h postgres_korek -p 5432 | grep accepting; do sleep 1; done;"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

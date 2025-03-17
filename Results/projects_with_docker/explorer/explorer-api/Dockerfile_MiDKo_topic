@@ -1,0 +1,25 @@
+# Use the official Python image as the base image
+FROM python:3.6-buster
+
+# We set the working directory in the container to /app
+WORKDIR /usr/src/app
+
+# We copy the entire project to the working directory
+COPY . /usr/src/app
+
+# Copy the dependencies file to the working directory
+COPY ./requirements.txt /usr/src/app/requirements.txt
+
+# Upgrade pip and install dependencies:
+RUN pip3 install --upgrade pip \
+
+# Expose the port the app runs on
+EXPOSE 8080
+
+# If Python is buffering the outputs, it can be hard to see what's going on.
+# By setting the PYTHONUNBUFFERED environment variable to any value (it doesn’t matter what),
+# we’re telling Python to run in unbuffered mode.
+ENV PYTHONUNBUFFERED 1
+
+# Our entrypoint, run the application
+CMD ["python3", "app.py"]

@@ -1,0 +1,19 @@
+# Use the specified base image
+FROM node:13.6
+
+# Create app directory
+WORKDIR /usr/app
+
+# Copy app source to container
+COPY . .
+
+# Install app dependencies
+RUN npm cache clean --force
+RUN rm -f package-lock.json
+RUN npm install
+
+# Expose the app port
+EXPOSE 8080
+
+# Start the app
+CMD [ "npm", "run", "start" ]

@@ -1,0 +1,20 @@
+FROM nodered/node-red:${node_red_version}
+
+LABEL maintainer="maintainer@example.com"
+
+USER node-red
+
+ENV NODE_TLS_REJECT_UNAUTHORIZED=0
+
+COPY settings.js /usr/src/node-red/.node-red/
+
+WORKDIR /usr/src/node-red
+
+RUN npm install ${node_red_install_modules} \
+    && npm install node-red-contrib-influxdb \
+    && npm install node-red-node-base64 \
+    && npm audit fix \
+
+EXPOSE 1880
+
+ENTRYPOINT ["npm", "start", "--", "--userDir", "/data", "--settings", "/usr/src/node-red/.node-red/settings.js"]

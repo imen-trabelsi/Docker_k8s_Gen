@@ -1,0 +1,31 @@
+FROM nextcloud:fpm-alpine
+
+# If timezone is not set, PHP will use system-default values.
+ENV TZ=UTC
+
+# Set build dependencies
+RUN set -ex; \
+apk add --no-cache --virtual .build-deps \
+$PHPIZE_DEPS \
+imap-dev \
+krb5-dev \
+openssl-dev \
+; \
+docker-php-ext-configure imap --with-kerberos --with-imap-ssl; \
+docker-php-ext-install imap; \
+runDeps="$( \
+scanelf --needed --nobanner --format '%n#p' --recursive /usr/local/lib/php/extensions \
+| tr ',' '\n' \
+| sort -u \
+| awk 'system("[ -e /usr/local/lib/" $1 " ]") == 0 { next } { print "so:" $1 }' \
+)"; \
+apk add --virtual .nextcloud-phpext-rundeps $runDeps; \
+
+# Copy microservice sources to container
+COPY . /var/www/html
+
+# Set the working directory in the container
+WORKDIR /var/www/html
+
+# Provide default command for the container
+CMD ["php-fpm"]

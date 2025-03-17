@@ -1,0 +1,34 @@
+# Dockerfile
+FROM debian:11.6
+
+# Environment Variables
+ENV NVM_VERSION=v0.39.3
+ENV NODE_VERSION=12.16.1
+ENV NVM_DIR=/root/.nvm
+
+# Initial System Setup
+RUN apt-get update && apt-get install -y \
+    gnupg curl wget netbase procps git \
+    apt-transport-https ca-certificates openssh-client \
+    python3-pip \
+    && curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_VERSION}/install.sh | bash \
+    && . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION} \
+    && . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION} \
+    && . "$NVM_DIR/nvm.sh" && nvm alias default v${NODE_VERSION} \
+    && echo 'ENV PATH="/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}"' >> ~/.bashrc \
+    && . ~/.bashrc \
+    && node --version \
+
+# Install Application Dependencies
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+COPY . /usr/src/app
+
+RUN npm install
+RUN npm run -s build
+
+# Expose default Spring Boot port
+EXPOSE 3000
+
+# Set the entrypoint for the application
+ENTRYPOINT ["npm","run"]

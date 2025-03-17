@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nacos-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nacos-server
+  template:
+    metadata:
+      labels:
+        app: nacos-server
+        msePilotAutoEnable: 'off'
+    spec:
+      containers:
+      - env:
+        - name: MODE
+          value: standalone
+        - name: JVM_XMS
+          value: 512M
+        - name: JVM_XMX
+          value: 512M
+        - name: JVM_XMN
+          value: 256M
+        image: '{{ .Values.registry }}nacos-server:v2.4.3'
+        imagePullPolicy: Always
+        livenessProbe:
+          failureThreshold: 3
+          initialDelaySeconds: 15
+          periodSeconds: 10
+          successThreshold: 1
+          tcpSocket:
+            port: 8848
+          timeoutSeconds: 3
+        name: nacos-server
+        readinessProbe:
+          failureThreshold: 5
+          initialDelaySeconds: 15
+          periodSeconds: 15
+          successThreshold: 1
+          tcpSocket:
+            port: 8848
+          timeoutSeconds: 3
+        resources:
+          requests:
+            cpu: '1'
+            memory: 2Gi
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always

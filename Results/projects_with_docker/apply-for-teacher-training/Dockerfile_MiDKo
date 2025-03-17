@@ -1,0 +1,55 @@
+# Specifying the base image for the first stage of the build
+FROM ruby:3.3.5-alpine3.20 AS gems-node-modules
+
+# Installing necessary build dependencies
+RUN apk -U upgrade && \
+    apk add --update --no-cache git gcc libc-dev make postgresql-dev build-base \
+
+# Setting TimeZone
+RUN echo "Europe/London" > /etc/timezone && \
+
+# Configuring environment
+ENV LANG=en_GB.UTF-8 
+ENV SHA=${SHA}
+
+# Setting work directory and copying necessary files
+WORKDIR /app
+COPY Gemfile Gemfile.lock ./
+COPY package.json yarn.lock ./
+
+# Installing Ruby and NodeJS dependencies
+RUN gem update --system && \
+    bundle config set no-cache 'true' && \
+    bundle config set no-binstubs 'true' && \
+    bundle --retry=5 --jobs=4 --without=development && \
+    rm -rf /usr/local/bundle/cache && \
+WORKDIR /app
+
+# Final stage to build the Docker image
+FROM ruby:3.3.5-alpine3.20
+
+# Setting environment variables
+ENV RAILS_ENV=production
+ENV ENV="/root/.ashrc"
+
+# Copying necessary files and artifacts from previous stage
+WORKDIR /app
+COPY . .
+
+# Removing temporary files
+RUN rm -rf tmp/* log/* /tmp/*
+
+# Updating necessary dependencies for runtime usage
+RUN apk -U upgrade && \
+
+# Setting timezone again
+RUN echo "Europe/London" > /etc/timezone && \
+
+# Setting the PATH for the container
+RUN echo export PATH=/usr/local/bin:\$PATH > /root/.ashrc
+
+# Creating a SHA check file for health checks
+RUN echo ${SHA} > public/check
+
+# Init command for the container
+CMD ["bundle", "exec", "rails", "db:migrate:ignore_concurrent_migration_exceptions", "&&", "bundle", "exec", "rails", "server", "-b", "0.0.0.0"]

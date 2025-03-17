@@ -1,0 +1,39 @@
+# Base image
+FROM eclipse-temurin:17-jammy as builder
+ENV JAVA_HOME=/opt/java/openjdk
+ENV PATH "${JAVA_HOME}/bin:${PATH}"
+ENV SIMULATOR_VERSION=7.5.0.11
+ENV MAX_JAVA_MEM=0
+ENV DEBIAN_FRONTEND=noninteractive
+ENV ALGORITHM_SUBSTITUTION_POLICY=SIMILAR_VARIABLES
+
+# Updates and dependencies installation
+RUN apt -y update && apt install -y software-properties-common
+RUN apt install -y --no-install-recommends curl python3.10 python3-pip build-essential dnsutils apt-utils libfreetype6 fontconfig fonts-dejavu
+
+# Project's directories creation
+RUN mkdir -p /usr/local/app/vcell/lib && \
+    mkdir -p /usr/local/app/vcell/simulation && \
+    mkdir -p /usr/local/app/vcell/installDir && \
+    mkdir -p /usr/local/app/vcell/installDir/python/vcell_cli_utils && \
+
+# Setting up the python package manager for the project
+RUN python3 -m pip install poetry && poetry config cache-dir "/poetry/.cache"
+
+# Copying necessary files and binaries
+COPY --from=jre-build /javaruntime $JAVA_HOME
+COPY ./vcell-cli/target/vcell-cli-0.0.1-SNAPSHOT.jar /usr/local/app/vcell/vcell-cli-0.0.1-SNAPSHOT.jar
+COPY ./vcell-cli-utils/ /usr/local/app/vcell/installDir/python/vcell_cli_utils/
+COPY ./localsolvers /usr/local/app/vcell/installDir/localsolvers
+COPY ./nativelibs /usr/local/app/vcell/installDir/nativelibs
+COPY ./docker_run.sh /usr/local/app/vcell/installDir/
+COPY ./bionetgen/BNG2.pl ./bionetgen/*.txt ./bionetgen/VERSION /usr/local/app/vcell/installDir/bionetgen/
+COPY ./biosimulations_log4j2.xml /usr/local/app/vcell/installDir/
+
+# Python dependencies installation
+RUN cd /usr/local/app/vcell/installDir/python/vcell_cli_utils/ && \
+    poetry config cache-dir "/poetry/.cache" --local && \
+    chmod 755 poetry.toml && \
+
+ENTRYPOINT ["/usr/local/app/vcell/installDir/docker_run.sh"]
+EXPOSE 1433

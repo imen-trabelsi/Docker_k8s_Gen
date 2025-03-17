@@ -1,0 +1,31 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.17-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY . .",
+            "COPY --from=build /app/app /app"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/app\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "go build -o app main.go",
+                ""
+            ]
+        ]
+    }
+}

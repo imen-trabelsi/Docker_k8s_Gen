@@ -1,0 +1,23 @@
+# Base Image
+FROM node:12.16.1-alpine
+
+# Set Working Directory
+WORKDIR /usr/src/app
+
+# Copy over package related files
+COPY package*.json ./
+
+# Install Node Modules
+RUN npm install
+
+# Copy over all files
+COPY . .
+
+# Build the application
+RUN npm run build
+
+# Expose necessary ports
+EXPOSE 3000
+
+# Set the command instruction
+CMD ["npm", "run", "dev"]

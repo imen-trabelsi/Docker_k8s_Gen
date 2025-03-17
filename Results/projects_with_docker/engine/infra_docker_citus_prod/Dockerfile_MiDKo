@@ -1,0 +1,27 @@
+# Python Dockerfile
+FROM postgres:13.4
+
+ENV POSTGRES_USER="postgres"
+ENV POSTGRES_DB="postgres"
+ENV PGDATA="/var/lib/postgresql/data"
+ENV POSTGRES_INITDB_ARGS="--auth-host=scram-sha-256"
+
+RUN apt-get update \
+&& apt-get install -y curl \
+&& curl https://install.citusdata.com/community/deb.sh | bash \
+&& apt-get -y install postgresql-13-citus-10.1 postgresql-13-wal2json \
+
+# Copy configuration files for postgres
+COPY infra/docker/citus/prod/postgresql.conf /etc/postgresql/
+COPY infra/docker/citus/prod/pg_hba.conf /etc/postgresql/
+COPY infra/docker/citus/prod/initdb /docker-entrypoint-initdb.d
+COPY infra/docker/citus/prod/initdb/0000_init.sql /0001_init.sql
+
+# Set health checks - Please modify as per application needs
+# HEALTHCHECK --interval=5m --timeout=3s CMD curl -f http://localhost/ || exit 1
+
+# Expose required port - Please replace with actual application port
+# EXPOSE 8080
+
+# Set command - It depends on how the service is started.
+# CMD ["python", "your-python-script.py"]

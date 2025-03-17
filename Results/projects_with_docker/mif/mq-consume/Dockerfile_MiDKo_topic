@@ -1,0 +1,21 @@
+# Define the base image.
+FROM openjdk:11-jre as builder
+
+# Define the working directory.
+WORKDIR application
+
+# Add the app jar and unpack it in the builder image
+ARG JAR_FILE=target/*.jar
+COPY ${JAR_FILE} application.jar
+RUN java -Djarmode=layertools -jar application.jar extract
+
+# Second stage
+FROM openjdk:11-jre
+
+# Copy over the layers from the builder image
+
+# Expose the application on port 8080. This must match the runtime port of the application
+EXPOSE 8080
+
+# Command to run the application
+ENTRYPOINT ["java","org.springframework.boot.loader.JarLauncher"]

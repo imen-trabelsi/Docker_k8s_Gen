@@ -1,0 +1,22 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Flask",
+        "dependencies": {
+            "requirements.txt": "# pin version of flask to avoid bug in mara-app build\nflask==2.2.5\n\n# mara\n-e git+https://github.com/mara/mara-app.git@1.5.1#egg=mara-app\n-e git+https://github.com/mara/mara-acl.git@1.4.0#egg=mara-acl\n-e git+https://github.com/mara/mara-db.git@3.0.1#egg=mara-db\n-e git+https://github.com/mara/mara-page.git@1.3.0#egg=mara-page\n-e git+https://github.com/mara/data-integration.git@1.0.0#egg=data-integration\n\naiohttp\npytz\npymongo\n"
+        },
+        "database": "MongoDB",
+        "build_system": "pip",
+        "config_files": {
+            "issuer_pipeline/docker/postgres/Dockerfile": "from postgres:10\n\n# Context is the top of the data-pipeline folder\nCOPY docker/postgres/1-init-dbs.sh /docker-entrypoint-initdb.d/\n\n# Set permissions on the data folder\nRUN mkdir -p /var/lib/pgsql/data \\\n    && chown -R postgres:postgres /var/lib/pgsql/data \\\n    && chmod -R ug+rw /var/lib/pgsql/data"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "1-init-dbs.sh",
+            "Dockerfile"
+        ],
+        "folders": []
+    }
+}

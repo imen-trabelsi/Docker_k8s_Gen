@@ -1,0 +1,30 @@
+{
+    "docker_info": {
+        "base_image": "mongo",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /home/normalization",
+            "COPY bash/mongo.bash ./"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"mongod\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "chmod 700 mongo.bash",
+                "EXPOSE 27017"
+            ]
+        ]
+    }
+}

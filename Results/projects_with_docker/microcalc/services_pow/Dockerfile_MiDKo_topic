@@ -1,0 +1,33 @@
+# Specify the base image
+FROM node:10-alpine
+
+# App working directory
+WORKDIR /app
+
+# Create app directory and set user permissions
+RUN mkdir /app && chown node:node /app
+USER node
+
+# Add healthcheck [Optional based on User Inputs]
+# HEALTHCHECK CMD curl --fail http://localhost:${APP_PORT} || exit 1
+
+# Copy dependency specifications and install them
+COPY package.json package-lock.json ./
+RUN npm install --only=production
+
+# Copy the rest of the source code
+COPY . .
+
+# Expose the application on port 3000
+EXPOSE ${APP_PORT}
+
+# Set necessary environment variables
+ENV APP_PORT=3000
+ENV AXIOS_DISABLE_PROXY=true
+ENV NODE_ENV=production
+
+# Set correct permissions on scripts
+RUN chmod +x ./start-script.sh
+
+# Start the application
+CMD [ "npm", "start" ]

@@ -1,0 +1,25 @@
+# Considering we have a prometheus based spring boot application to be dockerized, 
+# and assuming that the application is already been build as jar file before docker build command runs.
+# Hence, the sample Dockerfile for the application could be
+
+# Getting base image
+FROM prom/prometheus
+
+# Set the application directory
+WORKDIR /app
+
+# Copying configuration files
+COPY ./prometheus.yml /etc/prometheus/prometheus.yml
+COPY ./app.jar /app/app.jar
+
+# Expose the port on which the application should run
+EXPOSE 8080
+
+# Start the application
+ENTRYPOINT ["java", "-jar"]
+CMD ["/app/app.jar"]
+
+# Please note that the actual Dockerfile would be a bit more complex depending on 
+# several factors like whether the application is spring boot or not, 
+# whether the Spring Boot application is a JAR or a WAR, handling logs, runtime configuration, health checks, etc.
+# But this snippet should help as a starting point.

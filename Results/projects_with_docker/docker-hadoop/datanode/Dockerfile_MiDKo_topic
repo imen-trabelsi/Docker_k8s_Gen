@@ -1,0 +1,27 @@
+# Using the hadoop base image.
+FROM bde2020/hadoop-base:2.0.0-hadoop3.2.1-java8 
+
+# Creating necessary directory
+RUN mkdir -p /hadoop/dfs/data
+
+# Setting the required environment variable.
+ENV HDFS_CONF_dfs_datanode_data_dir=file:///hadoop/dfs/data
+
+# Health checks
+HEALTHCHECK CMD curl -f http://localhost:9864/ || exit 1
+
+# Exposing the necessary services/ports.
+EXPOSE 9864
+
+# Adding run script to the root directory
+COPY run.sh /run.sh
+
+# Granting permissions to run.sh
+RUN chmod a+x /run.sh
+
+# Define volumes
+VOLUME /hadoop/dfs/data
+
+#The ENTRYPOINT specifies a command that will always be executed when the container starts. 
+#The CMD specifies arguments that will be fed to the ENTRYPOINT.
+CMD ["/run.sh"]

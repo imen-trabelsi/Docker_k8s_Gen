@@ -1,0 +1,22 @@
+# Use official base image
+FROM ubuntu:18.04
+
+# Set working directory
+WORKDIR /app
+
+# Update Ubuntu System
+RUN apt update && apt upgrade -y \
+    && apt install -y python3 python3-pip \
+    && apt install -y libopenblas-base libomp5 libomp-dev \
+
+# Expose port
+EXPOSE 50051
+
+# Copy source code and requirements file to working directory
+COPY *.py *.txt ./
+
+# Install dependencies
+RUN pip3 install -r requirements.txt --no-cache-dir \
+
+# Set the start-up command
+ENTRYPOINT ["python3", "./filtersvc.py"]

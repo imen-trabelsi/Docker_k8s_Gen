@@ -1,0 +1,36 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:8",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8080"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "JAR_FILE"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ${JAR_FILE} /var/app/app.jar"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"java\",\"-Djava.security.egd=file:/dev/./urandom\",\"-jar\",\"/var/app/app.jar\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"--spring.config.location=/var/app/config/application.properties\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

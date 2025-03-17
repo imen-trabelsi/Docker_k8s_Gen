@@ -1,0 +1,38 @@
+# Use the base image provided by the user
+FROM --platform=$BUILDPLATFORM as builder
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the package.json and yarn.lock files
+COPY package.json yarn.lock .
+
+# Install dependencies
+RUN yarn install
+
+# Copy the rest of the application
+COPY . .
+
+# Build the application
+RUN yarn build
+
+# Set up our application for production
+
+# Create /app directory
+RUN mkdir /app
+
+# Set workspace
+WORKDIR /app
+
+# Copy instructions
+COPY ./ /app/
+COPY docker/optimization.conf /etc/nginx/conf.d/
+COPY --chown=101 docker/default.conf /etc/nginx/conf.d/
+COPY docker/30-env-subst.sh /docker-entrypoint.d/
+WORKDIR /usr/share/nginx/html
+
+# Environment variable
+ENV BASE_HREF="/rest-sources/authorizer/"
+
+# Start the app
+CMD ["nginx", "-g", "daemon off;"]

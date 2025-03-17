@@ -1,0 +1,24 @@
+# Use the provided base image from Microsoft's DockerHub
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+
+# Copy csproj and restore dependencies
+COPY ["NuGet.config", "./"]
+COPY ["docker-compose.dcproj", "./"]
+COPY ["eShop-Learn.sln", "./"]
+COPY . .
+
+# Copy everything else and build project
+RUN dotnet restore "eShop-Learn.sln"
+WORKDIR "/src/src/Services/Ordering/Ordering.API"
+RUN dotnet publish --no-restore "Ordering.API.csproj" -c Release -o /app/publish
+
+# Generate runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+WORKDIR /app
+
+# Expose port 80 for the application.
+EXPOSE 80
+
+# Set the entrypoint
+ENTRYPOINT ["dotnet", "Ordering.API.dll"]

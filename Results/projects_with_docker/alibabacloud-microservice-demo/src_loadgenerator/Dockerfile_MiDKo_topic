@@ -1,0 +1,31 @@
+# Start with the base image
+FROM base AS builder
+
+# Install necessary packages 
+RUN apt-get -qq update && apt-get install -y --no-install-recommends g++ curl
+
+# Copy over the project files 
+COPY requirements.txt .
+COPY . .
+
+# Install pip dependencies 
+RUN pip install --prefix=/install -r requirements.txt
+
+# Give execute permissions 
+RUN chmod +x ./loadgen.sh
+
+# Set the working directory and get the Java App built 
+WORKDIR /src
+COPY pom.xml .
+RUN mvn dependency:resolve
+COPY . .
+RUN mvn clean package 
+
+FROM base AS release
+COPY . .
+
+# Expose the ports
+EXPOSE 8080
+
+# Startup command
+CMD ["java", "-jar", "spring-boot-web.jar"]

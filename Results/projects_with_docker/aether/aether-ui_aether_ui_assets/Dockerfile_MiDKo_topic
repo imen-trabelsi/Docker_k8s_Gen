@@ -1,0 +1,41 @@
+# Python Base Image
+FROM node:14-alpine as builder
+
+LABEL version="1.0.0"
+LABEL description="Dockerfile for a Python based microservice"
+
+# Setting Work Directory
+WORKDIR /code/
+COPY ./package.json /code/package.json
+WORKDIR /code/assets
+COPY ./ /code/assets
+
+# Add bash and install node dependencies
+RUN mkdir -p /var/tmp && \
+    echo $VERSION > /var/tmp/VERSION && \
+    echo $GIT_REVISION > /var/tmp/REVISION && \
+    apk add -q --no-cache --update bash && \
+    npm install -s --no-audit --no-fund --no-package-lock && \
+
+# Environment Variable
+ENV PATH /code/node_modules/.bin:$PATH
+
+# Set user to node
+USER node
+
+# Second stage of Python build process
+FROM node:14-alpine
+
+WORKDIR /code/
+WORKDIR /code/assets
+
+# Expose Application Port
+EXPOSE 8080
+
+# Healthcheck
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD curl -f http://localhost:8080/health || exit 1
+
+# Run Application
+ENTRYPOINT ["/code/assets/conf/entrypoint.sh"]
+CMD ["npm", "start"]

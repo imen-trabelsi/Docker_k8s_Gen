@@ -1,0 +1,72 @@
+{
+    "docker_info": {
+        "base_image": "debian:stretch-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "PROJECT=SigFoxReceiver",
+            "CONFIGURATION=Release",
+            "PROJECT=SigFoxReceiver",
+            "CONFIGURATION=Release"
+        ],
+        "envs": [
+            "ENV PATH /opt/${PROJECT}/bin:$PATH",
+            "ENV COMMAND ${PROJECT}"
+        ],
+        "copy_instructions": [
+            "COPY . /Build/${PROJECT}/",
+            "WORKDIR /Build/${PROJECT}",
+            "WORKDIR /Build/${PROJECT}/bin/${CONFIGURATION}",
+            "COPY --from=mkbundle /usr/lib/x86_64-linux-gnu/libdl* /lib/",
+            "COPY --from=mkbundle /usr/lib/x86_64-linux-gnu/libgcc* /lib/",
+            "COPY --from=mkbundle /Build/${PROJECT}/bin/${CONFIGURATION}/${PROJECT} /opt/${PROJECT}/bin/",
+            "COPY docker-entrypoint.sh /usr/local/bin/"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"--host\",",
+                    "\"0.0.0.0\",",
+                    "\"--mqttbroker\",",
+                    "\"mqtt\",",
+                    "\"1883\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "set -ex \\",
+                "&& apt update",
+                "&& apt install -y gpg",
+                "&& apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 3FA7E0328081BFF6A14DA29AA6A19B38D3D831EF",
+                "&& echo \"deb http://download.mono-project.com/repo/debian stretch main\" > /etc/apt/sources.list.d/mono-official.list",
+                "&& apt-get update",
+                "&& apt install -y --no-install-recommends mono-devel nuget msbuild fsharp"
+            ],
+            [
+                "set -ex \\",
+                "&& nuget restore -PackagesDirectory ../packages -NonInteractive"
+            ],
+            [
+                "set -ex \\",
+                "&& msbuild /p:Configuration=${CONFIGURATION}"
+            ],
+            [
+                "set -ex \\",
+                "&& mkbundle -o ${PROJECT} --simple ${PROJECT}.exe"
+            ],
+            [
+                "set -ex; ln -s /lib/libc.so.6 /lib/libc.so",
+                "COPY --from=mkbundle /usr/lib/x86_64-linux-gnu/librt* /lib/"
+            ],
+            [
+                "ln -s /usr/local/bin/docker-entrypoint.sh /",
+                "ENTRYPOINT [\"docker-entrypoint.sh\"]"
+            ]
+        ]
+    }
+}

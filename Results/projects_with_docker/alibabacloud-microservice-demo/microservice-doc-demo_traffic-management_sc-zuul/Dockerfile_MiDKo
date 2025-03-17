@@ -1,0 +1,13 @@
+# Base Image
+FROM openjdk:8-jre-alpine
+
+# Copy Instructions
+WORKDIR /app
+COPY /target/sc-zuul-1.0-SNAPSHOT.jar /app
+
+# Exposed Ports
+EXPOSE 8080
+
+# Execution Command
+ENTRYPOINT ["sh", "-c"]
+CMD ["java", "-jar", "/app/sc-zuul-1.0-SNAPSHOT.jar"]

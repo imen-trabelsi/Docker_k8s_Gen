@@ -1,0 +1,27 @@
+{
+    "docker_info": {
+        "base_image": "node:10-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD . /"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"node\",",
+                    "\"index.js\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

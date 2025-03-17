@@ -1,0 +1,38 @@
+# Use the specified base image
+FROM ${UPSTREAM_REPO:-uselagoon}/mariadb-10.6:${UPSTREAM_TAG:-latest}
+
+# Update packages and install dependencies
+RUN apt-get -y update && apt-get install -y nodejs npm
+
+# Set environment variable
+ENV NODE_ENV production
+ENV LAGOON_VERSION=$LAGOON_VERSION
+ENV MARIADB_DATABASE=keycloak
+
+# Copy dependency files
+COPY package.json package-lock.json /app/
+
+# Install dependencies
+RUN cd /app && npm install
+
+# Copy application code
+COPY . /app
+
+# Change permissions for specified directory
+RUN fix-permissions /etc/mysql/conf.d/
+
+# Switch User
+USER mysql
+
+# Copy Configuration files and scripts
+COPY my_query-cache.cnf /etc/mysql/conf.d/my_query-cache.cnf
+COPY password-entrypoint.bash /lagoon/entrypoints/55-generate-env.sh
+
+# Expose necessary Ports
+EXPOSE 3000
+
+# Set the working directory
+WORKDIR /app
+
+# Run the application
+CMD ["npm", "start"]

@@ -1,0 +1,27 @@
+# Use the Base Image
+FROM bde2020/hadoop-base:2.0.0-hadoop3.2.1-java8
+
+# Set the Working Directory
+WORKDIR /app
+
+# Set Environment Variables
+ENV YARN_CONF_yarn_timeline___service_leveldb___timeline___store_path=/hadoop/yarn/timeline
+
+# Run Commands
+RUN mkdir -p /hadoop/yarn/timeline
+
+# Add Copy Instructions
+COPY run.sh /run.sh
+RUN chmod a+x /run.sh
+
+# Expose Ports
+EXPOSE 8188
+
+# Set Healthchecks
+HEALTHCHECK CMD curl -f http://localhost:8188/ || exit 1
+
+# Execution Command
+CMD ["/run.sh"]
+
+# Set Volume
+VOLUME /hadoop/yarn/timeline

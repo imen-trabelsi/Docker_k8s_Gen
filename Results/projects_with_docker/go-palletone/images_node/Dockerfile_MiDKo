@@ -1,0 +1,29 @@
+FROM golang:1.13
+
+# Set up work directory
+WORKDIR /go-palletone
+
+# Copy go mod and sum files
+COPY go.mod go.sum ./
+
+# Download all dependencies using go mod.
+RUN go mod download
+
+# Copy the source code
+COPY . .
+
+# Run commands
+RUN mkdir -p src/github.com/palletone \
+&& cd src/github.com/palletone \
+&& git clone -b testnet https://github.com/palletone/go-palletone.git \
+&& cd go-palletone/cmd/gptn \
+&& go build -mod=vendor -tags mainnet \
+
+# Copy gptn binary to work directory
+COPY --from=builder /go/src/github.com/palletone/go-palletone/cmd/gptn/gptn /usr/local/bin/
+
+# Expose the port
+EXPOSE 8545
+
+# Run the executable
+ENTRYPOINT ["gptn"]

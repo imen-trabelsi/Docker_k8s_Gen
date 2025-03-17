@@ -1,0 +1,31 @@
+FROM ${SOLUTION_IMAGE} AS solution
+
+# Copy artifacts
+COPY --from=tooling \tools\ /tools/
+RUN chmod +x /tools/*
+
+COPY --from=management_services C:\module\cm\content C:\inetpub\wwwroot
+WORKDIR C:\inetpub\wwwroot
+
+
+# Environment variable
+# Please replace this with your actual environment variables and values
+ENV ENV_VARIABLE=value
+
+# Health check
+# Depending on your health check implementation, uncomment the lines below and modify as needed
+# HEALTHCHECK --interval=5m --timeout=5s --start-period=30s \
+# CMD curl --silent --fail localhost/health || exit 1
+
+# Expose the necessary port
+# Replace 8080 with the actual port your application needs to expose
+EXPOSE 8080
+
+# User (if any)
+# Un-comment and modify following lines if your app needs to be run as a non-root user.
+# RUN adduser -D myUser
+# USER myUser
+
+#CMD or ENTRYPOINT instruction
+# Please replace with your actual start command.
+#CMD [ "your-start-command" ]

@@ -1,0 +1,15 @@
+# Use the specified base image
+FROM envoyproxy/envoy:v1.14.2 
+
+# Using a separate build stage to install additional dependencies
+RUN apt-get update && \
+
+# Copy envoy.yaml to the correct location
+COPY src/ApiGateways/Envoy/envoy.yaml /tmpl/envoy.yaml.tmpl
+
+# Copy entrypoint script and grant execution permissions
+COPY src/ApiGateways/Envoy/docker-entrypoint.sh /
+RUN chmod 500 /docker-entrypoint.sh
+
+# Define the execution command
+ENTRYPOINT ["/docker-entrypoint.sh"]

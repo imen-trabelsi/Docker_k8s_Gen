@@ -1,0 +1,26 @@
+# Use golang base image
+FROM golang:1.23-alpine3.21 AS builder
+
+# Set ENV parameter
+ENV LAGOON_VERSION=$LAGOON_VERSION
+ENV LAGOON=api-sidecar-handler
+
+# Set work directory
+WORKDIR /go/src/github.com/uselagoon/lagoon/services/api-sidecar-handler/
+
+# Copy app content to the working directory
+COPY . /go/src/github.com/uselagoon/lagoon/services/api-sidecar-handler/
+
+# Build the binary
+RUN CGO_ENABLED=0 GOOS=linux go build -a -o api-sidecar-handler .
+
+# Start new stage
+FROM alpine:latest
+
+# Copy binary from builder to workdir.
+WORKDIR /app/
+
+# Set entrypoint
+ENTRYPOINT ["/sbin/tini", "--", "/lagoon/entrypoints.sh"]
+CMD ["/app/api-sidecar-handler"]
+

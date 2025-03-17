@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-kratos-demo-b
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: go-kratos-demo-b
+  template:
+    metadata:
+      labels:
+        aliyun.com/app-language: golang
+        app: go-kratos-demo-b
+        mseNamespace: mse-go-demo-multiframe
+        msePilotAutoEnable: 'on'
+        msePilotCreateAppName: go-kratos-demo-b
+    spec:
+      containers:
+      - image: registry.cn-hangzhou.aliyuncs.com/mse-governance-demo/go-kratos-demo-b:1.0-multiframe
+        imagePullPolicy: Always
+        name: go-kratos-demo-b
+        ports:
+        - containerPort: 8001
+          name: http
+        - containerPort: 9001
+          name: grpc

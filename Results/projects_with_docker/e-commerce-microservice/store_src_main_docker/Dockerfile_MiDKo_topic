@@ -1,0 +1,23 @@
+## Stage 1 : Build the application
+FROM gradle:6.7.1-jdk8 AS build
+COPY --chown=gradle:gradle . /home/gradle/src
+WORKDIR /home/gradle/src
+RUN gradle build --no-daemon
+
+# Stage 2 : Create the Docker final image
+FROM openjdk:8-jre-alpine
+
+ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS
+
+EXPOSE 8080
+
+RUN adduser -D -s /bin/sh jhipster
+WORKDIR /home/jhipster
+
+COPY entrypoint.sh entrypoint.sh
+RUN chmod 755 entrypoint.sh && chown jhipster:jhipster entrypoint.sh app.jar
+
+USER jhipster
+
+ENTRYPOINT ["./entrypoint.sh"]
+CMD ["java", "-jar", "/app.jar"]

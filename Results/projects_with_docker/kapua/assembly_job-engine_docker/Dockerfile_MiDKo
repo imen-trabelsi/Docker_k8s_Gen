@@ -1,0 +1,36 @@
+# Base Image
+FROM @docker.account@/jetty-base
+
+# Set environment variables
+ENV BROKER_ADDR broker
+ENV BROKER_PORT 1883
+ENV DATASTORE_ADDR es:9200
+ENV SQL_DB_ADDR db
+ENV SQL_DB_PORT 3306
+ENV SERVICE_BROKER_ADDR failover:(amqp://events-broker:5672)?jms.sendTimeout=1000
+ENV JAVA_OPTS "-Dcommons.db.schema.update=true"
+
+# Add necessary users.
+USER 1000
+
+# Set work directory
+WORKDIR /opt/jetty
+
+# Copy project files into the docker image
+COPY pom.xml /opt/jetty/pom.xml
+COPY src /opt/jetty/src
+
+# Build the project
+RUN mvn clean install
+
+# Change ownership and permission of the directories
+RUN chown -R 1000:0 /opt/jetty /var/opt/jetty && \
+
+# Get built artifact and put it to default Jetty base directory
+COPY --from=build /opt/jetty/target/*.jar /var/lib/jetty/webapps/ROOT.jar
+
+# Expose necessary ports
+EXPOSE 3306 1883 5672 9200
+
+# Entry command for running the microservice
+ENTRYPOINT ["java", "-jar", "/var/lib/jetty/webapps/ROOT.jar"]

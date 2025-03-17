@@ -1,0 +1,28 @@
+FROM node:8
+
+LABEL version="2.0.0"
+LABEL description="This is the Wallclock Service Dockerfile"
+
+RUN rm -rf /usr/local/lib/node_modules/npm \
+    && mkdir /usr/local/lib/node_modules/npm \
+    && curl -sL https://github.com/npm/npm/archive/v5.3.0.tar.gz | tar xz -C /usr/local/lib/node_modules/npm --strip-components=1 \
+
+RUN mkdir -p /usr/src/wallclockservice
+
+WORKDIR /usr/src/wallclockservice
+
+COPY package.json /usr/src/wallclockservice/
+
+RUN npm install
+
+COPY Gruntfile.js /usr/src/wallclockservice/
+
+RUN mkdir -p /usr/src/wallclockservice/config
+COPY ./config /usr/src/wallclockservice/config/
+
+RUN mkdir -p /usr/src/wallclockservice/src
+COPY ./src /usr/src/wallclockservice/src/
+
+EXPOSE 80
+
+CMD ["npm", "start"]

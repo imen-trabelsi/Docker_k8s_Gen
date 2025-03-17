@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: nacos-sc-provider
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nacos-sc-provider
+  template:
+    metadata:
+      annotations:
+        msePilotAutoEnable: 'on'
+        msePilotCreateAppName: nacos-sc-provider
+      labels:
+        app: nacos-sc-provider
+    spec:
+      containers:
+      - env:
+        - name: JAVA_HOME
+          value: /usr/lib/jvm/java-1.8-openjdk/jre
+        - name: LANG
+          value: C.UTF-8
+        image: registry.cn-hangzhou.aliyuncs.com/mse-demo-hz/sc-provider:migrate-nacos-1.0
+        imagePullPolicy: Always
+        name: nacos-sc-provider
+      imagePullSecrets:
+      - name: mse-demo-hz

@@ -1,0 +1,25 @@
+# Set base image
+FROM node:alpine
+
+# Create application directory
+WORKDIR /usr/src/app
+
+# Copy package.json and install dependencies
+COPY package*.json ./
+
+RUN npm install 
+
+# Bundle application source
+COPY . .
+
+# Copy entrypoint
+COPY ./entrypoint.sh /entrypoint.sh
+
+# Make the file executable
+RUN chmod +x /entrypoint.sh
+
+# Expose port
+EXPOSE 8080
+
+# Run the application
+CMD ["/entrypoint.sh"]

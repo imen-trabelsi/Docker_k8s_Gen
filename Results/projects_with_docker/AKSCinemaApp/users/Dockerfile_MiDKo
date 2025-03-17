@@ -1,0 +1,36 @@
+# Base image
+FROM golang:1.15.6-alpine as builder
+
+# Create appuser
+RUN adduser -D -g '' elf
+
+# Set current working directory inside the container
+WORKDIR /opt/app/
+
+# Copy go mod and sum files
+COPY go.mod go.sum ./
+
+# Download all the dependencies 
+RUN go mod download 
+
+# Verify that the downloaded modules are the expected ones
+RUN go mod verify
+
+# Copy the source from the current directory to the working directory inside the container
+COPY . .
+
+# Build the Go app
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -a -installsuffix cgo -o /go/bin/cinema-users ./cmd/app
+
+# Start a new stage from scratch
+FROM alpine:latest  
+
+RUN addgroup -S elf && adduser -S elf -G elf -D -H -h /dev/null
+USER elf
+
+# Copy the Pre-built binary file from the previous stage. 
+
+LABEL language="golang"
+LABEL org.opencontainers.image.source=""
+
+ENTRYPOINT ["./cinema-users"]

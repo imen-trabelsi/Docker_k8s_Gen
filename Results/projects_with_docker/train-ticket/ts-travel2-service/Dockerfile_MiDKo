@@ -1,0 +1,13 @@
+# Dockerfile
+FROM java:8-jre
+
+# Add Project Files
+COPY ./target/ts-travel2-service-1.0.jar /app/
+
+EXPOSE 16346
+
+# Set timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Application execution command  
+ENTRYPOINT [ "java", "-Xmx200m", "-jar", "/app/ts-travel2-service-1.0.jar" ]

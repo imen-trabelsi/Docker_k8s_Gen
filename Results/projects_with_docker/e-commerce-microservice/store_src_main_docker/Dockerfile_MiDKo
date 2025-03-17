@@ -1,0 +1,38 @@
+# This is the Dockerfile which includes necessary components and steps for a Spring Boot microservice.
+
+FROM openjdk:8-jre-alpine
+
+
+# Add User
+RUN adduser -D -s /bin/sh jhipster
+
+# Set Home Directory
+WORKDIR /home/jhipster
+
+# Setting necessary Environment Variables
+ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \
+
+# Copy all necessary files
+COPY .dockerignore .dockerignore
+COPY Dockerfile Dockerfile
+COPY app.yml app.yml
+COPY docker-registry.yml docker-registry.yml
+COPY entrypoint.sh entrypoint.sh
+COPY hazelcast-management-center.yml hazelcast-management-center.yml
+COPY jenkins.yml jenkins.yml
+COPY jhipster-registry.yml jhipster-registry.yml
+COPY mysql.yml mysql.yml
+COPY sonar.yml sonar.yml
+COPY *.war app.war
+
+# Entry Point
+ENTRYPOINT ["./entrypoint.sh"]
+
+# Expose the necessary port
+EXPOSE 8080
+
+# Set the permissions for script execution
+RUN chmod 755 entrypoint.sh && chown jhipster:jhipster entrypoint.sh
+
+# Switch to non-root user
+USER jhipster

@@ -1,0 +1,31 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"events-management\",\n  \"version\": \"1.0.0\",\n  \"description\": \"Events Management Service - reponsible for handling local events related operations\",\n  \"main\": \"./src/server.js\",\n  \"scripts\": {\n    \"start\": \"node ./src/server.js\",\n    \"test\": \"jest --coverage\",\n    \"watch\": \"jest --coverage --watchAll\",\n    \"lint\": \"eslint ./src && eslint ./tests\",\n    \"testOnly\": \"jest\",\n    \"checkCodeQuality\": \"eslint ./src && eslint ./tests && jest --coverage\"\n  },\n  \"jest\": {\n    \"testEnvironment\": \"node\",\n    \"verbose\": true,\n    \"coverageThreshold\": {\n      \"global\": {\n        \"branches\": 100,\n        \"functions\": 100,\n        \"lines\": 100,\n        \"statements\": -10\n      }\n    }\n  },\n  \"author\": \"Rithin Chalumuri\",\n  \"license\": \"MIT\",\n  \"dependencies\": {\n    \"dotenv\": \"^6.1.0\",\n    \"koa\": \"^2.6.2\",\n    \"koa-bodyparser\": \"^4.2.1\",\n    \"koa-helmet\": \"^4.0.0\",\n    \"koa-jwt\": \"^3.5.1\",\n    \"koa-logger\": \"^3.2.0\",\n    \"koa-router\": \"^7.4.0\",\n    \"mongoose\": \"^5.3.13\"\n  },\n  \"devDependencies\": {\n    \"eslint\": \"^5.9.0\",\n    \"eslint-config-airbnb-base\": \"^13.1.0\",\n    \"eslint-plugin-import\": \"^2.14.0\",\n    \"jest\": \"^23.6.0\",\n    \"supertest\": \"^3.3.0\"\n  }\n}\n"
+        },
+        "database": "MongoDB",
+        "build_system": "npm",
+        "config_files": {
+            "docker-compose.yml": "version: '3'\n\nservices:\n  articles-management:\n    container_name: articles-management\n    build:\n      context: ./services/articles-management\n      dockerfile: Dockerfile\n    ports:\n      - \"3000:3000\"\n    environment:\n      - PORT=3000\n      - MESSAGE_BUS=amqp://rabbitmq\n    links:\n      - rabbitmq\n  \n  events-management:\n    container_name: events-management\n    build:\n      context: ./services/events-management\n      dockerfile: Dockerfile\n    ports:\n      - \"3001:3000\"\n    environment:\n      - PORT=3000\n      - MESSAGE_BUS=amqp://rabbitmq\n    links:\n      - rabbitmq\n  \n  user-management:\n    container_name: user-management\n    build:\n      context: ./services/user-management\n      dockerfile: Dockerfile\n    ports:\n      - \"3002:3000\"\n    environment:\n      - PORT=3000\n      - MESSAGE_BUS=amqp://rabbitmq\n    links:\n      - rabbitmq\n  \n  authentication:\n    container_name: authentication\n    build:\n      context: ./services/authentication\n      dockerfile: Dockerfile\n    ports:\n      - \"3003:3000\"\n    environment:\n      - PORT=3000\n      - MESSAGE_BUS=amqp://rabbitmq\n    links:\n      - rabbitmq\n  \n  notification:\n    container_name: notification\n    build:\n      context: ./services/notification\n      dockerfile: Dockerfile\n    environment:\n      - MESSAGE_BUS=amqp://rabbitmq\n      - EMAIL_SERVICE=gmail\n      - EMAIL_ID=noreply.localnewsapplication@gmail.com\n      - EMAIL_PASSWORD=Testing0*\n      - ADMIN_EMAIL=localnewsapp340ct@gmail.com\n    links:\n      - rabbitmq\n\n  rabbitmq:\n    container_name: rabbitmq\n    image: rabbitmq:3.7.4",
+            "services/events-management/Dockerfile": "# Use Node v11.2 as the base image.\nFROM node:11.2.0-alpine\n\n#Set the working directory\nWORKDIR /usr/app\n\n# Copy everything in current directory to /server folder\nADD . /server\n\n# Install dependencies\nRUN cd /server; \\\n    npm install\n\nEXPOSE 3000\n\n# Run node \nCMD [\"node\", \"/server/src/server.js\"]"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            ".eslintignore",
+            ".eslintrc.yml",
+            ".gitignore",
+            "Dockerfile",
+            "package.json"
+        ],
+        "folders": [
+            "__mocks__",
+            "src",
+            "tests"
+        ]
+    }
+}

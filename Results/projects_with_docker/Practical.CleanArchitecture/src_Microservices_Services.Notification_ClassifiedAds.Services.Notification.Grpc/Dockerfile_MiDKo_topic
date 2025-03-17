@@ -1,0 +1,23 @@
+# Stage 1: Build environment
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+WORKDIR /app
+
+# Copy packages
+COPY *.csproj ./
+RUN dotnet restore
+
+# Copy everything
+COPY . ./
+RUN dotnet publish -c Release -o out
+
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+WORKDIR /app
+
+# Healthcheck 
+HEALTHCHECK --interval=5m --timeout=3s CMD curl -f http://localhost:8080/health || exit 1
+
+#Expose Ports
+EXPOSE 8080
+
+#Application Entrypoint
+CMD ["dotnet", "ClassifiedAds.Services.Notification.Grpc.dll"]

@@ -1,0 +1,25 @@
+# Base Image
+FROM openjdk:14-alpine
+
+# Install curl
+RUN apk --no-cache add curl
+
+# Add build files to the filesystem
+COPY build.gradle .
+COPY docker-compose.yml .
+COPY coinbase-integration/subscriber/Dockerfile .
+
+# Add source files to the filesystem
+COPY ./src ./src
+
+# Build the application
+RUN ./gradlew clean build
+
+# Copy jar file into app/bin
+COPY ./build/libs/*-all.jar /bin/app.jar
+
+# Port to expose
+EXPOSE 8080
+
+# Define default command
+CMD ["java", "-jar", "/bin/app.jar"]

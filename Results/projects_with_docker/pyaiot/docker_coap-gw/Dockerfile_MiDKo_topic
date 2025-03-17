@@ -1,0 +1,20 @@
+# Get base Image
+FROM pyaiot/base:latest
+
+LABEL maintainer="alexandre.abadie@inria.fr"
+
+# Set workdir
+WORKDIR /app
+
+# Copy all static files and install all dependencies
+COPY . /app
+
+RUN pip install -r setup.py
+
+# The application runs on port 5683
+EXPOSE 5683/udp
+
+RUN chmod +x /run.sh
+COPY run.sh /run.sh
+
+CMD ["/run.sh"]

@@ -1,0 +1,35 @@
+# Fetch the base image
+FROM openjdk:21-slim-buster as build
+
+# Set up workspace
+WORKDIR /workspace
+
+# Copy maven executable to the image
+COPY .mvn .mvn
+COPY mvnw .
+
+# Copy maven POM
+COPY pom.xml .
+
+# RUN mvn dependency:go-offline to pre-fetch all required dependencies (improves docker build speed)
+RUN ./mvnw -B dependency:go-offline
+
+# Copy source code
+COPY src src
+
+# Build the application
+RUN ./mvnw -B package
+
+# Start the second build stage
+FROM openjdk:21-slim-buster as production
+
+# Copy the built jar file
+
+# Set the work directory
+WORKDIR /app
+
+# Expose the port
+EXPOSE 8110
+
+# Set the startup command to execute the jar
+ENTRYPOINT ["java", "-jar", "customer-core.jar"]

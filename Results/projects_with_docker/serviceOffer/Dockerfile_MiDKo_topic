@@ -1,0 +1,40 @@
+# Base Image
+FROM node:latest as builder
+
+# Note: No Root access for running container.
+USER node
+
+# Create and Set working directory
+WORKDIR /usr/src/app/serviceoffer
+
+# Ensure package.json and package-lock.json are copied, for both caching and Install app dependencies
+COPY package*.json ./
+
+# Install app dependencies
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Build the application
+RUN npm run lint
+RUN npm run test
+RUN npm run prod
+
+# Start the application
+CMD [ "npm", "start" ]
+
+# Multistage build for removing development dependencies
+FROM node:latest as prod
+
+WORKDIR /usr/src/app/serviceoffer
+
+
+# Exposed Ports
+EXPOSE 4000
+
+# Application Healthcheck
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD curl -f http://localhost:4000/ || exit 1
+
+CMD ["node", "server.js"]

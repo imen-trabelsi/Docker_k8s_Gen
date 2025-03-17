@@ -1,0 +1,21 @@
+# Start with the ruby 2.5.0 base image
+FROM ruby:2.5.0
+
+# Set the working directory as /src
+WORKDIR /src
+
+# Copy the Gemfile into the container
+COPY Gemfile /src/
+COPY Gemfile.lock /src/
+
+# Install the gems using bundler
+RUN bundle install
+
+# Copy the main application file into the container
+COPY main.rb /src/
+
+# Expose the service on port 3000
+EXPOSE 3000
+
+# Define the default command to be run when the image is run
+CMD ["ruby", "main.rb"]

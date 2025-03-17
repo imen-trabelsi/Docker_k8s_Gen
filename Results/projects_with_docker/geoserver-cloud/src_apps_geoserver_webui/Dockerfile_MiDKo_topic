@@ -1,0 +1,54 @@
+# Start with a base image containing Java runtime
+FROM $REPOSITORY/gs-cloud-base-jre:$TAG AS builder
+
+# Install postgresql jar dependencies 
+RUN apk add postgresql
+
+# Set the current working directory inside the image
+WORKDIR /app
+
+# Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy the pom.xml file
+COPY pom.xml .
+
+# Build all the dependencies in preparation to go offline. 
+# This is a separate step so the dependencies will be cached unless 
+# the pom.xml file has changed.
+RUN ./mvnw dependency:go-offline -B
+
+# Copy the project source
+COPY src/ src/apps/geoserver/webui/Dockerfile src/
+
+# Package the application
+RUN ./mvnw package -DskipTests
+RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+
+# Arguments for the final stage
+ARG REPOSITORY=geoservercloud
+ARG TAG=latest
+ARG JAR_FILE=target/gs-cloud-*-bin.jar
+
+# Start with the base image
+FROM $REPOSITORY/gs-cloud-base-jre:$TAG
+
+# Set the work directory
+WORKDIR /app
+
+# Set the JAVA_TOOL_OPTIONS environment variable
+ENV JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS} -XX:SharedArchiveFile=application.jsa"
+
+# Copy dependencies
+
+# Expose the port
+EXPOSE $SERVER_PORT
+
+# Run the jar file
+ENTRYPOINT ["java","-Djarmode=layertools", "-jar", "application.jar", "extract"]
+
+# Additional layer with application
+RUN mkdir /tmp/tmpdatadir
+RUN GEOSERVER_DATA_DIR=/tmp/tmpdatadir java -XX:ArchiveClassesAtExit=application.jsa -Dspring.context.exit=onRefreshed -Dspring.profiles.active=standalone,datadir,offline -Dserver.port=0 -Dmanagement.server.port=0 org.springframework.boot.loader.JarLauncher
+RUN rm -rf /tmp/*

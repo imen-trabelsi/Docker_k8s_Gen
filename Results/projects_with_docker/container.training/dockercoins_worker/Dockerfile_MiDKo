@@ -1,0 +1,16 @@
+# Use the python:alpine base image
+FROM python:alpine
+
+# Copy the source code to the container
+COPY worker.py /
+
+# Install necessary dependencies using pip
+RUN pip install redis
+RUN pip install requests
+
+# Provide Metadata to the Image
+LABEL version="1.0"
+LABEL description="Docker image for python application"
+
+# Set up the command to run when container starts
+CMD ["python", "worker.py"]

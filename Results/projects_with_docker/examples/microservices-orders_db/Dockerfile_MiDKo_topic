@@ -1,0 +1,28 @@
+# Base Image
+FROM alpine:3.4
+
+# Install necessary packages
+RUN apk add --update sqlite openjdk8 maven
+
+# Create necessary directories and add necessary files
+WORKDIR /db
+COPY customers.sql /db
+COPY customers.table /db
+RUN mkdir /db/data
+RUN sqlite3 /db/data/microservices.db < /db/customers.sql
+
+WORKDIR /app
+COPY pom.xml /app
+COPY src /app/src
+
+# Build the Spring Boot App using Maven
+RUN mvn clean install -DskipTests
+
+# Expose Port
+EXPOSE 8080
+
+# Set the correct environment variables
+ENV SPRING_PROFILES_ACTIVE docker
+
+# Set the entrypoint
+ENTRYPOINT ["java", "-jar", "/app/target/*.jar"]

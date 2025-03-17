@@ -1,0 +1,41 @@
+# Set Base Image
+FROM python:3.6-buster
+
+# Create Directory
+RUN mkdir -p /app
+WORKDIR /app
+
+# Set Local Timezone
+ENV LANG C.UTF-8
+
+# Environment Variable
+ENV LIBRARY_PATH=/lib:/usr/lib
+ENV PIPENV_VENV_IN_PROJECT=true
+ENV LC_ALL C.UTF-8
+ENV LANG C.UTF-8
+
+# Update && Install dependencies
+RUN apt-get update && \
+
+# Installing Poetry
+RUN pip3 install 'poetry==1.0.9'
+
+# Copy project files
+COPY docker/cilantro-default-worker/pyproject.toml docker/cilantro-default-worker/poetry.lock ./
+WORKDIR /poetry
+RUN poetry config virtualenvs.create false && poetry install --no-interaction
+
+WORKDIR /app
+COPY service ./service
+COPY utils ./utils
+COPY workers ./workers
+COPY resources ./resources
+COPY docker/cilantro-default-worker/entrypoint.sh /entrypoint.sh
+COPY docker/cilantro-default-worker/VERSION .
+RUN chmod +x /entrypoint.sh
+
+# Expose Port
+EXPOSE 8000
+
+# Runtime Configuration
+ENTRYPOINT ["bash", "/entrypoint.sh"]

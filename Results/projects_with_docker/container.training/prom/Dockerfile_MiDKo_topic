@@ -1,0 +1,23 @@
+# Comment: Use a base image
+FROM prom/prometheus:v1.4.1
+
+# Comment: Copy the Python requirements file
+COPY requirements.txt /
+
+# Comment: Install the Python dependencies
+RUN pip install -r /requirements.txt
+
+# Comment: Copy the Prometheus configuration file
+COPY prometheus.yml /etc/prometheus/prometheus.yml
+
+# Comment: Set the working directory
+WORKDIR /app
+
+# Comment: Copy the application
+COPY . /app
+
+# Comment: Expose the necessary port
+EXPOSE 9090
+
+# Comment: Set the entrypoint
+ENTRYPOINT [ "python", "run.py" ]

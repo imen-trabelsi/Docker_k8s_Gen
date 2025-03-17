@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"ithaca-transit-backend-refactor\",\n  \"version\": \"1.0.0\",\n  \"description\": \"\",\n  \"main\": \"index.js\",\n  \"type\": \"module\",\n  \"scripts\": {\n    \"build:prod\": \"./node_modules/.bin/webpack --env.NODE_ENV=production --mode=production -p\",\n    \"build:dev\": \"docker compose build node\",\n    \"start:dev\": \"nodemon src/index.js\",\n    \"start\": \"node src/index.js\",\n    \"start:microservices\": \"docker compose up -d ghopper ghopper-walking live-tracking map\",\n    \"start:node\": \"docker compose up node\"\n    },\n  \"keywords\": [],\n  \"author\": \"\",\n  \"license\": \"ISC\",\n  \"dependencies\": {\n    \"babel-loader\": \"^9.2.1\",\n    \"babel-polyfill\": \"^6.26.0\",\n    \"dotenv\": \"^16.4.7\",\n    \"eslint-loader\": \"^4.0.2\",\n    \"express\": \"^4.21.2\",\n    \"extra-watch-webpack-plugin\": \"^1.0.3\",\n    \"firebase-admin\": \"^13.0.2\",\n    \"fuzzball\": \"^2.1.3\",\n    \"gps-to-gpx\": \"^1.5.1\",\n    \"interval-promise\": \"^1.4.0\",\n    \"lru-cache\": \"^11.0.2\",\n    \"node-schedule\": \"^2.1.1\",\n    \"nodemon-webpack-plugin\": \"^4.8.2\",\n    \"request\": \"^2.88.2\",\n    \"swagger-ui-express\": \"^5.0.1\",\n    \"util\": \"^0.12.5\",\n    \"webpack\": \"^5.97.1\",\n    \"webpack-cli\": \"^6.0.1\",\n    \"webpack-node-externals\": \"^3.0.0\"\n  },\n  \"devDependencies\": {\n    \"nodemon\": \"^3.1.9\"\n  }\n}\n"
+        },
+        "database": "Firebase",
+        "build_system": "npm",
+        "config_files": {
+            "docker-compose/map/config.yml": "graphhopper:\n  datareader.file: ../map-data/map.osm\n  graph.location: graph-cache\n  graph.flag_encoders: car,foot\n  prepare.ch.weightings: no\n\nserver:\n  applicationConnectors:\n  - type: http\n    port: 8989\n    bindHost: 0.0.0.0\n  adminConnectors:\n  - type: http\n    port: 8990\n    bindHost: 0.0.0.0\n",
+            "docker-compose.yml": "version: \"3.4\"\n\nservices:\n  node:\n    build:\n      context: .\n    env_file: .envrc\n    ports:\n      - \"3000:3000\"\n    volumes:\n      - .:/usr/src/app\n      - /usr/src/app/node_modules\n\n  ghopper:\n    image: cornellappdev/transit-ghopper:08_24_24\n    ports:\n      - \"8988:8988\"\n\n  map:\n    image: cornellappdev/transit-map\n    ports:\n      - \"8989:8989\"\n\n  ghopper-walking:\n    image: cornellappdev/transit-ghopper-walking:latest\n    ports:\n      - \"8987:8987\"\n\n  live-tracking:\n    image: cornellappdev/transit-python:11_05_24\n    env_file: python.envrc\n    ports:\n      - \"5000:5000\"\n",
+            "Dockerfile": "FROM node:20.0.0\nRUN mkdir -p /usr/src/app\nWORKDIR /usr/src/app\nCOPY . .\nEXPOSE 3000\nRUN npm install --force\nCMD npm run start\n#CMD /bin/sh\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "config.yml"
+        ],
+        "folders": []
+    }
+}

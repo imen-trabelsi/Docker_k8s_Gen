@@ -1,0 +1,31 @@
+# Use an official Python runtime as base image
+FROM python:3.7-slim
+
+# Set the working directory in the container to /app
+WORKDIR /app
+
+# Add current directory code to /app in the docker container
+COPY . /app
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --trusted-host pypi.python.org -r requirements.txt
+
+# Set correct environment variables
+ENV NAME World
+ENV DATABASE_URL mongodb://localhost:27017/myDatabase
+
+# Run shell commands to set up the PostgreSQL DB
+RUN mkdir -p /var/lib/pgsql/data \
+&& chown -R postgres:postgres /var/lib/pgsql/data \
+
+# Copy the init script in the container to run it on startup
+COPY docker/postgres/1-init-dbs.sh /docker-entrypoint-initdb.d/
+
+# Make port available to the world outside this container
+EXPOSE 80
+
+# Define environment variable
+ENV NAME World
+
+# Run the app when the container launches
+CMD ["python", "app.py"]

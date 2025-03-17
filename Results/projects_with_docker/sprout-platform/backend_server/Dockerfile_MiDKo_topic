@@ -1,0 +1,35 @@
+# Base Image
+FROM adoptopenjdk:11-jre-hotspot as builder
+
+WORKDIR /build
+
+# Copy Files and dependencies
+COPY build/libs/sprout-server.jar app.jar
+RUN java -Djarmode=layertools -jar app.jar extract
+
+# Prepare the image
+FROM adoptopenjdk:11-jre-hotspot
+
+# Environment Variables
+ENV SPROUT_PLUGINS_DIR "/sprout/plugins"
+ENV SPROUT_OTHER_CLASSES "/sprout/other"
+ENV PORT=8080
+
+WORKDIR /sprout
+
+# Copy Dependencies
+
+# Copy Start Script
+COPY docker/start.sh start.sh
+
+# Handle Permissions
+RUN chmod +x ./start.sh
+
+# Expose Port
+EXPOSE 8080
+
+# Create Other Directory
+RUN mkdir /sprout/other
+
+# Set Entry Point
+ENTRYPOINT ["./start.sh"]

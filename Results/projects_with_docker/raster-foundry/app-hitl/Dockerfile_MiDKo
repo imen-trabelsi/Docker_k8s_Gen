@@ -1,0 +1,27 @@
+# Start from the base image
+FROM aaronxsu/raster-vision-pytorch:latest
+
+# Set environment variables
+ENV CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+ENV DATABASE_URL=postgresql
+
+# Copy necessary files
+COPY hitl/requirements.txt /tmp/
+COPY hitl/ /tmp/hitl
+COPY completion.bash /tmp/hitl/completion.bash
+
+# Install necessary dependencies 
+RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
+
+RUN bash -c "$(cat /tmp/hitl/completion.bash | tee -a /root/.bashrc)" && \
+    cd /tmp/hitl && \
+
+# Set the working directory
+WORKDIR /tmp/hitl
+
+# Expose ports (assuming 8080 as requirement does not specify exposed ports)
+EXPOSE 8080
+
+# Set the default command for the container 
+CMD ["java", "-jar", "/tmp/hitl/rf-*.jar"]
+

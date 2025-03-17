@@ -1,0 +1,18 @@
+FROM ubuntu:20.04
+
+RUN apt-get update && DEBIAN_FRONTEND="noninteractive" apt-get install -y curl git && \
+    DEBIAN_FRONTEND="noninteractive" apt-get install -y npm && \
+
+WORKDIR /app
+COPY . .
+
+RUN git clone https://github.com/mojaloop/license-scanner /tmp/license-scanner && \
+    cd /tmp/license-scanner && \
+    make build default-files && \
+    make set-up && \
+
+RUN go mod download
+
+EXPOSE 8080
+
+ENTRYPOINT ["./main"]

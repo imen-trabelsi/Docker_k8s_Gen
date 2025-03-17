@@ -1,0 +1,37 @@
+# Start with base image
+FROM adoptopenjdk/openjdk11:alpine as build
+
+# Set the working directory
+WORKDIR /workspace/app
+
+# Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy the pom file
+COPY pom.xml .
+
+# Copy the source code
+COPY src src
+
+# Build the application
+RUN ./mvnw install -DskipTests
+
+# Stage 2 - the production image
+FROM adoptopenjdk/openjdk11:alpine
+
+VOLUME /tmp
+
+# Set the environment variables and ensure UTF-8 locale
+ENV LANG C.UTF-8
+
+# Copy the jar file
+
+# Enable the Docker container to be executable
+RUN chmod +x app.jar
+
+# Expose the port on which the application is intended to be accessed
+EXPOSE 8080
+
+# The base command to run when starting the application
+ENTRYPOINT ["java", "-jar", "/app.jar"]

@@ -1,0 +1,23 @@
+# Using the java 8 base image
+FROM java:8-jre
+
+# Specifies a user with non-root privileges to prevent the container from running with root privileges.
+USER user
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the .env file to the container
+COPY .env ./
+
+# Copy the target from the host to the current location (WORKDIR) in the image
+COPY ./target/ts-admin-travel-service-1.0.jar /app/
+
+# Set the timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Expose the port the app runs on
+EXPOSE 16114
+
+# The command to start the application
+CMD ["java", "-Xmx200m", "-jar", "/app/ts-admin-travel-service-1.0.jar"]

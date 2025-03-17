@@ -1,0 +1,23 @@
+# Use Microsoft's official build .NET image to compile the application.
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+WORKDIR /src
+COPY . .
+
+# Restore dependencies and then build.
+RUN dotnet restore "eShop-Learn.sln"
+COPY ./src/Services/Coupon/Coupon.API ./src/Services/Coupon/Coupon.API
+WORKDIR "/src/src/Services/Coupon/Coupon.API"
+RUN dotnet publish "Coupon.API.csproj" -c Release -o /app/publish
+
+# Use Microsoft's official runtime .NET image to execute the application.
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
+
+WORKDIR /app
+
+# Configure the entry-point.
+ENTRYPOINT ["dotnet", "Coupon.API.dll"]
+
+# Expose port 80 for the application.
+EXPOSE 80
+

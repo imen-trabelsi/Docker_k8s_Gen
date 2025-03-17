@@ -1,0 +1,37 @@
+{
+    "docker_info": {
+        "base_image": "keymetrics/pm2:14-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3001"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY /dist .",
+            "COPY package.json .",
+            "COPY ecosystem.config.js ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"pm2-runtime\",",
+                    "\"start\",",
+                    "\"ecosystem.config.js\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "yarn install --production",
+                ""
+            ]
+        ]
+    }
+}

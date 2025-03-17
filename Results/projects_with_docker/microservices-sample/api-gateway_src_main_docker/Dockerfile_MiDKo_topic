@@ -1,0 +1,27 @@
+# Set the base image
+FROM --platform=${arch} openjdk:8-jdk-alpine as build
+ARG arch=linux/arm64/v8
+
+# Set workspace
+WORKDIR /workspace/app
+
+# Copy maven executable jar
+COPY target/api-gateway.jar app.jar
+
+# Copy the pom.xml file
+COPY pom.xml .
+
+# Copy the source code
+COPY src src
+
+# Build the application
+RUN mvn clean install
+
+# Set labels
+LABEL vendor="Mudigal" \
+
+# Set the start command to execute the jar
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+
+# Expose the port 8080
+EXPOSE 8080

@@ -1,0 +1,33 @@
+FROM codefarm/nodebase:0.0.0
+
+LABEL Description="Base"
+
+ENV depTmpRoot=${farmerHome}/deps \
+    DISABLE_LINK_LIBS="npm installation disabled" \
+
+RUN mkdir -p ${depTmpRoot}/src
+
+ADD deps/deps.tar ${depTmpRoot}/src
+
+RUN chown -R ${user} ${depTmpRoot} \
+    && cp -r ${depTmpRoot}/src/bs ${appRoot}/src \
+    && for i in $(ls -1 ${depTmpRoot}/src/lib/*/package.json); do \
+    moduleDir=$(echo $i|sed -e 's/\/package\.json//g'); \
+    echo "Installing library package $moduleDir globally"; \
+    yarn global add file:${moduleDir}; \
+    done \
+
+USER ${user}
+
+# Set the working directory
+WORKDIR ${appRoot}/src
+
+# Install project dependencies
+COPY package.json yarn.lock ./
+
+# If you are building your code for production
+RUN npm ci --only=production
+
+EXPOSE <port_number>
+
+CMD [ "yarn", "run", "start-rel" ]

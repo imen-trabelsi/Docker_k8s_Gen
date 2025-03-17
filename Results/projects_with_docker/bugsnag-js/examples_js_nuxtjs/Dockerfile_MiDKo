@@ -1,0 +1,26 @@
+# Set the base image
+FROM node:10@sha256:59531d2835edd5161c8f9512f9e095b1836f7a1fcb0ab73e005ec46047384911
+
+# Set the working directory
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json
+COPY package* ./
+
+# Install dependencies
+RUN npm install
+
+# Copy all source code to work directory
+COPY . .
+
+# Set host to networking interface 
+ENV HOST 0.0.0.0
+
+# Build the application
+RUN npm run build
+
+# Export the port the app runs on
+EXPOSE 3000
+
+# Run the app
+CMD ["npm", "start"]

@@ -1,0 +1,14 @@
+# Build stage
+FROM gradle:jdk11 as builder
+COPY --chown=gradle:gradle . /home/gradle/src
+WORKDIR /home/gradle/src
+RUN gradle build --no-daemon.
+
+# Extract stage
+FROM adoptopenjdk:11-jdk as extracter
+RUN java -Djarmode=layertools -jar application.jar extract
+
+# Final stage
+FROM adoptopenjdk/openjdk11:jre-11.0.8_10-alpine
+WORKDIR application
+ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]

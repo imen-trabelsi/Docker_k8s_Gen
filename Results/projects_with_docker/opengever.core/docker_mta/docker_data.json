@@ -1,0 +1,34 @@
+{
+    "docker_info": {
+        "base_image": "alpine:3.20",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "25"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY docker/mta/conf /etc/postfix",
+            "COPY docker/mta/configure-postfix.py docker/mta/mta2plone.py docker/mta/docker-entrypoint.sh /usr/local/bin/"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/usr/local/bin/docker-entrypoint.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --no-cache \\",
+                "postfix",
+                "python3",
+                "py3-jinja2"
+            ]
+        ]
+    }
+}

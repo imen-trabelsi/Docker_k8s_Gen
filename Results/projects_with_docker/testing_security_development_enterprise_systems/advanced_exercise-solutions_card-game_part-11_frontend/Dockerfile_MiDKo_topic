@@ -1,0 +1,22 @@
+# Here's the Dockerfile for the Spring Boot Microservice:
+
+FROM maven:3.6.3-openjdk-11 AS build
+
+# Copy pom.xml and source code to the container
+WORKDIR /app
+COPY ./pom.xml ./pom.xml
+COPY ./src ./src
+
+# Package the application
+RUN mvn clean package -DskipTests
+
+# Use a minimal alpine image
+FROM openjdk:11-jdk-slim
+
+# Set application's home directory
+WORKDIR /app
+
+# Copy the generated jar file from build to container
+
+# Execute the application
+ENTRYPOINT ["java", "-jar", "/app/springboot-app.jar"]

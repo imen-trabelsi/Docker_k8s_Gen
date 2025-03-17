@@ -1,0 +1,23 @@
+# Default values for host and arguments provided by the user
+ARG DEFAULT_HOST=0.0.0.0
+ARG DEFAULT_PORT=8080
+ARG MAX_MEMORY=512m
+
+# Our initial image
+FROM prom/prometheus as base
+
+# Using work directory app as the working directory
+WORKDIR /app
+
+# Setting environment variables
+ENV PROMETHEUS_HOST=${DEFAULT_HOST} \
+    PROMETHEUS_PORT=${DEFAULT_PORT} \
+    JAVA_OPTS="-Xmx${MAX_MEMORY} -Xms256m"
+
+# Copying the Java artifacts
+COPY ./target/*.jar app.jar
+COPY ./prometheus.yml /etc/prometheus/prometheus.yml
+
+# Running the service
+ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Dserver.port=$PROMETHEUS_PORT -Djava.security.egd=file:/dev/./urandom -jar /app/app.jar" ]
+EXPOSE ${PROMETHEUS_PORT}

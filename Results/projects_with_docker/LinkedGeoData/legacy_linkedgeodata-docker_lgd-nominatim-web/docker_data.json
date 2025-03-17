@@ -1,0 +1,68 @@
+{
+    "docker_info": {
+        "base_image": "ubuntu:14.04",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV DEBIAN_FRONTEND noninteractive",
+            "ENV LANG C.UTF-8"
+        ],
+        "copy_instructions": [
+            "WORKDIR /app/nominatim",
+            "COPY target/nominatim.jar .",
+            "COPY target/local.php.dist ./src/settings/",
+            "COPY nominatim.conf /etc/apache2/sites-enabled/000-default.conf",
+            "COPY start.sh .",
+            "COPY wait-for-postgres.sh ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"./wait-for-postgres.sh\",",
+                    "\"./start.sh\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "locale-gen en_US.UTF-8",
+                "RUN update-locale LANG=en_US.UTF-8"
+            ],
+            [
+                "apt-get -y update --fix-missing && \\",
+                "apt-get install -y build-essential libxml2-dev libpq-dev libbz2-dev libtool automake",
+                "libproj-dev libboost-dev libboost-system-dev libboost-filesystem-dev",
+                "libboost-thread-dev libexpat-dev gcc proj-bin libgeos-c1 libgeos++-dev",
+                "libexpat-dev php5 php-pear php5-pgsql php5-json php-db libapache2-mod-php5",
+                "postgresql postgis postgresql-contrib postgresql-9.3-postgis-2.1",
+                "postgresql-server-dev-9.3 curl git autoconf-archive cmake python",
+                "lua5.1 liblua5.1-dev libluabind-dev",
+                "osmosis",
+                "gettext-base &&",
+                "apt-get clean &&",
+                "rm -rf /var/lib/apt/lists/* &&",
+                "rm -rf /tmp/* /var/tmp/*"
+            ],
+            [
+                "unzip nominatim.jar && \\",
+                "mv Nominatim src &&",
+                "chmod +x src/utils/setup.php"
+            ],
+            [
+                "echo \"force rebuild 2\"",
+                ""
+            ],
+            [
+                "chmod +x ./start.sh ./wait-for-postgres.sh",
+                "RUN sleep 3"
+            ]
+        ]
+    }
+}

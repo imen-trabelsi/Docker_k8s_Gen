@@ -1,0 +1,43 @@
+{
+    "docker_info": {
+        "base_image": "oryd/hydra:v2.2.0",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root",
+            "ory"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem /home/ory/.postgresql/root.crt"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"hydra\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"serve\",",
+                    "\"all\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p /home/ory/.postgresql",
+                ""
+            ],
+            [
+                "chown -R ory:ory /home/ory && \\",
+                "chmod a+r /home/ory/.postgresql"
+            ]
+        ]
+    }
+}

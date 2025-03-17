@@ -1,0 +1,28 @@
+# Fetch base image
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-env
+
+# Set Working Directory
+WORKDIR /Sln
+
+# Copy everything to working directory
+COPY . .
+
+# Set Working Directory to HttpReceiver
+WORKDIR /Sln/HttpReceiver
+
+# Restore the dotnet project
+RUN dotnet restore
+
+# Build and publish the project
+RUN dotnet publish -c Release -r linux-x64 -o out /p:LinkDuringPublish=false /p:ShowLinkerSizeComparison=true
+
+# Get runtime image
+FROM mcr.microsoft.com/dotnet/runtime:5.0
+
+# New Work Directory
+WORKDIR /App
+
+# Copy build output from build-env
+
+# Set the entrypoint
+ENTRYPOINT ["/App/HttpReceiver"]

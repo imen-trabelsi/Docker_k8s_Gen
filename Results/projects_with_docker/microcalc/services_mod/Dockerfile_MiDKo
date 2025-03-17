@@ -1,0 +1,32 @@
+# Use the base image with Java and Maven
+FROM maven:3-jdk-8-alpine AS build
+
+# Set the working directory in the image to /app
+WORKDIR /app
+
+# Copy the pom.xml file to download dependencies
+COPY pom.xml .
+
+# Download dependencies
+RUN mvn -B dependency:resolve dependency:resolve-plugins
+
+# Copy the project source
+COPY . .
+
+# Build the project
+RUN mvn -B verify -fn
+RUN mvn -B clean package
+
+# Copy the target .jar file in new image
+FROM maven:3-jdk-8-alpine
+
+# Set the working directory in the image to /app
+WORKDIR /app
+
+# Copy the jar file from build image
+
+# Indicate that Docker should listen on port 8080
+EXPOSE 8080
+
+# Run the application
+ENTRYPOINT ["java", "-jar", "/mod.jar"]

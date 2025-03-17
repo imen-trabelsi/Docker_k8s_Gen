@@ -1,0 +1,38 @@
+# Use the golang alpine image as base image
+FROM golang:1.12-alpine
+
+# Add necessary build system, make, gcc, musl-dev, linux-headers, git
+RUN apk add --no-cache make gcc musl-dev linux-headers git
+
+# Set your working directory
+WORKDIR /go/src
+
+# Download and configure palletone/go-palletone
+RUN go get -u -v github.com/palletone/adaptor \
+&& mkdir -p src/github.com/palletone \
+&& cd src/github.com/palletone \
+&& git clone -b testnet https://github.com/palletone/go-palletone.git \
+
+# Initialize govendor and add dependencies
+RUN cd src/github.com/palletone/go-palletone/contracts/example/go/container \
+&& govendor init \
+&& govendor add +e \
+
+# Copy all static files into our image
+COPY . .
+
+# Set Environment Variables
+ENV GOPATH=/gopath
+ENV GOROOT=/usr/local/go
+ENV PATH=$PATH:$GOPATH/bin:$GOROOT/bin
+
+# Install golang
+RUN wget -o download.log https://studygolang.com/dl/golang/go1.12.linux-amd64.tar.gz \
+&& tar -C /usr/local -zxvf go1.12.linux-amd64.tar.gz >> download.log \
+&& rm go1.12.linux-amd64.tar.gz download.log \
+
+# Specify the copy instructions
+COPY --from=builder /go/src/github.com/palletone/go-palletone/contracts/example/go/container/vendor /gopath/src/
+
+# Default command to run on start
+CMD ["go", "run", "main.go"]

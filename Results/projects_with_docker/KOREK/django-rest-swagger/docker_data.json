@@ -1,0 +1,56 @@
+{
+    "docker_info": {
+        "base_image": "python:3.7",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD . /code",
+            "WORKDIR /code/myapp"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "bash",
+                    "-c",
+                    "\"while",
+                    "!",
+                    "pg_isready",
+                    "-h",
+                    "postgres_korek",
+                    "-p",
+                    "5432",
+                    "|",
+                    "grep",
+                    "accepting;",
+                    "do",
+                    "sleep",
+                    "1;",
+                    "done;",
+                    "\\"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir /code",
+                "ADD requirements.txt /code"
+            ],
+            [
+                "apt-get update && apt-get install -y vim postgresql-client binutils libproj-dev gdal-bin",
+                "RUN pip install -r /code/requirements.txt"
+            ],
+            [
+                "usermod -u 1000 www-data",
+                "RUN usermod -a -G staff www-data"
+            ]
+        ]
+    }
+}

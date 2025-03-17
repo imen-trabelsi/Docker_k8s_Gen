@@ -1,0 +1,22 @@
+# Extend the base image
+FROM debian:11.7
+
+# Update system packages and install wget
+RUN apt-get update \
+
+# Download and extract OpenTelemetry Collector
+RUN wget https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.77.0/otelcol-contrib_0.77.0_linux_amd64.tar.gz \
+
+# Set the correct environment variables if any
+# No clear Environment Variable Provided in the task.
+
+# Copy the application source code, configurations
+# COPY <src>... <dest>
+# No clear Copy Instructions Provided in the task.
+
+# Expose the necessary ports
+# EXPOSE <port> [<port>/<protocol>...]
+# No clear Exposed ports Provided in the task.
+
+# Set the container entry point
+ENTRYPOINT ["/otelcol-contrib"]

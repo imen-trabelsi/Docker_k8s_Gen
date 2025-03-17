@@ -1,0 +1,28 @@
+#Base image
+FROM docker.elastic.co/logstash/logstash:${ELASTIC_VERSION:-8.17.3}
+
+# Setting up a non-root user for running the service
+RUN addgroup --system spring && adduser --system --group spring
+USER spring
+
+# Environment Variables, replace these with actual ones
+# You can also use ARG command to pass these values during build time 
+# Example given: 'ELASTIC_VERSION', use as per your project requirements
+ENV ELASTIC_VERSION=8.17.3
+
+# WORKDIR
+WORKDIR /app
+
+# Exposing default port for Spring Boot
+EXPOSE 8080
+
+#copy the project files
+COPY ./ ./
+
+# in case your project comes with a wrapper use: ./mvnw package
+# but if you have maven installed on your machine, simply use: mvn clean package
+# you could also copy the JAR directly if it has been previously built
+RUN mvn clean package or ./mvnw package
+
+#run the spring boot application
+ENTRYPOINT ["java","-jar","target/my-application.jar"]

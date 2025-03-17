@@ -1,0 +1,27 @@
+# Select the Base Image
+FROM node:12-alpine
+
+# Set Environment Variables
+ENV SUPPORTING_FILES /app
+
+# Create app directory in Docker
+WORKDIR $SUPPORTING_FILES
+
+# Update and install necessary system packages
+RUN apk update && apk add --update alpine-sdk build-base bash python nano postgresql-client
+
+# Install pnpm globally in Docker
+RUN npm i -g pnpm
+
+# Install app dependencies
+COPY package.json .
+RUN pnpm install
+
+# Bundle app source into Docker
+COPY . $SUPPORTING_FILES
+
+# Build the app
+RUN npm run build
+
+# Set the Docker command to run your application
+CMD [ "node", "app.js" ]

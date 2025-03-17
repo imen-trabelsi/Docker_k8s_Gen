@@ -1,0 +1,25 @@
+# Use ASP.Net SDK as base image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS base
+WORKDIR /app
+EXPOSE 80
+
+# Use SDK for build stage
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+
+# Copy csproj and restore dependencies
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+COPY ["NuGet.config", "./"]
+RUN dotnet restore "eShop-Learn.sln"
+
+# Copy everything else and build project
+COPY . .
+WORKDIR "/src/src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator"
+RUN dotnet publish --no-restore "Web.Shopping.HttpAggregator.csproj" -c Release -o /app/publish
+
+# Final stage
+FROM base AS final
+WORKDIR /app
+
+# Application entrypoint
+ENTRYPOINT ["dotnet", "Web.Shopping.HttpAggregator.dll"]

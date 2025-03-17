@@ -1,0 +1,27 @@
+# 1. Base Image
+FROM node:latest
+
+# 2. Set Working Directory
+WORKDIR /app
+
+# 3. Install dependencies
+COPY package*.json ./
+
+# 4. Install 'netcat' for network troubleshooting
+RUN apt update && apt install -y netcat
+
+# 5. Install package dependencies from package.json
+RUN npm install
+
+# 6. Copy the application source code to the container
+COPY . .
+
+# 7. Copy entrypoint script to the container root folder (since it's not mentioned, I am assuming it's in the source code)
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# 8. Expose ports (Since no specific port mentioned, I'm assuming 3000 here)
+EXPOSE 3000
+
+# 9. Start the application
+ENTRYPOINT [ "/entrypoint.sh" ]

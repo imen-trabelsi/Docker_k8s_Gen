@@ -1,0 +1,29 @@
+# Step 1: pull the base image
+FROM ikemtz/sql_dacpac:latest AS base
+
+# Step 2: setup environment
+ENV SA_PASSWORD=SqlDockerRocks123!
+
+# Step 3: Copy necessary files
+COPY /bin/Debug/*.dacpac /dacpac/
+COPY --from=sql-temp /var/opt/mssql/data/*.ldf /var/opt/mssql/data/
+COPY --from=sql-temp /var/opt/mssql/data/*.mdf /var/opt/mssql/data/
+
+# Step 4: Switch to root user
+USER root
+
+# Step 5: Run necessary commands
+RUN /opt/mssql/bin/sqlservr & sleep 20 \
+&& sqlpackage /Action:Publish /TargetServerName:localhost /TargetUser:SA /TargetPassword:$SA_PASSWORD /SourceFile:/dacpac/certDb.dacpac /TargetDatabaseName:certDb /p:BlockOnPossibleDataLoss=false \
+&& sleep 20 \
+&& pkill sqlservr && sleep 10 \
+&& rm -rf /dacpac \
+
+# Step 6: Expose necessary ports
+EXPOSE 1433
+
+# Step 7: Switch to mssql user
+USER mssql
+
+# Step 8: Add labels
+LABEL author="@IkeMtz"

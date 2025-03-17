@@ -1,0 +1,28 @@
+# Use Java 8(JDK) from OpenJDK as the base image
+FROM openjdk:8-jdk-alpine
+
+# Set the user to use when running this image to devops
+USER devops
+
+# Set the working directory
+WORKDIR /usr/src/app
+
+# Copy pom.xml and install all dependencies
+COPY pom.xml ./
+RUN mvn dependency:go-offline -B
+
+# Copy all other project files
+COPY src ./src
+
+# Use maven to package our code into a JAR file
+# Output jar will be ticket-service.jar
+RUN mvn package -DskipTests
+
+# Use timezone Asia/Shanghai
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+
+# Expose port 16108 of the container
+EXPOSE 16108
+
+# Start application with this command line 
+CMD [ "java", "-jar", "./target/ticket-service.jar" ]

@@ -1,0 +1,26 @@
+# Use an official python:alpine image
+FROM python:alpine
+
+# Define working directory
+WORKDIR /app
+
+# Copy requirements file
+COPY requirements.txt .
+
+# Install dependencies using pip
+RUN pip install --no-cache-dir -r requirements.txt
+
+# If static files are necessary, here is an example of how to add them
+# ADD static /static
+
+# Copy your project source code
+COPY dockercoins/rng rng
+
+# Expose correct port
+EXPOSE 80
+
+# If there are any environment variables, they can be set like this
+# ENV NAME=value
+
+# Run the command on container start
+CMD [ "python", "/rng/rng.py" ]

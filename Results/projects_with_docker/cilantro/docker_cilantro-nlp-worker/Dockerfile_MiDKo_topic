@@ -1,0 +1,40 @@
+# Pulling Base Image
+FROM dainst/nlp-components:0.8.1
+
+# Maintainer
+LABEL maintainer="admin@example.com"
+
+# Set environment variables
+ENV LIBRARY_PATH=/lib:/usr/lib
+ENV PIPENV_VENV_IN_PROJECT=true
+ENV LC_ALL C.UTF-8
+ENV LANG C.UTF-8
+ENV PYTHONPATH="/usr/src/nlp_components"
+
+# Copy dependency definition
+COPY docker/cilantro-nlp-worker/pyproject.toml docker/cilantro-nlp-worker/poetry.lock ./
+
+# Install system dependencies
+RUN pip3 install 'poetry==1.0.9' \
+    && poetry config virtualenvs.create false \
+
+WORKDIR /app
+
+# Copy project files into the docker image
+COPY utils ./utils
+COPY workers ./workers
+COPY resources ./resources
+COPY docker/cilantro-nlp-worker/entrypoint.sh /entrypoint.sh
+COPY docker/cilantro-nlp-worker/VERSION .
+
+# Grant everyone execute permissions on the entrypoint script
+RUN chmod +x /entrypoint.sh
+
+# Change working directory
+WORKDIR /poetry
+
+# Non-root user
+USER nlp
+
+# Run command for container
+ENTRYPOINT ["bash", "/entrypoint.sh"]

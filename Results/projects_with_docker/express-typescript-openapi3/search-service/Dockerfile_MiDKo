@@ -1,0 +1,28 @@
+# Use the official lightweight Node.js 10.15.3 image.
+# https://hub.docker.com/_/node
+FROM node:10.15.3-alpine
+
+# Create app directory (with user `nupp`)
+ENV HOME=/home/nupp
+RUN addgroup -S nupp && adduser -S -g nupp nupp
+WORKDIR $HOME/app
+
+# Copy application dependency manifests to the container image.
+# A wildcard is used to ensure both package.json AND package-lock.json are copied.
+# Copying this separately prevents re-running npm install on every code change.
+COPY package*.json ./
+
+# Install production dependencies.
+RUN chown -R nupp:nupp $HOME/* /usr/local/ && chmod +x /usr/local/bin/dumb-init && \
+
+# Copy local code to the container image.
+COPY . $HOME/app/
+
+# Download dumb-init for signal forwarding.
+ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.1/dumb-init_1.1.1_amd64 /usr/local/bin/dumb-init
+
+# Change to user `nupp`
+USER nupp
+
+# Startup command
+CMD ["dumb-init", "npm", "run", "dev"]

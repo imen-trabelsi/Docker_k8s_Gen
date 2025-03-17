@@ -1,0 +1,53 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Django",
+        "dependencies": {
+            "requirements.txt": "amqp==2.6.0\nansicon==1.89.0\nappdirs==1.4.3\narrow==0.15.8\nasgiref==3.2.10\natomicwrites==1.4.0\nattrs==19.3.0\nbilliard==3.6.3.0\nblessed==1.17.9\nboto3==1.14.12\nbotocore==1.17.12\nCacheControl==0.12.6\ncelery==4.4.6\ncertifi==2020.6.20\ncffi==1.14.1\nchardet==3.0.4\ncolorama==0.4.3\ncontextlib2==0.6.0\ncoreapi==2.3.3\ncoreschema==0.0.4\ncryptography==3.0\ndistlib==0.3.0\ndistro==1.4.0\ndj-database-url==0.5.0\nDjango==3.0.7\ndjango-admin-honeypot==1.1.0\ndjango-bouncy==0.2.8\ndjango-cors-headers==3.4.0\ndjango-picklefield==3.0.1\ndjango-q==1.3.2\ndjango-rest-auth==0.9.5\ndjango-rest-framework==0.1.0\ndjango-ses==1.0.1\ndjangorestframework==3.11.0\ndocutils==0.15.2\ndrf-yasg==1.17.1\nfuture==0.18.2\ngunicorn==20.0.4\nhtml5lib==1.0.1\nidna==2.10\nimportlib-metadata==1.7.0\ninflection==0.5.0\niniconfig==1.0.1\nipaddr==2.2.0\nitypes==1.2.0\nJinja2==2.11.2\njinxed==1.0.0\njmespath==0.10.0\nkombu==4.6.11\nlockfile==0.12.2\nMarkupSafe==1.1.1\nmore-itertools==8.4.0\nmsgpack==0.6.2\npackaging==20.4\npem==20.1.0\npep517==0.8.2\nPillow==7.2.0\npluggy==0.13.1\nprogress==1.5\npy==1.9.0\npycparser==2.20\npyOpenSSL==19.1.0\npyparsing==2.4.7\npytest==6.0.1\npytest-django==3.9.0\npython-dateutil==2.8.1\npython-dotenv==0.13.0\npython-http-client==3.2.7\npytoml==0.1.21\npytz==2020.1\nrequests==2.24.0\nretrying==1.3.3\nruamel.yaml==0.16.10\nruamel.yaml.clib==0.2.0\ns3transfer==0.3.3\nsendgrid==6.4.1\nsix==1.15.0\nSQLAlchemy==1.3.20\nsqlparse==0.3.1\nstarkbank-ecdsa==1.0.0\ntoml==0.10.1\nuritemplate==3.0.1\nurllib3==1.25.9\nvine==1.3.0\nwcwidth==0.2.5\nwebencodings==0.5.1\nwhitenoise==5.1.0\nzipp==3.1.0\n"
+        },
+        "database": null,
+        "build_system": "pip",
+        "config_files": {
+            "docker-compose.yml": "version: '3.4'\n\nservices:\n  teamfiercebackendpython:\n    image: teamfiercebackendpython\n    build:\n      context: .\n      dockerfile: Dockerfile\n    ports:\n      - 5412:8000\n\n  \n  broker:\n    image: rabbitmq:latest\n    hostname: broker\n    environment:\n      - RABBITMQ_DEFAULT_USER=admin\n      - RABBITMQ_DEFAULT_PASS=mypass\n    ports:\n      - \"5672:5672\"\n    \n  worker:\n    build:\n      context: .\n      dockerfile: Dockerfile\n    restart: \"no\"\n    command: celery -A send_email_microservice worker -l info\n    volumes:\n      - .:/code\n    depends_on:\n      - teamfiercebackendpython\n      - broker\n      \n  djangoq:\n    build: \n      context: .\n      dockerfile: Dockerfile\n    restart: \"no\"\n    command: python manage.py qcluster\n    volumes: \n      - .:/code",
+            "Dockerfile": "# For more information, please refer to https://aka.ms/vscode-docker-python\nFROM python:3.8-slim-buster\n\nEXPOSE 8000\n\n# Keeps Python from generating .pyc files in the container\nENV PYTHONDONTWRITEBYTECODE 1\n\n# Turns off buffering for easier container logging\nENV PYTHONUNBUFFERED 1\n\n# Install pip requirements\nADD requirements.txt .\nRUN python -m pip install -r requirements.txt\n\nWORKDIR /app\nADD . /app\nCOPY . /app\n#COPY ./.env /app/.env\nCOPY env.example /app/.env\n\n# Switching to a non-root user, please refer to https://aka.ms/vscode-docker-python-user-rights\n#RUN useradd appuser && chown -R appuser /app\nRUN mkdir -p /app/static\nRUN python manage.py collectstatic --noinput\n\n#run migrations\nRUN python manage.py makemigrations\nRUN python manage.py migrate\n\n\n# During debugging, this entry point will be overridden. For more information, please refer to https://aka.ms/vscode-docker-python-debug\n# File wsgi.py was not found in subfolder:Team-Fierce-Backend-Python. Please enter the Python path to wsgi file.\nCMD [\"gunicorn\", \"--bind\", \"0.0.0.0:8000\", \"send_email_microservice.wsgi\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            ".gitignore",
+            "Dockerfile",
+            "Pipfile",
+            "Pipfile.lock",
+            "Procfile",
+            "README.md",
+            "docker-compose.debug.yml",
+            "docker-compose.yml",
+            "manage.py",
+            "pytest.ini",
+            "requirements.txt",
+            "runtime.txt"
+        ],
+        "folders": [
+            "api",
+            "apitest",
+            "awsmail",
+            "bounce_notification",
+            "confirmation",
+            "greetings_mail",
+            "info",
+            "invitation",
+            "media",
+            "newsletter",
+            "newsletter_with_frontend",
+            "registration",
+            "scheduler",
+            "send_certificate",
+            "send_email_microservice",
+            "settings",
+            "swagger",
+            "templates"
+        ]
+    }
+}

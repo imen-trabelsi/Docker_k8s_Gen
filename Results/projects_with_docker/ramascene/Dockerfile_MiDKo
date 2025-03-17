@@ -1,0 +1,53 @@
+# Stage 1: Python dependencies
+FROM wodby/python:${PYTHON_VER}-dev as build
+
+RUN mkdir -p /home/wodby/.local
+
+WORKDIR /home/wodby/
+
+COPY --chown=wodby:wodby .env requirements.txt rtd_requirements.txt ./
+
+RUN pip install --retries 3 --no-cache-dir --disable-pip-version-check \
+
+# Stage 2: Node environment
+FROM node:${NODE_VERSION}-dev as node
+
+WORKDIR /usr/src/app
+COPY package.json yarn.lock webpack.config.js ./
+COPY --chown=node:node assets ./assets
+
+RUN npm install
+RUN ./node_modules/.bin/webpack --config webpack.config.js
+
+# Stage 3: Putting everything together
+FROM wodby/python:${PYTHON_VER}
+
+WORKDIR /usr/src/app
+
+ENV PYTHONUNBUFFERED=1
+ENV DATABASES_DEFAULT_NAME=/mnt/data/${DATABASE_NAME}
+ENV DATASETS_DIR=/mnt/datasets
+
+
+COPY --chown=wodby:wodby .env manage.py requirements.txt rtd_requirements.txt  ./
+COPY --chown=wodby:wodby ramascene ./ramascene
+COPY --chown=wodby:wodby ramasceneMasterProject ./ramasceneMasterProject
+COPY --chown=wodby:wodby static_assets ./static_assets
+COPY --chown=wodby:wodby templates ./templates
+COPY --chown=wodby:wodby python_ini ./python_ini
+COPY --chown=wodby:wodby .env LICENSE README.md ./
+
+RUN install -o wodby -g wodby -d ./logs
+RUN install -o wodby -g wodby -d /mnt/data
+RUN install -o wodby -g wodby -d /mnt/datasets
+
+RUN python manage.py collectstatic
+
+USER wodby
+
+RUN python manage.py makemigrations && \
+    python manage.py migrate && \
+
+EXPOSE 8000
+
+CMD ["daphne", "ramasceneMasterProject.asgi:application", "-b", "0.0.0.0", "-p", "8000"]

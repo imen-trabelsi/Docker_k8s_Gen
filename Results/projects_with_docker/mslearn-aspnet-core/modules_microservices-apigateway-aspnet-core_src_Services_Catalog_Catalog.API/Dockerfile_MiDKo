@@ -1,0 +1,25 @@
+#-----API Build Image-----
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+
+COPY ["NuGet.config", "./"]
+COPY ["docker-compose.dcproj", "./"]
+COPY ["eShop-Learn.sln", "./"]
+COPY . .
+
+#Set the working directory for the API project
+WORKDIR "/src/src/Services/Catalog/Catalog.API"
+RUN dotnet restore "eShop-Learn.sln"
+
+#Publish the API
+RUN dotnet publish "Catalog.API.csproj" -c Release -o /app/publish
+
+#-----App Image-----
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS runtime
+WORKDIR /app
+
+#Expose the correct port
+EXPOSE 80
+
+#Set Entry Point
+ENTRYPOINT ["dotnet", "Catalog.API.dll"]

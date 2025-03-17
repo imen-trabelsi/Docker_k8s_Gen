@@ -1,0 +1,33 @@
+# Set base image
+FROM golang:1.23-alpine3.21
+
+# Install dependencies
+RUN apk add --no-cache \
+    git \
+    ca-certificates \
+
+# Set the working directory in the docker image
+WORKDIR /app
+
+# Set environment variables
+ENV LAGOON_VERSION=$LAGOON_VERSION
+ENV LAGOON=logs2notifications
+ENV JWTSECRET=super-secret-string
+
+# Copy files and directories from the application
+COPY . /go/src/github.com/uselagoon/lagoon/services/logs2notifications/
+
+# Set the working directory in the application directory
+WORKDIR /go/src/github.com/uselagoon/lagoon/services/logs2notifications/
+
+# Run the Go lang build system to compile the app
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=${ARCH} go build -a -o logs2notifications .
+
+# Set the working directory in the application directory
+WORKDIR /app
+
+# Copy the binary 'logs2notifications' from builder to the /app directory
+COPY --from=builder /go/src/github.com/uselagoon/lagoon/services/logs2notifications/logs2notifications .
+
+# Specify the command to start the app 
+CMD ["/app/logs2notifications"]

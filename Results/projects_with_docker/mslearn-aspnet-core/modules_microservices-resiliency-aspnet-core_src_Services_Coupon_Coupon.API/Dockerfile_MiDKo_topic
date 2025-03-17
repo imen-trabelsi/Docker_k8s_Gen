@@ -1,0 +1,31 @@
+# Use Microsoft's official build .NET image.
+# https://hub.docker.com/_/microsoft-dotnet-core-sdk/
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+# Create and set working directory
+WORKDIR /app
+
+# Copy csproj and restore as distinct layers
+COPY *.sln ./
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+
+## Repeat the above COPY for all project files accordingly. The user provided a long list of .csproj files, so they'd have to be each included.
+
+RUN dotnet restore
+
+# Copy everything else and build
+COPY . ./
+RUN dotnet publish -c Release -o /app/publish
+
+# Use Microsoft's official runtime .NET image.
+# https://hub.docker.com/_/microsoft-dotnet-core-aspnet/
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS runtime
+
+WORKDIR /app
+
+# Expose port 80 for the app
+EXPOSE 80
+
+ENTRYPOINT ["dotnet", "Coupon.API.dll"]
+
+

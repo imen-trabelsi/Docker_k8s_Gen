@@ -1,0 +1,673 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".gitattributes",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "LICENSE",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "TodoDDD.sln",
+            "type": "blob"
+        },
+        {
+            "path": "TodoDDD.v3.ncrunchsolution",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.override.yml",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "img",
+            "type": "tree"
+        },
+        {
+            "path": "img/commands.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/cqrs-logical.svg",
+            "type": "blob"
+        },
+        {
+            "path": "img/eventsourcing.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/overview.png",
+            "type": "blob"
+        },
+        {
+            "path": "src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Application",
+            "type": "tree"
+        },
+        {
+            "path": "src/Application/Application.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Application/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Application/Endpoint.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Application/Todo",
+            "type": "tree"
+        },
+        {
+            "path": "src/Application/Todo/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Application/UnitOfWork.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Domain",
+            "type": "tree"
+        },
+        {
+            "path": "src/Domain/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Domain/Domain.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Domain/Endpoint.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Domain/Mutator.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Domain/Todo",
+            "type": "tree"
+        },
+        {
+            "path": "src/Domain/Todo/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Domain/Todo/Todo.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure",
+            "type": "tree"
+        },
+        {
+            "path": "src/Infrastructure/Commands",
+            "type": "tree"
+        },
+        {
+            "path": "src/Infrastructure/Commands/IStampedEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Commands/StampedCommand.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Exceptions",
+            "type": "tree"
+        },
+        {
+            "path": "src/Infrastructure/Exceptions/CommandTimeoutException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Exceptions/QueryRejectedException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Extensions",
+            "type": "tree"
+        },
+        {
+            "path": "src/Infrastructure/Extensions/BusExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Extensions/LoggingExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Extensions/TaskExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Infrastructure.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/LoggingMessageBehavior.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Queries",
+            "type": "tree"
+        },
+        {
+            "path": "src/Infrastructure/Queries/IHandleQueries.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Queries/Query.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Queries/Reply.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Responses",
+            "type": "tree"
+        },
+        {
+            "path": "src/Infrastructure/Responses/Paged.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Validation",
+            "type": "tree"
+        },
+        {
+            "path": "src/Infrastructure/Validation/FluentValidationBehavior.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Validation/ValidationException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Language",
+            "type": "tree"
+        },
+        {
+            "path": "src/Language/Language.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Language/Todo",
+            "type": "tree"
+        },
+        {
+            "path": "src/Language/Todo/Commands",
+            "type": "tree"
+        },
+        {
+            "path": "src/Language/Todo/Commands/Add.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Language/Todo/Commands/Edit.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Language/Todo/Commands/MarkActive.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Language/Todo/Commands/MarkComplete.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Language/Todo/Commands/Remove.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Language/Todo/Events",
+            "type": "tree"
+        },
+        {
+            "path": "src/Language/Todo/Events/Added.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Language/Todo/Events/Edited.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Language/Todo/Events/MarkedActive.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Language/Todo/Events/MarkedComplete.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Language/Todo/Events/Removed.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Language/Todo/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/Language/Todo/Models/TodoResponse.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Language/Todo/Queries",
+            "type": "tree"
+        },
+        {
+            "path": "src/Language/Todo/Queries/ActiveTodos.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Language/Todo/Queries/AllTodos.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Language/Todo/Queries/CompleteTodos.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Language/Todo/State.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Language/Todo/Validators",
+            "type": "tree"
+        },
+        {
+            "path": "src/Language/Todo/Validators/Add.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Language/Todo/Validators/Edit.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Language/Todo/Validators/MarkActive.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Language/Todo/Validators/MarkComplete.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Language/Todo/Validators/Remove.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Test",
+            "type": "tree"
+        },
+        {
+            "path": "src/Test/DomainHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Test/EventHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Test/Test.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Test/Test.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Test/TestSubject.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/.gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/ClientApp/.env",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/.env.development",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/.eslintrc.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/.gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/.prettierrc",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/aspnetcore-https.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/aspnetcore-react.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/cypress.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/package.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/public",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/ClientApp/public/favicon.ico",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/public/index.html",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/public/manifest.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/ClientApp/src/components",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/ClientApp/src/components/app",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/ClientApp/src/components/app/app.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/src/components/copy-right",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/ClientApp/src/components/copy-right/copy-right.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/src/components/copy-right/copy-right.spec.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/src/components/footer",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/ClientApp/src/components/footer/footer.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/src/components/header",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/ClientApp/src/components/header/header.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/src/components/header/header.spec.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/src/components/item",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/ClientApp/src/components/item/item.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/src/components/item/item.spec.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/src/components/list",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/ClientApp/src/components/list/list.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/src/constants",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/ClientApp/src/constants/action-type.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/src/constants/filter.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/src/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/src/reportWebVitals.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/src/service-worker.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/src/serviceWorkerRegistration.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/src/services",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/ClientApp/src/services/todo-local.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/src/setupProxy.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/src/store",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/ClientApp/src/store/actions",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/ClientApp/src/store/actions/filter.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/src/store/actions/todo.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/src/store/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/src/store/index.spec.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/src/store/reducers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/ClientApp/src/store/reducers/filter.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/src/store/reducers/todo.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/src/store/reducers/todo.spec.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/src/store/selectors",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/ClientApp/src/store/selectors/todo.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/tests",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/ClientApp/tests/e2e",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/ClientApp/tests/e2e/new-todo.spec.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/tests/plugins",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/ClientApp/tests/plugins/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/tests/support",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/ClientApp/tests/support/commands.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/tests/support/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/ClientApp/yarn.lock",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/Controllers/TodoController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/DTOs",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/DTOs/Todo.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Pages",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/Pages/Error.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Pages/Error.cshtml.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Pages/_ViewImports.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Web.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/appsettings.json",
+            "type": "blob"
+        }
+    ]
+}

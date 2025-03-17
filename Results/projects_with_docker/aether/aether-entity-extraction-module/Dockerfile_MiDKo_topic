@@ -1,0 +1,47 @@
+# Use python:3.10-slim as base image
+FROM python:3.10-slim
+
+# Set environment variables
+ENV VIRTUAL_ENV=/var/run/aether/venv
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+# Set labels
+LABEL description="Aether"
+
+# Install system dependencies
+RUN apt-get update -qq > /dev/null && \
+    apt-get -qq \
+    --yes \
+    --allow-downgrades \
+    --allow-remove-essential \
+    --allow-change-held-packages \
+    install gcc redis-server curl > /dev/null && \
+
+# Create and activate virtualenv
+RUN mkdir -p $VIRTUAL_ENV && \
+    python3 -m venv $VIRTUAL_ENV && \
+
+
+# Set the working directory
+WORKDIR /code
+
+# set the user
+USER aether
+
+# Copy the required files and folders
+COPY --chown=aether:aether ./conf/pip /code/conf/pip
+COPY --chown=aether:aether ./ /code
+
+# Install requirements
+RUN pip install -q -r /code/conf/pip/requirements.txt
+
+# Set version and git revision to variable
+ARG VERSION=0.0.0
+ARG GIT_REVISION
+
+# Create version files
+RUN mkdir -p /var/tmp && \
+    echo $VERSION > /var/tmp/VERSION && \
+
+# run the application
+CMD ["/code/entrypoint.sh"]

@@ -1,0 +1,51 @@
+# Use debian:buster as base image
+FROM debian:buster
+
+# Define ARGs
+ARG IMAGE_ARG
+ARG GO_VERSION
+
+# Set environment variable
+ENV KRTE_IMAGE=${IMAGE_ARG} 
+
+# Update packages, install dependencies, Go-Language, kubectl, Docker, Docker-Compose, KinD 
+RUN echo "Installing Packages ..." && \
+    apt-get update && apt-get install -y --no-install-recommends apt-transport-https build-essential ca-certificates curl file git gnupg2 kmod lsb-release mercurial pkg-config procps python3 python3-dev python3-pip python3-setuptools rsync software-properties-common unzip jq && \
+    python3 -m pip install --no-cache-dir --upgrade pip && \
+    rm -rf /var/lib/apt/lists/* && \
+    echo "Installing Go ..." && \
+    export GO_TARBALL="go${GO_VERSION}.linux-amd64.tar.gz" && \
+    curl -fsSL "https://golang.org/dl/${GO_TARBALL}" --output "${GO_TARBALL}" && \
+    tar xzf "${GO_TARBALL}" -C /usr/local && \
+    rm "${GO_TARBALL}" && \
+    mkdir -p "${GOPATH}/bin" && \
+    echo "Installing kubectl, helm ..." && \
+    curl -fsSL "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl" --output /usr/local/bin/kubectl && \
+    chmod 755 /usr/local/bin/kubectl && \
+    ln -s /usr/local/bin/kubectl /usr/bin/kubectl && \
+    curl -fsSL -o get_helm.sh https://raw.githubusercontent.com/helm/helm/master/scripts/get-helm-3 && \
+    chmod 700 get_helm.sh && \
+    ./get_helm.sh && \
+    rm ./get_helm.sh && \
+    echo "Installing Docker ..." && \
+    curl -fsSL "https://download.docker.com/linux/$(. /etc/os-release; echo "$ID")/gpg" | apt-key add - && \
+    add-apt-repository "deb [arch=amd64] https://download.docker.com/linux/$(. /etc/os-release; echo "$ID") $(lsb_release -cs) stable" && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends docker-ce && \
+    rm -rf /var/lib/apt/lists/* && \
+    sed -i 's/cgroupfs_mount$/#cgroupfs_mount\n/' /etc/init.d/docker && \
+    echo "Installing Docker Compose ..." && \
+    curl -fsSL "https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose && \
+    chmod +x /usr/local/bin/docker-compose && \
+    ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose && \
+    echo "Installing KinD ..." && \
+    curl -fsSL -o /usr/local/bin/kind "https://kind.sigs.k8s.io/dl/v${KIND_VERSION}/kind-linux-amd64" && \
+    chmod +x /usr/local/bin/kind && \
+    echo "Ensuring Legacy Iptables ..." && \
+    update-alternatives --set iptables /usr/sbin/iptables-legacy && \
+
+# Copy wrapper.sh into the docker image
+COPY wrapper.sh /usr/local/bin/
+
+# Set the entry point script
+ENTRYPOINT ["wrapper.sh"]

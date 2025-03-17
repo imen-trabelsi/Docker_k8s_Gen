@@ -1,0 +1,61 @@
+{
+    "docker_info": {
+        "base_image": "python:3.6",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "os2ds_engine:os2ds_engine"
+        ],
+        "labels": [
+            "org.opencontainers.image.title=\"OS2datascanner"
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV PYTHONUNBUFFERED=1 \\",
+            "ENV AVAILABLE_STAGES=\"explorer,processor,matcher,tagger,exporter,worker\""
+        ],
+        "copy_instructions": [
+            "WORKDIR /code/requirements/sys-requirements",
+            "COPY requirements/sys-requirements/sys-requirements-common.txt \\",
+            "WORKDIR /code/requirements/python-requirements",
+            "COPY requirements/python-requirements/requirements-engine.txt \\",
+            "WORKDIR /code/src/os2datascanner",
+            "COPY src/os2datascanner/engine2 ./engine2/",
+            "COPY src/os2datascanner/utils ./utils",
+            "COPY src/os2datascanner/__init__.py ./",
+            "COPY docker/engine/docker-settings.toml /code/docker/docker-settings.toml",
+            "COPY docker/engine/docker-entrypoint.sh /code/docker/docker-entrypoint.sh",
+            "WORKDIR /code",
+            "COPY VERSION ./",
+            "COPY LICENSE ./",
+            "COPY README.rst ./",
+            "COPY NEWS.rst ./"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/code/docker/docker-entrypoint.sh\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"explorer\",",
+                    "\"-h\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "set -ex \\",
+                "# Add an image specific group and user."
+            ],
+            [
+                "find requirements*.txt -print0 | xargs -0 -n1 pip install -r",
+                ""
+            ]
+        ]
+    }
+}

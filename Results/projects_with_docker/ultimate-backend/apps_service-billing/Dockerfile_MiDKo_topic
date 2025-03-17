@@ -1,0 +1,33 @@
+# Set Base Image
+FROM node:12-alpine
+
+# Create and set working directory
+RUN mkdir -p /nest
+WORKDIR /nest
+
+# Install system dependencies
+RUN apk update && apk add --no-cache bash yarn
+
+# Install application dependencies
+COPY package.json package-lock.json ./
+RUN yarn install --production=false
+
+# Install NestJS CLI globally 
+RUN yarn global add @nestjs/cli
+
+# Copy other project files 
+COPY . .
+
+# Build necessary applications
+RUN nest build proto-schema
+RUN nest build service-billing
+
+# Set Environment Variables
+ARG NODE_ENV=production
+ENV NODE_ENV $NODE_ENV
+
+# Expose application port
+EXPOSE 50067
+
+# Set container startup command
+CMD [ "node", "dist/apps/service-billing/main.js" ]

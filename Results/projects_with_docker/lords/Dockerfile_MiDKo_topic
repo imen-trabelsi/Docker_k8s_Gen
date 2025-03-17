@@ -1,0 +1,36 @@
+#Step 1
+FROM php:8.2.25-apache
+
+
+#Step 2
+RUN apt-get update && apt-get install -y \
+libfreetype6-dev \
+libjpeg62-turbo-dev \
+libmcrypt-dev \
+libpng-dev \
+libxml2-dev \
+&& docker-php-ext-install -j$(nproc) mysqli soap \
+&& docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \
+&& docker-php-ext-install -j$(nproc) gd \
+&& a2enmod rewrite \
+
+#Step 3
+WORKDIR /app
+
+COPY mix.exs .
+COPY mix.lock .
+RUN mix local.hex --force && \
+    mix local.rebar --force && \
+    mix deps.get && \
+
+#Step 4
+COPY . .
+
+#Step 5: Make sure everything is executable
+RUN chmod -R 755 .
+
+#Step 5
+EXPOSE 80 
+
+#Step 6
+CMD ["php", "-S", "localhost:80", "-t", "/app/public"]

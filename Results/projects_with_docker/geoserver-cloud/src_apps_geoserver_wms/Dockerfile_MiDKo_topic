@@ -1,0 +1,50 @@
+# STAGE 1: Build 
+# Set the base image
+FROM maven:3.6.1-jdk-11-slim AS build
+WORKDIR /workspace/app
+
+# Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy the pom.xml file
+COPY pom.xml .
+
+# Copy project sources
+COPY src src
+
+# Build the application
+RUN mvn clean package -DskipTests
+
+# STAGE 2: Package 
+# Set the base image
+FROM $REPOSITORY/gs-cloud-base-jre:$TAG
+WORKDIR /app
+
+# Copy from build stage
+ENV JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS} -XX:SharedArchiveFile=application.jsa"
+
+# Define arguments and environment variables
+ARG REPOSITORY=geoservercloud
+ARG TAG=latest
+ARG JAR_FILE=target/gs-cloud-*-bin.jar
+ENV REPOSITORY=${REPOSITORY}
+ENV TAG=${TAG}
+ENV JAR_FILE=${JAR_FILE}
+
+# Copy instructions
+COPY ${JAR_FILE} application.jar
+COPY --from=builder dependencies/ ./
+COPY --from=builder snapshot-dependencies/ ./
+COPY --from=builder spring-boot-loader/ ./
+RUN java -Djarmode=layertools -jar application.jar extract
+COPY --from=builder application/ ./
+RUN mkdir /tmp/tmpdatadir
+RUN GEOSERVER_DATA_DIR=/tmp/tmpdatadir java -XX:ArchiveClassesAtExit=application.jsa -Dspring.context.exit=onRefreshed -Dspring.profiles.active=standalone,datadir,offline -Dserver.port=0 -Dmanagement.server.port=0 org.springframework.boot.loader.JarLauncher
+RUN rm -rf /tmp/*
+
+# Exposed Ports
+EXPOSE 8080
+
+# Set the start command
+ENTRYPOINT ["java","-jar","app.jar"]

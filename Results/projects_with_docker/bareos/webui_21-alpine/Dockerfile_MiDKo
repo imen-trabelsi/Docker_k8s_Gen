@@ -1,0 +1,27 @@
+# Start with the specified base image
+FROM alpine:3.16
+
+# Ensure that apk registry is up to date and install the necessary package
+RUN apk update && apk add --no-cache bareos-webui-nginx
+
+# Move the necessary configuration files
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+
+# Add execute permissions to the entry point script
+RUN chmod u+x /docker-entrypoint.sh
+
+# Back up existing configuration
+RUN tar cfvz /bareos-webui-config.tgz /etc/bareos-webui
+
+# Back up webui code
+RUN tar cfvz /bareos-webui-code.tgz /usr/share/bareos-webui
+
+# Create necessary directories
+RUN mkdir -p /run/nginx
+
+# Port is exposed for the application
+EXPOSE 9100
+
+# Specify the default command sequence
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["/usr/sbin/nginx", "-g", "daemon off;"]

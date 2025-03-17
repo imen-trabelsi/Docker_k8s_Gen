@@ -1,4 +1,4 @@
-You are an expert in DevOps and containerization. Your task is to generate an optimized and secure Dockerfile for a Spring Boot microservice based on the following extracted information from the source code and user-provided inputs.
+You are an expert in DevOps and containerization. Your task is to generate an optimized and secure Dockerfile for a microservice based application on the following extracted information from the source code and user-provided inputs.
 
 ## Information Extracted from the Source Code:
 - Programming Language: {language}

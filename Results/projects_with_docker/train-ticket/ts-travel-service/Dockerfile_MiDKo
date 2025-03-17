@@ -1,0 +1,17 @@
+# Start with a base image
+FROM java:8-jre
+
+# Copy the jar file
+COPY ./target/ts-travel-service-1.0.jar /app/
+
+# Set timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Expose port
+EXPOSE 12346
+
+# Set the working directory in the Docker image
+WORKDIR /app
+
+# Command to run the app
+CMD ["java", "-Xmx200m", "-jar", "ts-travel-service-1.0.jar"]

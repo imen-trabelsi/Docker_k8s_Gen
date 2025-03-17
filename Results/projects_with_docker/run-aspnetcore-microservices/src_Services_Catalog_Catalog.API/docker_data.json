@@ -1,0 +1,52 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/sdk:8.0",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "8080",
+            "8081"
+        ],
+        "user": [
+            "app"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "BUILD_CONFIGURATION=Release",
+            "BUILD_CONFIGURATION=Release"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "WORKDIR /src",
+            "COPY [\"Services/Catalog/Catalog.API/Catalog.API.csproj\", \"Services/Catalog/Catalog.API/\"]",
+            "COPY [\"BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj\", \"BuildingBlocks/BuildingBlocks/\"]",
+            "WORKDIR \"/src/Services/Catalog/Catalog.API\"",
+            "WORKDIR /app",
+            "COPY --from=publish /app/publish ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"dotnet\",",
+                    "\"Catalog.API.dll\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "dotnet restore \"./Services/Catalog/Catalog.API/./Catalog.API.csproj\"",
+                "COPY . ."
+            ],
+            [
+                "dotnet build \"./Catalog.API.csproj\" -c $BUILD_CONFIGURATION -o /app/build",
+                ""
+            ],
+            [
+                "dotnet publish \"./Catalog.API.csproj\" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false",
+                ""
+            ]
+        ]
+    }
+}

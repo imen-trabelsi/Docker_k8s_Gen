@@ -1,0 +1,46 @@
+{
+    "docker_info": {
+        "base_image": "python:3.10-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8800"
+        ],
+        "user": [
+            "nonroot"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY requirements.txt /app",
+            "COPY server.py /app",
+            "COPY templates /app/templates/"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"python3\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"server.py\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "addgroup -S nonroot \\",
+                "&& adduser -S nonroot -G nonroot"
+            ],
+            [
+                "pip3 install --no-cache-dir -r requirements.txt",
+                ""
+            ]
+        ]
+    }
+}

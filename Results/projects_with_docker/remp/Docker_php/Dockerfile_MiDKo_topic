@@ -1,0 +1,48 @@
+# Using the base image specified by the user
+FROM php:8.3.17-fpm
+
+# Setting up the working directory
+WORKDIR /var/www/html
+
+# Setting up the environment variables
+ENV BUILD_DEPS g++ build-essential libsasl2-dev libssl-dev
+ENV RUN_DEPS libzip-dev libicu-dev git wget vim curl less gnupg zlib1g-dev libpng-dev libjpeg-dev libonig-dev
+ENV COMPOSER_HOME /composer
+ENV PATH /composer/vendor/bin:$PATH
+ENV PATH /root/.yarn/bin:$PATH
+ENV YARN_CACHE_FOLDER /yarn
+
+# Creating the necessary groups and users
+RUN groupadd -g ${GID} -o ${UNAME}
+RUN usermod -a -G ${UNAME} www-data
+RUN useradd -m -u ${UID} -g ${GID} -o -s /bin/bash ${UNAME}
+
+# Installing the necessary dependencies
+RUN apt-get update && apt-get install -y ${BUILD_DEPS} ${RUN_DEPS} \
+&& pecl install xdebug && docker-php-ext-enable xdebug \
+&& docker-php-ext-configure intl \
+&& docker-php-ext-configure gd --with-jpeg=/usr/include/ \
+&& docker-php-ext-install -j$(nproc) pdo_mysql bcmath mbstring zip intl sockets pcntl gd \
+&& apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false ${BUILD_DEPS} \
+&& curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+&& mkdir -p /composer/cache && chown -R ${UID}:${GID} /composer/cache \
+&& rm -rf /var/lib/apt/lists/* \
+&& curl -sL https://deb.nodesource.com/setup_18.x | bash - \
+&& apt-get install -y nodejs \
+&& npm install --global yarn@v2 \
+&& mkdir -p ${YARN_CACHE_FOLDER} && chmod -R 777 ${YARN_CACHE_FOLDER} \
+&& chmod 777 /var/www/html \
+
+# Copying the necessary files to their respective directories
+COPY xdebug.ini /tmp/xdebug.ini
+COPY log.conf /usr/local/etc/php-fpm.d/zz-log.conf
+COPY remp.sh /usr/local/bin/remp.sh
+
+# Additional Instructions
+RUN cat /tmp/xdebug.ini >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
+# User and Group file configuration
+USER ${UID}:${GID}
+
+# Setting up the entry point
+CMD ["/usr/local/bin/remp.sh"]

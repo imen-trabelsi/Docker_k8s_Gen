@@ -1,0 +1,50 @@
+# Start with the base image
+FROM adoptopenjdk/openjdk11:jdk-11.0.6_10-slim as builder
+
+# Set working directory
+WORKDIR /srv
+
+# Copy the entire application onto the docker image
+COPY . /srv
+
+# Build the project
+RUN ./mvnw package -DskipTests
+
+# Unpack the server and client dist files
+RUN cd score-server/target \
+    && mv score-server-*-dist.tar.gz score-server.tar.gz \
+    && tar zxvf score-server.tar.gz -C /tmp \
+    && mv -f /tmp/score-server-*  /tmp/score-server-dist \
+
+RUN cd score-client/target \
+    && mv score-client-*-dist.tar.gz score-client.tar.gz \
+    && tar zxvf score-client.tar.gz -C /tmp \
+    && mv -f /tmp/score-client-*  /tmp/score-client-dist \
+    && cp -r /tmp/score-client-dist $CLIENT_DIST_DIR \
+    && mkdir -p $CLIENT_DIST_DIR/logs \
+    && touch $CLIENT_DIST_DIR/logs/client.log \
+
+WORKDIR $SCORE_CLIENT_HOME
+
+WORKDIR $SCORE_HOME
+
+# Setting the environment variables
+ENV SERVER_JAR_FILE  /score-server.jar
+ENV CLIENT_DIST_DIR  /score-client-dist
+ENV JDK_DOWNLOAD_URL https://download.java.net/openjdk/jdk17/ri/openjdk-17+35_linux-x64_bin.tar.gz
+ENV SCORE_CLIENT_HOME /score-client
+ENV PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$SCORE_CLIENT_HOME/bin
+ENV SCORE_USER score
+ENV SCORE_HOME /score-server
+ENV SCORE_LOGS $SCORE_HOME/logs
+ENV JAR_FILE  /score-server.jar
+ENV SCORE_USER score
+ENV SCORE_UID 9999
+ENV SCORE_GID 9999
+
+
+# Set User
+USER $SCORE_UID
+
+# Run the microservice
+CMD ["java", "-Dlog.path=$SCORE_LOGS", "-jar", "$JAR_FILE"]

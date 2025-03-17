@@ -1,0 +1,34 @@
+# Use base image as specified by user
+FROM codefarm/appnodebase:0.0.0
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Install app dependencies
+# Assumes that package.json and package-lock.json are available
+COPY package*.json ./
+
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Expose ports (add your desired exposed ports here)
+# Exposed Ports were not specified, thus, the commonly used port for Node.js applications is 8080
+EXPOSE 8080
+
+# Set your environment variables here (use ENV keyword)
+# No Environment variables specified 
+
+# Default command (Use CMD keyword)
+# No command was specified, using standard npm start command
+CMD [ "npm", "start" ]
+
+# Specify users (with the USER keyword)
+# Users were not specified 
+
+# Label the image (use LABEL keyword)
+# Labels were not specified 
+
+# Run commands (use RUN keyword)
+# Run commands were not specified

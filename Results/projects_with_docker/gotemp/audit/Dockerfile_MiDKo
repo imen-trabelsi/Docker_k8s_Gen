@@ -1,0 +1,40 @@
+# Use Multi-stage build to optimize image
+FROM golang:1.16 AS builder
+
+WORKDIR /go/src/goTemp
+
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . .
+
+ENV SRVDIR=audit
+ENV SRVNAME=${SRVDIR}Server
+
+COPY ./$SRVDIR ./$SRVDIR
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o $SRVNAME ./$SRVDIR/server/
+
+# Alp Build Stage
+FROM dev AS alpBuild
+ENV SRVDIR=audit
+ENV SRVNAME=${SRVDIR}ServerAlp
+
+RUN apk --no-cache add ca-certificates
+WORKDIR /goTemp
+
+# Final stage
+FROM golang:1.16
+
+ENV SRVDIR=audit
+ENV SRVNAME=${SRVDIR}Server
+WORKDIR /go/src/goTemp
+
+COPY ./globalerrors ./globalerrors
+COPY ./globalUtils ./globalUtils
+COPY ./globalMonitoring ./globalMonitoring
+RUN go get github.com/githubnemo/CompileDaemon
+
+EXPOSE 2112
+
+ENV GO111MODULE=on
+RUN go mod download
+CMD ["/$SRVNAME"]

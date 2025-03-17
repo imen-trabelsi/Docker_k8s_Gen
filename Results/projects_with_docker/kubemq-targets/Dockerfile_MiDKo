@@ -1,0 +1,40 @@
+# Use the official Go image from the Docker Hub
+FROM kubemq/gobuilder-ubuntu:latest AS builder
+
+# Set the Current Working Directory inside the container
+WORKDIR $GOPATH/github.com/kubemq-io/kubemq-targets
+
+# Add the source code
+COPY . $GOPATH/github.com/kubemq-io/kubemq-targets
+
+# Set the Go env
+ENV GOPATH=/go
+ENV ADDR=0.0.0.0
+ENV PATH=$GOPATH/bin:$PATH
+
+# Copy licenses
+COPY licenses /licenses
+COPY default_config.yaml ./kubemq-connector/config.yaml
+
+# Compile the application
+RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -tags container -a -mod=vendor -installsuffix cgo -ldflags="-w -s -X main.version=$VERSION" -o kubemq-targets-run .
+
+# Create second stage
+FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
+
+# Create the necessary directories
+RUN mkdir -p /opt/mqm/lib64
+RUN mkdir /kubemq-connector
+
+# Copy the built binary
+RUN chown -R 1001:root  /kubemq-connector && chmod g+rwX  /kubemq-connector
+WORKDIR kubemq-connector
+
+# Set user
+USER 1001
+
+# Set labels 
+LABEL name="KubeMQ"
+
+# This command runs your application; 
+CMD ["./kubemq-targets-run"]

@@ -1,0 +1,29 @@
+# Use the provided base image
+FROM mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim AS build
+
+# Set the work directory to /src
+WORKDIR /src
+
+# Copy all the things to /src folder
+COPY ["/", "/"]
+
+# Restore the .NET dependencies 
+RUN dotnet restore "Endpoints/Domain/Domain.csproj"
+
+# Build the project
+WORKDIR /src/src/Endpoints/Domain
+RUN dotnet build "Endpoints/Domain/Domain.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "Endpoints/Domain/Domain.csproj" -c Release -o /app/publish
+
+# Use the release image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-bullseye-slim AS final
+
+# Set the work directory to /app
+WORKDIR /app
+
+# Copy the build artifacts from publish to current directory
+
+# Set the entry point
+ENTRYPOINT [ "dotnet", "Domain.dll" ]

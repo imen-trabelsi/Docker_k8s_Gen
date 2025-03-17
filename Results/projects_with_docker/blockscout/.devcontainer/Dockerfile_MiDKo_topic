@@ -1,0 +1,43 @@
+# Base Image
+FROM hexpm/elixir:${VARIANT} AS build 
+
+# Environment Variables
+ENV NVM_DIR=/usr/local/share/nvm \
+    NVM_SYMLINK_CURRENT=true \
+    PATH=${NVM_DIR}/current/bin:${PATH} \
+    ELIXIR_VERSION="1.17.3-erlang-27.1-debian-bullseye-20240926" \
+    PHOENIX_VERSION="1.7.10" \
+    NODE_VERSION="20" \
+    USERNAME=vscode \
+    USER_UID=1000 \
+    USER_GID=$USER_UID \
+
+# Install dependencies
+RUN apt-get update \
+    && apt-get -y install --no-install-recommends curl ca-certificates 2>&1 \
+    && curl -sSL ${COMMON_SCRIPT_SOURCE} -o /tmp/common-setup.sh \
+    && /bin/bash /tmp/common-setup.sh "${INSTALL_ZSH}" "${USERNAME}" "${USER_UID}" "${USER_GID}" "${UPGRADE_PACKAGES}" \
+    && su ${USERNAME} -c "mix local.hex --force \
+    && mix local.rebar --force \
+
+# Set up working dir
+WORKDIR /usr/local/src/
+
+# Copy all files
+COPY . .
+
+# Target Image
+FROM build AS final
+
+# Set User
+USER vscode
+
+# Copy built artifacts from previous stage
+
+# Expose port
+# Include specific port here based on application need 
+EXPOSE 
+
+# Define the command to run the app
+# Use specific command based on the Elixir App
+CMD

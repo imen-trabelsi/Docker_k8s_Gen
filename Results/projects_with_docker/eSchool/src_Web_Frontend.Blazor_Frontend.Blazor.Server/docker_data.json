@@ -1,0 +1,48 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/sdk:5.0",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "WORKDIR /src",
+            "COPY [\"src/Web/Frontend.Blazor/Frontend.Blazor.Server/Frontend.Blazor.Server.csproj\", \"src/Web/Frontend.Blazor/Frontend.Blazor.Server/\"]",
+            "COPY [\"src/Web/Frontend.Blazor/Frontend.Blazor.Shared/Frontend.Blazor.Shared.csproj\", \"src/Web/Frontend.Blazor/Frontend.Blazor.Shared/\"]",
+            "COPY [\"src/Web/Frontend.Blazor/Frontend.Blazor.Client/Frontend.Blazor.Client.csproj\", \"src/Web/Frontend.Blazor/Frontend.Blazor.Client/\"]",
+            "COPY . .",
+            "WORKDIR \"/src/src/Web/Frontend.Blazor/Frontend.Blazor.Server\"",
+            "WORKDIR /app",
+            "COPY --from=publish /app/publish ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"dotnet\",",
+                    "\"Frontend.Blazor.Server.dll\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "dotnet restore \"src/Web/Frontend.Blazor/Frontend.Blazor.Server/Frontend.Blazor.Server.csproj\"",
+                ""
+            ],
+            [
+                "dotnet build \"Frontend.Blazor.Server.csproj\" -c Release -o /app/build",
+                ""
+            ],
+            [
+                "dotnet publish \"Frontend.Blazor.Server.csproj\" -c Release -o /app/publish",
+                ""
+            ]
+        ]
+    }
+}

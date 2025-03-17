@@ -1,0 +1,23 @@
+# Use an official Python runtime as a base image
+FROM python:3.6.3-onbuild
+
+# Set the working directory to /usr/src/app
+WORKDIR /usr/src/app
+
+# Copy the current directory contents into the container at /usr/src/app
+COPY . /usr/src/app
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Make port 80 available to the world outside this container
+EXPOSE 80
+
+# Set environment variables
+# Substitute with appropriate environment variables
+# ENV variable1="value1"
+# ENV variable2="value2"
+# etc..
+
+# Run app.py when the container launches
+CMD ["python", "app.py"]

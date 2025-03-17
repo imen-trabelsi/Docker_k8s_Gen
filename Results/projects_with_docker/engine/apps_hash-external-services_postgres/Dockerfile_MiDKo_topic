@@ -1,0 +1,27 @@
+# Dockerfile
+
+FROM postgres:15-alpine3.18 as builder
+
+ENV WAL2JSON_COMMIT_ID=wal2json_2_5
+
+RUN apk add --no-cache --virtual .build-deps gcc clang15 llvm15 git make musl-dev pkgconf \
+&& git clone https://github.com/eulerto/wal2json -b master --single-branch \
+&& (cd /wal2json && git checkout $WAL2JSON_COMMIT_ID && make && make install) \
+&& git clone --branch v0.5.1 https://github.com/pgvector/pgvector.git \
+&& (cd /pgvector && make && make install) \
+&& rm -rf /wal2json /pgvector \
+&& apk del .build-deps \
+
+FROM postgres:15-alpine3.18
+
+
+ENV LD_LIBRARY_PATH /usr/local/lib/postgresql:$LD_LIBRARY_PATH
+ENV PATH /usr/local/lib/postgresql:$PATH
+ENV PGDATA /var/lib/postgresql/data/pgdata
+
+COPY .env .env.production .env.development .env.test ./
+COPY apps/hash-external-services/docker-compose.yml apps/hash-external-services/postgres/Dockerfile ./apps/hash-external-services/
+
+EXPOSE 5432
+
+CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"]

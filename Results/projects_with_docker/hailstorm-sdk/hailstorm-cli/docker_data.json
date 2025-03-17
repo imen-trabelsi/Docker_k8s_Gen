@@ -1,0 +1,51 @@
+{
+    "docker_info": {
+        "base_image": "jruby:9.2.11.1-jre8",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV DOCKERIZE_VERSION v0.6.1",
+            "ENV HAILSTORM_ENV production"
+        ],
+        "copy_instructions": [
+            "WORKDIR /usr/local/lib/hailstorm-cli",
+            "COPY . ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"/bin/bash\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "gem update bundler \\",
+                "&& bundle config --global frozen 1"
+            ],
+            [
+                "groupadd hailstorm \\",
+                "&& useradd -g hailstorm -m -s /bin/bash hailstorm",
+                "&& apt-get update",
+                "&& apt-get install -y default-mysql-client git vim",
+                "&& rm -rf /var/lib/apt/lists/*"
+            ],
+            [
+                "wget -q https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \\",
+                "&& tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz",
+                "&& rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz"
+            ],
+            [
+                "bundle install",
+                ""
+            ]
+        ]
+    }
+}

@@ -1,0 +1,47 @@
+# Use the specified base image
+FROM ghcr.io/gaming-platform/docker-php-fpm:8.4-development AS builder
+
+# Set environment variables
+ARG environment=development
+ENV SYMFONY_ENVIRONMENT $environment
+ENV COMPOSER_ALLOW_SUPERUSER 1
+
+# Install and configure dependencies
+WORKDIR /project
+COPY composer.json composer.lock /project/
+RUN /composer-install.sh
+
+# Copy rest of the application source
+COPY . /project
+RUN /composer-install-after-code-copy.sh
+
+# Copy necessary scripts, files and permissions
+COPY docker/entrypoint.sh docker/warmup.sh /
+RUN chmod +x /entrypoint.sh && \
+    chmod +x /warmup.sh && \
+
+# Start from second stage
+FROM ghcr.io/gaming-platform/docker-php-fpm:8.4-development
+
+# Set environment variables
+ARG environment=development
+ENV SYMFONY_ENVIRONMENT $environment
+
+# Copy project files from builder
+
+# Copy configuration files
+COPY docker/${environment}.ini /etc/php/8.4/fpm/conf.d/
+
+# Run necessary scripts
+WORKDIR /project
+RUN chmod +x /entrypoint.sh && \
+
+# Configure environment for Symfony
+ENV SYMFONY_ENV=$environment APP_ENV=$environment
+
+# Expose ports
+EXPOSE 80 443
+
+# Set ENTRYPOINT and CMD
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["php-http"]

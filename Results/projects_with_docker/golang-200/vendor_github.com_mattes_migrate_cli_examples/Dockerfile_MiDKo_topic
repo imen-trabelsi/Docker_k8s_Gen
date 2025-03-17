@@ -1,0 +1,19 @@
+# Getting Base Image
+FROM ubuntu:xenial
+
+# Setting up essentials
+RUN apt-get update && \
+
+# Adding Repository for Migrate and Installing Migrate
+RUN curl -L https://packagecloud.io/mattes/migrate/gpgkey | apt-key add - && \
+    echo "deb https://packagecloud.io/mattes/migrate/ubuntu/ xenial main" > /etc/apt/sources.list.d/migrate.list && \
+    apt-get update && \
+
+RUN migrate -version
+
+# Copy Source Code Files into Docker
+# Please replace `src/` and `app/` with appropriate source code directory and desitination directory inside the container.
+# COPY src/ app/
+
+# Run Command (Please replace this with the command to run your application).
+# CMD ["./YOUR_APPLICATION_EXECUTION_COMMAND"]

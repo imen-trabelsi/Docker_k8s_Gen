@@ -1,0 +1,37 @@
+# Step 1: Choose base image and tag
+FROM node:alpine
+
+# Step 2: Create app directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# Step 3: Install app dependencies
+COPY package.json /usr/src/app
+RUN npm install
+
+# Step 4: Copy app source code
+COPY . /usr/src/app
+
+# Step 5: Build Arguments
+# No build arguments provided
+
+# Step 6: Security Considerations
+# No security considerations provided
+
+# Step 7: Environment Variables
+ENV DEBUG=loopback:connector:swagger
+
+# Step 8: Expose Ports
+EXPOSE 3000
+
+# Step 9: Health Checks
+HEALTHCHECK --interval=1m --timeout=3s CMD curl --fail http://localhost/vitals/docker || exit 1
+
+# Step 10: Runtime User Setup
+# No user setup defined
+
+# Step 11: CMD/ENTRYPOINT
+CMD [ "npm", "run", "start.dev" ]
+
+# Step 12: Labels
+# No labels provided

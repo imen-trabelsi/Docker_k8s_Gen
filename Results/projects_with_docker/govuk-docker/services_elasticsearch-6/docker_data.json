@@ -1,0 +1,47 @@
+{
+    "docker_info": {
+        "base_image": "eclipse-temurin:8-jre",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "${USERNAME}"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "ELASTICSEARCH_VERSION=6.7.2",
+            "USERNAME=ubuntu"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /usr",
+            "ADD elasticsearch.yml /usr/elasticsearch/config/elasticsearch.yml"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "/usr/elasticsearch/bin/elasticsearch"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt update && apt install -y curl",
+                ""
+            ],
+            [
+                "curl -L -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz",
+                "RUN tar -xvf elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz"
+            ],
+            [
+                "mv elasticsearch-${ELASTICSEARCH_VERSION} elasticsearch",
+                ""
+            ],
+            [
+                "chown -R ${USERNAME}: elasticsearch",
+                ""
+            ]
+        ]
+    }
+}

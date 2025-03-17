@@ -1,0 +1,21 @@
+# Base Image
+FROM node:13-alpine
+
+# Create App Directory
+WORKDIR /usr/src/app
+
+# Install App Dependencies
+COPY package*.json ./
+RUN yarn install --only=production
+
+# Bundle app source
+COPY . .
+
+# Environment Variables
+ENV NODE_ENV=production
+
+# Expose port
+EXPOSE 8000
+
+# Start application
+CMD [ "npm", "start" ]

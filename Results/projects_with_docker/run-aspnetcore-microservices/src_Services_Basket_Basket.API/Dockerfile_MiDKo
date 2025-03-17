@@ -1,0 +1,37 @@
+# Base Image
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+
+# Set environment variables
+ENV BUILD_CONFIGURATION=Release
+
+# Set working directory
+WORKDIR /src
+
+# Copy csproj and restore as distinct layers
+COPY ["Services/Basket/Basket.API/Basket.API.csproj", "Services/Basket/Basket.API/"]
+COPY ["BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj", "BuildingBlocks/BuildingBlocks/"]
+
+RUN dotnet restore "./Services/Basket/Basket.API/Basket.API.csproj"
+
+# Copy everything else and build
+COPY . .
+WORKDIR "/src/Services/Basket/Basket.API"
+RUN dotnet build "Basket.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+# Final stage / image
+FROM mcr.microsoft.com/dotnet/sdk:8.0 as runtime
+
+ENV BUILD_CONFIGURATION=Release
+
+WORKDIR /app
+
+# Generate runtime code
+RUN dotnet publish "Basket.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+# Use non-root user for added security
+USER app
+
+EXPOSE 8080
+EXPOSE 8081
+
+ENTRYPOINT ["dotnet", "Basket.API.dll"]

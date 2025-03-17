@@ -1,0 +1,37 @@
+# Builder Stage
+FROM golang:dev as builder
+
+WORKDIR /go/src/goTemp
+
+# Download all dependencies
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy common src files
+COPY ./user/proto ./user/proto
+COPY ./globalerrors ./globalerrors
+COPY ./globalUtils ./globalUtils
+COPY ./globalProtos ./globalProtos
+COPY ./globalMonitoring ./globalMonitoring
+
+# Copy service specific src and build server
+ENV SRVDIR=product
+ENV SRVNAME=${SRVDIR}Server
+
+COPY ./$SRVDIR ./$SRVDIR
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o $SRVNAME ./$SRVDIR/server/
+
+# Final Image Stage
+FROM alpine:latest
+
+RUN apk --no-cache add ca-certificates
+
+WORKDIR /goTemp
+
+# Copy server executable from builder stage
+
+EXPOSE 2112
+EXPOSE 50051
+
+# Run the binary executable
+CMD ["./$SRVNAME"]

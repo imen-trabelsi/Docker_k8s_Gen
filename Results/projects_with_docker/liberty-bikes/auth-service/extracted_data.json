@@ -1,0 +1,28 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Java",
+        "dependencies": {
+            "build.gradle": "ext {\n\thttpPort = 8082\n\thttpsPort = 8482\n\tappUrl = \"http://${hostname}:${httpPort}/openapi/ui\"\n}\n\nliberty {\n\tserver {\n\t\tname = 'auth-service'\n\t\tdeploy.dropins = [war]\n\t\tbootstrapProperties = ['httpPort': httpPort, 'httpsPort': httpsPort]\n\t}\n}\n\ndependencies {\n    implementation group: 'io.jsonwebtoken', name: 'jjwt', version: '0.9.1'\n    implementation group: 'com.google.api-client', name: 'google-api-client', version: '1.30.4'\n    implementation group: 'org.twitter4j', name: 'twitter4j-core', version: '4.0.7'\n}\n\n// The installLiberty task doesn't work when run in parallel with other installLiberty tasks\ninstallLiberty.mustRunAfter ':frontend:installLiberty'\n"
+        },
+        "database": null,
+        "build_system": "Gradle",
+        "config_files": {
+            "docker-compose.yml": "version: '2.1'\nservices:\n  frontend:\n    build: frontend\n    image: libertybikes-frontend\n    ports:\n      - \"12000:12000\"\n  auth:\n    build: auth-service\n    image: libertybikes-auth\n    ports:\n      - \"8082:8082\"\n    environment:\n      - frontend_url=http://frontend:12000/login\n      - auth_url=https://auth:8482/auth-service\n  game:\n    build: game-service\n    image: libertybikes-game\n    ports:\n      - \"8080:8080\"\n    environment:\n      - org_libertybikes_restclient_PlayerService_mp_rest_url=http://player:8081\n      - singleParty\n  player:\n    build: player-service\n    image: libertybikes-player\n    ports:\n      - \"8081:8081\"\n    environment:\n      - DB_HOST=postgres\n  postgres:\n    image: postgres:11-alpine\n    ports:\n      - 5432:5432\n    environment:\n      - POSTGRES_DB=playerdb\n      - POSTGRES_USER=lb_user\n      - POSTGRES_PASSWORD=lb_password\n  prometheus:\n    image: prom/prometheus:v2.4.0\n    ports:\n      - 9090:9090\n    volumes:\n      - ./monitoring/prometheus:/etc/prometheus\n  grafana:\n    image: grafana/grafana:5.2.4\n    ports:\n      - 3000:3000\n    environment:\n      - GF_INSTALL_PLUGINS=flant-statusmap-panel\n    volumes:\n      - ./monitoring/datasource:/etc/grafana/provisioning/datasources\n      - ./monitoring/dashboardList:/etc/grafana/provisioning/dashboards\n      - ./monitoring/grafanaDashboardConfig:/var/lib/grafana/dashboards\n",
+            "auth-service/Dockerfile": "FROM open-liberty:19.0.0.9-microProfile3-java11\nADD --chown=1001:0 build/libs/auth-service.war /config/dropins\nCOPY --chown=1001:0 src/main/liberty/config /config/\nRUN printf 'frontend_url=http://lb-frontend:12000/login\\n\\\nauth_url=https://lb-auth:8082/auth-service' > /config/server.env\nRUN printf 'httpPort=8082\\n\\\nhttpsPort=8482' > /config/bootstrap.properties\n\nEXPOSE 8082 8482"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            "Dockerfile",
+            "build.gradle"
+        ],
+        "folders": [
+            ".settings",
+            "prebuild",
+            "src"
+        ]
+    }
+}

@@ -1,0 +1,32 @@
+# Use the specified base image
+FROM registry.cn-beijing.aliyuncs.com/edas_unified/jct_dw_8_4_4:0.1 AS build
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Coping source code to container
+COPY src /app
+COPY pom.xml /app
+
+# Building the application using Maven
+RUN mvn clean install -DskipTests
+
+# Use a second FROM statement to create a clean final image
+FROM registry.cn-beijing.aliyuncs.com/edas_unified/jct_dw_8_4_4:0.1
+
+# Copying Arthas
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+
+# Setting the working directory
+WORKDIR /app
+
+# Copy the app built in the previous stage
+
+# Copy start.sh
+COPY start.sh /app
+
+# Exposing the port
+EXPOSE 8080
+
+# Provide the command to run the application
+CMD ["/app/start.sh"]

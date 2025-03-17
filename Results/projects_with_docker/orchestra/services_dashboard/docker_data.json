@@ -1,0 +1,52 @@
+{
+    "docker_info": {
+        "base_image": "node:12-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV FORWARD_INTEROP_URL='0.0.0.0:4000' \\",
+            "ENV LANG=en_US.UTF-8"
+        ],
+        "copy_instructions": [
+            "WORKDIR /builder",
+            "COPY dashboard/package.json .",
+            "COPY common/messages/stats.proto \\",
+            "COPY dashboard .",
+            "WORKDIR /app",
+            "COPY dashboard/package.json .",
+            "COPY --from=builder /builder/lib lib"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "npm",
+                    "start",
+                    "--silent"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "npm install",
+                ""
+            ],
+            [
+                "npm run build-msg",
+                ""
+            ],
+            [
+                "npm run build",
+                ""
+            ],
+            [
+                "export NODE_ENV=production && npm install",
+                ""
+            ]
+        ]
+    }
+}

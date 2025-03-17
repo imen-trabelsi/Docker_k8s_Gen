@@ -1,0 +1,32 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    emco/deployment-id: monitor
+  name: monitor
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      emco/deployment-id: monitor
+  template:
+    metadata:
+      labels:
+        emco/deployment-id: monitor
+    spec:
+      containers:
+      - command:
+        - /opt/monitor/monitor
+        env:
+        - name: WATCH_NAMESPACE
+          value: ''
+        - name: POD_NAME
+          valueFrom:
+            fieldRef:
+              fieldPath: metadata.name
+        - name: OPERATOR_NAME
+          value: monitor
+        image: emcov2/monitor:latest
+        imagePullPolicy: IfNotPresent
+        name: monitor
+      serviceAccountName: monitor

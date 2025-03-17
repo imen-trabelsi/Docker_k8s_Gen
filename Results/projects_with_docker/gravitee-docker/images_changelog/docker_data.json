@@ -1,0 +1,54 @@
+{
+    "docker_info": {
+        "base_image": "groovy",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root"
+        ],
+        "labels": [
+            "maintainer=\"contact@graviteesource.com\""
+        ],
+        "health_checks": [],
+        "build_args": [
+            "MILESTONE_VERSION=0"
+        ],
+        "envs": [
+            "ENV GROOVY_VERSION=3.0.9",
+            "ENV JAVA_HOME=/opt/java/openjdk \\"
+        ],
+        "copy_instructions": [
+            "ADD https://dl.bintray.com/groovy/maven/apache-groovy-binary-${GROOVY_VERSION}.zip /tmp/",
+            "WORKDIR /data"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "export",
+                    "JAVA_HOME=$JAVA_HOME",
+                    "\\"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && apt-get -y upgrade && \\",
+                "apt-get -y install wget &&",
+                "apt-get clean"
+            ],
+            [
+                "unzip -d /opt/ /tmp/apache-groovy-binary-${GROOVY_VERSION}.zip \\",
+                "&& rm /tmp/apache-groovy-binary-${GROOVY_VERSION}.zip"
+            ],
+            [
+                "wget --no-cache raw.githubusercontent.com/gravitee-io/jenkins-scripts/master/src/main/groovy/githubChangelogGenerator.groovy -P /tmp",
+                ""
+            ],
+            [
+                "mkdir /data",
+                "VOLUME /data"
+            ]
+        ]
+    }
+}

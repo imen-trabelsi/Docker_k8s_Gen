@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: null
+    container.training/generated-by: ytt
+  name: null
+spec:
+  ports:
+  - port: null
+    protocol: TCP
+    targetPort: null
+  selector:
+    app: null
+  type: null

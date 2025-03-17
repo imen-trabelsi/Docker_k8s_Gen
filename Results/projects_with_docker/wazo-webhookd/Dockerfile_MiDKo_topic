@@ -1,0 +1,40 @@
+# Using the specified base image
+FROM python:3.9-slim-bullseye AS compile-image
+
+# Create a virtual environment for Python isolation and set PATH
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Install system dependencies for Python packages that require native build tools
+RUN apt-get -q update && apt-get -yq install gcc
+
+# Copy the requirements.txt and install Python dependencies
+COPY requirements.txt /usr/src/wazo-webhookd/
+RUN pip install -r /usr/src/wazo-webhookd/requirements.txt
+
+# Copy other necessary files
+WORKDIR /usr/src/wazo-webhookd
+COPY setup.py /usr/src/wazo-webhookd/
+COPY wazo_webhookd /usr/src/wazo-webhookd/wazo_webhookd
+COPY ./etc/wazo-webhookd /etc/wazo-webhookd
+
+# Build the application
+RUN python setup.py install
+
+# Create wazo-webhookd system user and group, directories and empty log file
+RUN adduser --quiet --system --group wazo-webhookd \
+    && mkdir -p /etc/wazo-webhookd/conf.d \
+    && install -o wazo-webhookd -g wazo-webhookd -d /run/wazo-webhookd \
+
+# Expose specified port for microservice
+EXPOSE 9300
+
+# Setup a final image by copying compiled files from the previous image
+FROM python:3.9-slim-bullseye
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Mark ourselves as the maintainer of the image
+LABEL maintainer="Wazo"
+
+# Configure the entrypoint and command for running the microservice
+CMD ["wazo-webhookd"]

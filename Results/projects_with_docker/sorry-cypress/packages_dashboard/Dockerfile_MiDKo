@@ -1,0 +1,41 @@
+# Set Base Image
+FROM --platform="${BUILD_PLATFORM}" node:14-alpine as build
+
+WORKDIR /app
+
+# Copy necessary files
+COPY packages/api/src/schema ./packages/api/src/schema
+COPY packages/dashboard/ ./packages/dashboard
+COPY packages/common/ ./packages/common
+COPY package.json ./
+COPY yarn.lock ./
+COPY tsconfig.json ./
+
+# Install dependencies
+RUN yarn install --frozen-lockfile
+
+# Build the project
+RUN yarn workspace @sorry-cypress/common build
+RUN yarn workspace @sorry-cypress/dashboard build
+
+# Start from a clean image
+FROM --platform="${BUILD_PLATFORM}" nginx:alpine
+
+WORKDIR /usr/share/nginx/html
+
+# Copy necessary files
+COPY packages/dashboard/nginx/default.conf.template /etc/nginx/templates/default.conf.template
+COPY packages/dashboard/server/static .
+COPY --from=build /app/packages/dashboard/dist .
+COPY --from=build /app/packages/dashboard/dist/views/index.ejs index.html
+
+# Expose port
+EXPOSE 80
+
+# Set environment variables
+ENV GRAPHQL_SCHEMA_URL "http://localhost:4000"
+ENV CI_URL ""
+ENV GRAPHQL_CLIENT_CREDENTIALS ""
+
+# Default command to execute   
+CMD ["nginx", "-g", "daemon off;"]

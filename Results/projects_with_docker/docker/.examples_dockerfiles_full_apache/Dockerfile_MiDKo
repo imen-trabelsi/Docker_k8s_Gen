@@ -1,0 +1,47 @@
+FROM nextcloud:apache
+
+# Install necessary packages
+RUN set -ex; \
+    apt-get update;\
+    apt-get install -y --no-install-recommends \
+    ffmpeg \
+    ghostscript \
+    libmagickcore-6.q16-6-extra \
+    procps \
+    smbclient \
+    supervisor;\
+    rm -rf /var/lib/apt/lists/*;\
+    set -ex; \
+    savedAptMark="$(apt-mark showmanual)";\
+    apt-get update;\
+    apt-get install -y --no-install-recommends \
+    libbz2-dev \
+    libc-client-dev \
+    libkrb5-dev \
+    libsmbclient-dev;\
+    docker-php-ext-configure imap --with-kerberos --with-imap-ssl;\
+    docker-php-ext-install bz2 imap;\
+    pecl install smbclient;\
+    docker-php-ext-enable smbclient;\
+    apt-mark auto '.*' > /dev/null; \
+    apt-mark manual $savedAptMark; \
+    apt-mark manual $extraPackages; \
+    find /usr/local -type f -executable -exec ldd '{}' ';' \
+        | awk '/=>/ { print $(NF-1) }' \
+        | sort -u \
+        | xargs -r dpkg-query --search \
+        | cut -d: -f1 \
+        | sort -u \
+
+# Create necessary directory
+RUN mkdir -p \
+    /var/log/supervisord \
+
+# Copy configuration files
+COPY supervisord.conf /
+
+# Set environment variables
+ENV NEXTCLOUD_UPDATE=1
+
+# Set entry point
+CMD ["/usr/bin/supervisord", "-c", "/supervisord.conf"]

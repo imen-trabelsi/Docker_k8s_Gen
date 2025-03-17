@@ -1,0 +1,385 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": ".gitmodules",
+            "type": "blob"
+        },
+        {
+            "path": ".travis.yml",
+            "type": "blob"
+        },
+        {
+            "path": "Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "Dockerfile-behave",
+            "type": "blob"
+        },
+        {
+            "path": "Dockerfile-quilt",
+            "type": "blob"
+        },
+        {
+            "path": "Makefile.am",
+            "type": "blob"
+        },
+        {
+            "path": "README-BDDtests.md",
+            "type": "blob"
+        },
+        {
+            "path": "README-docker.md",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "README.quilt-static.md",
+            "type": "blob"
+        },
+        {
+            "path": "Vagrantfile",
+            "type": "blob"
+        },
+        {
+            "path": "anansi",
+            "type": "commit"
+        },
+        {
+            "path": "behave-data",
+            "type": "tree"
+        },
+        {
+            "path": "behave-data/behave.ini",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/data",
+            "type": "tree"
+        },
+        {
+            "path": "behave-data/data/Iceland.nq",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/data/bob-sample.nq",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/data/bob_shakespeare.nq",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/data/dracula.nq",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/data/everything-judi.nq",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/data/external.nq",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/data/geonames.nq",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/data/likeit.nq",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/data/ou-podcast.nq",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/data/pelagios-fragment.nq",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/data/sample.bbcimages.nq",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/data/sample.bbcsfx.audience.nq",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/data/sample.bbcsfx.nq",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/data/sample.bbcteach.v1.nq",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/data/sample.bbcteach.v2.remove.label.dbpedia.nq",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/data/sample.remarc.nq",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/data/sample.wildlife.nq",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/data/sample.worldwide.nq",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/data/shakespeare-sample-update.nq",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/data/shakespeare-sample.nq",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/features",
+            "type": "tree"
+        },
+        {
+            "path": "behave-data/features/bbcteach.feature",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/features/config.py",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/features/count_triples.feature",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/features/environment.py",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/features/param_christophe.feature",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/features/param_for.feature",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/features/param_media.feature",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/features/param_q.feature",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/features/partitions.feature",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/features/sample.datasets.feature",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/features/steps",
+            "type": "tree"
+        },
+        {
+            "path": "behave-data/features/steps/common.py",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/features/steps/resutils.py",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/requirements.txt",
+            "type": "blob"
+        },
+        {
+            "path": "behave-data/run.sh",
+            "type": "blob"
+        },
+        {
+            "path": "behave.yml",
+            "type": "blob"
+        },
+        {
+            "path": "compile.md",
+            "type": "blob"
+        },
+        {
+            "path": "config",
+            "type": "tree"
+        },
+        {
+            "path": "config/crawl.conf",
+            "type": "blob"
+        },
+        {
+            "path": "config/quilt.conf",
+            "type": "blob"
+        },
+        {
+            "path": "config/twine-correlate.conf",
+            "type": "blob"
+        },
+        {
+            "path": "config/twine-generate.conf",
+            "type": "blob"
+        },
+        {
+            "path": "configure.ac",
+            "type": "blob"
+        },
+        {
+            "path": "docbook-html5",
+            "type": "commit"
+        },
+        {
+            "path": "docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "docker",
+            "type": "tree"
+        },
+        {
+            "path": "docker/checkout_develop.sh",
+            "type": "blob"
+        },
+        {
+            "path": "docker/functions.sh",
+            "type": "blob"
+        },
+        {
+            "path": "docker/init_db.sh",
+            "type": "blob"
+        },
+        {
+            "path": "docker/quilt-static.conf",
+            "type": "blob"
+        },
+        {
+            "path": "docker/remote.py",
+            "type": "blob"
+        },
+        {
+            "path": "docker/run.sh",
+            "type": "blob"
+        },
+        {
+            "path": "docker/supervisord.conf",
+            "type": "blob"
+        },
+        {
+            "path": "docker/twine-anansi.conf",
+            "type": "blob"
+        },
+        {
+            "path": "docker/twine.conf",
+            "type": "blob"
+        },
+        {
+            "path": "docs",
+            "type": "commit"
+        },
+        {
+            "path": "libawsclient",
+            "type": "commit"
+        },
+        {
+            "path": "libcluster",
+            "type": "commit"
+        },
+        {
+            "path": "liblod",
+            "type": "commit"
+        },
+        {
+            "path": "libmq",
+            "type": "commit"
+        },
+        {
+            "path": "libsparqlclient",
+            "type": "commit"
+        },
+        {
+            "path": "libsql",
+            "type": "commit"
+        },
+        {
+            "path": "liburi",
+            "type": "commit"
+        },
+        {
+            "path": "m4",
+            "type": "commit"
+        },
+        {
+            "path": "patchwork",
+            "type": "commit"
+        },
+        {
+            "path": "quilt",
+            "type": "commit"
+        },
+        {
+            "path": "quilt-static.yml",
+            "type": "blob"
+        },
+        {
+            "path": "scripts",
+            "type": "tree"
+        },
+        {
+            "path": "scripts/update-to-branch",
+            "type": "blob"
+        },
+        {
+            "path": "spindle",
+            "type": "commit"
+        },
+        {
+            "path": "twine",
+            "type": "commit"
+        },
+        {
+            "path": "twine-anansi-bridge",
+            "type": "commit"
+        },
+        {
+            "path": "vagrant",
+            "type": "tree"
+        },
+        {
+            "path": "vagrant/module_install.sh",
+            "type": "blob"
+        },
+        {
+            "path": "vagrant/vagrant_install.sh",
+            "type": "blob"
+        }
+    ]
+}

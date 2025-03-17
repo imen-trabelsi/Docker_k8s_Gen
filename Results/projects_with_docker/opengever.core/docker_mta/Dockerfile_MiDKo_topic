@@ -1,0 +1,25 @@
+# Use alpine:3.20
+FROM alpine:3.20
+
+# Install dependencies
+RUN apk add --no-cache \
+
+# Copy the necessary files
+COPY docker/mta/conf /etc/postfix
+COPY docker/mta/configure-postfix.py docker/mta/mta2plone.py docker/mta/docker-entrypoint.sh /usr/local/bin/
+
+# Set permissions
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Set the working directory
+WORKDIR /app
+
+# Install python dependencies
+COPY pyproject.toml .
+RUN poetry install
+
+# Expose port 25
+EXPOSE 25
+
+# Run the application
+ENTRYPOINT ["/usr/local/bin/docker-entrypoint.sh"]

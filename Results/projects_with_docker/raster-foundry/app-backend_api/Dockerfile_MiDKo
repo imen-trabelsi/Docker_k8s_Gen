@@ -1,0 +1,31 @@
+# Base image
+FROM quay.io/azavea/openjdk-gdal:2.4-jdk8-slim
+
+# Create user rf
+RUN adduser --system --disabled-password --home /var/lib/rf --shell /sbin/nologin --disabled-password --group rf
+
+# Install sbt
+RUN apt-get update && apt-get install -y sbt
+
+WORKDIR /var/lib/rf
+
+# Copy necessary files
+COPY ./target/scala-2.12/api-assembly.jar /var/lib/rf/
+COPY ./build.sbt /var/lib/rf/
+COPY ./docker-compose.yml /var/lib/rf/
+COPY ./Jenkinsfile /var/lib/rf/
+
+# Expose ports to be used by the Spring Boot application
+EXPOSE 8080
+
+# Set necessary Environment Variables for spring boot application
+ENV SPRING_DATASOURCE_URL=jdbc:postgresql://localhost:5432/mydatabase \
+    SPRING_DATASOURCE_USERNAME=user \
+    SPRING_DATASOURCE_PASSWORD=secret \
+
+# Set user to `rf`
+USER rf
+
+# Boot up command
+ENTRYPOINT ["java"]
+CMD ["-XX:+UnlockExperimentalVMOptions", "-XX:+UseCGroupMemoryLimitForHeap", "-jar", "api-assembly.jar"]

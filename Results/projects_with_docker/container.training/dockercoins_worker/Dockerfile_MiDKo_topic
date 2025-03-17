@@ -1,0 +1,21 @@
+# Start from the base image
+FROM python:alpine
+
+# Copy the dependencies file to the working directory
+COPY requirements.txt .
+
+# Install the dependencies
+RUN pip install -r requirements.txt
+
+# Security considerations, do not run as root
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+USER appuser
+
+# Copy the content of the local src directory to the working directory
+COPY worker.py /
+
+RUN pip install redis
+RUN pip install requests
+
+# Command to run on container start
+CMD ["python", "worker.py"]

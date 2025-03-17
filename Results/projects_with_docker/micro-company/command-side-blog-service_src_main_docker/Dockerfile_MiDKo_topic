@@ -1,0 +1,26 @@
+# Start with a base image containing Java runtime (temurin is the successor of AdoptOpenJDK)
+FROM eclipse-temurin:11
+
+# The application's .jar file
+ARG JAR_FILE=*.jar
+
+# Add the application's .jar to the container
+COPY ${JAR_FILE} app.jar
+
+# Added the wait-for script
+COPY wait-for-it.sh /wait-for-it.sh
+
+# a script permission to execute 
+RUN bash -c 'chmod 777 /wait-for-it.sh'
+
+# refresh .jar file to address a timestamp issue 
+RUN bash -c 'touch /app.jar'
+
+# Make port 8080 available to the world outside
+EXPOSE 8080
+
+# Set the active profile
+ENV SPRING_PROFILES_ACTIVE docker
+
+# Run the jar file 
+ENTRYPOINT ["java","-Dspring.profiles.active=docker","-jar","/app.jar"]

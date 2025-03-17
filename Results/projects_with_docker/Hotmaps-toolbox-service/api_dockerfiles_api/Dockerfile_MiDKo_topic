@@ -1,0 +1,33 @@
+# Basic Dockerfile which could be adjucted according to the microservice project
+FROM hotmaps/base_cm:latest
+
+LABEL maintainers="lesly"
+
+# Set work directory
+WORKDIR /api
+
+# Required directories
+RUN mkdir -p /data \
+    && mkdir -p /var/hotmaps/users \
+    && mkdir -p /api/requirements/api \
+
+# Volune for data
+VOLUME /data
+
+# Copy requirements 
+COPY requirements/api/requirements.txt requirements/api
+COPY . /api
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Install requirements
+RUN pip3 install gunicorn \
+
+# Set environment variables
+ENV CELERY_BROKER_URL amqp://admin:mypass@rabbit:5672/
+ENV CELERY_RESULT_BACKEND redis://redis:6379/0
+ENV C_FORCE_ROOT true
+
+# Expose port 80
+EXPOSE 80
+
+CMD ["/usr/bin/supervisord"]

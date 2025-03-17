@@ -1,0 +1,58 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.23-alpine3.20",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "VERSION"
+        ],
+        "envs": [
+            "ENV GO111MODULE=on"
+        ],
+        "copy_instructions": [
+            "WORKDIR /go/src/github.com/golang-migrate/migrate",
+            "COPY go.mod go.sum ./",
+            "COPY . ./",
+            "COPY --from=builder /go/src/github.com/golang-migrate/migrate/build/migrate.linux-386 /usr/local/bin/migrate"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"migrate\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"--help\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --no-cache git gcc musl-dev make",
+                ""
+            ],
+            [
+                "go mod download",
+                ""
+            ],
+            [
+                "make build-docker",
+                ""
+            ],
+            [
+                "apk add --no-cache ca-certificates",
+                ""
+            ],
+            [
+                "ln -s /usr/local/bin/migrate /migrate",
+                ""
+            ]
+        ]
+    }
+}

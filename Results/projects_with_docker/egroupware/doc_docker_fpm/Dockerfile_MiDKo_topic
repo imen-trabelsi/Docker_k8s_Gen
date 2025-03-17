@@ -1,0 +1,43 @@
+# Define base image
+FROM ${ARCH}ubuntu:20.04 
+
+# Set environment variables
+ENV VERSION=$VERSION
+ENV PHP_VERSION=$PHP_VERSION
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Set up system
+RUN set -e \
+&& apt-get update \
+&& apt-get install -y software-properties-common \
+&& LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php \
+&& apt-get update \
+&& bash -c "apt-get install -y php$PHP_VERSION-{cli,mysql,gd,xsl,bz2,opcache,tidy,zip,bcmath,mbstring,smbclient,ldap,curl,fpm,pgsql,gmp,memcached}" \
+&& cd /usr/share/egroupware \
+&& if [ "$TARGETPLATFORM" = "linux/ppc64le" ]; then \
+    dist_node_v20=https://nodejs.org/dist/latest-v20.x/ \
+    dist_node_v20_ppc64le=$(curl $dist_node_v20|grep ppc64le.tar.xz|cut -d'"' -f2) \
+    curl -L $dist_node_v20$dist_node_v20_ppc64le | tar --directory=/usr/local/ -xJvf - ; \
+else \
+    mkdir -p /etc/apt/keyrings \
+    && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
+    && apt-get update \
+    && apt-get install -y nodejs libatomic1 ; \
+fi \
+&& npm config set fetch-retries 5 \
+&& mkdir chunks \
+
+# Import static files
+COPY resources/setup/importexport_default.xml .
+COPY resources/templates/mobile/app.less .
+
+# Add all needed files
+COPY entrypoint.sh /
+
+# Expose the appropriate ports
+EXPOSE 9000
+
+# Set up the entry point and execution command
+CMD ["php-fpm",, "--nodaemonize"]
+ENTRYPOINT ["/entrypoint.sh"]

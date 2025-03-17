@@ -1,0 +1,69 @@
+{
+    "docker_info": {
+        "base_image": "ubuntu:focal",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "9102"
+        ],
+        "user": [],
+        "labels": [
+            "maintainer=\"barcus@tou.nu\"",
+            "org.label-schema.schema-version=\"1.0\""
+        ],
+        "health_checks": [],
+        "build_args": [
+            "BUILD_DATE",
+            "NAME",
+            "VCS_REF",
+            "VERSION"
+        ],
+        "envs": [
+            "ENV BAREOS_DAEMON_USER bareos",
+            "ENV BAREOS_DAEMON_GROUP bareos",
+            "ENV DEBIAN_FRONTEND noninteractive",
+            "ENV BAREOS_KEY http://download.bareos.org/bareos/release/21/xUbuntu_20.04/Release.key",
+            "ENV BAREOS_REPO http://download.bareos.org/bareos/release/21/xUbuntu_20.04/"
+        ],
+        "copy_instructions": [
+            "COPY docker-entrypoint.sh /docker-entrypoint.sh"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/docker-entrypoint.sh\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/usr/sbin/bareos-fd\",",
+                    "\"-f\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update -qq \\",
+                "&& apt-get -qq -y install --no-install-recommends curl tzdata gnupg gosu",
+                "&& curl -Ls $BAREOS_KEY -o /tmp/bareos.key",
+                "&& apt-key --keyring /etc/apt/trusted.gpg.d/breos-keyring.gpg",
+                "add /tmp/bareos.key",
+                "&& echo \"deb $BAREOS_REPO /\" > /etc/apt/sources.list.d/bareos.list",
+                "&& apt-get update -qq",
+                "&& apt-get install -qq -y --no-install-recommends",
+                "bareos-client mysql-client postgresql-client bareos-tools",
+                "&& apt-get clean",
+                "&& rm -rf /var/lib/apt/lists/*"
+            ],
+            [
+                "chmod a+x /docker-entrypoint.sh",
+                ""
+            ],
+            [
+                "tar czf /bareos-fd.tgz /etc/bareos/bareos-fd.d",
+                ""
+            ]
+        ]
+    }
+}

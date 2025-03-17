@@ -1,0 +1,19 @@
+# Dockerfile
+
+# Use official base image of Node.js 8
+FROM node:8@sha256:a681bf74805b80d03eb21a6c0ef168a976108a287a74167ab593fc953aac34df
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Add package.json to the root directory
+COPY package*.json /usr/src/app/
+
+# Install dependencies
+RUN npm install 
+
+# Copy app source to the image
+COPY . /usr/src/app/
+
+# Start the app
+CMD ["npm", "start"]

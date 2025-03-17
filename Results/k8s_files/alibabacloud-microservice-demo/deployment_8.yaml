@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: rockectmq-broker
+spec:
+  selector:
+    matchLabels:
+      app: rockectmq-broker
+  template:
+    metadata:
+      labels:
+        app: rockectmq-broker
+    spec:
+      containers:
+      - command:
+        - sh
+        - mqbroker
+        - -n
+        - mqnamesrv:9876
+        - -c /home/rocketmq/rocketmq-4.5.0/conf/broker.conf
+        env:
+        - name: ROCKETMQ_HOME
+          value: /home/rocketmq/rocketmq-4.5.0
+        image: registry.cn-shanghai.aliyuncs.com/yizhan/rocketmq:4.5.0
+        imagePullPolicy: Always
+        name: rockectmq-broker
+        ports:
+        - containerPort: 9876
+          protocol: TCP
+        - containerPort: 10911
+          protocol: TCP
+        - containerPort: 10912
+          protocol: TCP
+        - containerPort: 10909

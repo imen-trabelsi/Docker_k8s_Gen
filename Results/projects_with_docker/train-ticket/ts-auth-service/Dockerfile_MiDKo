@@ -1,0 +1,17 @@
+# Define the base image
+FROM java:8-jre
+
+#Set environment variable
+ENV JAVA_OPTS "-Xmx200m"
+
+# Add the application's jar to the container
+COPY ./target/ts-auth-service-1.0.jar /app/
+
+# Set time zone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Expose the required port
+EXPOSE 12349
+
+# Run the jar file 
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom", "-jar", "/app/ts-auth-service-1.0.jar"]

@@ -1,0 +1,45 @@
+{
+    "docker_info": {
+        "base_image": "node:9-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "ENV"
+        ],
+        "envs": [
+            "ENV ENV ${ENV}"
+        ],
+        "copy_instructions": [
+            "COPY . /usr/src/app"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "npm",
+                    "run",
+                    "start-${ENV}"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p /usr/src/app",
+                "WORKDIR /usr/src/app"
+            ],
+            [
+                "apk --no-cache --virtual build-dependencies add \\",
+                "python",
+                "make",
+                "g++",
+                "&& npm install",
+                "&& apk del build-dependencies"
+            ]
+        ]
+    }
+}

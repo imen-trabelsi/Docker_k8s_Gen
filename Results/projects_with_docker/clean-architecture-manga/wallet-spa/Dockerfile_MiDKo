@@ -1,0 +1,27 @@
+# Start with the base image
+FROM node:9-alpine
+
+# Set the Working Directory
+WORKDIR /usr/src/app
+
+# Copy package.json file to the working directory
+COPY package.json .
+
+# Install application dependencies
+RUN apk --no-cache --virtual build-dependencies add \
+python \
+make \
+g++ \
+&& npm install \
+
+# Copy Application source
+COPY . .
+
+# Expose the Application port
+EXPOSE 3000
+
+# Set the environment variable
+ENV ENV=${ENV}
+
+# Start the application
+CMD ["npm", "run", "start-${ENV}"]

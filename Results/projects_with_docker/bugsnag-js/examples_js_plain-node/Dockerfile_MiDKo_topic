@@ -1,0 +1,24 @@
+# Use specific version of node as the base image
+FROM node:12@sha256:01627afeb110b3054ba4a1405541ca095c8bfca1cb6f2be9479c767a2711879e
+
+# Define the working directory
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json (if available)
+COPY package*.json ./
+
+# Install all dependencies
+RUN npm install
+
+# Copy all source code to work directory
+COPY . /usr/src/app
+
+# Create a user node to run our app
+RUN addgroup app && adduser -S -G app app
+USER app
+
+# Expose the appropriate ports
+EXPOSE 8080
+
+# Run the application
+CMD ["npm", "start"]

@@ -1,0 +1,26 @@
+# Set base image
+FROM node:11.2.0-alpine
+
+# Set working directory
+WORKDIR /usr/app
+
+# Add application to /server 
+COPY . /server
+
+# Change to /server directory and install dependencies
+RUN cd /server; \
+
+# Set environment variable
+ENV NODE_ENV production
+
+# Copy files to the Docker image
+COPY package*.json ./
+
+# Install the app dependencies
+RUN npm install
+
+# Copy the rest of your app's source code
+COPY . .
+
+# Run the command to start the app
+CMD ["node", "/server/src/server.js"]

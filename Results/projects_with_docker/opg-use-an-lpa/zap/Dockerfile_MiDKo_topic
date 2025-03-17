@@ -1,0 +1,30 @@
+# Use the base image provided by the user
+FROM owasp/zap2docker-bare
+
+# User provided information
+USER root
+WORKDIR /zap
+COPY ./scripts/ /scripts
+
+# Install all necessary dependencies
+RUN apk upgrade \
+&& apk add python3 py3-pip \
+&& rm -rf /var/cache/apk/* \
+
+# Set Runtime execution command
+CMD ["zap-cli"]
+
+# Expose ports as per user requirements
+# Assuming default ports for Postgres and Zap
+EXPOSE 5432 8080
+
+# Copy configuration and static files
+COPY docker-compose.yml ./
+COPY zap/Dockerfile ./
+
+# Install necessary project dependencies
+COPY package.json ./
+RUN npm install
+
+# Copy all source code files into the workdir
+COPY . .

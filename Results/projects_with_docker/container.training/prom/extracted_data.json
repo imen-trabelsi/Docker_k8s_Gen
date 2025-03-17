@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "requirements.txt": "# This is for netlify\nPyYAML\njinja2\n"
+        },
+        "database": null,
+        "build_system": "pip",
+        "config_files": {
+            "prom/Dockerfile": "FROM prom/prometheus:v1.4.1\nCOPY prometheus.yml /etc/prometheus/prometheus.yml\n\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "webui.js"
+        ],
+        "folders": [
+            "files"
+        ]
+    }
+}

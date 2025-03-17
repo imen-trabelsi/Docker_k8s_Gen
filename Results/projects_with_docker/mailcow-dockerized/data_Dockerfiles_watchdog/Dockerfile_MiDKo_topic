@@ -1,0 +1,55 @@
+# Start with the base image
+FROM alpine:3.20
+
+# Maintainer information
+LABEL maintainer="<your-email-here>"
+
+# Ensure correct environment setup
+ENV TZ=Etc/UTC
+
+# Install required packages
+RUN apk add --update --no-cache \
+    bash \
+    coreutils \
+    curl \
+    fcgi \
+    jq \
+    mariadb-client \
+    nagios-plugins-disk \
+    nagios-plugins-dns \
+    nagios-plugins-http \
+    nagios-plugins-mysql \
+    nagios-plugins-smtp \
+    nagios-plugins-tcp \
+    openssl \
+    perl \
+    perl-io-socket-inet6 \
+    perl-io-socket-ssl \
+    perl-mime-lite \
+    perl-net-dns \
+    perl-socket \
+    perl-socket6 \
+    perl-term-readkey \
+    redis \
+    tini \
+    tzdata \
+    whois \
+    && curl https://raw.githubusercontent.com/mludvig/smtp-cli/v3.10/smtp-cli -o /smtp-cli \
+
+WORKDIR /application
+
+# Copy necessary files
+COPY watchdog.sh /watchdog.sh
+COPY check_mysql_slavestatus.sh /usr/lib/nagios/plugins/check_mysql_slavestatus.sh
+COPY docker-compose.yml /docker-compose.yml
+COPY data/Dockerfiles/watchdog/Dockerfile /data/Dockerfiles/watchdog/Dockerfile
+COPY composer.json /application/composer.json
+
+# Set permissions
+RUN chmod +x /watchdog.sh \
+
+# Use composer to install dependencies
+RUN composer install
+
+# Execution command
+CMD ["/watchdog.sh"]

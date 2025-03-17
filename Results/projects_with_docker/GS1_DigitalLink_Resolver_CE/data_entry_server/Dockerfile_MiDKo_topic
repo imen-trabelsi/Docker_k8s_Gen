@@ -1,0 +1,30 @@
+# Use the official Python image as the base image
+FROM python:3.10-bullseye
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+
+# Create a working directory
+WORKDIR /app
+
+# Copy the requirements and the source code to the working directory
+COPY src/requirements.txt /app/
+COPY src /app/
+
+# Install necessary dependencies
+RUN apt-get update && apt-get install -y curl \
+  && curl -sL https://deb.nodesource.com/setup_18.x | bash - \
+  && apt-get install -y nodejs nano \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* \
+  && npm init es6 \
+  && npm install --save gs1encoder \
+
+# Expose the required port
+EXPOSE 3000
+
+# Run the app
+CMD ["python", "-m", "main"]
+
+# Label the docker image
+LABEL authors="nick"

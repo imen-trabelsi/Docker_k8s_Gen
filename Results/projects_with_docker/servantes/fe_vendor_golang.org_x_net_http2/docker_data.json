@@ -1,0 +1,85 @@
+{
+    "docker_info": {
+        "base_image": "ubuntu:trusty",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV NGHTTP2_VER 895da9a"
+        ],
+        "copy_instructions": [
+            "WORKDIR /root/nghttp2",
+            "WORKDIR /root",
+            "WORKDIR /root/curl-7.45.0"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"-h\"]"
+                ]
+            },
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/usr/local/bin/curl\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && \\",
+                "apt-get upgrade -y &&",
+                "apt-get install -y git-core build-essential wget"
+            ],
+            [
+                "apt-get install -y --no-install-recommends \\",
+                "autotools-dev libtool pkg-config zlib1g-dev",
+                "libcunit1-dev libssl-dev libxml2-dev libevent-dev",
+                "automake autoconf"
+            ],
+            [
+                "apt-get install -y --no-install-recommends make binutils \\",
+                "autoconf automake autotools-dev",
+                "libtool pkg-config zlib1g-dev libcunit1-dev libssl-dev libxml2-dev",
+                "libev-dev libevent-dev libjansson-dev libjemalloc-dev",
+                "cython python3.4-dev python-setuptools"
+            ],
+            [
+                "cd /root && git clone https://github.com/tatsuhiro-t/nghttp2.git",
+                ""
+            ],
+            [
+                "git reset --hard $NGHTTP2_VER",
+                "RUN autoreconf -i"
+            ],
+            [
+                "automake",
+                "RUN autoconf"
+            ],
+            [
+                "./configure",
+                "RUN make"
+            ],
+            [
+                "make install",
+                ""
+            ],
+            [
+                "wget http://curl.haxx.se/download/curl-7.45.0.tar.gz",
+                "RUN tar -zxvf curl-7.45.0.tar.gz"
+            ],
+            [
+                "./configure --with-ssl --with-nghttp2=/usr/local",
+                "RUN make"
+            ],
+            [
+                "make install",
+                "RUN ldconfig"
+            ]
+        ]
+    }
+}

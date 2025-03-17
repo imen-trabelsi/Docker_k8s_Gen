@@ -1,0 +1,26 @@
+# Use the specified base image
+FROM debian:buster-slim
+
+# Setting up the environment variable
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+ENV PATH /opt/conda/bin:$PATH
+
+# Run apt-get to update the existing packages
+RUN apt-get update --fix-missing && \
+
+# Copy dependencies definition
+COPY Gemfile ./Gemfile
+
+# Bundle install
+RUN bundle install
+
+# Setup application
+COPY setup.sh /setup.sh
+RUN /setup.sh 
+
+# Copy config file
+COPY subrepos/dask-docker/docker-compose.yml /src/subrepos/dask-docker/docker-compose.yml
+COPY subrepos/dask-docker/miniforge/Dockerfile /src/subrepos/dask-docker/miniforge/Dockerfile
+
+# Run the server
+CMD [ "/bin/bash" ]

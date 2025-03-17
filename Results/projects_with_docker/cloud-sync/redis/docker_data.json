@@ -1,0 +1,29 @@
+{
+    "docker_info": {
+        "base_image": "redis",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "6379"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY redis.conf /usr/local/etc/redis/redis.conf"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"redis-server\",",
+                    "\"/usr/local/etc/redis/redis.conf\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

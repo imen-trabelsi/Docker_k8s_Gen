@@ -1,0 +1,38 @@
+# Set the base image
+FROM hexpm/elixir:1.15.7-erlang-25.3.2.7-debian-bullseye-20231009-slim
+
+# Set environment variables
+ENV LANG=C.UTF-8
+ENV MIX_ENV=prod
+
+# Set working directory
+WORKDIR /app
+
+# Install OS dependencies
+RUN apt-get update --allow-releaseinfo-change -y \
+    && apt-get install -y build-essential git \
+
+# Copy dependency specifications and lock file
+COPY mix.exs mix.lock ./
+
+# Install Elixir dependencies
+RUN mix local.hex --force && \
+    mix local.rebar --force && \
+    mix hex.info && \
+
+# Copy all application files
+COPY . .
+
+# Build and compile the application
+RUN mix do compile, release
+
+# Prepare for production
+RUN apt-get -qq update && \
+    apt-get -qq install libssl1.1 && \
+
+# Copy run script and built application from builder
+COPY --from=builder ./run_export.sh /app/
+COPY --from=builder /app/_build/$BUILD_ENV/rel/astarte_export .
+
+# Set the default command for the container
+CMD ["sh","/app/run_export.sh"]

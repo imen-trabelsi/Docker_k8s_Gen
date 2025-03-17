@@ -1,0 +1,40 @@
+{
+    "docker_info": {
+        "base_image": "mhart/alpine-node:8",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY package*.json /app/",
+            "COPY . /app/"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"npm\",",
+                    "\"start\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "npm install",
+                ""
+            ],
+            [
+                "npm run build",
+                ""
+            ]
+        ]
+    }
+}

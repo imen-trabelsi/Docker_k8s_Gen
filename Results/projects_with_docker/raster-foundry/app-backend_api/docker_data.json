@@ -1,0 +1,41 @@
+{
+    "docker_info": {
+        "base_image": "quay.io/azavea/openjdk-gdal:2.4-jdk8-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "rf"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ./target/scala-2.12/api-assembly.jar /var/lib/rf/",
+            "WORKDIR /var/lib/rf"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"java\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"-XX:+UnlockExperimentalVMOptions\",",
+                    "\"-XX:+UseCGroupMemoryLimitForHeap\",",
+                    "\"-jar\",",
+                    "\"api-assembly.jar\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "\\",
+                "adduser --system --disabled-password --home /var/lib/rf --shell /sbin/nologin --disabled-password --group rf"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "Go",
+        "framework": "Go",
+        "dependencies": {
+            "go.mod": "module github.com/lightstep/ls-examples/go/opentracing/client\n\ngo 1.17\n\nrequire (\n\tgithub.com/lightstep/lightstep-tracer-go v0.26.0\n\tgithub.com/opentracing/opentracing-go v1.2.0\n)\n\nrequire (\n\tgithub.com/gogo/protobuf v1.3.2 // indirect\n\tgithub.com/golang/protobuf v1.3.1 // indirect\n\tgithub.com/lightstep/lightstep-tracer-common/golang/gogo v0.0.0-20210210170715-a8dfcb80d3a7 // indirect\n\tgolang.org/x/net v0.0.0-20201021035429-f5854403a974 // indirect\n\tgolang.org/x/sys v0.0.0-20210217105451-b926d437f341 // indirect\n\tgolang.org/x/text v0.3.3 // indirect\n\tgoogle.golang.org/genproto v0.0.0-20190530194941-fb225487d101 // indirect\n\tgoogle.golang.org/grpc v1.21.0 // indirect\n)\n"
+        },
+        "database": null,
+        "build_system": "go mod",
+        "config_files": {
+            "collector/varnish/docker-compose.yml": "version: '3.9'\n\nservices:\n  otel-collector:\n    container_name: otel-collector\n    image: otel/opentelemetry-collector-contrib:0.59.0\n    environment:\n      LS_ACCESS_TOKEN: ${LS_ACCESS_TOKEN}\n    configs:\n      - source: collector_conf\n        target: /conf/collector.yml\n    command: [\"--config=/conf/collector.yml\"]\n    networks:\n      - integrations\n\n# deploys a standalone for the proxy and adds instances\n  varnish:\n    container_name: varnish\n    build: ./\n    configs:\n      - source: varnish_conf\n        target: /etc/varnish/default.vcl\n    volumes:\n      - ./docker-varnish-entrypoint:/usr/local/bin/docker-varnish-entrypoint\n    ports:\n      - \"8080:80\"\n      - \"9131:9131\"\n    networks:\n      - integrations\n\n  nginx_appsrv:\n    image: nginx:1.19\n    configs:\n      - source: appsrv_conf\n        target: /etc/nginx/conf.d/nginx.conf\n        uid: '101'\n        gid: '101'\n        mode: 0440\n    ports:\n      - \"1080\"\n    networks:\n      - integrations\n\nconfigs:\n  collector_conf:\n    file: ./collector.yml\n  varnish_conf:\n    file: ./varnish.vcl\n  appsrv_conf:\n    file: ./nginx-appsrv.conf\n\nnetworks:\n  integrations:\n",
+            "collector/varnish/Dockerfile": "FROM golang:1.19 as builder\n\nRUN apt update\nRUN apt -y install git\nRUN git clone https://github.com/jonnenauha/prometheus_varnish_exporter.git\nWORKDIR /go/prometheus_varnish_exporter\nRUN git checkout 1.6.1\nRUN go build\n\n\nFROM varnish:7.1\n\nCOPY --from=builder /go/prometheus_varnish_exporter/prometheus_varnish_exporter /usr/local/bin\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "collector.yml",
+            "docker-compose.yml"
+        ],
+        "folders": []
+    }
+}

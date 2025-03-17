@@ -1,0 +1,30 @@
+{
+    "docker_info": {
+        "base_image": "aaronxsu/raster-vision-pytorch:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt"
+        ],
+        "copy_instructions": [
+            "COPY hitl/requirements.txt /tmp/",
+            "COPY hitl/ /tmp/hitl",
+            "COPY completion.bash /tmp/hitl/completion.bash"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "pip3 install --no-cache-dir -r /tmp/requirements.txt",
+                ""
+            ],
+            [
+                "(cat /tmp/hitl/completion.bash | tee -a /root/.bashrc && cd /tmp/hitl && python3 setup.py install)",
+                ""
+            ]
+        ]
+    }
+}

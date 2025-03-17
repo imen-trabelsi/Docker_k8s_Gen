@@ -1,0 +1,36 @@
+# Use golang:1.15.6-alpine as the base image
+FROM golang:1.15.6-alpine AS builder
+
+LABEL language="golang"
+LABEL org.opencontainers.image.source=""
+
+# Set the working directory
+WORKDIR /opt/app
+
+# Copy go mod files
+COPY go.mod .
+COPY go.sum .
+
+# Download the dependencies
+RUN go mod download
+RUN go mod verify
+
+# Building the application
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -a -installsuffix cgo -o /go/bin/cinema-movies ./cmd/app
+
+# Create a new stage and copy necessary files from the previous stage.
+FROM alpine:3.7
+
+# Set the working directory
+WORKDIR /root/
+
+# make a non root user
+RUN adduser -D -g '' elf
+
+# Copy necessary files from the previous stage.
+
+# Switch to non root user
+USER elf
+
+ENTRYPOINT ["./cinema-movies"]

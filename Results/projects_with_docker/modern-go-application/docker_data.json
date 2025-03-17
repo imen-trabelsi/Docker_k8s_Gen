@@ -1,0 +1,81 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.17-alpine3.14",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "GOPROXY",
+            "BUILD_TARGET",
+            "BUILD_TARGET"
+        ],
+        "envs": [
+            "ENV GOFLAGS=\"-mod=readonly\""
+        ],
+        "copy_instructions": [
+            "COPY go.* ./",
+            "COPY Makefile *.mk ./",
+            "COPY . .",
+            "COPY --from=builder /build/* /usr/local/bin/"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"modern-go-application\",",
+                    "\"--telemetry-addr\",",
+                    "\":10000\",",
+                    "\"--http-addr\",",
+                    "\":8000\",",
+                    "\"--grpc-addr\",",
+                    "\":8001\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --update --no-cache ca-certificates make git curl mercurial",
+                ""
+            ],
+            [
+                "mkdir -p /workspace",
+                "WORKDIR /workspace"
+            ],
+            [
+                "go mod download",
+                ""
+            ],
+            [
+                "if [[ \"${BUILD_TARGET}\" == \"debug\" ]]; then make build-debug-deps; else make build-release-deps; fi",
+                ""
+            ],
+            [
+                "set -xe && \\",
+                "if [[ \"${BUILD_TARGET}\" == \"debug\" ]]; then",
+                "cd /tmp; GOBIN=/workspace/build/debug go get github.com/go-delve/delve/cmd/dlv; cd -;",
+                "make build-debug;",
+                "mv build/debug /build;",
+                "else",
+                "make build-release;",
+                "mv build/release /build;",
+                "fi"
+            ],
+            [
+                "apk add --update --no-cache ca-certificates tzdata bash curl",
+                ""
+            ],
+            [
+                "test ! -e /etc/nsswitch.conf && echo 'hosts: files dns' > /etc/nsswitch.conf",
+                ""
+            ],
+            [
+                "if [[ \"${BUILD_TARGET}\" == \"debug\" ]]; then apk add --update --no-cache libc6-compat; fi",
+                ""
+            ]
+        ]
+    }
+}

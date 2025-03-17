@@ -1,0 +1,27 @@
+{
+    "source_code_info": {
+        "language": "Go",
+        "framework": "Go",
+        "dependencies": {
+            "go.mod": "module github.com/tilt-dev/servantes/snack\n\ngo 1.17\n"
+        },
+        "database": null,
+        "build_system": "go mod",
+        "config_files": {
+            "docker-compose.yml": "version: '3'\nservices:\n  snack:\n    build: ./snack\n    command: /go/bin/snack\n    ports:\n      - \"8083:8083\"\n    environment:\n      - TEMPLATE_DIR=/go/src/github.com/tilt-dev/servantes/snack/web/templates\n  spoonerisms:\n    build:\n      context: ./spoonerisms\n      dockerfile: ../Dockerfile.js.base\n    command: sh -c \"yarn --cwd /app install && node /app/index.js\"\n    volumes:\n      - ./spoonerisms/src:/app\n      - ./spoonerisms/package.json:/app/package.json\n      - ./spoonerisms/yarn.lock:/app/yarn.lock\n    ports:\n      - \"9006:5000\"\n  vigoda:\n    image: vigoda_for_dc\n    ports:\n      - \"9007:8081\"\n    environment:\n      - TEMPLATE_DIR=/go/src/github.com/tilt-dev/servantes/vigoda/web/templates\n  fortune:\n    image: fortune_for_dc\n    ports:\n      - \"9008:8082\"\n    environment:\n      - TEMPLATE_DIR=/go/src/github.com/tilt-dev/servantes/fortune/web/templates\n",
+            "fe/vendor/golang.org/x/net/http2/Dockerfile": "#\n# This Dockerfile builds a recent curl with HTTP/2 client support, using\n# a recent nghttp2 build.\n#\n# See the Makefile for how to tag it. If Docker and that image is found, the\n# Go tests use this curl binary for integration tests.\n#\n\nFROM ubuntu:trusty\n\nRUN apt-get update && \\\n    apt-get upgrade -y && \\\n    apt-get install -y git-core build-essential wget\n\nRUN apt-get install -y --no-install-recommends \\\n       autotools-dev libtool pkg-config zlib1g-dev \\\n       libcunit1-dev libssl-dev libxml2-dev libevent-dev \\\n       automake autoconf\n\n# The list of packages nghttp2 recommends for h2load:\nRUN apt-get install -y --no-install-recommends make binutils \\\n        autoconf automake autotools-dev \\\n        libtool pkg-config zlib1g-dev libcunit1-dev libssl-dev libxml2-dev \\\n        libev-dev libevent-dev libjansson-dev libjemalloc-dev \\\n        cython python3.4-dev python-setuptools\n\n# Note: setting NGHTTP2_VER before the git clone, so an old git clone isn't cached:\nENV NGHTTP2_VER 895da9a\nRUN cd /root && git clone https://github.com/tatsuhiro-t/nghttp2.git\n\nWORKDIR /root/nghttp2\nRUN git reset --hard $NGHTTP2_VER\nRUN autoreconf -i\nRUN automake\nRUN autoconf\nRUN ./configure\nRUN make\nRUN make install\n\nWORKDIR /root\nRUN wget http://curl.haxx.se/download/curl-7.45.0.tar.gz\nRUN tar -zxvf curl-7.45.0.tar.gz\nWORKDIR /root/curl-7.45.0\nRUN ./configure --with-ssl --with-nghttp2=/usr/local\nRUN make\nRUN make install\nRUN ldconfig\n\nCMD [\"-h\"]\nENTRYPOINT [\"/usr/local/bin/curl\"]\n\n",
+            ".circleci/config.yml": "version: 2.1\njobs:\n  build:\n    docker:\n      - image: tiltdev/tilt:latest\n    working_directory: /root/go/src/github.com/tilt-dev/servantes\n\n    steps:\n      - checkout\n      - setup_remote_docker:\n          version: 19.03.12\n      - run: apt update && apt install -y unzip time make wget m4 build-essential golang\n      - run: |\n          set -ex\n          export PROTOC_VERSION=\"3.5.1\"\n          wget https://github.com/google/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip && \\\n            unzip protoc-${PROTOC_VERSION}-linux-x86_64.zip -d protoc && \\\n            mv protoc/bin/protoc /usr/bin/protoc\n\n      - run: echo 'export PATH=~/go/bin:$PATH' >> $BASH_ENV\n      - run: cd .. && go get github.com/golang/protobuf/protoc-gen-go\n      - run: make test\n          \n      - run: ctlptl create cluster kind --registry=ctlptl-registry && make integration\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "go.mod",
+            "main.go"
+        ],
+        "folders": [
+            "web"
+        ]
+    }
+}

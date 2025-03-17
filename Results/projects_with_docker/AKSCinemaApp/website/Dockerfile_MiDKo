@@ -1,0 +1,34 @@
+# Specifying base image
+FROM golang:1.15.6-alpine
+
+# Maintain your own username and password for the user
+RUN adduser -D -g '' elf
+USER elf
+
+# Label the Dockerfile
+LABEL language="golang" \
+
+# Set the Working Directory
+WORKDIR /opt/web
+
+# Copy go mod and sum files
+COPY go.mod go.sum ./
+
+# Download all dependencies
+RUN go mod download
+RUN go mod verify 
+
+# Copy the source code from your current directory to the Working Directory inside the container
+COPY . .
+
+# Build the Go app
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -a -installsuffix cgo -o /go/bin/cinema-website ./cmd/web
+
+# Copy the static files
+COPY ./ui ui
+
+# This container exposes this port to the outside world
+EXPOSE 
+
+# Command to run the executable
+ENTRYPOINT ["./cinema-website"]

@@ -1,0 +1,30 @@
+# Use official Node.js 20.x as base image
+FROM node:20 AS builder
+
+# Create working directory
+RUN mkdir -p /code
+WORKDIR /code
+
+# Copy package*.json, install and cache app dependencies
+COPY package.json /code/
+COPY package-lock.json /code/
+RUN npm ci --only-production
+
+# Copy source code
+COPY ./src /code/src
+
+# Multi-stage build: run stage
+FROM node:20-slim
+WORKDIR /code
+
+# Copy from builder stage
+
+# Provide metadata
+LABEL maintainer="email@example.com"
+LABEL service_name="microservice"
+
+# Expose the designed port
+EXPOSE 3001
+
+# Start the service
+CMD [ "npm", "start" ]

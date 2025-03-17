@@ -1,0 +1,37 @@
+# Start with a base image containing Java runtime
+FROM openjdk:8-jdk-alpine
+
+# Add a volume pointing to /tmp
+VOLUME /tmp
+
+# Make port 8086 available to the world outside this container
+EXPOSE 8086
+
+# The application's jar file
+ARG JAR_FILE=target/*.jar
+
+# Add the application's jar to the container
+COPY ${JAR_FILE} app.jar
+
+# Redis environment variables
+ENV REDIS_HOST=redis-service
+ENV REDIS_PORT=6379
+ENV REDIS_PASSWORD=
+
+# Specify the working directory
+WORKDIR /usr/src/app
+
+# Copy package management files
+COPY package*.json ./
+
+# Copy the project source
+COPY . .
+
+# Install dependencies
+RUN npm install
+
+# Make sure the file is executable
+RUN chmod +x ./app.jar
+
+# Run the jar file 
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]

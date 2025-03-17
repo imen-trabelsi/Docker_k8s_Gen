@@ -1,0 +1,47 @@
+# Use the golang alpine base image.
+FROM golang:alpine AS builder
+
+# Set the environment variable for the Go path.
+ENV GOPATH=/go
+
+# Install dependencies for the builder image.
+RUN apk --no-cache add openssl wget git
+
+# Install dep for Go package management.
+RUN go get -u github.com/golang/dep/cmd/dep
+
+# Create the directory for source codes.
+RUN mkdir -p /go/src/github.com/pclubiitk/puppy-love/service/results
+WORKDIR /go/src/github.com/pclubiitk/puppy-love/service/results
+
+# Copy the Go package files.
+COPY Gopkg.toml Gopkg.lock ./
+
+# Ensure the dependencies.
+RUN dep ensure -v -vendor-only
+
+# Copy the source code.
+COPY . .
+
+# Build the project.
+RUN go build
+
+# Create a new stage for running the application.
+FROM golang:alpine
+
+# Create the directory for the binary file.
+RUN mkdir -p /go/bin
+
+# Copy the binary file from the builder stage.
+
+# Install the ca-certificates for the running image.
+RUN apk --no-cache add ca-certificates
+
+# Set the working directory.
+WORKDIR /go/bin
+
+# Expose the service port.
+EXPOSE 3001
+
+# Set the entrypoint for the application.
+ENTRYPOINT ["/go/bin/results"]

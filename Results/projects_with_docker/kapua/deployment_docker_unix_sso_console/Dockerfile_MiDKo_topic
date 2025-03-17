@@ -1,0 +1,42 @@
+# Use kapua/kapua-console:latest as base image
+FROM kapua/kapua-console:latest
+
+# Update
+RUN apt-get update -y && \
+
+# Create app directory
+RUN mkdir -p /usr/src/app
+
+# Set the app directory as the working directory
+WORKDIR /usr/src/app
+
+# Copy the project object model file to our app directory
+COPY pom.xml ./
+
+# Build all the dependencies in preparation to go offline. 
+# This is a separate step so the dependencies will be cached unless changes to pom.xml are made.
+RUN mvn dependency:go-offline -B
+
+# Copy the project source to the docker image
+COPY src src
+
+# Package the application
+RUN mvn package -DskipTests
+
+# Copy the built jar file to root directory
+COPY target/*.jar app.jar
+
+# Copying TLS certificate
+COPY ../tls.crt /tmp/tls.crt
+
+# Importing the certificate
+RUN keytool -noprompt  -importcert -file "/tmp/tls.crt" -alias "ssocert" -keystore "${JAVA_HOME}/lib/security/cacerts" -storepass "changeit"
+
+# Set non-root user
+USER 1000
+
+# Expose 8080 for web access, replace if necessary
+EXPOSE 8080
+
+# Startup command to execute the jar
+CMD ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]

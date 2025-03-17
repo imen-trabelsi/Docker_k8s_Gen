@@ -1,0 +1,27 @@
+# Pull base image
+FROM pyaiot/base:latest
+
+# Define maintainer
+LABEL maintainer="alexandre.abadie@inria.fr"
+
+# Set working directory
+WORKDIR /app
+
+# Copy the local files to the new docker environment
+COPY . /app
+COPY run.sh /run.sh
+
+# Install dependencies
+RUN pip install -r setup.py
+
+# Give permissions to the shell script
+RUN chmod +x /run.sh
+
+# Set environment variables
+ENV DATABASE_URL redis
+
+# Expose port
+EXPOSE 5683/udp
+
+# Define command
+CMD ["/run.sh"]

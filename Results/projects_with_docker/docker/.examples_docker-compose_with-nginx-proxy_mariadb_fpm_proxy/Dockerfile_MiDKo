@@ -1,0 +1,8 @@
+# Use the alpine version of nginxproxy/nginx-proxy as base image
+FROM nginxproxy/nginx-proxy:alpine
+
+# Copy the .conf file to the nginx directory
+COPY uploadsize.conf /etc/nginx/conf.d/uploadsize.conf
+
+# Expose the standard ports for HTTP (80) and HTTPS (443)
+EXPOSE 80 443

@@ -1,0 +1,55 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:17.0.2-oraclelinux8",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "10000"
+        ],
+        "labels": [
+            "org.label-schema.version=\"0.0.1\""
+        ],
+        "health_checks": [],
+        "build_args": [
+            "BUILD_DATE=\"2022-07-01\"",
+            "JMETER_VERSION=\"5.5\""
+        ],
+        "envs": [
+            "ENV JMETER_HOME /opt/jmeter/apache-jmeter-${JMETER_VERSION}",
+            "ENV JMETER_LIB_FOLDER ${JMETER_HOME}/lib",
+            "ENV JMETER_PLUGINS_FOLDER ${JMETER_LIB_FOLDER}/ext/",
+            "ENV JMETER_BIN ${JMETER_HOME}/bin",
+            "ENV DEBUG_LEVEL=\"INFO\""
+        ],
+        "copy_instructions": [
+            "WORKDIR /opt/jmeter",
+            "COPY  entrypoint.sh ./"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"./entrypoint.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "microdnf update -y  && microdnf install -y \\",
+                "wget",
+                "curl",
+                "&& microdnf clean all"
+            ],
+            [
+                "mkdir -p ${JMETER_HOME} ${JMETER_PLUGINS_FOLDER} \\",
+                "&& curl -sL https://mirror.its.dal.ca/apache/jmeter/binaries/apache-jmeter-${JMETER_VERSION}.tgz | tar -xz",
+                "&& curl -sL https://github.com/sfakrudeen78/JMeter-InfluxDB-Writer/releases/download/v-1.2.2/JMeter-InfluxDB-Writer-plugin-1.2.2.jar",
+                "--output ${JMETER_PLUGINS_FOLDER}/JMeter-InfluxDB-Writer-plugin-1.2.2.jar"
+            ],
+            [
+                "mkdir -m 777 -p temp test/reports",
+                "COPY ./test ./test"
+            ]
+        ]
+    }
+}

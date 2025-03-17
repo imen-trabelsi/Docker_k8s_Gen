@@ -1,0 +1,23 @@
+# Multi-stage Build Phase 1 (build the project)
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+WORKDIR /src
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+# Add rest of the copy instructions...
+
+COPY ["NuGet.config", "./"]
+COPY ["docker-compose.dcproj", "./"]
+COPY ["eShop-Learn.sln", "./"]
+COPY . .
+
+RUN dotnet restore "eShop-Learn.sln"
+WORKDIR "/src/src/Services/Basket/Basket.API"
+RUN dotnet publish --no-restore "Basket.API.csproj" -c Release -o /app/publish
+
+# Multi-stage Build Phase 2 (generate runtime image)
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+
+WORKDIR /app
+
+EXPOSE 80
+ENTRYPOINT ["dotnet", "Basket.API.dll"]

@@ -1,0 +1,19 @@
+# Use envoyproxy/envoy as the base image
+FROM envoyproxy/envoy:v1.14.2
+
+# Make docker-entrypoint.sh executable
+RUN chmod 500 /docker-entrypoint.sh
+
+# Update the system and install gettext
+RUN apt-get update && apt-get install gettext -y
+
+# Copy the Envoy configuration files into the Docker image
+COPY src/ApiGateways/Envoy/envoy.yaml /tmpl/envoy.yaml.tmpl
+COPY src/ApiGateways/Envoy/docker-entrypoint.sh /
+
+# Expose the necessary ports
+EXPOSE 8080
+EXPOSE 8443
+
+# Start command
+ENTRYPOINT ["/docker-entrypoint.sh"]

@@ -1,0 +1,38 @@
+{
+    "docker_info": {
+        "base_image": "node:12",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app/apiservice",
+            "COPY package.json package-lock.json /app/apiservice/",
+            "COPY . /app/apiservice"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"npm\",",
+                    "\"start\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "npm install --no-optional",
+                ""
+            ],
+            [
+                "npm run build",
+                ""
+            ]
+        ]
+    }
+}

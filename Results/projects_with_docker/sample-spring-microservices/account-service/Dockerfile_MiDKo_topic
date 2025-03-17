@@ -1,0 +1,39 @@
+# Choose base image
+FROM openjdk:8-jdk-alpine as build
+
+# Variable for storing Spring Boot Build
+ARG JAR_FILE=target/*.jar
+
+# Response to signals - allows for prompt shutdown on 'docker stop'
+STOPSIGNAL SIGTERM
+
+# Set deployment directory
+WORKDIR /usr/src/app
+
+# Copy project dependencies first for caching
+COPY pom.xml .
+
+# Install Maven and dependencies
+RUN apk add maven \
+
+# Copy the rest of the project
+COPY src ./src
+
+# Execute Maven wrapper to build the project
+RUN mvn -DskipTests clean package
+
+# Final image build
+FROM openjdk:8-jdk-alpine
+
+WORKDIR /app
+
+# Expose port
+EXPOSE 2222
+
+# Copy jar file from build stage to this new image
+
+# Copy files
+COPY target/account-service.jar account-service.jar
+
+# Start Command to start the spring boot application
+ENTRYPOINT ["java", "-jar", "account-service.jar"]

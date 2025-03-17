@@ -1,0 +1,34 @@
+# Set the base image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+# Set the working directory
+WORKDIR /src
+
+# Copy csproj and restore dependencies
+COPY ["src/Services/Catalog/Catalog.csproj", "src/Services/Catalog/"]
+RUN dotnet restore "src/Services/Catalog/Catalog.csproj"
+
+# Copy the rest of the files
+COPY . .
+
+# Change to the project directory
+WORKDIR "/src/src/Services/Catalog"
+
+# Build the project
+RUN dotnet build "Catalog.csproj" -c Release -o /app/build
+
+# Publish the project
+RUN dotnet publish "Catalog.csproj" -c Release -o /app/publish
+
+# Use .NET runtime as base image to create the final Docker image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
+WORKDIR /app
+
+# Copy the published files
+
+# Expose ports
+EXPOSE 80
+EXPOSE 443
+
+# Set the entrypoint
+ENTRYPOINT ["dotnet", "Catalog.dll"]

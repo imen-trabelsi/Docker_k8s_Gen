@@ -1,0 +1,23 @@
+# Start with the base image specified by the user
+FROM nextcloud:apache
+ 
+# Install dependencies and clean up
+RUN apt-get update && apt-get install -y procps smbclient && rm -rf /var/lib/apt/lists/*
+
+# Set the container working directory
+WORKDIR /var/www/html
+
+# Copy the necessary config files
+COPY .config/apache-pretty-urls.config.php .config/autoconfig.php \
+     .config/apcu.config.php .config/apps.config.php \
+     .config/redis.config.php .config/reverse-proxy.config.php \
+     .config/smtp.config.php .config/swift.config.php \
+
+# Set the correct entry point. Replace 'app.jar' with your artefact name
+CMD ["apache2-foreground"]
+
+# No specific ports were requested by the user to be exposed. Common ones for Spring Boot apps are 8080 and 8443
+# EXPOSE 8080
+# EXPOSE 8443
+
+# No specific environment variables, users, or labels were requested by the user

@@ -1,0 +1,44 @@
+# Step 1: Use golang base image
+FROM golang:1.23.6-bookworm as builder
+
+# Set environment variables.
+ENV GOPATH=/go 
+ENV TEST_DB_URL=postgresql://postgres@localhost/postgres
+
+# Set the Working Directory in the container
+WORKDIR /app
+
+# Copy everything from the current directory to the Working Directory inside the container
+COPY . .
+
+# Run commands
+RUN mkdir -p /builds && \
+useradd -d /builds/worker -s /bin/bash -m worker && \
+mkdir /builds/worker/artifacts && \
+chown -R worker:worker /builds/worker && \
+curl -sSfL https://raw.githubusercontent.com/golangci/golangci-lint/master/install.sh | \
+sh -s -- -b $(go env GOPATH)/bin v$(cat .golangci-lint-version)  && \
+apt-get update && \
+apt-get install -y \
+ca-certificates \
+gnupg \
+python3-venv && \
+curl https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - && \
+echo "deb http://apt.postgresql.org/pub/repos/apt/ bookworm-pgdg main" > /etc/apt/sources.list.d/pgdg.list && \
+apt-get update && \
+
+# Build the Go app
+RUN go build .
+
+# Final stage - Build a minimal alpine image
+FROM alpine:latest 
+
+RUN apk --no-cache add ca-certificates
+
+WORKDIR /root/
+
+# Copy the pre-built binary file from the previous stage
+
+EXPOSE 8080
+
+CMD ["./app"]

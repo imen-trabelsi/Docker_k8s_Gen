@@ -1,0 +1,35 @@
+{
+    "docker_info": {
+        "base_image": "nginxinc/nginx-unprivileged:stable-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root",
+            "nginx"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY service-api/docker/web/default.conf.template /etc/nginx/templates/default.conf.template",
+            "COPY scripts/docker_hardening/harden-nginx.sh /harden-nginx.sh"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apk upgrade && \\",
+                "apk update curl"
+            ],
+            [
+                "apk --no-cache add libcap && \\",
+                "setcap 'cap_net_bind_service=+ep' /usr/sbin/nginx &&",
+                "apk del libcap"
+            ],
+            [
+                "/harden-nginx.sh && rm /harden-nginx.sh",
+                ""
+            ]
+        ]
+    }
+}

@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: rainbow
+    color: red
+  name: color
+  namespace: red
+spec:
+  selector:
+    matchLabels:
+      app: rainbow
+      color: red
+  template:
+    metadata:
+      labels:
+        app: rainbow
+        color: red
+    spec:
+      containers:
+      - image: jpetazzo/color
+        name: color

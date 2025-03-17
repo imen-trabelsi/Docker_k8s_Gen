@@ -1,0 +1,45 @@
+{
+    "docker_info": {
+        "base_image": "mdillon/postgis:9.5",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [
+            "HEALTHCHECK --interval=1s --retries=180 CMD psql -U \"$DB_USER\" -c \"SELECT 1\" || exit 1"
+        ],
+        "build_args": [],
+        "envs": [
+            "ENV DEBIAN_FRONTEND noninteractive"
+        ],
+        "copy_instructions": [
+            "COPY etc/postgresql/9.5/main/postgresql.conf.dist /app/postgresql/postgresql.conf.dist",
+            "COPY target/nominatim.so /app/nominatim/src/module/nominatim.so",
+            "COPY start.sh ./start.sh"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"./start.sh\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"postgres\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && apt-get install -y gettext-base",
+                ""
+            ],
+            [
+                "chmod +x ./start.sh && sleep 1",
+                ""
+            ]
+        ]
+    }
+}

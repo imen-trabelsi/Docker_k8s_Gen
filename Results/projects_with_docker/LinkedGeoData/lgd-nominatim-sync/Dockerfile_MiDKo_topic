@@ -1,0 +1,31 @@
+# Define base image
+FROM lgd-build-nominatim:4.0.1
+
+# Create app directory where your app will reside inside docker
+WORKDIR /usr/src/app
+
+# Use maven wrapper to make the build self-contained
+COPY pom.xml mvnw.cmd ./
+COPY .mvn .mvn
+
+# Copy other files
+COPY start.sh .
+COPY wait-for-postgres.sh .
+
+# Make scripts executable
+RUN chmod +x ./start.sh ./wait-for-postgres.sh
+
+# Run maven build inside docker during image creation
+RUN ./mvnw install
+
+# Add your jar to the container
+COPY target/*.jar app.jar
+
+# Ensure signals are forwarded to the Java process
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+
+# Provide the command to run your app which will be used while running your container
+CMD ["./wait-for-postgres.sh", "./start.sh"]
+
+# Expose the port your app runs in
+EXPOSE 8080

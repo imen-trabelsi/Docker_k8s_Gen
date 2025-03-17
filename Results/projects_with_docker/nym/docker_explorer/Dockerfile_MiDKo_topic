@@ -1,0 +1,38 @@
+# Use Official Node.js 16 as base image
+FROM node:16
+
+# App working directory
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json
+COPY ["package.json", "package-lock.json*", "./"]
+
+# Install app dependencies
+RUN npm install --production
+
+# Bundle app source code inside docker image
+COPY . .
+
+# Set the execution permission for the setup script
+RUN chmod +x /setup.sh
+
+# Expose port for the app
+EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=5m --timeout=3s CMD node /app/health-check.js || exit 1
+
+# Configuring user to ensure secure running of the container
+RUN addgroup appgroup && adduser -S appuser -G appgroup
+USER appuser
+
+# Environment variables
+# TODO: Replace 'value' with actual environment variable values
+ENV VAR_NAME=value
+
+# Setting labels
+# TODO: Replace 'value' with actual label values
+LABEL version="1.0" description="Spring Boot Microservice" maintainer="email@domain.com"
+
+# Command to run app
+CMD [ "/setup.sh" ]

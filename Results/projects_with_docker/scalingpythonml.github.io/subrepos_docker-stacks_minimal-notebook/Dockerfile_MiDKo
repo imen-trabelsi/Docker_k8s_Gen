@@ -1,0 +1,38 @@
+# Begin with official jupyter image as base
+FROM $BASE_CONTAINER as builder
+
+LABEL maintainer="Jupyter"
+
+# Switch to root user
+USER root
+
+# Install dependencies
+RUN apt-get update && apt-get install -yq --no-install-recommends \
+build-essential \
+vim-tiny \
+git \
+inkscape \
+libsm6 \
+libxext-dev \
+libxrender1 \
+lmodern \
+netcat && \
+# Setup nano as default editor
+
+COPY subrepos/docker-stacks/minimal-notebook/Dockerfile /docker-stacks/minimal-notebook/Dockerfile
+
+# Switch back to nb user
+USER $NB_UID
+
+# Copy application code and config files
+COPY . /app
+
+# Change working directory
+WORKDIR /app
+
+# Installing ruby gems
+RUN bundle install
+
+EXPOSE $EXPOSED_PORTS
+
+CMD ["bundle", "exec", "ruby", "app.rb"]

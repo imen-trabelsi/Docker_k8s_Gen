@@ -1,0 +1,17 @@
+# Use an official Java runtime as a parent image
+FROM java:8-jre
+
+# Define working directory
+WORKDIR /app
+
+# Set timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+
+# Add application jar file to docker image
+COPY ./target/ts-food-service-1.0.jar /app/
+
+# Expose application port
+EXPOSE 18856
+
+# Start the application
+CMD ["java", "-Xmx200m", "-jar", "/app/ts-food-service-1.0.jar"]

@@ -1,0 +1,39 @@
+# Use the specified base image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+# Set working directory
+WORKDIR /src
+
+# Copy the csproj files
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+
+# Other csproj files could be added similarly
+
+# Run dotnet restore
+RUN dotnet restore "eShop-Learn.sln"
+
+# Copy files and directories
+COPY . .
+
+# Set the work directory for the microservice
+WORKDIR "/src/src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator"
+
+# Run dotnet publish in Release mode
+RUN dotnet publish --no-restore "Web.Shopping.HttpAggregator.csproj" -c Release -o /app/publish
+
+# Start new build stage
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS final
+
+# Set working directory
+WORKDIR /app
+
+# Copy from the publish /app/publish directory of the build image
+
+# Expose port 80 which is used by the app
+EXPOSE 80
+
+# Set the ASP.NET Core URLS environment variable
+ENV ASPNETCORE_URLS=http://+:80
+
+# Start the app
+ENTRYPOINT ["dotnet", "Web.Shopping.HttpAggregator.dll"]

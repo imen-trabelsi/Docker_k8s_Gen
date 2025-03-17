@@ -1,0 +1,30 @@
+# Set the Base Image
+FROM milvusdb/openblas:ubuntu20.04-20220914-179ea77
+
+# Set the working directory.
+WORKDIR /app
+
+# Install build system 
+RUN apt-get update && apt-get install -y --no-install-recommends wget curl ca-certificates gnupg2 && \
+apt-get update && apt-get install -y --no-install-recommends g++ gcc make libssl-dev zlib1g-dev libboost-regex-dev libboost-program-options-dev libboost-system-dev libboost-filesystem-dev libboost-serialization-dev libboost-iostreams-dev libunwind-dev && \
+apt-get remove --purge -y && \
+
+# Copy the go.mod file and download dependencies
+COPY go.mod . 
+RUN go mod download
+
+# Copy the application file 
+COPY . .
+
+# Build the application
+RUN mkdir -p /opt/heaptrack/ && wget -qO- "https://github.com/KDE/heaptrack/archive/refs/tags/v1.3.0.tar.gz" | tar --strip-components=1 -xz -C /opt/heaptrack &&
+cd /opt/heaptrack && \
+cd /opt/heaptrack/build && \
+
+# Copy executables
+COPY --from=build /usr/local/bin/heaptrack /opt/heaptrack/bin/
+COPY --from=build /usr/local/lib/heaptrack /opt/heaptrack/lib/
+COPY --from=build /usr/lib/x86_64-linux-gnu/libunwind* /opt/heaptrack/lib/
+
+# Command to start the service
+CMD ["tail", "-f", "/dev/null"]

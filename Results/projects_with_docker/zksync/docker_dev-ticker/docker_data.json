@@ -1,0 +1,46 @@
+{
+    "docker_info": {
+        "base_image": "rust:1.67",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "9876"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV RUST_LOG info"
+        ],
+        "copy_instructions": [
+            "WORKDIR /usr/src/zksync",
+            "COPY . .",
+            "COPY --from=builder /usr/src/zksync/target/release/dev-ticker-server /bin/",
+            "COPY --from=builder /usr/src/zksync/etc/tokens /etc/tokens"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"dev-ticker-server\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "--mount=type=cache,target=/usr/local/cargo/registry \\",
+                "cargo install sccache"
+            ],
+            [
+                "--mount=type=cache,target=/usr/local/cargo/registry \\",
+                "--mount=type=cache,target=/root/.cache/sccache",
+                "RUSTC_WRAPPER=/usr/local/cargo/bin/sccache",
+                "cargo build --bin dev-ticker-server --release"
+            ],
+            [
+                "apt update",
+                "RUN apt install openssl -y"
+            ]
+        ]
+    }
+}

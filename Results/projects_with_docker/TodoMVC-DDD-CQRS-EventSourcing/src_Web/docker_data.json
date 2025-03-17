@@ -1,0 +1,51 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "80",
+            "443"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV ASPNETCORE_URLS http://+"
+        ],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "WORKDIR /src",
+            "COPY [\"/\", \"/\"]",
+            "WORKDIR /app",
+            "COPY --from=publish /app/publish ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"dotnet\",",
+                    "\"Web.dll\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -",
+                "RUN apt-get install -y nodejs"
+            ],
+            [
+                "dotnet restore \"Web/Web.csproj\"",
+                "WORKDIR /src/Web"
+            ],
+            [
+                "dotnet build \"Web.csproj\" -c Release -o /app/build",
+                ""
+            ],
+            [
+                "dotnet publish \"Web.csproj\" -c Release -o /app/publish",
+                ""
+            ]
+        ]
+    }
+}

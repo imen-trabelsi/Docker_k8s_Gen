@@ -1,0 +1,25 @@
+# Specify the base image
+FROM adoptopenjdk/openjdk11:alpine AS build
+
+# Set the current working directory inside the container
+WORKDIR /app
+
+# Copy the pom.xml file and download all dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+# Copy the rest of the source code
+COPY src /app/src
+
+# Build the project and produce a fat jar
+RUN mvn clean install
+
+# USING THE OPTIMIZED IMAGE
+FROM adoptopenjdk/openjdk11:alpine-jre
+
+WORKDIR /app
+
+# Copy the built jar file into the container
+
+# Run the jar file 
+ENTRYPOINT ["java", "-jar", "api-gateway.jar"]

@@ -1,0 +1,31 @@
+# Use the provided base image
+FROM adoptopenjdk/openjdk14:jre-14.0.2_12-alpine
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the Maven wrapper from the project directory and make it executable
+COPY mvnw .
+RUN chmod 700 ./mvnw
+
+# Copy the Maven local repository to the container (avoids having to download all dependencies each time we build the docker image)
+COPY .mvn .mvn
+
+# Copy the project files
+COPY pom.xml .
+COPY src ./src
+
+# Install curl for health checks and other networking commands
+RUN apk --no-cache add curl
+
+# Build the project inside the container
+RUN ./mvnw package -DskipTests
+
+# Copy build artifacts
+COPY target/payment-service*.jar payment-service.jar
+
+# Specify the command to be run
+CMD ["java", "${JAVA_OPTS}", "-jar", "payment-service.jar"]
+
+# Expose the port on which the application will run
+EXPOSE 8080

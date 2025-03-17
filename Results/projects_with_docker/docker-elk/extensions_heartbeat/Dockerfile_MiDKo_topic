@@ -1,0 +1,23 @@
+# Stage 1: Build the application
+FROM maven:3.6.3-openjdk-11 AS build  
+
+WORKDIR /usr/src/app 
+
+COPY pom.xml . 
+
+# Downloading all the dependencies in a separate layer will prevent Maven from re-downloading them on every build
+RUN mvn dependency:go-offline -B
+
+COPY src ./src 
+
+RUN mvn clean package -DskipTests
+
+# Stage 2: Run the application
+FROM docker.elastic.co/beats/heartbeat:${ELASTIC_VERSION:-8.17.3}  
+
+EXPOSE 8080 
+
+
+ENTRYPOINT ["java","-jar","/app.jar"]
+
+# Note: 

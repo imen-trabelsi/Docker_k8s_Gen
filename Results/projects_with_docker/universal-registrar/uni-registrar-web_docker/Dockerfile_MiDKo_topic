@@ -1,0 +1,35 @@
+# Build stage
+FROM maven:3-eclipse-temurin-17-focal AS build
+
+WORKDIR /build
+
+COPY . /build
+
+# Installs necessary dependencies and libraries
+RUN export DEBIAN_FRONTEND=noninteractive && \
+    apt-get -y update && \
+    apt-get install -y --no-install-recommends patch && \
+
+# Runs build commands for each module 
+RUN cd /build/ && mvn clean install -N
+RUN cd /build/uni-registrar-core && mvn clean install -N
+RUN cd /build/driver && mvn clean install -N
+RUN cd /build/driver-http && mvn clean install -N
+RUN cd /build/uni-registrar-local && mvn clean install -N
+RUN cd /build/uni-registrar-web && mvn clean package -N
+
+# Final stage to build the Docker image
+FROM maven:3-eclipse-temurin-17-focal
+
+WORKDIR /app
+
+
+# Sets environment variables
+ENV uniregistrar_web_spring_profiles_active=default
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Exposes the port
+EXPOSE 9080
+
+# Sets the Docker image execution command
+CMD ["java", "-jar", "*.jar"]

@@ -1,0 +1,27 @@
+# Dockerfile
+FROM node:12-alpine
+
+# Environment Variables
+ENV SUPPORTING_FILES /app
+
+# Install Dependencies
+RUN apk update && apk add --update alpine-sdk build-base bash python nano
+
+# Create Directory for the app
+RUN mkdir -p $SUPPORTING_FILES
+WORKDIR $SUPPORTING_FILES
+
+# Install app dependencies
+COPY package.json .
+COPY . $SUPPORTING_FILES
+RUN mkdir -p /node_modules
+RUN npm install
+
+# User
+USER node
+
+# Expose Ports
+EXPOSE 8080
+
+# Run the app
+CMD [ "npm", "start" ]

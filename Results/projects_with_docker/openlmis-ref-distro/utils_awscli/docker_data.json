@@ -1,0 +1,45 @@
+{
+    "docker_info": {
+        "base_image": "openlmis/dev:3",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY entrypoint.sh /entrypoint.sh"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/entrypoint.sh\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk -v --update add \\",
+                "python",
+                "py-pip",
+                "jq",
+                "&&",
+                "pip install --upgrade awscli s3cmd python-magic &&",
+                "apk -v --purge del py-pip &&",
+                "rm /var/cache/apk/*"
+            ],
+            [
+                "chmod u+x /entrypoint.sh",
+                "WORKDIR /"
+            ]
+        ]
+    }
+}

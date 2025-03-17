@@ -1,0 +1,50 @@
+# Use the official Golang image to create a build artifact. This is based on Alpine, a lightweight Linux distribution.
+FROM golang:1.15.6-alpine AS builder
+
+# Ensure that we have the latest packages and security updates.
+RUN apk update && apk upgrade
+
+# Create user elf.
+RUN adduser -D -g '' elf
+
+# Set the current user to the above created user.
+USER elf
+
+# Set the current working directory inside the container to /opt/app/
+WORKDIR /opt/app/
+
+# Copy go modules manifest
+COPY go.mod .
+COPY go.sum .
+
+# Download all dependencies. Dependencies will be cached if the go.mod and go.sum files are not changed.
+RUN go mod download
+
+# Confirm the integrity of the dependencies
+RUN go mod verify
+
+# Copying the rest of the source code 
+COPY . .
+
+# Build the Go app
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -a -installsuffix cgo -o /go/bin/cinema-users ./cmd/app
+
+# Start a new stage from scratch to create a minimal final image
+FROM scratch AS final
+
+# Copy necessary files / artifacts from previous stage
+
+# Set current user
+USER elf
+
+# Ensure file is executable
+RUN chmod +x /cinema-users
+
+# Exposing port (you need to provide the port you want to expose)
+# EXPOSE
+
+# Specify command to be executed
+ENTRYPOINT ["./cinema-users"]
+
+# Set Label
+LABEL language="golang" \

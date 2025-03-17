@@ -1,0 +1,25 @@
+# Use Official Node Image as base image
+FROM node:19.0-alpine
+
+# Setting working directory in the container
+WORKDIR ./frontend
+
+# Copy package.json and yarn.lock file to the working directory
+COPY package.json .
+COPY yarn.lock .
+
+# Running yarn install command
+RUN yarn install --production
+
+# Copying static files to the working directory
+COPY public ./public
+COPY src ./src
+
+# Including PATH in the environment variable
+ENV PATH /frontend/node_modules/.bin:$PATH
+
+# Expose the necessary port
+EXPOSE 3000
+
+# Run the command
+ENTRYPOINT ["yarn", "start"]

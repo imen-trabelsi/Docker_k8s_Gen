@@ -1,0 +1,30 @@
+# Use the base image provided by the user
+FROM java:8
+
+# Information about who maintains this Dockerfile
+LABEL maintainer="support@microservice.com"
+
+# Create app directory
+RUN mkdir /app
+
+# Copy all the files to the app directory
+COPY . /app
+
+# Update the system and install necessary tools
+RUN apt-get update && \
+    apt-get install -y net-tools iproute && \
+
+# Change Work Directory
+WORKDIR /app
+
+# Set Environment variables, replace with actual variables
+# ENV VARIABLE_NAME=VARIABLE_VALUE
+
+# Maven build
+RUN mvn clean install
+
+# Expose ports, replace with actual port numbers
+# EXPOSE PORT_NUMBER
+
+# Command to start the spring boot application
+ENTRYPOINT [ "java", "-jar", "./target/myapplication-0.0.1-SNAPSHOT.jar" ]

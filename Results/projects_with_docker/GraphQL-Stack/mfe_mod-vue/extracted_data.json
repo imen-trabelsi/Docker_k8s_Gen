@@ -1,0 +1,27 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "JavaScript",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"mod-vue\",\n  \"version\": \"0.1.0\",\n  \"private\": true,\n  \"scripts\": {\n    \"serve\": \"vue-cli-service serve\",\n    \"build\": \"vue-cli-service build\",\n    \"lint\": \"vue-cli-service lint\",\n    \"test\": \"vue-cli-service test:unit\"\n  },\n  \"dependencies\": {\n    \"core-js\": \"^3.6.4\",\n    \"single-spa-vue\": \"^1.8.2\",\n    \"vue\": \"^2.6.11\",\n    \"vue-router\": \"^3.1.6\"\n  },\n  \"devDependencies\": {\n    \"@vue/cli-plugin-babel\": \"~4.2.0\",\n    \"@vue/cli-plugin-eslint\": \"~4.2.0\",\n    \"@vue/cli-plugin-unit-jest\": \"~4.5.0\",\n    \"@vue/cli-service\": \"~4.2.0\",\n    \"@vue/test-utils\": \"^1.0.3\",\n    \"babel-eslint\": \"^10.0.3\",\n    \"eslint\": \"^6.7.2\",\n    \"eslint-plugin-vue\": \"^6.1.2\",\n    \"vue-template-compiler\": \"^2.6.11\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "mfe/mod-vue/docker-compose.yml": "version: '3.8'\n\nservices:\n  serve:\n    image: serve-mod-vue\n    build:\n      context: .\n      dockerfile: Dockerfile\n    ports:\n      - '80:80'\n      - '443:443'\n      - '8001:8001'\n    volumes:\n      - caddy_data:/data\n      - caddy_config:/config\n    networks:\n      - micro\n\nvolumes:\n  caddy_data:\n  caddy_config:\n\nnetworks:\n  micro:\n    driver: bridge\n",
+            "mfe/mod-vue/Dockerfile": "FROM caddy:2-alpine\n\nCOPY Caddyfile /etc/caddy/Caddyfile\nCOPY /dist /usr/share/caddy/dist\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "babel.config.js",
+            "docker-compose.yml",
+            "package.json"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

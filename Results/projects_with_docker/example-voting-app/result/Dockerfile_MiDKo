@@ -1,0 +1,27 @@
+# Set base Image
+FROM node:18-slim
+
+# Creating app directory
+WORKDIR /usr/local/app
+
+# Setting environment variable
+ENV PORT=80
+
+# Installing app dependencies
+COPY package*.json ./
+COPY . .
+
+# Install additional system packages 
+RUN apt-get update && \
+apt-get install -y --no-install-recommends curl tini && \
+rm -rf /var/lib/apt/lists/* && \
+npm install -g nodemon && \
+npm ci && \
+npm cache clean --force && \
+
+# Expose port
+EXPOSE 80
+
+# Set command to start the node server
+ENTRYPOINT ["/usr/bin/tini", "--"]
+CMD ["node", "server.js"]

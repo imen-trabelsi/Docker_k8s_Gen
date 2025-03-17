@@ -1,0 +1,24 @@
+# Using base image
+FROM adoptopenjdk/openjdk14:jre-14.0.2_12-alpine
+
+# Setting up working directory
+WORKDIR /app
+
+# Copying pom.xml and source code
+COPY pom.xml .
+COPY src ./src
+
+# Building the application
+RUN mvn -f pom.xml clean package
+
+# Copying the generated jar file to the root directory of the image
+COPY target/auth-service*.jar auth-service.jar
+
+# Exposing necessary ports
+EXPOSE 8080
+
+# Setting up necessary environment variables
+ENV JAVA_OPTS=""
+
+# Running the application
+CMD java ${JAVA_OPTS} -jar --enable-preview auth-service.jar

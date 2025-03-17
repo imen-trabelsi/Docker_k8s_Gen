@@ -1,0 +1,36 @@
+{
+    "docker_info": {
+        "base_image": "openlmis/dev:4",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY entrypoint.sh /entrypoint.sh",
+            "WORKDIR /"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/entrypoint.sh\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "/bin/sh"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "chmod u+x /entrypoint.sh",
+                "COPY sql /sql"
+            ]
+        ]
+    }
+}

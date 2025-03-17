@@ -1,0 +1,37 @@
+# Base Image
+FROM groovy:3.0.9
+
+# Maintainer and label
+LABEL maintainer="contact@graviteesource.com"
+
+# Environment Variables
+ENV GROOVY_VERSION=3.0.9
+ENV JAVA_HOME=/opt/java/openjdk
+
+# Work Directory
+WORKDIR /data
+
+# Copy Instructions
+ADD https://dl.bintray.com/groovy/maven/apache-groovy-binary-${GROOVY_VERSION}.zip /tmp/
+
+# Execution Command
+CMD export JAVA_HOME=$JAVA_HOME
+
+# Run Commands
+RUN apt-get update && apt-get -y upgrade
+RUN apt-get -y install wget
+RUN apt-get clean
+RUN unzip -d /opt/ /tmp/apache-groovy-binary-${GROOVY_VERSION}.zip
+RUN rm /tmp/apache-groovy-binary-${GROOVY_VERSION}.zip
+RUN wget --no-cache raw.githubusercontent.com/gravitee-io/jenkins-scripts/master/src/main/groovy/githubChangelogGenerator.groovy -P /tmp
+RUN mkdir /data
+RUN echo "VOLUME /data" > /data
+
+# Setting User
+USER root
+
+# Setting Build Arguments
+ARG MILESTONE_VERSION=0
+
+# Entry Point
+ENTRYPOINT ["python", "./app.py"]

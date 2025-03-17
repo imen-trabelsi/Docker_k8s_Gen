@@ -1,0 +1,24 @@
+# Build stage
+FROM golang:1.23.4-alpine AS builder
+
+WORKDIR /app
+COPY go.mod go.sum ./
+RUN go mod download
+
+COPY app/ ./
+COPY internal/ ./internal
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o /go/bin/main ./
+
+# Production stage
+FROM alpine:3.14 AS production
+
+# Add non-root user for security purpose
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+RUN chown -R appuser:appgroup /var/task
+USER appuser
+
+WORKDIR /var/task
+
+# Copy files from builder stage
+
+ENTRYPOINT ["./main"]

@@ -1,0 +1,74 @@
+{
+    "docker_info": {
+        "base_image": "${BASE_BUILDER}",
+        "multi_stage_build": true,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "BASE_BUILDER=alpine:3.9",
+            "BASE",
+            "install_pytorch",
+            "HAWK_EYE_VERSION"
+        ],
+        "envs": [
+            "ENV IMAGERY_HOST='imagery' \\",
+            "ENV PYTHONUNBUFFERED=TRUE"
+        ],
+        "copy_instructions": [
+            "WORKDIR /builder",
+            "COPY common/messages/image_rec.proto \\",
+            "WORKDIR /app",
+            "COPY common/python/requirements.txt common/requirements.txt",
+            "COPY image-rec-auto/requirements.txt .",
+            "COPY --from=builder /builder/dist/messages messages",
+            "COPY common/python common",
+            "COPY image-rec-auto/service service"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "python3",
+                    "-m",
+                    "service"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk --no-cache add \\",
+                "protobuf"
+            ],
+            [
+                "mkdir dist && protoc --python_out=dist messages/*.proto",
+                ""
+            ],
+            [
+                "apt-get update && apt-get install -y \\",
+                "python3-dev",
+                "wget"
+            ],
+            [
+                "wget https://bootstrap.pypa.io/get-pip.py -O get-pip.py && python3 get-pip.py",
+                "RUN python3 -m pip install --upgrade pip"
+            ],
+            [
+                "if [ -n \"$install_pytorch\" ] ; then \\",
+                "python3 -m pip install torch==1.7.1+cpu torchvision==0.8.2+cpu -f https://download.pytorch.org/whl/torch_stable.html;",
+                "fi"
+            ],
+            [
+                "python3 -m pip install  -r common/requirements.txt \\",
+                "-r requirements.txt"
+            ],
+            [
+                "wget https://github.com/uavaustin/hawk-eye/releases/download/v${HAWK_EYE_VERSION}/hawk_eye-${HAWK_EYE_VERSION}-py3-none-any.whl \\",
+                "-O hawk_eye-${HAWK_EYE_VERSION}-py3-none-any.whl",
+                "&& python3 -m pip install hawk_eye-${HAWK_EYE_VERSION}-py3-none-any.whl",
+                "&& rm hawk_eye-${HAWK_EYE_VERSION}-py3-none-any.whl"
+            ]
+        ]
+    }
+}

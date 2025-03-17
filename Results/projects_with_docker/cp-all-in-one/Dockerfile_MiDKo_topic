@@ -1,0 +1,31 @@
+# Use the base image with Java and Docker Compose as provided by the user
+FROM tiangolo/docker-with-compose
+
+# Build argument for application resource directory
+ARG RESOURCES_DIR=/resources
+
+# Set the working directory in the image
+WORKDIR /app
+
+# Send all the source files and directories to docker image
+COPY ./ ./
+
+# Set the environment variable in the container
+ARG JAVA_OPTS
+ENV JAVA_OPTS=$JAVA_OPTS
+
+# Install Maven using the package manager
+RUN apt-get update && apt-get install -y maven
+
+# Build the application using Maven
+RUN mvn clean install
+
+# Unpackage the application to a separate directory 
+RUN mvn package
+
+# Expose the application on the corresponding port from
+# Here, since no specific port was provided, we assume a typical Spring Boot port - which is 8080
+EXPOSE 8080
+
+# The command to start the service
+CMD [ "java", "-jar", "target/service.jar" ]

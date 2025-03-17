@@ -1,0 +1,45 @@
+{
+    "docker_info": {
+        "base_image": "node:14-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "node"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "VERSION=0.0.0",
+            "GIT_REVISION"
+        ],
+        "envs": [
+            "ENV PATH /code/node_modules/.bin:$PATH"
+        ],
+        "copy_instructions": [
+            "WORKDIR /code/",
+            "COPY ./package.json /code/package.json",
+            "WORKDIR /code/assets",
+            "COPY ./ /code/assets"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/code/assets/conf/entrypoint.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p /var/tmp && \\",
+                "echo $VERSION > /var/tmp/VERSION &&",
+                "echo $GIT_REVISION > /var/tmp/REVISION"
+            ],
+            [
+                "apk add -q --no-cache --update bash && \\",
+                "npm install -s --no-audit --no-fund --no-package-lock &&",
+                "npm cache clean --force"
+            ]
+        ]
+    }
+}

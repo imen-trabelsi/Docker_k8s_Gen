@@ -1,0 +1,41 @@
+# Stage 1 : Build
+FROM mcr.microsoft.com/dotnet/sdk:6.0 as build
+
+COPY ["NuGet.config", "./"]
+COPY ["docker-compose.dcproj", "./"]
+COPY ["eShop-Learn.sln", "./"]
+
+WORKDIR /src
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+COPY ["src/BuildingBlocks/EventBus/EventBus/EventBus.csproj", "BuildingBlocks/EventBus/EventBus/"]
+COPY ["src/BuildingBlocks/EventBus/EventBusRabbitMQ/EventBusRabbitMQ.csproj", "BuildingBlocks/EventBus/EventBusRabbitMQ/"]
+COPY ["src/BuildingBlocks/EventBus/EventBusServiceBus/EventBusServiceBus.csproj", "BuildingBlocks/EventBus/EventBusServiceBus/"]
+COPY ["src/BuildingBlocks/EventBus/IntegrationEventLogEF/IntegrationEventLogEF.csproj", "BuildingBlocks/EventBus/IntegrationEventLogEF/"]
+COPY ["src/BuildingBlocks/WebHost/WebHost.Customization/WebHost.Customization.csproj", "BuildingBlocks/WebHost/WebHost.Customization/"]
+COPY ["src/Services/Basket/Basket.API/Basket.API.csproj", "Services/Basket/Basket.API/"]
+COPY ["src/Services/Catalog/Catalog.API/Catalog.API.csproj", "Services/Catalog/Catalog.API/"]
+COPY ["src/Services/Coupon/Coupon.API/Coupon.API.csproj", "Services/Coupon/Coupon.API/"]
+COPY ["src/Services/Identity/Identity.API/Identity.API.csproj", "Services/Identity/Identity.API/"]
+COPY ["src/Services/Ordering/Ordering.API/Ordering.API.csproj", "Services/Ordering/Ordering.API/"]
+COPY ["src/Services/Ordering/Ordering.BackgroundTasks/Ordering.BackgroundTasks.csproj", "Services/Ordering/Ordering.BackgroundTasks/"]
+COPY ["src/Services/Ordering/Ordering.Domain/Ordering.Domain.csproj", "Services/Ordering/Ordering.Domain/"]
+COPY ["src/Services/Ordering/Ordering.Infrastructure/Ordering.Infrastructure.csproj", "Services/Ordering/Ordering.Infrastructure/"]
+COPY ["src/Services/Ordering/Ordering.SignalrHub/Ordering.SignalrHub.csproj", "Services/Ordering/Ordering.SignalrHub/"]
+COPY ["src/Services/Payment/Payment.API/Payment.API.csproj", "Services/Payment/Payment.API/"]
+COPY ["src/Web/WebSPA/WebSPA.csproj", "Web/WebSPA/"]
+COPY ["src/Web/WebStatus/WebStatus.csproj", "Web/WebStatus/"]
+
+WORKDIR "/src/src/Services/Ordering/Ordering.BackgroundTasks"
+RUN dotnet restore "eShop-Learn.sln"
+COPY . .
+
+# Publish
+RUN dotnet publish "Ordering.BackgroundTasks.csproj" -c Release -o /app/publish
+
+# Stage 2 : Setup
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+
+WORKDIR /app
+
+# Entry point
+ENTRYPOINT ["dotnet", "Ordering.BackgroundTasks.dll"]

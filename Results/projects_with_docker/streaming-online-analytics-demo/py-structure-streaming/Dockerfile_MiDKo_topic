@@ -1,0 +1,35 @@
+#Specify the base image
+FROM docker.io/radanalyticsio/openshift-spark
+
+# Copy application source files
+COPY ./pyorder-processing.py /opt
+COPY ./entrypoint.sh /opt
+
+#Specify to run any commands in this directory
+WORKDIR /opt
+
+#Allow scripts to run - Allocates Permissions
+RUN chmod +x ./entrypoint.sh
+
+#Expose port 8080
+EXPOSE 8080
+
+# Copy the project object model file
+COPY pom.xml .
+
+#Pull down the necessary Maven dependencies at build time
+#This will cache dependencies in the Docker layer --> speed up build-time
+RUN mvn dependency:go-offline -B
+
+#Copy the source code
+COPY src src
+
+#Package the application
+RUN mvn package -DskipTests
+
+#Execute the application
+ENTRYPOINT ["./entrypoint.sh"]
+
+#Optional Instruction to Specify a user 
+#USER nonroot:nonroot
+

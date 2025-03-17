@@ -1,0 +1,40 @@
+{
+    "docker_info": {
+        "base_image": "continuumio/miniconda:4.4.10",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY requirements.txt /tmp/requirements.txt",
+            "COPY ./ /opt/src",
+            "WORKDIR /opt/src"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apt-get update && apt-get install -y --no-install-recommends apt-utils",
+                ""
+            ],
+            [
+                "conda install gxx_linux-64",
+                ""
+            ],
+            [
+                "apt-get install -y --force-yes default-libmysqlclient-dev mysql-client build-essential",
+                ""
+            ],
+            [
+                "pip install -qr /tmp/requirements.txt",
+                ""
+            ],
+            [
+                "adduser --disabled-password --gecos \"\" foo",
+                ""
+            ]
+        ]
+    }
+}

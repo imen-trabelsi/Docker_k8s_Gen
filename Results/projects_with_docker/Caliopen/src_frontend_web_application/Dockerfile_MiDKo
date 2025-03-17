@@ -1,0 +1,24 @@
+# Base Image
+FROM node:16
+
+# Environment Variables
+ENV NODE_ENV=production
+
+# Create Working Directory
+WORKDIR /srv/caliopen/frontend/
+
+# Install dependencies
+COPY package.json yarn.lock ./
+RUN yarn install --production 
+
+# Copying source files
+COPY . /srv/caliopen/frontend/
+
+# Building app
+RUN yarn run release
+
+# Expose the listening port
+EXPOSE 4000
+
+# Running the app
+CMD ["yarn", "run", "start:prod"]

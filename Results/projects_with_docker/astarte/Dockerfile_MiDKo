@@ -1,0 +1,49 @@
+#Define the base image
+FROM elixir:latest as builder
+
+#Update and install dependencies
+RUN apt-get update --allow-releaseinfo-change -y && \
+    apt-get install -y build-essential git openssl ca-certificates inotify-tools && \
+
+#Define the working directory
+WORKDIR /src
+
+#Copy the necessary files
+COPY mix.exs mix.lock ./
+
+#Set the required environment variables
+ARG BUILD_ENV=prod
+ENV MIX_ENV=${BUILD_ENV}
+ENV LANG C.UTF-8
+
+#Install hex and rebar, fetch mix dependencies
+RUN mix local.hex --force && \
+    mix local.rebar --force && \
+
+# Compile the project and build the release
+RUN mix do compile, release
+
+FROM debian:stretch-slim
+
+#expose ports
+EXPOSE 4000
+
+#Update and install runtime dependencies
+RUN apt-get -qq update -y && \
+    apt-get -qq install openssl ca-certificates && \
+
+#Create a non root user
+RUN useradd -ms /bin/bash nobody
+USER nobody
+
+#Set working directory
+WORKDIR /app
+
+#Copy files from the release build stage
+COPY --chown=nobody:nobody . .
+
+RUN APP_NAME=$(ls | head -n 1) && \
+
+# Define the entrypoint and command train
+ENTRYPOINT ["./entrypoint.sh"]
+CMD ["./astarte-service", "start"]

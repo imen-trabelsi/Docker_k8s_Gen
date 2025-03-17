@@ -1,0 +1,29 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/mssql/server:2019-latest",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "SA_PASSWORD"
+        ],
+        "envs": [
+            "ENV SA_PASSWORD=${SA_PASSWORD}",
+            "ENV ACCEPT_EULA=Y"
+        ],
+        "copy_instructions": [
+            "ADD Restore/logcorner-edusync-speech-database_Create.sql /home/resources/Restore.sql"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "(/opt/mssql/bin/sqlservr --accept-eula & ) | grep -q \"SQL Server is now ready for client connections\" \\",
+                "&& sleep 10",
+                "&& /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P $SA_PASSWORD -i /home/resources/Restore.sql",
+                "&& pkill sqlservr"
+            ]
+        ]
+    }
+}

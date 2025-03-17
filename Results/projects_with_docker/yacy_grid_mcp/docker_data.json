@@ -1,0 +1,49 @@
+{
+    "docker_info": {
+        "base_image": "eclipse-temurin:8-jdk-focal",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8100"
+        ],
+        "user": [],
+        "labels": [
+            "maintainer=\"Michael"
+        ],
+        "health_checks": [],
+        "build_args": [
+            "default_branch=master"
+        ],
+        "envs": [
+            "ENV DEBIAN_FRONTEND noninteractive"
+        ],
+        "copy_instructions": [
+            "COPY ./ /app",
+            "WORKDIR /app",
+            "COPY ./conf /app/conf/",
+            "COPY --from=appbuilder /app/build/libs/yacy_grid_mcp-0.0.1-SNAPSHOT-all.jar ./app/build/libs/",
+            "WORKDIR /app"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"java\",",
+                    "\"-Xms320M\",",
+                    "\"-Xmx2G\",",
+                    "\"-jar\",",
+                    "\"/app/build/libs/yacy_grid_mcp-0.0.1-SNAPSHOT-all.jar\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "./gradlew clean shadowDistTar",
+                ""
+            ],
+            [
+                "if [ -e /app/build/libs/app-0.0.1-SNAPSHOT-all.jar ] ; then mv /app/build/libs/app-0.0.1-SNAPSHOT-all.jar /app/build/libs/yacy_grid_mcp-0.0.1-SNAPSHOT-all.jar; fi",
+                ""
+            ]
+        ]
+    }
+}

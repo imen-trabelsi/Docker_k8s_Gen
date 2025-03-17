@@ -1,0 +1,17 @@
+{
+    "docker_info": {
+        "base_image": "nginx",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY nginx.prod.conf /etc/nginx/nginx.conf"
+        ],
+        "execution": [],
+        "run": []
+    }
+}

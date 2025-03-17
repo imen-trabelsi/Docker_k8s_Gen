@@ -1,0 +1,18 @@
+# Use the Python:3-Alpine image
+FROM python:3-alpine
+
+# Set WORKDIR
+WORKDIR /app
+
+# Copy requirements.txt and install the requirements
+COPY requirements.txt /app/
+RUN pip install -r requirements.txt
+
+# Copy the rest of the code
+COPY . /app
+
+# Expose the necessary port
+EXPOSE 5000
+
+# Run the application
+CMD ["python", "main.py"]

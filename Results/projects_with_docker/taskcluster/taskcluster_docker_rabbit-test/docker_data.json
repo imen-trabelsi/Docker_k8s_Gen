@@ -1,0 +1,37 @@
+{
+    "docker_info": {
+        "base_image": "node:22.13.1-bookworm",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV SHELL=/bin/bash \\"
+        ],
+        "copy_instructions": [],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/bin/bash\",",
+                    "\"--login\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p /builds && \\",
+                "useradd -d /builds/worker -s /bin/bash -m worker &&",
+                "mkdir /builds/worker/artifacts &&",
+                "chown -R worker:worker /builds/worker"
+            ],
+            [
+                "apt-get update && apt-get install -y \\",
+                "rabbitmq-server &&",
+                "rm -rf /var/lib/apt/lists/*"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,42 @@
+# Start from a base image
+FROM openjdk:8-jre-alpine
+
+# Environment variables
+ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \
+
+# VOLUME for temporary files
+VOLUME /tmp
+
+# Command to install necessary dependencies
+RUN apk add --no-cache curl
+
+# Create Directories
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy POM and sources
+COPY pom.xml .
+COPY src src
+
+# Build the project and delete the original sources to reduce image size
+RUN ./mvnw install -DskipTests && rm -rf src
+
+# Copy project static files
+COPY blog/src/main/resources/config/liquibase/changelog /usr/src/app
+
+# Expose 8080 port for outside world
+EXPOSE 8080
+
+# Application jar
+COPY *.war /app.war
+
+# Unzip the jar file 
+RUN sh -c 'touch /app.war'
+
+# Command to start the application
+CMD echo "The application will start in ${JHIPSTER_SLEEP}s..." && \
+    sleep ${JHIPSTER_SLEEP} && \

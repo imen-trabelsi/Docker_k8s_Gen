@@ -1,0 +1,36 @@
+{
+    "source_code_info": {
+        "language": "PHP",
+        "framework": "Symfony",
+        "dependencies": {
+            "composer.json": "{\n    \"type\": \"project\",\n    \"license\": \"proprietary\",\n    \"require\": {\n        \"php\": \"^7.1.3\",\n        \"ext-ctype\": \"*\",\n        \"ext-iconv\": \"*\",\n        \"johngrogg/ics-parser\": \"^2.1\",\n        \"nelmio/cors-bundle\": \"^1.5\",\n        \"platformsh/symfonyflex-bridge\": \"^2.1\",\n        \"sensio/framework-extra-bundle\": \"^5.3\",\n        \"symfony/console\": \"4.3.*\",\n        \"symfony/dotenv\": \"4.3.*\",\n        \"symfony/flex\": \"^1.1\",\n        \"symfony/framework-bundle\": \"4.3.*\",\n        \"symfony/http-client\": \"4.3.*\",\n        \"symfony/property-access\": \"4.3.*\",\n        \"symfony/serializer\": \"4.3.*\",\n        \"symfony/yaml\": \"4.3.*\"\n    },\n    \"config\": {\n        \"preferred-install\": {\n            \"*\": \"dist\"\n        },\n        \"sort-packages\": true\n    },\n    \"autoload\": {\n        \"psr-4\": {\n            \"App\\\\\": \"src/\"\n        }\n    },\n    \"autoload-dev\": {\n        \"psr-4\": {\n            \"App\\\\Tests\\\\\": \"tests/\"\n        }\n    },\n    \"replace\": {\n        \"paragonie/random_compat\": \"2.*\",\n        \"symfony/polyfill-ctype\": \"*\",\n        \"symfony/polyfill-iconv\": \"*\",\n        \"symfony/polyfill-php71\": \"*\",\n        \"symfony/polyfill-php70\": \"*\",\n        \"symfony/polyfill-php56\": \"*\"\n    },\n    \"scripts\": {\n        \"auto-scripts\": {\n            \"cache:clear\": \"symfony-cmd\",\n            \"assets:install %PUBLIC_DIR%\": \"symfony-cmd\"\n        },\n        \"post-install-cmd\": [\n            \"@auto-scripts\"\n        ],\n        \"post-update-cmd\": [\n            \"@auto-scripts\"\n        ]\n    },\n    \"conflict\": {\n        \"symfony/symfony\": \"*\"\n    },\n    \"extra\": {\n        \"symfony\": {\n            \"allow-contrib\": false,\n            \"require\": \"4.3.*\"\n        }\n    },\n    \"require-dev\": {\n        \"symfony/web-server-bundle\": \"4.3.*\"\n    }\n}\n"
+        },
+        "database": null,
+        "build_system": "Composer",
+        "config_files": {
+            "docker-compose.yml": "version: '3.4'\n\nvolumes:\n  esdata01:\n    driver: local\n\nservices:\n  web:\n    build:\n      context: ./web\n    ports:\n      - \"${PORT}:80\"\n    volumes:\n      - ./web/conf.d:/etc/nginx/conf.d:rw,cached\n    depends_on:\n      - coordinator\n      - rssreader\n      - calendar\n      - frontend\n      - tweets\n\n  frontend:\n    build:\n      context: ./frontend\n      dockerfile: ../docker/nodejs-yarn.dockerfile\n    environment:\n      - SKIP_PREFLIGHT_CHECK=true\n      - REACT_APP_COORDINATOR=//coordinator.${DEFAULT_HOST}\n    volumes:\n      - ./frontend:/app:rw,cached\n\n  coordinator:\n    build:\n      context: ./coordinator\n      dockerfile: ../docker/nodejs-npm.dockerfile\n    environment:\n      - DEFAULT_HOST=${DEFAULT_HOST}\n      - KAFKA_HOST=kafka:9092\n    command: \"npm run dev\"\n    depends_on:\n      - kafka\n    volumes:\n      - ./coordinator:/app:rw,cached\n      - ./.platform/routes.yaml:/app/routes.yaml:ro\n\n  rssreader:\n    build:\n      context: ./rssreader\n      dockerfile: ../docker/nodejs-npm.dockerfile\n    environment:\n      - ELASTICSEARCH_HOST=http://elasticsearch:9200\n    command: \"npm run dev\"\n    volumes:\n      - ./rssreader:/app\n      - ./rssreader/db:/app/db\n    depends_on:\n      - elasticsearch\n\n  tweets:\n    build:\n      context: ./tweets\n      dockerfile: ../docker/nodejs-npm.dockerfile\n    command: \"npm run start\"\n    volumes:\n      - ./tweets:/app\n    environment:\n      - KAFKA_HOST=kafka:9092\n      - ELASTICSEARCH_HOST=http://elasticsearch:9200\n    depends_on:\n      - kafka\n      - coordinator\n      - elasticsearch\n\n  elasticsearch:\n    image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4\n    environment:\n      - node.name=es01\n      - discovery.type=single-node\n      - \"ES_JAVA_OPTS=-Xms512m -Xmx512m\"\n      - http.cors.enabled=true\n      - http.cors.allow-origin=*\n      - http.cors.allow-headers=X-Requested-With,X-Auth-Token,Content-Type,Content-Length,Authorization\n      - http.cors.allow-credentials=true\n    ulimits:\n      memlock:\n        soft: -1\n        hard: -1\n    volumes:\n      - esdata01:/usr/share/elasticsearch/data\n    ports:\n      - \"9288:9200\"\n  zookeeper:\n    image: wurstmeister/zookeeper\n    #tmpfs: \"/datalog\"\n    ports:\n      - \"2181:2181\"\n\n  kafka:\n    image: wurstmeister/kafka\n    ports:\n      - \"9092:9092\"\n    environment:\n      HOSTNAME_COMMAND: \"route -n | awk '/UG[ \\t]/{print $$2}'\"\n      #KAFKA_ADVERTISED_HOST_NAME: 172.19.0.1\n      #KAFKA_CREATE_TOPICS: \"NewUrl:1:1,NewContent:1:1,ClientResponse:1:1\"\n      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1\n      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181\n      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://_{HOSTNAME_COMMAND}:9092\n      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092\n    depends_on:\n      - zookeeper\n    volumes:\n      - /var/run/docker.sock\n\n  calendar:\n    build:\n      context: ./calendar\n    volumes:\n      - ./calendar:/var/www/app:rw,cached\n    depends_on:\n      - elasticsearch\n\n\n\n",
+            "web/Dockerfile": "FROM nginx:alpine\nCOPY conf.d /etc/nginx/conf.d"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".env",
+            ".gitignore",
+            ".platform.app.yaml",
+            "Dockerfile",
+            "composer.json",
+            "composer.lock",
+            "symfony.lock"
+        ],
+        "folders": [
+            "bin",
+            "config",
+            "docker",
+            "old",
+            "public",
+            "src",
+            "translations"
+        ]
+    }
+}

@@ -1,0 +1,20 @@
+# Start from the Node 20 image
+FROM node:20
+
+# Create app directory
+RUN mkdir -p /code
+WORKDIR /code
+
+# Install app dependencies
+COPY package*.json ./
+RUN npm install 
+
+# Copy project files into the docker container
+COPY ./src ./src
+COPY ./images ./images
+
+# Expose the app on port 3002
+EXPOSE 3002
+
+# Start the app
+CMD [ "npm", "start" ]

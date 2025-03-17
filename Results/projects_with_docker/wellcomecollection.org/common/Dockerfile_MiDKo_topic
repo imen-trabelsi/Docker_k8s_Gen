@@ -1,0 +1,40 @@
+# Base Image
+FROM public.ecr.aws/docker/library/node:20-bookworm-slim
+
+# Create app directory and set as current directory
+WORKDIR /usr/src/app/webapp
+
+# Install AWS CLI
+RUN apt-get update && apt-get install -y awscli
+
+# Add package.json and yarn.lock
+COPY ./package.json ./package.json
+COPY ./yarn.lock ./yarn.lock
+
+# Install dependencies
+RUN npm install
+
+# Add common
+COPY ./common ./common
+WORKDIR /usr/src/app/webapp/common
+
+# Run setupCommon and clean yarn cache
+RUN yarn setupCommon && yarn cache clean
+
+# Return to webapp directory
+WORKDIR /usr/src/app/webapp
+
+# Add content/webapp
+COPY ./content/webapp ./content/webapp
+
+# Add toggles/webapp
+COPY ./toggles/webapp ./toggles/webapp
+
+# Add identity/webapp
+COPY ./identity/webapp ./identity/webapp
+
+# Expose port
+EXPOSE 
+
+# Default command
+CMD ["true"]

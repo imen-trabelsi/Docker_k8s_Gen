@@ -1,0 +1,26 @@
+# Set the base image
+FROM ubuntu:16.04
+
+# Update the system and install dependencies
+RUN apt-get update && apt-get -y upgrade
+RUN apt-get install -y libfuse-dev fuse curl wget software-properties-common
+RUN apt install -y openjdk-11-jdk
+
+# Set environment variable
+ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64
+
+# Create and enter the working directory
+RUN mkdir -p /score-client
+WORKDIR /score-client
+
+# Download the score client
+RUN wget -qO- https://artifacts.oicr.on.ca/artifactory/dcc-release/bio/overture/score-client/[RELEASE]/score-client-[RELEASE]-dist.tar.gz | tar xvz --strip-components 1
+
+# Copy the source code files into the container
+COPY . .
+
+# Compile the application
+RUN mvn clean package
+
+# The final command that will be executed when the container is running
+CMD ["java", "-jar", "target/myspringbootapp.jar"]

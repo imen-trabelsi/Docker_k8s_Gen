@@ -1,0 +1,33 @@
+# Use an official Python runtime as a parent image
+FROM python:3.7-slim
+
+# Set the working directory in the container to /app
+WORKDIR /app
+
+# Add current directory code to the working directory in the container (/app)
+COPY . /app
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Make /var/lib/pgsql/data directory and Change the owner and permissions
+# As it seems this step is more relevant to Postgres database, and here we have MongoDB, this step is absent in this dockerfile 
+
+# Copy the 1-init-dbs.sh script and configuration file
+COPY docker/postgres/1-init-dbs.sh /docker-entrypoint-initdb.d/
+COPY issuer_pipeline/docker/postgres/Dockerfile Dockerfile
+
+# Run the script 
+RUN ["/bin/bash", "-c", "/docker-entrypoint-initdb.d/1-init-dbs.sh"]
+
+# Make port 80 available to the world outside this container
+EXPOSE 80
+
+# Define environment variable
+# You should fill these according to your specific needs
+ENV NAME World
+ENV MONGO_URI your_mongo_uri
+ENV OTHER_ENV other_environment_variable
+
+# Run app.py when the container launches
+CMD ["python", "app.py"]

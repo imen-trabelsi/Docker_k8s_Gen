@@ -1,0 +1,23 @@
+FROM alpine:3.15
+
+LABEL maintainer="barcus@tou.nu"
+LABEL org.label-schema.schema-version="1.0"
+LABEL org.label-schema.build-date=$BUILD_DATE
+LABEL org.label-schema.name=$NAME
+LABEL org.label-schema.vcs-ref=$VCS_REF
+LABEL org.label-schema.version=$VERSION
+
+ENV BAREOS_DAEMON_USER bareos
+ENV BAREOS_DAEMON_GROUP bareos
+
+RUN apk add --no-cache bareos openssh-client tar shadow bash su-exec \
+    && tar czf /bareos-fd.tgz /etc/bareos/bareos-fd.d \
+    && mkdir /run/bareos \
+    && chown $BAREOS_DAEMON_USER /run/bareos \
+
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+
+EXPOSE 9102
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["/usr/sbin/bareos-fd",, "-f"]

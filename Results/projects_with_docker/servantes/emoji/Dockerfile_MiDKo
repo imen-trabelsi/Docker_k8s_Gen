@@ -1,0 +1,15 @@
+# Let's start generating Dockerfile
+
+FROM golang:1.17-alpine
+
+# Setting working directory
+WORKDIR /go/src/github.com/tilt-dev/servantes/emoji
+
+# Copying local package files to the container's workspace.
+COPY . /go/src/github.com/tilt-dev/servantes/emoji
+
+# Building the emoji command inside the container.
+RUN  cd /go/src/github.com/tilt-dev/servantes/emoji && go install .
+
+# Run the emoji command when the container starts.
+ENTRYPOINT /go/bin/emoji

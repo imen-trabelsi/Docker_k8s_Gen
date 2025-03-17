@@ -1,0 +1,29 @@
+# Use Ubuntu 18.04 as base image
+FROM ubuntu:18.04
+
+# Maintainer
+LABEL maintainer="admin@example.com"
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Set system wide environment
+ENV NODE_ENV production
+
+# Install app dependencies by copying package.json files and install all dependencies
+COPY package*.json ./
+RUN apt-get update && apt-get install -y curl && apt-get install -y netcat
+RUN curl -sL https://deb.nodesource.com/setup_12.x | bash -
+RUN apt-get install -y nodejs
+RUN npm install
+# If you are building your code for production
+# RUN npm ci --only=production
+
+# Bundle app source
+COPY . .
+
+# Expose ports
+EXPOSE 8080
+
+# Default command
+CMD [ "node", "server.js" ]

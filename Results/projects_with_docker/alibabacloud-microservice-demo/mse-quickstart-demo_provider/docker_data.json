@@ -1,0 +1,36 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:8-jre-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "20002"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY /target/provider-1.0.0.jar /app"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"sh\",",
+                    "\"-c\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"java",
+                    "-jar",
+                    "/app/provider-1.0.0.jar\"]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

@@ -1,0 +1,31 @@
+# Base Image
+FROM openjdk:11-jre-slim AS build
+
+# Set the work directory
+WORKDIR /opt/website/registry
+
+# Copy pom.xml separately to benefit from Docker cache
+COPY pom.xml .
+
+# Install app dependencies
+RUN mvn dependency:go-offline -B
+
+# Copy the source code
+COPY src /opt/website/registry/src
+
+# Build the application
+RUN mvn package -DskipTests
+
+# Final stage
+FROM openjdk:11-jre-slim
+
+# Set the work directory
+WORKDIR /usr/share/website/registry
+
+# Copy the executable jar file
+
+# Expose the application on port 8761
+EXPOSE 8761
+
+# Run the jar file 
+ENTRYPOINT ["java", "-jar", "/usr/share/website/registry/registry-exec.jar"]

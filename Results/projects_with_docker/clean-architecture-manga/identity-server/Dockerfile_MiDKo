@@ -1,0 +1,27 @@
+# Build Image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+
+# Setup Working Directory
+WORKDIR /app
+
+# Copy csproj and restore as distinct layers
+COPY identity-server/IdentityServer.csproj ./identity-server/
+WORKDIR /app/identity-server
+RUN dotnet restore
+
+# Copy Everything else and build
+COPY . ./
+RUN dotnet build -c Release -o /app/build
+
+# Publish App
+FROM build-env AS publish
+RUN dotnet publish -c Release -o /app/publish
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 
+WORKDIR /app 
+ENTRYPOINT ["dotnet", "IdentityServer.dll"]
+
+# Expose ports
+EXPOSE 80
+EXPOSE 443

@@ -1,0 +1,14 @@
+# Set Base Image
+FROM monitoringartist/grafana-xxl
+
+# Set Working Directory in the Docker Container
+WORKDIR /app
+
+# Copy over python scripts or entire app into /app in container
+COPY backup_app /app
+
+# Install any required dependencies
+# RUN pip install -r requirements.txt (if any)
+
+# Command to run the application
+# CMD ["python", "./app/__main__.py"] (if __main__.py is our main script)

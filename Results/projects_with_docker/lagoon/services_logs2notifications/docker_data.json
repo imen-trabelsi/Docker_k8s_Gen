@@ -1,0 +1,40 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.23-alpine3.21",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "UPSTREAM_REPO",
+            "UPSTREAM_TAG",
+            "LAGOON_VERSION"
+        ],
+        "envs": [
+            "ENV LAGOON_VERSION=$LAGOON_VERSION",
+            "ENV LAGOON=logs2notifications",
+            "ENV JWTSECRET=super-secret-string \\"
+        ],
+        "copy_instructions": [
+            "COPY . /go/src/github.com/uselagoon/lagoon/services/logs2notifications/",
+            "WORKDIR /go/src/github.com/uselagoon/lagoon/services/logs2notifications/",
+            "WORKDIR /app/",
+            "COPY --from=builder /go/src/github.com/uselagoon/lagoon/services/logs2notifications/logs2notifications ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/app/logs2notifications\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "CGO_ENABLED=0 GOOS=linux GOARCH=${ARCH} go build -a -o logs2notifications .",
+                ""
+            ]
+        ]
+    }
+}

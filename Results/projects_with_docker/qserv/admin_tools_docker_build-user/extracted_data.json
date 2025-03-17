@@ -1,0 +1,21 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "pyproject.toml": "[tool.black]\nline-length = 110\ntarget-version = ['py38']\n"
+        },
+        "database": null,
+        "build_system": "poetry",
+        "config_files": {
+            "admin/tools/docker/build-user/Dockerfile": "#-------------------------------------------------------------------------------------------------------------\n# The 'lite-build-user' target is used to customize the 'lite-build' image to a specific user in order to ease\n# developer workflow (see 'lite-build' target in ../base/Dockerfile for more details on the starting point for\n# this target). In particular, an account with the same username, primary group, uid, and gid as the user is\n# added to the image; this makes it possible to bind-mount e.g. a git working tree into a build container on\n# behalf of the user without any further mucking about with file ownership/permissions. The default runtime\n# user and default working directory of the build image are also customized for user convenience.\n#\n# Argument QSERV_BUILD_BASE specifies the name+tag of the base image on which to build.  Arguments USER, UID,\n# GROUP, and GID are the username, uid, primary group name, and primary gid to be used for the new custom\n# account in the image. Values can be provided via the -e option to `docker run`.\n#-------------------------------------------------------------------------------------------------------------\n\nARG QSERV_BUILD_BASE=qserv/lite-build:latest\nFROM ${QSERV_BUILD_BASE} AS lite-build-user\n\nARG USER\nARG UID\nARG GROUP\nARG GID\n\nRUN OGROUP=$(getent group $GID | cut -d: -f1) && if [ \"$OGROUP\" != \"\" ]; then groupdel $OGROUP; fi\nRUN groupadd --gid $GID $GROUP\nRUN OUSER=$(getent passwd $UID | cut -d: -f1) && if [ \"$OUSER\" != \"\" ]; then userdel $OUSER; fi\nRUN useradd --uid $UID --gid $GROUP $USER\n\nUSER $USER\nWORKDIR /home/$USER\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile"
+        ],
+        "folders": []
+    }
+}

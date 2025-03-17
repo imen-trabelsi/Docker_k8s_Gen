@@ -1,0 +1,71 @@
+# Builder Stage
+FROM python:3.11 as builder
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        build-essential \
+        libpq-dev \
+        curl \
+        libjemalloc2 \
+        bzip2 \
+        snmp \
+        vim \
+        git \
+        nodejs \
+
+RUN pip install --upgrade pip
+
+COPY .requirements/ /build/.requirements
+COPY speedup/ /build/speedup/
+
+WORKDIR /build
+
+RUN pip install -r .requirements/cython.txt
+RUN cythonize -i speedup/*.pyx
+RUN pip3 install \
+-r ./.requirements/node.txt \
+-r ./.requirements/bh.txt \
+-r ./.requirements/activator.txt \
+-r ./.requirements/classifier.txt \
+-r ./.requirements/cache-redis.txt \
+-r ./.requirements/login-ldap.txt \
+-r ./.requirements/login-pam.txt \
+-r ./.requirements/login-radius.txt \
+-r ./.requirements/prod-tools.txt \
+-r ./.requirements/testing.txt \
+-r ./.requirements/sender-kafka.txt \
+RUN python3 ./scripts/deploy/install-packages requirements/web.json
+RUN python3 ./scripts/deploy/install-packages requirements/card.json
+RUN python3 ./scripts/deploy/install-packages requirements/bi.json
+RUN python3 ./scripts/deploy/install-packages requirements/theme-noc.json
+
+WORKDIR /opt/noc/
+
+# Application Stage
+FROM python:3.11
+
+COPY . /opt/noc/
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+        snmp \
+        vim \
+        git \
+        nodejs \
+
+RUN pip3 install \
+-r ./.requirements/dev.txt \
+-r ./.requirements/lint.txt \
+-r ./.requirements/test.txt \
+
+RUN npm install -g eslint@8
+
+WORKDIR /opt/noc/
+
+RUN useradd -d /opt/noc -M -r -u 1200 -U noc -s /bin/sh
+RUN chown noc /opt/noc
+
+ENV PYTHONUNBUFFERED=1
+
+EXPOSE 8000
+
+USER noc
+CMD ["python3", "/opt/noc/manage.py", "runserver", "0.0.0.0:8000"]

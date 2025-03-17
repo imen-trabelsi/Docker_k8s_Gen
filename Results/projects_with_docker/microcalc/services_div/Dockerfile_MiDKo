@@ -1,0 +1,20 @@
+# Use light-weight python:3-alpine
+FROM python:3-alpine
+
+# Set a working directory
+WORKDIR /app
+
+# Copy the requirements file into the container
+COPY ./requirements.txt /app
+
+# Install the application dependencies
+RUN pip install --no-cache-dir -r /app/requirements.txt
+
+# Copy the source code into the container
+COPY . /app
+
+# Expose the application on port 5000
+EXPOSE 5000
+
+# Set the application execution command
+CMD ["python", "app.py"]

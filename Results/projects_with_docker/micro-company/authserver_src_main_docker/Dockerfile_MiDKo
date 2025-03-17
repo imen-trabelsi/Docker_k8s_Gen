@@ -1,0 +1,22 @@
+# Start with a base image containing Java runtime
+FROM eclipse-temurin:11
+
+# Set Label
+LABEL maintainer="email@company.com"
+
+# Add a volume pointing to /tmp
+VOLUME /tmp
+
+# Make port available to the world outside the container
+EXPOSE 9999 
+
+# Copy and Rename the Maven built executable jar
+COPY *.jar /app.jar
+COPY wait-for-it.sh /wait-for-it.sh
+
+# Run command to touch the jar so it has a file modification time (Docker creates all container files in an "unmodified" state by default)
+RUN bash -c 'touch /app.jar'
+RUN bash -c 'chmod 777 /wait-for-it.sh'
+
+# Run the jar you added to the container as the main entry point 
+CMD ["java","-Dspring.profiles.active=docker","-jar","/app.jar"]

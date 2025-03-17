@@ -1,0 +1,24 @@
+# Base image
+FROM python:3.9-slim-buster
+
+# Create app directory
+WORKDIR /app
+
+# Install dependencies
+RUN apt-get update && apt-get install ffmpeg libsm6 libxext6 tesseract-ocr libtesseract-dev -y
+
+# Environment variables
+ENV LISTEN_PORT $PORT
+ENV NGINX_MAX_UPLOAD 10m
+
+# Copy application file
+COPY ./app /app
+
+# Upgrade pip and install python requirements
+RUN echo "\n\nJWT_ALGORITHM = 'RS256'" >> ./app/.env && \
+
+# Expose port
+EXPOSE $PORT
+
+# Run the application
+CMD ["python3", "app/main.py"]

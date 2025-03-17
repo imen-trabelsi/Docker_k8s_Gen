@@ -1,0 +1,19 @@
+# Use the specified Base Image
+FROM httpd:2.4
+
+# Copy the configuration files
+COPY ./httpd.conf /usr/local/apache2/conf/httpd.conf
+COPY ./httpd-info.conf /usr/local/apache2/conf/extra/httpd-info.conf
+
+# Install dependencies
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy the rest of the code
+COPY . .
+
+# Expose the necessary ports
+EXPOSE 80
+
+# Set the correct ENTRYPOINT
+ENTRYPOINT ["httpd-foreground"]

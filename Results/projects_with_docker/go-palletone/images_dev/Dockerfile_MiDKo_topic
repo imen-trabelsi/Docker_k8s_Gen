@@ -1,0 +1,27 @@
+# Use palletone/baseimg as base image
+FROM palletone/baseimg
+
+# Set environment variables
+ENV GOPATH=/gopath
+ENV GOROOT=/usr/local/go
+ENV PATH=$PATH:$GOPATH/bin:$GOROOT/bin
+
+# Copy vendor dependencies into the Docker image
+COPY ./vendor /gopath/src/
+
+# Run necessary commands to setup the go environment
+RUN wget -o download.log https://studygolang.com/dl/golang/go1.12.linux-amd64.tar.gz && \
+    tar -C /usr/local -zxvf go1.12.linux-amd64.tar.gz >> download.log && \
+    rm go1.12.linux-amd64.tar.gz download.log && \
+
+# Copy the static files
+COPY build/ci-notes.md ./ci-notes.md
+
+# Set working directory to the gopath
+WORKDIR $GOPATH/src
+
+# Compile the Go app
+RUN go build -o main .
+
+# Run the Go app
+CMD ["./main"]

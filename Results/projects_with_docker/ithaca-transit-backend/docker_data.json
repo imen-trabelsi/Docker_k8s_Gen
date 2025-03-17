@@ -1,0 +1,28 @@
+{
+    "docker_info": {
+        "base_image": "node:20.0.0",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY . ."
+        ],
+        "execution": [],
+        "run": [
+            [
+                "mkdir -p /usr/src/app",
+                "WORKDIR /usr/src/app"
+            ],
+            [
+                "npm install --force",
+                "CMD npm run start"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,66 @@
+{
+    "docker_info": {
+        "base_image": "builder",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "8080"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "DEPENDENCY=/workdir/server/target/dependency"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /workdir/server",
+            "COPY pom.xml /workdir/server/pom.xml",
+            "COPY src /workdir/server/src",
+            "COPY --from=gloursdocker/docker / /",
+            "COPY --from=example ${DEPENDENCY}/BOOT-INF/lib /app/lib",
+            "COPY --from=example ${DEPENDENCY}/META-INF /app/META-INF",
+            "COPY --from=example ${DEPENDENCY}/BOOT-INF/classes /app"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"mvn\",",
+                    "\"spring-boot:run\"]"
+                ]
+            },
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"java\",\"-cp\",\"app:app/lib/*\",\"otel.example.micrometer.Application\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mvn dependency:go-offline",
+                ""
+            ],
+            [
+                "mvn install",
+                ""
+            ],
+            [
+                "<<EOF",
+                "apt-get update"
+            ],
+            [
+                "<<EOF",
+                "useradd -s /bin/bash -m vscode"
+            ],
+            [
+                "mkdir -p target/dependency",
+                "WORKDIR /workdir/server/target/dependency"
+            ],
+            [
+                "jar -xf ../*.jar",
+                ""
+            ]
+        ]
+    }
+}

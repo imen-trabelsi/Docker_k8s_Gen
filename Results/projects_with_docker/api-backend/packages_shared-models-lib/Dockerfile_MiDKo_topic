@@ -1,0 +1,30 @@
+# The base image
+FROM php:8.4-cli
+
+# Maintainer
+LABEL maintainer="maintainer@company.com"
+
+# Update & install packages
+RUN apt-get update\
+    && apt-get upgrade -y\
+    && apt-get install -y git libzip-dev\
+    && docker-php-ext-install zip\
+
+# Installing composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Create application directory
+WORKDIR /app
+
+# Copying the application files to the container
+COPY . /app
+
+# Installing dependencies via composer
+COPY composer.json ./
+RUN composer install
+
+# Exposing the application's port
+EXPOSE 8000
+
+# Defining the command to start the application
+CMD ["php", "bin/console", "server:run"]

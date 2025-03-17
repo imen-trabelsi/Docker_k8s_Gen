@@ -1,0 +1,31 @@
+# Start by defining the used base image.
+FROM openlmis/awscli
+
+# Install basic dependencies needed for following steps
+RUN apt-get update \
+    && apt-get upgrade -y \
+
+# Set work Directory
+WORKDIR /app
+
+# Copy requirements and install dependencies
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
+# Copy project files to work directory
+COPY . .
+
+# Run scripts to restore database snapshot
+COPY restore-snapshot.sh /restore-snapshot.sh
+RUN chmod u+x /restore-snapshot.sh
+RUN ./restore-snapshot.sh
+
+# Set the required environment variables
+ENV FLASK_APP=app.py
+ENV FLASK_RUN_HOST=0.0.0.0
+
+# Expose the required ports
+EXPOSE 5000
+
+# Set the Docker container to listen to specified port during runtime
+CMD flask run --host=0.0.0.0

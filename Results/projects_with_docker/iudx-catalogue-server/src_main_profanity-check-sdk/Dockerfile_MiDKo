@@ -1,0 +1,26 @@
+# Base Image
+FROM python:3.8-slim
+
+# Set Workdir
+WORKDIR /usr/share/app/
+
+# Update System Packages & Upgrade pip
+RUN apt-get update && \
+
+# Copy Project Dependencies
+COPY requirements.txt .
+
+# Install Project Dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Create a new user
+RUN useradd -r -u 1001 -g root profanity-user
+
+# Switch to the new user
+USER profanity-user
+
+# Copy the project Source Code to the Image
+COPY . /usr/share/app/
+
+# Set Entrypoint
+CMD ["python","-W", "ignore", "main.py"]

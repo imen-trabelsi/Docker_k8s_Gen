@@ -1,0 +1,36 @@
+# Use the specified base image
+FROM library/postgres:12-bullseye
+
+# Add the Yarn global binary to PATH
+ENV PATH="$PATH:/opt/yarn-v1.22.5/bin"
+
+# Copy all dependencies files
+COPY package.json yarn.lock .env ./
+
+# Install all Dependencies
+RUN yarn install --production \
+
+# Copy all files into the image
+COPY . ./
+
+# Set environment variables 
+ENV TASKS_API_PASSWORD=tasks_api_password
+ENV MODEL_API_PASSWORD=model_api_password
+
+# Add execution permissions to the entrypoint.sh file and execute it when container starts
+COPY ./entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+
+# Run the application
+CMD ["postgres"]
+
+# Set the working directory
+WORKDIR ./
+
+# Expose desired port(s)
+EXPOSE 5432
+
+# Labels are key-value pairs that are attached to objects
+# Set any labels for the image (if available)
+LABEL version="1.0" maintainer="maintainer@example.com"

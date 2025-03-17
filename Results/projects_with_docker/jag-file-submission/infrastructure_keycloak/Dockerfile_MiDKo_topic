@@ -1,0 +1,37 @@
+# Use an official Ubuntu runtime as a parent image
+FROM ubuntu:18.04
+
+# Set environment variables
+ENV KEYCLOAK_URL=$KEYCLOAK_URL
+ENV DOCKERIZE_VERSION=v0.6.1
+
+# Use the system package manager, apt, to update necessary packages
+RUN echo "Acquire::Check-Valid-Until \"false\";\nAcquire::Check-Date \"false\";" | cat > /etc/apt/apt.conf.d/10no--check-valid-until && \
+    apt-get update && \
+   
+# Dokerize install
+RUN wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
+    tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \
+
+# Clean-up
+RUN apt-get clean && \
+
+# Install Node.js
+RUN curl -sL https://deb.nodesource.com/setup_10.x | bash - && \
+
+# Add package.json first to optimize Docker caching
+COPY package.json /usr/src/app
+WORKDIR /usr/src/app
+RUN npm install
+
+COPY . /usr/src/app
+
+# Keep this instruction after the build to optimze Docker caching
+COPY createuser.sh /tmp/createuser.sh
+RUN chmod +x /tmp/createuser.sh
+
+# CMD instruction
+CMD ["/tmp/createuser.sh"]
+
+# Set working directory
+WORKDIR /src

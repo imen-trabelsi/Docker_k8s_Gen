@@ -1,0 +1,44 @@
+# Use base image
+FROM ${QSERV_BUILD_BASE}
+
+# Get user input for environment, user, group and install dependencies
+ARG USER
+ARG UID
+ARG GROUP
+ARG GID
+
+# Install poetry
+RUN pip install poetry
+
+# Create a group with $GID. If a group with $GID exists already, delete it first
+RUN OGROUP=$(getent group $GID | cut -d: -f1); \
+    if [ "$OGROUP" != "" ]; then \
+    groupdel $OGROUP; \
+    fi; \
+
+# Create a user with $UID. If a user with $UID exists already, delete it first
+RUN OUSER=$(getent passwd $UID | cut -d: -f1); \
+    if [ "$OUSER" != "" ]; then \
+    userdel $OUSER; \
+    fi; \
+
+# Create a new directory and set it as working directory
+WORKDIR /home/$USER
+
+# Copy project file
+COPY ./pyproject.toml /home/$USER
+
+# Install dependencies
+RUN poetry install
+
+# Copy other sources
+COPY . .
+
+# Change to non-root user
+USER $USER
+
+# Set the entry point
+CMD ["python", "app.py"]
+
+# Expose the port
+EXPOSE 80

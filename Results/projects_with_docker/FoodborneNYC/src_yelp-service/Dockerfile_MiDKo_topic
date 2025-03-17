@@ -1,0 +1,27 @@
+# Use the specified Python base image 
+FROM python:3.6.3-onbuild
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Copy current directory contents into the container
+COPY . /usr/src/app
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Make the app.py file executable
+RUN chmod +x app.py
+
+# Set the environment variable
+ENV PYTHONUNBUFFERED 1
+
+# Set up the MongoDB, replace 'mongodbservice' with MongoDB's Repository Name.
+ENV MONGO_URL=mongodb://mongodbservice:27017/yelp
+
+# This command runs the app.py file when the container launches.
+CMD ["python", "app.py"]
+
+# Expose the ports
+# Add additional exposed ports as needed
+EXPOSE 5000

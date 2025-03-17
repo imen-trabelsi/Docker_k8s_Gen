@@ -1,0 +1,28 @@
+# Choose base image
+FROM openjdk:8u151-jdk
+
+# Make the directory to keep all the project files there
+RUN mkdir -p /usr/share/skalogs
+
+# Copy pom.xml and source code to container
+COPY ./pom.xml /usr/share/skalogs
+COPY ./src /usr/share/skalogs/src
+
+# Change to the project directory
+WORKDIR /usr/share/skalogs
+
+# Build the project in the container
+RUN mvn clean install
+
+# Copy the generated boot-jar and startup script
+COPY startup.sh /usr/bin/startup.sh
+COPY target/${JAR_FILE} /usr/share/skalogs/error-importer.jar
+
+# Make the script executable
+RUN chmod +x /usr/bin/startup.sh
+
+# Define the entry point and CMD
+ENTRYPOINT ["/usr/bin/startup.sh"]
+
+# Expose this port outside the container environment
+EXPOSE 8080

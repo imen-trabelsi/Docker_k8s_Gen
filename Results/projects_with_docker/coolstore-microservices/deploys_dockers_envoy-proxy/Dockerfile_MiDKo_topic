@@ -1,0 +1,19 @@
+# Dockerfile
+FROM envoyproxy/envoy:latest
+
+# Copy configuration Files
+COPY .env docker-compose.yml docker-compose.override.yml deploys/dockers/envoy-proxy/Dockerfile /app/
+COPY deploys/dockers/envoy-proxy/envoy.yaml /etc/envoy.yaml
+WORKDIR /app
+
+# Install Dependencies 
+COPY package.json .
+RUN npm install
+# Add Application Source Code
+COPY . .
+
+# Expose necessary port
+EXPOSE 8080
+
+# Application command and parameters
+CMD ["/usr/local/bin/envoy", "-c", "/etc/envoy.yaml", "-l", "debug", "--service-cluster", "envoy-proxy"]

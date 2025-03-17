@@ -1,0 +1,20 @@
+# Using the user-provided base image
+FROM registry.cn-beijing.aliyuncs.com/edas_unified/jct_dw_8_4_4:0.1
+
+# Setting work directory in the Docker image file
+WORKDIR /app
+
+# Copying arthas
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+
+# Copying the jar file from the target directory
+COPY /paymentservice-provider/target/paymentservice-provider-1.0.0-SNAPSHOT.jar /app
+
+# Copying start.sh script
+COPY /start.sh /app
+
+# Exposing 8080 port as provided 
+EXPOSE 8080
+
+# Command to execute the Spring Boot application
+CMD ["/app/start.sh"]

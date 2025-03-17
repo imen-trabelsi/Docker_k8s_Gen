@@ -1,0 +1,40 @@
+# Base image
+FROM ruby:2.6.5
+
+# Set environment variables
+ENV APP_HOME /app
+ENV BUNDLE_GEMFILE=$APP_HOME/Gemfile BUNDLE_JOBS=4 BUNDLE_WITHOUT=production:staging
+
+# Make a directory within the container image
+RUN mkdir $APP_HOME
+
+# Make this new directory be the working directory (the "current directory") for all the subsequent instructions 
+WORKDIR $APP_HOME
+
+# Update and upgrade system packages
+RUN apt-get update -qq && apt-get upgrade -qqy
+
+# Install system dependencies 
+RUN apt-get -qqy install cmake 
+
+# Update RubyGems - Package manager for Ruby libraries and utilities
+RUN gem update --system
+
+# Install Bundler, a Ruby package manager
+RUN gem install bundler -v 2.0.2
+
+# Run bundler to install Ruby dependencies
+RUN bundle install 
+
+# Passenger, a web server and application server for Ruby
+RUN passenger-config install-standalone-runtime --auto
+RUN passenger-config build-native-support
+
+# Add files to APP_HOME
+COPY .ruby-version $APP_HOME/
+COPY Gemfile* $APP_HOME/
+COPY . $APP_HOME
+
+# This command is used when the docker image is run (_not_ at build time).
+# Please Config Exposing port as per your application requirement 
+CMD ["cmd", "echo", "Commands:","bin/passenger", "start", "-p", "$PORT"]

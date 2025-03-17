@@ -1,0 +1,36 @@
+# Fetch the base SDK Image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+# Set the working directory in the image 
+WORKDIR /src
+
+# Copy the Basket service csproj file into the Docker container
+COPY ["src/Services/Basket/Basket.csproj", "src/Services/Basket/"]
+
+# Restore the csproj (downloads all the nuget dependencies)
+RUN dotnet restore "src/Services/Basket/Basket.csproj"
+
+# Copy the remaining source code files into the Docker container
+COPY . .
+
+# Change the working dir to where the csproj file is
+WORKDIR "/src/src/Services/Basket"
+
+# Build and publish the application in Release mode, outputting the published app to /app/publish in the Docker container
+RUN dotnet build "Basket.csproj" -c Release -o /app/build
+RUN dotnet publish "Basket.csproj" -c Release -o /app/publish
+
+# Start a new stage for a smaller image size
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS final
+
+# Set the working directory 
+WORKDIR /app
+
+# Copy the published applications from the previous build stage
+
+# Expose ports 80 and 443 for the application
+EXPOSE 80
+EXPOSE 443
+
+# Define the entry point
+ENTRYPOINT ["dotnet", "Basket.dll"]

@@ -1,0 +1,14 @@
+# Use the official Microsoft ASP.NET runtime as our base image
+FROM mcr.microsoft.com/dotnet/aspnet:latest
+
+# Set the working directory within the container
+WORKDIR /app
+
+# Copy the compiled application to the current directory (e.g., "dotnet publish" should be used in the build process)
+COPY ./pub .
+
+# Listen on the specified network port at runtime
+EXPOSE 80
+
+# Configure the container to be run as an executable; The dotnet runtime must be running for the application to work
+ENTRYPOINT ["dotnet", "NurseCron.HealthItems.Api.dll"]

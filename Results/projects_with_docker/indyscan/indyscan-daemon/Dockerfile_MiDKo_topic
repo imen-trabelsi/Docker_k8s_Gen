@@ -1,0 +1,37 @@
+# Use the base image provided by the user
+FROM ghcr.io/absaoss/vcxagencynode/vcxagency-base:2.5.0-release260-864
+
+# Define project directory
+WORKDIR /home/indyscan
+
+# Add system packages
+RUN apk --no-cache add npm bash g++ gcc make cmake python2 curl 
+
+# Install specific version of npm
+RUN npm install -g npm@8.7.0
+
+# Add indyscan user
+RUN addgroup -g 1002 indyscan && adduser -u 1002 -D -G indyscan indyscan
+
+# Copy project files to docker image
+COPY --chown=indyscan:indyscan ./ /home/indyscan/
+
+# Switch to indyscan user
+USER indyscan
+
+# Install project dependencies only in production mode
+RUN npm ci --only=prod
+
+# Create necessary directories
+RUN mkdir -p /home/indyscan/indyscan-daemon/logs /home/indyscan/.indy_client/wallet /home/indyscan/.indy_client/pool
+
+# Set container labels
+LABEL org.label-schema.schema-version="1.1.0" \
+      org.label-schema.name="indyscan-daemon" \
+      org.label-schema.description="Application" \
+
+# Expose port (Replace <port> with actual number)
+EXPOSE <port>
+
+# Configure the startup command
+CMD ["npm", "run", "start"]

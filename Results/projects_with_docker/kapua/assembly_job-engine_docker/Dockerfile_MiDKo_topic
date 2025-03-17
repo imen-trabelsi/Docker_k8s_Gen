@@ -1,0 +1,35 @@
+# Build stage
+FROM maven:3.6.0-jdk-8-slim AS build
+WORKDIR /usr/src/app
+COPY . .
+RUN mvn -f pom.xml clean package
+
+# Package stage
+FROM @docker.account@/jetty-base
+
+# Add/Setup the necessary users
+RUN useradd -u 1000 -s /bin/sh jetty \
+    && chown -R 1000:0 /opt/jetty /var/opt/jetty \
+
+# Set Environment Variables
+ENV BROKER_ADDR=broker \
+    BROKER_PORT=1883 \
+    DATASTORE_ADDR=es:9200 \
+    SQL_DB_ADDR=db \
+    SQL_DB_PORT=3306 \
+    SERVICE_BROKER_ADDR=failover:(amqp://events-broker:5672)?jms.sendTimeout=1000 \
+
+# Copy the application built in the build stage into the jetty directory
+COPY maven/ /maven/
+
+# Specify the user to run commands
+USER 1000
+
+# Set healthchecks (You have to put the app-specific health check command here)
+HEALTHCHECK --interval=5m --timeout=3s CMD curl -f http://localhost/ || exit 1
+
+# Expose the necessary ports
+EXPOSE 8080
+
+# Start the application
+ENTRYPOINT ["java", "-jar", "/opt/jetty/app.jar"]

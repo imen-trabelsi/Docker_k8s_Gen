@@ -1,0 +1,30 @@
+# Specify the base image
+FROM php:8.2-apache-bookworm
+
+# Set environment variables
+ENV IMAGICK_COMMIT_HASH d7d3c24af1b4f599897408f1714600b69a56473b
+ENV PHP_MEMORY_LIMIT 512M
+ENV PHP_UPLOAD_LIMIT 512M
+ENV PHP_OPCACHE_MEMORY_CONSUMPTION 128
+ENV APACHE_BODY_LIMIT 1073741824
+ENV NEXTCLOUD_VERSION 30.0.6
+
+# Copy necessary files
+COPY *.sh upgrade.exclude /
+COPY config/* /usr/src/nextcloud/config/
+
+# Run commands to install necessary dependencies and set configuration
+RUN set -ex; \
+    apt-get update; \
+    ; \
+    rm -rf /var/lib/apt/lists/*; \
+    mkdir -p /var/spool/cron/crontabs; \
+    echo '*/5 * * * * php -f /var/www/html/cron.php' > /var/spool/cron/crontabs/www-data \
+    set -ex; \
+    # Include the rest of installation and configuration commands here
+
+# Specify the command to execute when the container starts
+ENTRYPOINT ["/entrypoint.sh"]
+
+# Set the default command to execute in the container
+CMD ["apache2-foreground"]

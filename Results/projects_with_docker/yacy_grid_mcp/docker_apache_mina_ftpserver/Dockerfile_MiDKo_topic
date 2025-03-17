@@ -1,0 +1,35 @@
+# Start with the required base image
+FROM openjdk:8-alpine
+
+LABEL maintainer="Michael"
+
+# Install necessary packages
+RUN apk add --no-cache zip wget 
+
+# Download ftpserver
+RUN wget https://archive.apache.org/dist/mina/ftpserver/1.1.1/dist/apache-ftpserver-1.1.1.zip
+
+# Unzip the downloaded file
+RUN unzip -q apache-ftpserver-1.1.1.zip
+
+# Set up the FTP server
+RUN sed -i 's#<\/ssl>#<\/ssl><data-connection><passive ports="2122-2188"\/><\/data-connection>#g' /apache-ftpserver-1.1.1/res/conf/ftpd-typical.xml
+
+# Set the working directory in the container
+WORKDIR /MyMicroservice
+
+# Copy the required files for the service
+COPY src ./src
+COPY gradlew ./
+COPY build.gradle ./
+COPY gradle ./gradle
+COPY --from=builder /apache-ftpserver-1.1.1 /apache-ftpserver-1.1.1
+
+# Set up network settings
+EXPOSE 2121-2188
+
+# Build the Spring Boot Application with Gradle
+RUN ./gradlew clean build
+
+# Run the microservice
+CMD ["sh", "-c", "/apache-ftpserver-1.1.1/bin/ftpd.sh, res/conf/ftpd-typical.xml"]

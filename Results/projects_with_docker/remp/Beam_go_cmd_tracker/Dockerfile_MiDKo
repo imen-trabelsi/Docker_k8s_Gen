@@ -1,0 +1,29 @@
+# Base Image
+FROM node:12-alpine
+
+# Install openssl
+RUN apk add --no-cache openssl
+
+# Set Work Directory in the container
+WORKDIR /bin
+
+# Copy package.json and install dependencies
+COPY package.json .
+RUN npm install --production
+
+# Copy other source code to work directory
+ADD tracker.tar .
+COPY .env.example .env
+
+# Set environment variables, replace 'my-variable=value' with your actual environment variables
+# ENV my-variable=value
+
+# If there's a specific user you want to run the application, replace 1001 with the user ID
+# RUN addgroup -S appgroup && adduser -S appuser -G appgroup -u 1001
+# USER appuser
+
+# Expose port to the outside world, replace 3000 with your actual port
+# EXPOSE 3000
+
+# CMD to run your applications, replace 'tracker' with the necessary command.
+CMD ["node", "tracker"]

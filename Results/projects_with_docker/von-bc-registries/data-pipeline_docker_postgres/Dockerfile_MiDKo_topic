@@ -1,0 +1,25 @@
+# Use an official Python runtime as a parent image
+FROM python:3.7-slim
+
+# Setting up working directory
+WORKDIR /usr/src/app
+
+# Add the current directory to the workdir in Docker
+COPY . /usr/src/app
+
+# Install the application dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Run the command to create necessary directory and set permissions
+RUN mkdir -p /var/lib/pgsql/data \
+    && chown -R postgres:postgres /var/lib/pgsql/data \
+
+# Copy necessary files
+COPY data-pipeline/docker/postgres/Dockerfile /docker-entrypoint-initdb.d/
+COPY docker/postgres/1-init-dbs.sh /docker-entrypoint-initdb.d/
+
+# Document that the service listens on the following ports at runtime. Assuming 5000. Add as required.
+EXPOSE 5000
+
+# The CMD instruction will provide defaults for an executing container.
+CMD gunicorn -b 0.0.0.0:5000 <app_name>:app

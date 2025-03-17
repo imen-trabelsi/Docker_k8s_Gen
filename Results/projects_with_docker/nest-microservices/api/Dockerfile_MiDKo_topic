@@ -1,0 +1,29 @@
+# Base Node
+FROM node:12
+
+# Set Working Directory
+WORKDIR /app/apiservice
+
+# Copy package files
+COPY package*.json ./
+
+# Install packages
+RUN npm install --no-optional
+RUN npm run build
+
+# Copy application files
+COPY . .
+
+# Set necessary environment variable (Specify as per your configuration)
+# ENV NODE_ENV=production 
+
+# Exposed application port (Specify as per your requirements)
+# EXPOSE 8080
+
+# Check application health (Specify as per your requirements)
+# HEALTHCHECK CMD curl --fail http://localhost:8080/health || exit 1
+
+# Application execution
+CMD [ "npm", "start" ]
+
+

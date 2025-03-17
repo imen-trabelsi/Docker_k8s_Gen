@@ -1,0 +1,27 @@
+{
+    "docker_info": {
+        "base_image": "sillsdev/web-languageforge:base-php",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV COMPOSER_ALLOW_SUPERUSER=1"
+        ],
+        "copy_instructions": [
+            "WORKDIR /work",
+            "COPY src/composer.json src/composer.lock /work/"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"bash\"]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

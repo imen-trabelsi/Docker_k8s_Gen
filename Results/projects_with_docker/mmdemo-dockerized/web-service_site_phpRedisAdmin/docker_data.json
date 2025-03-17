@@ -1,0 +1,37 @@
+{
+    "docker_info": {
+        "base_image": "composer/composer",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD . /src/app/",
+            "WORKDIR /src/app"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"php\",",
+                    "\"-S\",",
+                    "\"0.0.0.0:80\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "\\",
+                "composer install &&",
+                "cp includes/config.environment.inc.php includes/config.inc.php"
+            ]
+        ]
+    }
+}

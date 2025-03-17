@@ -1,0 +1,27 @@
+# Step 1: Define the parent image
+FROM python:3
+
+# Step 2: Set the work directory
+WORKDIR /home
+
+# Step 3: Add necessary files
+COPY requirements.txt /home/requirements.txt
+COPY enrich.py /home/
+
+# Step 4: Install necessary dependencies
+RUN pip3 install -r /home/requirements.txt
+
+# Step 5: Set environment vaiables
+# Note: Replace <value> with actual values
+ENV PGHOST=<value>
+ENV PGPORT=<value>
+ENV PGDATABASE=<value>
+ENV PGUSER=<value>
+ENV PGPASSWORD=<value>
+
+# Step 6: Expose necessary port
+# Note: Replace <port-number> with actual port number
+EXPOSE <port-number>
+
+# Step 7: Specify the command to run your app using CMD
+CMD ["python3", "-u", "/home/enrich.py"]

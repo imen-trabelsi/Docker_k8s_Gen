@@ -1,0 +1,28 @@
+# Start with the base image
+FROM debian:buster-slim
+
+# Set the Working Directory inside the Docker container
+WORKDIR /app
+
+# Copy everything into the Working Directory
+COPY . .
+
+# Install dependencies
+RUN apt-get update && \
+    apt-get install -y ruby-full ruby bundler cmake pkg-config git libssl-dev zlib1g-dev curl && \
+    rm -rf /var/lib/apt/lists/* && \
+
+# Copy Go Mod and Sum files
+COPY go.mod go.sum ./
+
+# Download all the dependencies
+RUN go mod download
+
+# Build the Go app
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o main .
+
+# Expose port 8080 to the outside world
+EXPOSE 8080
+
+# Execute the binary
+CMD ["./main"]

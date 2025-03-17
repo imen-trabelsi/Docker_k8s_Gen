@@ -1,0 +1,46 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/sdk:6.0",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "80",
+            "443"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "WORKDIR /src",
+            "COPY [\"src/Services/Payment/Payment.csproj\", \"src/Services/Payment/\"]",
+            "WORKDIR \"/src/src/Services/Payment\"",
+            "WORKDIR /app",
+            "COPY --from=publish /app/publish ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"dotnet\",",
+                    "\"Payment.dll\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "dotnet restore \"src/Services/Payment/Payment.csproj\"",
+                "COPY . ."
+            ],
+            [
+                "dotnet build \"Payment.csproj\" -c Release -o /app/build",
+                ""
+            ],
+            [
+                "dotnet publish \"Payment.csproj\" -c Release -o /app/publish",
+                ""
+            ]
+        ]
+    }
+}

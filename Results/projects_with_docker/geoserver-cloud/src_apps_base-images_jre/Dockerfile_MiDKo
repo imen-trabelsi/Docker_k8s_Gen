@@ -1,0 +1,38 @@
+# Using base image of eclipse-temurin:21-jre
+FROM eclipse-temurin:21-jre
+
+# Setting labels
+LABEL maintainer="GeoServer"
+
+# Setting environment variables
+ENV DEFAULT_JAVA_TOOL_OPTIONS=""
+ENV JAVA_TOOL_OPTIONS="${DEFAULT_JAVA_TOOL_OPTIONS}"
+ENV JAVA_OPTS=
+
+# Copy app JAR
+COPY target/*.jar app.jar
+COPY src/apps/base-images/jre/Dockerfile .
+
+# Installing dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+COPY src /home/app/src
+
+WORKDIR /home/app
+
+# Building app
+RUN mvn clean install
+
+# Copied commands from the fields mentioned by the user
+RUN USE_SYSTEM_CA_CERTS=true /__cacert_entrypoint.sh
+
+# Setting health checks
+HEALTHCHECK --interval=10m --timeout=3s \
+  CMD curl -f http://localhost/health || exit 1
+
+# Exposing necessary ports, example port number 8080 is exposed here, replace it with actual port 
+EXPOSE 8080
+
+# Set the start command
+CMD java $JAVA_OPTS -cp /app/resources:/app/classes:/app/libs/* "com.example.Application"

@@ -1,0 +1,31 @@
+# Set base image (host OS)
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+# Set the working directory in the build environment
+WORKDIR /src
+
+# Copy csproj and restore dependencies
+COPY ["src/Services/Basket/Basket.csproj", "src/Services/Basket/"]
+RUN dotnet restore "src/Services/Basket/Basket.csproj"
+
+# Copy everything else and build the application
+COPY . .
+WORKDIR "/src/src/Services/Basket"
+RUN dotnet build "Basket.csproj" -c Release -o /app/build
+
+# Publish the application
+FROM build AS publish
+RUN dotnet publish "Basket.csproj" -c Release -o /app/publish
+
+# Start from a base image containing .NET runtime
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
+
+# Copy the application from the build environment into the final image
+WORKDIR /app
+
+# Expose the port that the application listens on
+EXPOSE 80
+EXPOSE 443
+
+# Define the entry point of the application
+ENTRYPOINT ["dotnet", "Basket.dll"]

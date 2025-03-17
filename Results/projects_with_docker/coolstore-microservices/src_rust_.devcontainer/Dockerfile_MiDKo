@@ -1,0 +1,26 @@
+# Use Node.js as the base image
+FROM node:14
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Install app dependencies
+COPY package*.json ./
+
+RUN npm install
+RUN apt-get update && \
+    export DEBIAN_FRONTEND=noninteractive && \
+    apt-get -y install clang lld jq && \
+    apt-get autoremove -y && \
+
+# Bundle app source
+COPY . .
+
+# Copy static files
+COPY assets/demo-cloud-native.xml ./public
+
+# Expose the application on port 8080 (default for Spring Boot). This might need to be updated according to your application.
+EXPOSE 8080
+
+# Define the command to start the application
+CMD [ "node", "server.js" ]

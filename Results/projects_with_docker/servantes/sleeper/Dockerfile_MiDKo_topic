@@ -1,0 +1,18 @@
+# Use an official lightweight base image of node 10 with alpine as a parent image
+FROM node:10-alpine
+
+# Set the working directory in the container to /app
+WORKDIR /app
+
+# Copy the go.mod and download the dependencies
+COPY go.mod .
+RUN go mod download
+
+# Copy the rest of the working directory contents into the container at /app
+COPY . /
+
+# Open the desired port for the service
+EXPOSE 8080
+
+# Run the compiled binary
+ENTRYPOINT [ "node", "index.js" ]

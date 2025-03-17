@@ -1,0 +1,22 @@
+{
+    "docker_info": {
+        "base_image": "confluentinc/cp-kafka-connect:6.0.0",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY connectors/ /etc/kafka-connect/jars"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:latest",
+                ""
+            ]
+        ]
+    }
+}

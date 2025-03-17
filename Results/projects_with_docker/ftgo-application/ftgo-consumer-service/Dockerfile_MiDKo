@@ -1,0 +1,14 @@
+# Set the base image
+FROM eventuateio/eventuate-examples-docker-images-spring-example-base-image:$baseImageVersion
+
+# Copy the JAR to the app directory
+COPY build/libs/ftgo-consumer-service.jar service.jar
+
+# Set necessary environment variable for Java to suppress the terminal's unused input warning
+ENV JAVA_OPTS="-Djava.security.egd=file:/dev/./urandom"
+
+# Expose the necessary port for the service
+EXPOSE 8080
+
+# Set the entrypoint of the container to be the jar
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom", "-jar","/service.jar"]

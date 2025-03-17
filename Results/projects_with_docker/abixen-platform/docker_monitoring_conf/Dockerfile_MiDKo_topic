@@ -1,0 +1,32 @@
+# Start with a base image containing Java runtime
+FROM alpine:3.3 as builder
+
+# Fetch dependencies with Maven
+RUN apk --no-cache add curl maven openjdk8
+
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+# Copy the project source
+COPY src /app/src
+RUN mvn package -DskipTests
+
+FROM openjdk:8-jdk-alpine
+
+WORKDIR /app
+COPY docker/monitoring/conf/settings.json /app
+COPY docker/monitoring/docker-compose.yml /app
+COPY docker/monitoring/conf/Dockerfile /app
+
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
+
+# Set Environment Variable for the JVM options
+ENV JVM_OPTS=""
+
+# Set the timezone
+RUN echo "America/New_York" > /etc/timezone
+
+# Run the jar file 
+ENTRYPOINT ["sh", "-c", "java $JVM_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app/spring-boot-application.jar"]

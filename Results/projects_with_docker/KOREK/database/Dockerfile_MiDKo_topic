@@ -1,0 +1,44 @@
+# Use the base image with Python3 and Postgis
+FROM mdillon/postgis:11
+
+# Setting up working directory
+WORKDIR /usr/src/app
+
+# Copy and install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Add the rest of the code
+COPY . .
+
+# Copy configuration file
+COPY postgresql.conf /etc/postgresql
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# Setting up DB
+ENV POSTGRES_DB postgres
+ENV POSTGRES_USER postgres
+ENV POSTGRES_PASSWORD postgres
+
+RUN chmod g+s /run/postgresql
+RUN chown postgres:postgres /run/postgresql
+
+USER postgres
+RUN /usr/lib/postgresql/11/bin/initdb -D /var/lib/postgresql/11/main
+
+# Changing settings of PostgreSQL
+RUN echo "host all  all    0.0.0.0/0  md5" >> /var/lib/postgresql/11/main/pg_hba.conf
+RUN echo "listen_addresses='*'" >> /var/lib/postgresql/11/main/postgresql.conf
+
+USER root
+RUN mkdir -p /var/run/postgresql && chown -R postgres /var/run/postgresql
+
+# Exposing default PostgreSQL port
+EXPOSE 5432
+
+# Running the server
+CMD exec gosu postgres postgres -c config_file=/var/lib/postgresql/11/main/postgresql.conf
+

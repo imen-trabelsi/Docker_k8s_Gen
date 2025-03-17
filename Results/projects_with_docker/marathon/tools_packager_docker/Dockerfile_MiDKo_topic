@@ -1,0 +1,30 @@
+# Set the base Image
+FROM debian:stretch-slim
+
+LABEL MAINTAINER="Mesosphere"
+
+# Set the working directory
+WORKDIR /marathon
+
+# Add the necessary run commands
+RUN apt-get update \
+    && apt-get install -my wget gnupg \
+    && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv DF7D54CBE56151BF \
+    && apt-get update -y \
+    && apt-get upgrade -y \
+    && echo "deb http://repos.mesosphere.com/debian stretch-testing main" | tee -a /etc/apt/sources.list.d/mesosphere.list \
+    && echo "deb http://repos.mesosphere.com/debian stretch-unstable main" | tee -a /etc/apt/sources.list.d/mesosphere.list \
+    && echo "deb http://repos.mesosphere.com/debian stretch main" | tee -a /etc/apt/sources.list.d/mesosphere.list \
+
+# Set JAVA_HOME environment variable
+ENV JAVA_HOME /docker-java-home
+
+# Setting up a user
+USER nobody
+
+# Adding necessary files
+COPY --chown=nobody:nogroup share/marathon /marathon
+
+# Set the entrypoint & Command
+ENTRYPOINT ["/marathon/bin/marathon"]
+CMD []

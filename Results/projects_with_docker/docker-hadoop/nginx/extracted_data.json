@@ -1,0 +1,145 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "Makefile",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "base",
+            "type": "tree"
+        },
+        {
+            "path": "base/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "base/entrypoint.sh",
+            "type": "blob"
+        },
+        {
+            "path": "datanode",
+            "type": "tree"
+        },
+        {
+            "path": "datanode/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "datanode/run.sh",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose-v3.yml",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "hadoop.env",
+            "type": "blob"
+        },
+        {
+            "path": "historyserver",
+            "type": "tree"
+        },
+        {
+            "path": "historyserver/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "historyserver/run.sh",
+            "type": "blob"
+        },
+        {
+            "path": "namenode",
+            "type": "tree"
+        },
+        {
+            "path": "namenode/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "namenode/run.sh",
+            "type": "blob"
+        },
+        {
+            "path": "nginx",
+            "type": "tree"
+        },
+        {
+            "path": "nginx/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "nginx/bde-hadoop.css",
+            "type": "blob"
+        },
+        {
+            "path": "nginx/default.conf",
+            "type": "blob"
+        },
+        {
+            "path": "nginx/materialize.min.css",
+            "type": "blob"
+        },
+        {
+            "path": "nodemanager",
+            "type": "tree"
+        },
+        {
+            "path": "nodemanager/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "nodemanager/run.sh",
+            "type": "blob"
+        },
+        {
+            "path": "resourcemanager",
+            "type": "tree"
+        },
+        {
+            "path": "resourcemanager/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "resourcemanager/run.sh",
+            "type": "blob"
+        },
+        {
+            "path": "submit",
+            "type": "tree"
+        },
+        {
+            "path": "submit/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "submit/WordCount.jar",
+            "type": "blob"
+        },
+        {
+            "path": "submit/run.sh",
+            "type": "blob"
+        }
+    ]
+}

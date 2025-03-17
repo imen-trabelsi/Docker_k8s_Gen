@@ -1,0 +1,36 @@
+# Dockerfile
+# Choose base image
+FROM --platform=$BUILDPLATFORM as builder
+
+# Set work directory to /code
+WORKDIR /code
+
+# Set environment variables
+ENV GRADLE_USER_HOME=/code/.gradlecache \
+
+# Copy necessary files
+COPY ./buildSrc /code/buildSrc
+COPY ./build.gradle.kts ./settings.gradle.kts ./gradle.properties /code/
+COPY authorizer-app-backend/build.gradle.kts  /code/authorizer-app-backend/
+COPY authorizer-app-backend/src /code/authorizer-app-backend/src
+
+# Run necessary commands
+RUN mkdir /code && gradle downloadDependencies copyDependencies startScripts && gradle jar
+
+# Start new stage for the final image
+FROM openjdk:8-jdk-alpine
+
+# Copy necessary files from builder stage
+
+# Set user
+USER 101
+
+# Expose necessary port
+EXPOSE 8085
+
+# Set the entry point
+ENTRYPOINT ["java", "-jar", "/usr/lib/authorizer-app-backend-*.jar"]
+CMD ["authorizer-app-backend"]
+
+# Set labels
+LABEL description="RADAR-base"

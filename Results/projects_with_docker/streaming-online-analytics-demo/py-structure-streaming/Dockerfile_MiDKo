@@ -1,0 +1,11 @@
+FROM docker.io/radanalyticsio/openshift-spark
+
+COPY ./pyorder-processing.py /opt
+COPY ./entrypoint.sh /opt
+WORKDIR /opt
+
+# Expose port
+EXPOSE 8080
+
+# Ensure that application runs on container start
+ENTRYPOINT ["./entrypoint.sh"]

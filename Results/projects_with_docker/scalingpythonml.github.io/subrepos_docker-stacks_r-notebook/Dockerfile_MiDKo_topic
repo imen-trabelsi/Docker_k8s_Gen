@@ -1,0 +1,36 @@
+# Use the base image as provided
+FROM $BASE_CONTAINER
+
+# Basic setup, install ruby and bundler
+RUN apt-get update && \
+apt-get install -y ruby bundler --no-install-recommends && \
+
+# Set environment variables
+ENV LANG C.UTF-8
+ENV GEM_HOME /bundle
+ENV BUNDLE_PATH $GEM_HOME 
+ENV BUNDLE_BIN $BUNDLE_PATH/bin
+ENV PATH /usr/local/bundle/bin:$PATH 
+
+# Add our user and group
+RUN groupadd -r $NB_UID && useradd -r -g $NB_UID $NB_UID
+
+# Change to the app's directory
+WORKDIR /app
+
+# Copy the Gemfile and install 
+# the Ruby Dependencies
+COPY Gemfile Gemfile.lock ./
+RUN bundle install
+
+# Copy the whole app
+COPY . ./
+
+# Change to $NB_UID
+USER $NB_UID
+
+# Expose the port
+EXPOSE 3000
+
+# Start the app
+CMD ["ruby", "app.rb"]

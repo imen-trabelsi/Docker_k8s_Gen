@@ -1,0 +1,33 @@
+#Step 1: Specify the base image.
+FROM pitstop-dotnet-sdk-base:1.0 AS base
+WORKDIR /app
+EXPOSE 5200
+
+#Step 2: Define build
+FROM microsoft/dotnet:2.1-sdk AS build-env
+WORKDIR /app
+
+#Step 2.1: Copy *.csproj file
+COPY *.csproj ./
+
+#Step 2.2: Restore dependencies using NuGet
+RUN dotnet restore
+
+#Step 2.3: Copy remaining files to current workdir
+COPY . ./
+
+#Step 2.4: Build and publish the application
+RUN dotnet publish -c Release -o out
+
+#Step 3: Copy published application from build to base
+FROM base AS final
+WORKDIR /app
+
+#Step 3.1: Set environment variables
+ENV ASPNETCORE_URLS=http://*:5200
+
+#Step 3.2: Healthcheck instruction
+HEALTHCHECK --interval=30s --timeout=3s --retries=1 CMD curl --silent --fail http://localhost:5200/hc || exit 1
+
+#Step 3.3: Set entrypoint
+ENTRYPOINT ["dotnet", "Pitstop.WorkshopManagementAPI.dll"]

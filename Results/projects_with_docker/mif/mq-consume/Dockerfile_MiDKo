@@ -1,0 +1,15 @@
+# Use OpenJDK 11 as base image
+FROM openjdk:11-jre
+
+# Copying static project files to the docker context
+COPY pom.xml mq-consume/Dockerfile .env docker-compose.yml ./
+
+# Copying everything from `target` to `/app` in the container
+COPY target/mq-consume-1.0-SNAPSHOT.jar /app.jar
+
+# Expose the ports the application uses 
+# Please replace the <app-port> with the actual ports
+EXPOSE <app-port> 
+
+# Set the entrypoint
+CMD ["java", "-jar", "-Dspring.profiles.active=docker", "/app.jar"]

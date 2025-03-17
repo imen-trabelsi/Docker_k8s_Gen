@@ -1,0 +1,28 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Java",
+        "dependencies": {
+            "build.gradle": "buildscript {\n    repositories {\n        mavenCentral()\n    }\n    dependencies {\n        classpath 'io.openliberty.tools:liberty-gradle-plugin:3.5.2'\n    }\n}\n\nplugins {\n    id 'com.avast.gradle.docker-compose' version \"0.16.11\"\n}\n\ntask clean(type: Delete) {\n  subprojects.each { dependsOn(\"${it.name}:clean\") };\n  delete 'build'\n}\n\next.hostname = 'localhost'\n// Find the public IP address for this machine (if one exists)\nNetworkInterface.getNetworkInterfaces()\n.findAll { it.isUp() && !it.isLoopback() && !it.isVirtual() }\n.each {\n  it.getInetAddresses()\n  .findAll { !it.isLoopbackAddress() && it instanceof Inet4Address }\n  .each {\n    if (hostname.equals('localhost')) {\n      def hn = it.toString();\n      hostname = hn.startsWith(\"/\") ? hn.substring(1, hn.length()) : hn;\n      // ${it} is in the format /<IP>, so only use http:/ instead of http://\n    }\n  }\n}\n\ntask dockerStart {\n    dependsOn 'composeUp'\n}\n\ntask dockerStop {\n    dependsOn 'composeDown'\n}\n\ncomposeUp {\n    subprojects.each {\n        dependsOn(\"${it.name}:assemble\")\n    }\n}\n\nsubprojects {\n    apply plugin: 'liberty'\n    apply plugin: 'war'\n\n    sourceCompatibility = 1.8\n\n    buildscript {\n        repositories {\n            mavenCentral()\n        }\n        dependencies {\n            classpath 'io.openliberty.tools:liberty-gradle-plugin:3.5.2'\n        }\n    }\n\n    repositories {\n        mavenCentral()\n    }\n\n    dependencies {\n        providedCompile group: 'org.eclipse.microprofile', name: 'microprofile', version: '3.0'\n        providedCompile group: 'jakarta.platform', name: 'jakarta.jakartaee-api', version: '8.0.0'\n        testImplementation group: 'junit', name: 'junit', version: '4.13.1'\n        testImplementation group: 'org.eclipse', name: 'yasson', version: '1.0.8'\n        libertyRuntime group: 'io.openliberty', name: 'openliberty-runtime', version: '22.0.0.12'\n    }\n    \n    eclipse {\n\t    classpath {\n\t        defaultOutputDir =  file('build/classes/java/main')\n\t        file {\n\t            whenMerged {\n\t                entries.findAll { it.path.startsWith('src/main') }\n                           .each { it.output = \"build/classes/java/main\" }\n\t                entries.findAll { it.path.startsWith('src/test') }\n\t                       .each { it.output = \"build/classes/java/test\" }\n\t            }\n\t        }\n\t    }\n\t  }\n    \n    liberty {\n        install {\n            // use 1 liberty install for the whole repo\n            baseDir = rootProject.buildDir\n        }\n    }\n\n    clean.dependsOn 'libertyStop'\n    libertyDebug.dependsOn 'libertyStop'    \n    libertyStart.dependsOn 'libertyStop', 'test'\n    libertyRun.dependsOn   'libertyStop'\n    \n    task debug { dependsOn 'libertyDebug' }\n    task start { dependsOn 'libertyStart' }\n    task stop  { dependsOn 'libertyStop'  }\n    \n    libertyStart.doLast {\n        println \"Application available at: ${appUrl}\"\n    }\n    \n    task open {\n        shouldRunAfter 'libertyStart'\n        doLast {\n            java.awt.Desktop.desktop.browse \"${appUrl}\".toURI()\n        }\n    }\n}\n"
+        },
+        "database": null,
+        "build_system": "Gradle",
+        "config_files": {
+            "docker-compose.yml": "version: '2.1'\nservices:\n  frontend:\n    build: frontend\n    image: libertybikes-frontend\n    ports:\n      - \"12000:12000\"\n  auth:\n    build: auth-service\n    image: libertybikes-auth\n    ports:\n      - \"8082:8082\"\n    environment:\n      - frontend_url=http://frontend:12000/login\n      - auth_url=https://auth:8482/auth-service\n  game:\n    build: game-service\n    image: libertybikes-game\n    ports:\n      - \"8080:8080\"\n    environment:\n      - org_libertybikes_restclient_PlayerService_mp_rest_url=http://player:8081\n      - singleParty\n  player:\n    build: player-service\n    image: libertybikes-player\n    ports:\n      - \"8081:8081\"\n    environment:\n      - DB_HOST=postgres\n  postgres:\n    image: postgres:11-alpine\n    ports:\n      - 5432:5432\n    environment:\n      - POSTGRES_DB=playerdb\n      - POSTGRES_USER=lb_user\n      - POSTGRES_PASSWORD=lb_password\n  prometheus:\n    image: prom/prometheus:v2.4.0\n    ports:\n      - 9090:9090\n    volumes:\n      - ./monitoring/prometheus:/etc/prometheus\n  grafana:\n    image: grafana/grafana:5.2.4\n    ports:\n      - 3000:3000\n    environment:\n      - GF_INSTALL_PLUGINS=flant-statusmap-panel\n    volumes:\n      - ./monitoring/datasource:/etc/grafana/provisioning/datasources\n      - ./monitoring/dashboardList:/etc/grafana/provisioning/dashboards\n      - ./monitoring/grafanaDashboardConfig:/var/lib/grafana/dashboards\n",
+            "player-service/Dockerfile": "FROM open-liberty:19.0.0.9-microProfile3-java11\nADD --chown=1001:0 build/libs/player-service.war /config/dropins\nADD --chown=1001:0 build/libs/postgresql-*.jar /config/postgresql\nCOPY --chown=1001:0 src/main/liberty/config /config/\nRUN printf 'httpPort=8081\\n\\\nhttpsPort=8444' > /config/bootstrap.properties\n\nEXPOSE 8081 8444"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            "Dockerfile",
+            "build.gradle"
+        ],
+        "folders": [
+            ".settings",
+            "prebuild",
+            "src"
+        ]
+    }
+}

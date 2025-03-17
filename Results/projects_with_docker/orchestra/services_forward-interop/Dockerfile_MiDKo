@@ -1,0 +1,33 @@
+# Use the official lightweight Node.js base image
+FROM node:12-alpine
+
+# Set the working directory
+WORKDIR /app
+
+# Copy package.json
+COPY package.json ./
+
+# Install build dependencies
+RUN npm install
+
+# Copy source code
+COPY . .
+
+# Build the app and dependencies
+RUN npm run build
+
+# Add curl for health checks
+RUN apk --no-cache add curl
+
+# Set the environment variables
+ENV NODE_ENV=production
+ENV PORT=4000
+
+# Expose the port
+EXPOSE 4000
+
+# Set the health check instruction
+HEALTHCHECK CMD curl --fail http://localhost:4000 || exit 1
+
+# Start the service
+CMD ["npm", "start"]

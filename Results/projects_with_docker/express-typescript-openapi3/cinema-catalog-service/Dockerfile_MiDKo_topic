@@ -1,0 +1,33 @@
+# Start with the base image specified by the user
+FROM node:10.15.3-alpine
+
+USER root
+
+# Environment Variable
+ENV HOME=/home/nupp
+
+# Installation of necessary utilities
+RUN apk update && apk add --no-cache make gcc g++ python curl bash jq git openssh 
+
+# Copy the package.json separately to leverage Docker cache
+COPY package.json $HOME/app/package.json
+
+RUN addgroup -S nupp && adduser -S -g nupp nupp
+
+# Grant permissions for dumb-init
+ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.1/dumb-init_1.1.1_amd64 /usr/local/bin/dumb-init
+RUN chown nupp:nupp /usr/local/bin/dumb-init && chmod +x /usr/local/bin/dumb-init
+
+USER nupp
+
+# Set the working directory
+WORKDIR $HOME/app
+
+# Copy the rest of the application
+COPY . $HOME/app/
+
+# Install the application
+RUN npm cache clean --force && npm install
+
+# Execution command
+CMD ["dumb-init", "npm", "run", "dev"]

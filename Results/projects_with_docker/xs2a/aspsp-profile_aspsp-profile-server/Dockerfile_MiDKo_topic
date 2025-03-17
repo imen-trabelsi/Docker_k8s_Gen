@@ -1,0 +1,26 @@
+# Use base image
+FROM adorsys/java:11
+
+# Environment variable
+ENV JAVA_OPTS="-Xmx1024m -Dserver.port=8080"
+ENV JAVA_TOOL_OPTIONS=-Xmx1024m
+
+# Labels
+LABEL maintainer="https://git.adorsys.de/adorsys/xs2a/aspsp-xs2a"
+
+# Copy dependencies
+COPY ./pom.xml ./pom.xml
+
+# Package the application
+RUN mvn -f ./pom.xml clean package
+
+WORKDIR /opt/profile
+
+# Copy build artifacts to the appropriate location
+COPY ./target/aspsp-profile-exec*jar /opt/profile/aspsp-profile-exec.jar
+
+# Expose the required port
+EXPOSE 8080
+
+# Start the Spring Boot microservice
+CMD exec $JAVA_HOME/bin/java $JAVA_OPTS -jar /opt/profile/aspsp-profile-exec.jar

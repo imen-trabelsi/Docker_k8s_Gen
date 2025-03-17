@@ -1,0 +1,29 @@
+# Use official Base Image
+FROM openlmis/dev:4
+
+# Set Work Directory
+WORKDIR /
+
+# Install app dependencies
+COPY requirements.txt ./
+RUN pip install -r requirements.txt
+
+# Copy app source to Docker
+COPY . .
+
+# Setup environment variable
+ARG DB_URI
+ENV DB_URI=$DB_URI
+
+# Setup Execution Command
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod u+x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+
+# Copy SQL scripts
+COPY sql /sql
+
+# Open Port for the Server
+EXPOSE 5000
+
+CMD ["/bin/sh"]

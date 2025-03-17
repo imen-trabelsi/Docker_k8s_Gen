@@ -1,0 +1,28 @@
+# Using the base image provided by the user
+FROM eventuateio/eventuate-examples-docker-images-spring-example-base-image:$baseImageVersion as builder
+
+# Move to the app directory
+WORKDIR /ftgo-api-gateway
+
+# Copy the Gradle configuration file to the Docker context
+COPY build.gradle .
+
+# Install Gradle and compile the project
+RUN ["./gradlew", "build"]
+
+# Copy the jar file to root directory
+COPY build/libs/ftgo-api-gateway.jar service.jar
+
+# Start from a base image
+FROM openjdk:11-jdk-slim
+
+# Expose the necessary port
+EXPOSE 8080
+
+# Set the working directory
+WORKDIR /ftgo-api-gateway
+
+# Copy the jar file
+
+# Set the startup command to run your binary
+ENTRYPOINT ["java", "-jar", "service.jar"]

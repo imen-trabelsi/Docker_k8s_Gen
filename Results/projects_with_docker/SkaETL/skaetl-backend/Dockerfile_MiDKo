@@ -1,0 +1,29 @@
+# Use the provided base image
+FROM openjdk:8u151-jdk
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the project resources into the working directory
+COPY ./pom.xml ./src ./startup.sh ./
+
+# Install app dependencies using Maven
+RUN mvn clean install
+
+# Make our startup script executable
+RUN chmod +x startup.sh
+
+# Copy our built JAR file
+COPY --from=build /usr/share/skalogs/skaetl-backend.jar .
+
+# Set necessary environment variables
+ENV DB_URL=jdbc:postgresql://db:5432/mydatabase
+ENV DB_USERNAME=postgres
+ENV DB_PASSWORD=password
+
+# Expose port
+EXPOSE 8080
+
+# Define our startup command
+CMD ["/usr/bin/startup.sh"]
+

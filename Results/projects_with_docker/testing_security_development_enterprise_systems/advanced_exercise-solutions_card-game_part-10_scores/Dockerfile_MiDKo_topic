@@ -1,0 +1,44 @@
+# Start with a base image containing Java runtime
+FROM adoptopenjdk/openjdk11:alpine
+
+# Add Maintainer Info
+LABEL maintainer="example@example.com"
+
+# Add a volume pointing to /tmp
+VOLUME /tmp
+
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
+
+# The application's jar file
+ARG JAR_FILE=target/scores.jar
+
+# Add the application's jar to the container
+COPY ${JAR_FILE} scores.jar
+
+# Fetch database driver and add it to the container
+RUN apk add postgresql-client
+
+# Copy the project object model file
+COPY pom.xml .
+
+# Set working directory
+WORKDIR /app
+
+# Set environment variables for spring profiles and database connection
+ENV SPRING_PROFILES_ACTIVE=FakeData
+
+# Set the timezone
+ENV TZ=America/New_York
+
+# Install maven
+RUN apk add maven
+
+# Build the project with maven
+RUN mvn clean install
+
+# Ensure the jar is executable
+RUN chmod +x scores.jar
+
+# Run the jar file 
+CMD ["java", "-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=FakeData", "-jar", "scores.jar"]

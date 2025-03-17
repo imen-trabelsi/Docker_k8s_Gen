@@ -1,0 +1,38 @@
+# Step 1: Build the application
+FROM gradle:7.5.1-jdk11 as builder
+
+# Copy source code
+COPY . .
+
+# Build the application
+RUN gradle shadowJar
+
+# Step 2: Set up the runtime environment
+FROM openjdk:11-jre-slim
+
+# Flink environment variables
+ENV FLINK_HOME=/opt/flink
+ENV PATH=$FLINK_HOME/bin:$PATH
+
+# Copy built JAR from the builder image
+
+# Create a symlink to the jar in the usrlib directory
+RUN ln -s $FLINK_HOME/usrlib/*.jar $FLINK_HOME/lib/
+
+# Configure Flink for Prometheus metrics
+RUN echo "metrics.reporters: prom" >> "$FLINK_HOME/conf/flink-conf.yaml" && \
+
+# Create /state directory for Flink to store its data, and give ownership to the flink user
+RUN mkdir /state && chown flink:flink /state
+
+# Expose necessary port for the application
+# Replace PORT_NUMBER with the actual required port
+EXPOSE PORT_NUMBER
+
+# Set the user to run Flink process 
+USER ${FLINK_HOME}
+
+ENTRYPOINT [ "java", "-jar", "/opt/flink/lib/app.jar" ]
+
+
+

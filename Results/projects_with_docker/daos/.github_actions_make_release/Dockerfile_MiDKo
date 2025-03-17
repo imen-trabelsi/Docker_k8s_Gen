@@ -1,0 +1,29 @@
+# Set base image (host OS)
+FROM alpine:3.10
+
+# Install git, curl and bash
+RUN apk add --no-cache git curl bash
+
+# Set the python environment
+RUN apk add --update --no-cache python36
+
+# Set the working directory in the docker image
+WORKDIR /app
+
+# Copy the dependencies file to the working directory
+COPY requirements.txt .
+
+# Install the dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the content of the local src directory to the working directory in the Docker image
+COPY . .
+
+# Copy the shell script to the root directory
+COPY entrypoint.sh /entrypoint.sh
+
+# Make the shell script executable
+RUN chmod +x /entrypoint.sh
+
+# Command to run on container start
+ENTRYPOINT ["/entrypoint.sh"]

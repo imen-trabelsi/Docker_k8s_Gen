@@ -1,0 +1,27 @@
+# Use the provided base image
+FROM solinea/goldstone-base:1.1.3
+
+# Set environment variables
+ENV DJANGO_ADMIN_EMAIL="root@localhost"
+ENV DJANGO_SETTINGS_MODULE=goldstone.settings.docker
+
+# Prepare application directories
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# Install python packages
+COPY ./docker/goldstone-task/setup.py /usr/src/app/
+RUN pip install -r setup.py
+
+# Add application code to container
+COPY . /usr/src/app
+
+# Run script on container startup
+COPY ./docker-entrypoint.sh /
+RUN chmod +x /docker-entrypoint.sh
+
+# Inform Docker that the container is listening on the specified ports at runtime
+EXPOSE 8000
+
+# Run the command
+CMD ["/docker-entrypoint.sh"]

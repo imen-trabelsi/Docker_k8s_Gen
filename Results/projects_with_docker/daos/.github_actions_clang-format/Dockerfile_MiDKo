@@ -1,0 +1,17 @@
+FROM fedora:38
+LABEL description="Dockerfile for a Spring Boot microservice"
+
+WORKDIR /app
+
+# Copy over source files and scripts
+COPY . .
+
+# Install dependencies and tools
+RUN dnf -y install clang-tools-extra git-clang-format
+RUN pip install -r requirements.txt
+
+# Copy the execution script
+COPY entrypoint.sh /entrypoint.sh
+
+# Set the entrypoint
+ENTRYPOINT ["/entrypoint.sh"]

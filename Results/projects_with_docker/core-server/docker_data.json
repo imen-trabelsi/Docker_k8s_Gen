@@ -1,0 +1,39 @@
+{
+    "docker_info": {
+        "base_image": "python:3.7",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [
+            "maintainer=\"Lucio"
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV PYTHONUNBUFFERED 1"
+        ],
+        "copy_instructions": [
+            "COPY requirements.txt /",
+            "WORKDIR /usr/src/app",
+            "COPY --from=build /wheels /wheels",
+            "COPY --from=build /requirements.txt .",
+            "COPY . /usr/src/app"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "pip wheel --no-cache-dir --no-deps --wheel-dir /wheels -r requirements.txt",
+                ""
+            ],
+            [
+                "pip install --no-cache /wheels/*",
+                ""
+            ],
+            [
+                "apt update && \\",
+                "apt install -y libpq-dev &&",
+                "rm /var/lib/apt/lists/* -rf"
+            ]
+        ]
+    }
+}

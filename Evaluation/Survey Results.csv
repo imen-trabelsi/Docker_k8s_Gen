@@ -1,0 +1,36 @@
+"What region are you based in?
+",What is your primary role?,How many years of experience do you have in software development?,How many years of experience do you have with Docker and Kubernetes?,Please select the project identifier that you received,"How would you rate the Correctness in term of syntax, values and completeness of the Dockerfile? (1 = Very Poor, 5 = Excellent)""
+",,"How would you rate the readability and organization of the Dockerfile? (1 = Very Poor, 5 = Excellent)""
+",,"How would you rate the usability of the Dockerfile? (1 = Very Poor, 5 = Excellent)""
+",,"How would you rate the Correctness in term of syntax, values and completeness of the Dockerfile? (1 = Very Poor, 5 = Excellent)""
+",,"How would you rate the readability and organization of the Dockerfile? (1 = Very Poor, 5 = Excellent)""
+",,"How would you rate the usability of the Dockerfile? (1 = Very Poor, 5 = Excellent)""
+",,"How would you rate the Correctness in term of syntax, values and completeness of the Dockerfile? (1 = Very Poor, 5 = Excellent)""
+",,"How would you rate the readability and organization of the Dockerfile? (1 = Very Poor, 5 = Excellent)""
+",,"How would you rate the usability of the Dockerfile? (1 = Very Poor, 5 = Excellent)""
+",,"How would you rate the Correctness in term of syntax, values and completeness of the manifests files? (1 = Very Poor, 5 = Excellent)""
+",,"How would you rate the readability and organization of the manifests? (1 = Very Poor, 5 = Excellent)""
+",,"How would you rate the usability of the manifests? (1 = Very Poor, 5 = Excellent)""
+",,"How would you rate the Correctness in term of syntax, values and completeness of the manifests files? (1 = Very Poor, 5 = Excellent)""
+",,"How would you rate the readability and organization of the manifests? (1 = Very Poor, 5 = Excellent)""
+",,"How would you rate the usability of the manifests? (1 = Very Poor, 5 = Excellent)""
+"
+North America,Researcher,7,2,PR1,4 (Good),,5 (Excellent),,3 (Average),,4 (Good),,5 (Excellent),,4 (Good),,4 (Good),,2 (Poor),,4 (Good),,5 (Excellent),,5 (Excellent),,5 (Excellent),,4 (Good),,2 (Poor),,4 (Good)
+North America,Researcher,9,2,PR1,5 (Excellent),,5 (Excellent),,5 (Excellent),,5 (Excellent),,4 (Good),,4 (Good),,5 (Excellent),,3 (Average),,3 (Average),,5 (Excellent),,5 (Excellent),,5 (Excellent),,5 (Excellent),,3 (Average),,3 (Average)
+North America,Developer,8,4,PR2,4 (Good),,5 (Excellent),,5 (Excellent),,4 (Good),,3 (Average),,3 (Average),,5 (Excellent),,2 (Poor),,2 (Poor),,4 (Good),,5 (Excellent),,5 (Excellent),,4 (Good),,3 (Average),,2 (Poor)
+Africa,DevOps Engineer,10,7,PR3,4 (Good),,5 (Excellent),,4 (Good),,3 (Average),,4 (Good),,4 (Good),,4 (Good),,3 (Average),,2 (Poor),,3 (Average),,4 (Good),,3 (Average),,3 (Average),,1 (Very Poor),,3 (Average)
+Africa,Developer,4,2,PR1,5 (Excellent),,5 (Excellent),,4 (Good),,4 (Good),,4 (Good),,3 (Average),,3 (Average),,3 (Average),,3 (Average),,4 (Good),,5 (Excellent),,5 (Excellent),,4 (Good),,3 (Average),,4 (Good)
+Africa,Developer,4,2,PR3,3 (Average),,4 (Good),,3 (Average),,3 (Average),,3 (Average),,2 (Poor),,3 (Average),,1 (Very Poor),,1 (Very Poor),,3 (Average),,4 (Good),,4 (Good),,3 (Average),,2 (Poor),,2 (Poor)
+North America,DevOps Engineer,8,5,PR2,4 (Good),,5 (Excellent),,5 (Excellent),,4 (Good),,3 (Average),,3 (Average),,5 (Excellent),,3 (Average),,3 (Average),,4 (Good),,4 (Good),,5 (Excellent),,4 (Good),,2 (Poor),,4 (Good)
+North America,Developer,3,1,PR3,4 (Good),,5 (Excellent),,5 (Excellent),,4 (Good),,5 (Excellent),,5 (Excellent),,5 (Excellent),,4 (Good),,4 (Good),,5 (Excellent),,5 (Excellent),,5 (Excellent),,5 (Excellent),,4 (Good),,4 (Good)
+Europe,DevOps Engineer,5,3,PR2,3 (Average),,5 (Excellent),,4 (Good),,3 (Average),,4 (Good),,4 (Good),,3 (Average),,2 (Poor),,3 (Average),,4 (Good),,4 (Good),,3 (Average),,3 (Average),,2 (Poor),,2 (Poor)
+Europe,Developer,6,2,PR1,2 (Poor),,3 (Average),,2 (Poor),,2 (Poor),,2 (Poor),,1 (Very Poor),,3 (Average),,1 (Very Poor),,1 (Very Poor),,3 (Average),,2 (Poor),,3 (Average),,2 (Poor),,1 (Very Poor),,1 (Very Poor)
+Europe,Developer,5,2,PR3,5 (Excellent),,5 (Excellent),,5 (Excellent),,5 (Excellent),,4 (Good),,4 (Good),,4 (Good),,2 (Poor),,3 (Average),,5 (Excellent),,5 (Excellent),,4 (Good),,4 (Good),,2 (Poor),,3 (Average)
+,,,,,43/11,,,,,,,,,,,,,,,,,,,,,,,,,,,,
+,,,,5,3,,9,,5,,2,,2,,1,,4,,0,,0,,4,,6,,6,,2,,0,,0
+,,,,4,5,,1,,3,,5,,5,,5,,3,,1,,2,,4,,4,,2,,5,,1,,4
+,,,,3,2,,1,,2,,3,,3,,3,,4,,4,,5,,3,,0,,3,,3,,3,,3
+,,,,2,1,,0,,1,,1,,1,,1,,0,,4,,2,,0,,1,,0,,1,,5,,3
+,,,,1,0,,0,,0,,0,,0,,1,,0,,2,,2,,0,,0,,0,,0,,2,,1
+,,,,SUM,11,,11,,11,,11,,11,,11,,11,,11,,11,,11,,11,,11,,11,,11,,11
+,,,,,Correctness generated,,,,,,Readability generated without topics,,,,,,GT,,,,,,K8S generated,,,,,,K8S GT,,,,

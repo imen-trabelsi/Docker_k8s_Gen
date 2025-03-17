@@ -1,0 +1,19 @@
+{
+    "docker_info": {
+        "base_image": "python",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "pip install Flask IPython PyYAML"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,30 @@
+# Use curlimages/curl as the base image
+FROM curlimages/curl:7.82.0 AS curler
+
+# Set the working directory
+WORKDIR /
+
+# Copying certificate
+COPY certificate.pem /usr/local/share/ca-certificates/certificate.crt
+
+# Building JAR from the given URL.
+ARG JMX_JAR_VERSION=v1.14.0
+RUN curl -L --output /opentelemetry-jmx-metrics.jar \
+
+# Extracting otelcol-contrib from the given URL.
+RUN curl -L -s "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.81.0/otelcol-contrib_0.81.0_linux_amd64.tar.gz" | tar -xvz -C /
+
+# Adding certificate to the certificates directory
+RUN cat /usr/local/share/ca-certificates/certificate.crt >> /etc/ssl/certs/ca-certificates.crt
+
+# Starting another stage
+FROM debian:stretch
+
+# Copying files to the current directory
+
+# Running as root user
+USER root
+
+# Setting entrypoint and cmd
+ENTRYPOINT ["/otelcol-contrib"]
+CMD ["--config", "/etc/otel/config.yaml"]

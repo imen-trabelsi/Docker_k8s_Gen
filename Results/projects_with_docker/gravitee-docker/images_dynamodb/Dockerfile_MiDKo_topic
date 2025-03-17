@@ -1,0 +1,19 @@
+# Using Eclipse temurin as a base image
+FROM eclipse-temurin:11-jre-focal
+
+# Actively maintaining the project
+LABEL maintainer="contact@graviteesource.com"
+
+# Setting up work directory
+WORKDIR /opt/dynamodb
+
+# Install necessary dependencies
+RUN apk add --update openssl \
+    && wget -O /opt/dynamodb/dynamodb_local_latest.tar.gz https://s3.eu-central-1.amazonaws.com/dynamodb-local-frankfurt/dynamodb_local_latest.tar.gz \
+    && tar xfz /opt/dynamodb/dynamodb_local_latest.tar.gz \
+
+# Exposing the port 8000
+EXPOSE 8000
+
+# Running the application using CMD instruction
+CMD ["java", "-Djava.library.path=./DynamoDBLocal_lib", "-jar","DynamoDBLocal.jar", "-dbPath","/var/lib/dynamodb", "-optimizeDbBeforeStartup", "-port", "8000"]

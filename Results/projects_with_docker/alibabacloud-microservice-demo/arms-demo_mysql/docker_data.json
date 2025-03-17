@@ -1,0 +1,30 @@
+{
+    "docker_info": {
+        "base_image": "mysql:5.7.33",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV WORK_PATH /usr/local/work",
+            "ENV AUTO_RUN_DIR /docker-entrypoint-initdb.d",
+            "ENV FILE_0 init_table.sql"
+        ],
+        "copy_instructions": [
+            "COPY ./$FILE_0 $WORK_PATH/",
+            "COPY ./$INSTALL_DATA_SHELL $AUTO_RUN_DIR/"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "mkdir -p $WORK_PATH",
+                ""
+            ],
+            [
+                "chmod a+x $AUTO_RUN_DIR/$INSTALL_DATA_SHELL"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,47 @@
+# Use an official lightweight Linux with OpenVAS installed as a parent image
+FROM mikesplain/openvas
+
+# Set the environment variable to disable interactive mode during build
+ENV DEBIAN_FRONTEND=noninteractive
+ENV BUILD=""
+
+# Update the system packages and install all the necessary dependencies
+RUN apt-get update && \
+apt-get install software-properties-common --no-install-recommends -yq && \
+add-apt-repository ppa:mikesplain/openvas -y && \
+add-apt-repository ppa:mrazavi/openvas -y && \
+apt-get clean && \
+apt-get update && \
+apt-get install alien auto-tools-dev bind9-host bzip2 curl debhelper dhcp-common gcc g++ gnutls-bin graphviz \
+javascript-common ldap-utils libatomic1 libc6-dev libcurl3 libffi6 libgirepository-1.0-1 libglib2.0-0 libgnutls30 \
+libgssapi-krb5-2 libgtk2.0-0 libldap-2.4-2 liblwp-mediatypes-perl libnet-dbus-perl \
+libnet-ssleay-perl libpython3.5-minimal libxml-parser-perl libxslt1.1 libyaml-tiny-perl linux-libc-dev \
+make mime-support net-tools openvas9 openvas9-cli openvas9-gsa \
+openvas9-manager openvas9-scanner perl python python-beautifulsoup python-bs4 python-cairo python-chardet python-lxml \
+python-minimal python-requests python-samba python2.7-minimal python3.5 python3.5-minimal redis-server redis-tools \
+ruby smbclient sshpass ssl-cert texlive-base wget xterm zip -yq --no-install-recommends && \
+
+# Download git, necessary for installing certain packages
+RUN apt-get update && \
+
+# Run shell commands to initialize OpenVAS and other stuff
+RUN mkdir -p /var/run/redis && \
+wget -q --no-check-certificate https://raw.githubusercontent.com/kurobeats/OpenVas-Management-Scripts/master/openvas-check-setup \
+-O /openvas-check-setup && \
+
+# Copy configuration files and scripts into the Docker image
+COPY --from=0 /var/lib/openvas /var/lib/openvas
+COPY config/redis.config /etc/redis/redis.config
+COPY config/sasl_passwd_template /
+COPY config/main.cf_template /
+COPY config/ldapUserSync/* /ldapUserSync/
+COPY start /start
+
+# Make scripts executable
+RUN chmod +x /start
+
+# Expose the required port for the application
+EXPOSE 443
+
+# Run the application when the Docker image is run
+CMD ["/start"]

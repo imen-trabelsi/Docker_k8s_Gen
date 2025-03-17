@@ -1,0 +1,23 @@
+# Start from the base image
+FROM mongo:3.2
+
+# Create a working directory
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json to the root directory
+COPY package*.json ./
+
+# Install all the dependencies
+RUN npm ci 
+
+# Copy the rest of your app's source code from your host to your image filesystem.
+COPY . .
+
+# MongoDB uses port 27017. Make sure your app binds to the same port.
+EXPOSE 27017
+
+# At the end, set your MongoDB Docker container’s enviroment variables 
+ENV MONGO_INITDB_ROOT_USERNAME=adminUser \
+
+# Start the application command
+CMD [ "npm", "start" ]

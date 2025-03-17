@@ -1,0 +1,43 @@
+# Stage 1: Build
+FROM maven:3.6.3-openjdk-8-slim AS build
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+COPY src ./src
+RUN mvn package
+
+# Stage 2: Serve
+FROM openjdk:8-jre-slim
+WORKDIR /app
+
+# Environment Variables
+ENV REFRESHED_AT=2017-09-17
+ENV TERM=xterm
+ENV JAVA_OPTS=-Djava.security.egd=file:/dev/./urandom
+ENV FILEBEAT_VERSION=filebeat_1.2.3_amd64.deb
+
+
+# Update and install necessary tools
+RUN apt-get update -qq \
+    && apt-get install -qqy curl wget \
+    && apt-get clean \
+    && touch /var/log/todo.log \
+
+# Install filebeat
+RUN curl -L -O https://download.elastic.co/beats/filebeat/${FILEBEAT_VERSION} \
+    && dpkg -i ${FILEBEAT_VERSION} \
+
+# Copy files
+COPY application/lib/springboot-webapp.jar /app.jar
+ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh wait-for-it.sh
+RUN bash -c 'chmod +x wait-for-it.sh'
+COPY filebeat.yml /etc/filebeat/filebeat.yml
+COPY ./start.sh /usr/local/bin/start.sh
+RUN mkdir -p /etc/pki/tls/certs
+COPY logstash-beats.crt /etc/pki/tls/certs/logstash-beats.crt
+
+# Add exec permissions to start.sh script
+RUN chmod +x /usr/local/bin/start.sh
+
+# Start command
+CMD [ "/usr/local/bin/start.sh" ]

@@ -1,0 +1,48 @@
+# Use the official Node.js 8.13-slim image as a parent image
+FROM node:8.13-slim
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy package.json and package-lock.json
+COPY ./package.json ./
+COPY ./package-lock.json ./
+
+# Then run npm install.
+RUN npm install --no-optional
+
+# Install typescript globally
+RUN npm install typescript -g
+
+# Create directory /opt/my-musik/ and copy necessary files there
+RUN mkdir -p /opt/my-musik/
+WORKDIR /opt/my-musik/
+COPY ./src ./src
+COPY ./tsconfig.json ./
+COPY ./gulpfile.js ./
+COPY ./tslint.json ./
+COPY ./songs.json ./
+COPY ./config.json ./
+COPY ./Dockerfile ./
+
+# Copy files from the build environment
+COPY --from=build-env /opt/my-musik/dist ./dist
+COPY --from=build-env /opt/my-musik/package.json ./
+COPY --from=build-env /opt/my-musik/config.json ./
+COPY --from=build-env /opt/my-musik/songs.json ./
+
+# Install necessary dependencies
+RUN npm install --no-optional --only=prod
+
+# Run Gulp
+RUN node_modules/.bin/gulp
+
+# Make port 3000 available to the world outside this container
+EXPOSE 3000
+
+# Set environment variable
+ENV NODE_ENV production
+
+# Define command to run your app using CMD which means that you can 
+# replace the command when running the container
+CMD [ "node", "dist/app.js" ]

@@ -1,0 +1,49 @@
+{
+    "docker_info": {
+        "base_image": "php:8.3-fpm-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV HOME /opt/home"
+        ],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY etc/infrastructure/php/ /usr/local/etc/php/"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apk --update upgrade \\",
+                "&& apk add --no-cache autoconf automake make gcc g++ git bash icu-dev libzip-dev rabbitmq-c rabbitmq-c-dev linux-headers"
+            ],
+            [
+                "pecl install apcu-5.1.23 && pecl install amqp-2.1.1 && pecl install xdebug-3.3.0",
+                ""
+            ],
+            [
+                "docker-php-ext-install -j$(nproc) \\",
+                "bcmath",
+                "opcache",
+                "intl",
+                "zip",
+                "pdo_mysql"
+            ],
+            [
+                "docker-php-ext-enable amqp apcu opcache",
+                ""
+            ],
+            [
+                "curl -sS https://get.symfony.com/cli/installer | bash -s - --install-dir /usr/local/bin",
+                ""
+            ],
+            [
+                "mkdir -p /opt/home",
+                "RUN chmod 777 /opt/home"
+            ]
+        ]
+    }
+}

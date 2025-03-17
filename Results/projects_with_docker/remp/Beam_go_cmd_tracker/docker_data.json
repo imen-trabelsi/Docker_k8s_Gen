@@ -1,0 +1,31 @@
+{
+    "docker_info": {
+        "base_image": "alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /bin",
+            "ADD tracker.tar .",
+            "ADD .env.example .env"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "tracker"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --no-cache openssl",
+                ""
+            ]
+        ]
+    }
+}

@@ -1,0 +1,26 @@
+# Use base image
+FROM maven:3.6-jdk-8-slim AS build
+
+# Set working directory
+WORKDIR /app
+
+# Copy pom.xml and source code
+COPY pom.xml .
+COPY src ./src
+
+# Build the application
+RUN mvn clean install
+
+# Set working directory for flink
+WORKDIR /opt/explore-flink
+COPY ./java/explore-flink /opt/explore-flink
+
+# Set working directory for usrlib
+WORKDIR /opt/flink/usrlib
+COPY --chown=flink:flink /opt/explore-flink/target/explore-flink.jar /opt/flink/usrlib/explore-flink.jar
+
+# Create soft link for flink jar
+RUN ln -fs /opt/flink/usrlib/explore-flink.jar /opt/flink/lib/explore-flink.jar
+
+# Entry point for docker
+ENTRYPOINT ["java","-jar","/opt/flink/lib/explore-flink.jar"]

@@ -1,0 +1,26 @@
+# Based on the provided information and the microservice project structure
+# the Dockerfile for the Spring Boot microservice is as follows:
+
+# Use base image
+FROM docker:stable
+
+# Update and install necessary dependencies
+RUN apk update && apk add --no-cache curl bash \
+
+# Copy necessary scripts and files
+COPY entrypoint.sh /entrypoint.sh
+
+# Change permission of the entrypoint file
+RUN chmod +x /entrypoint.sh
+
+# Ensure that Docker Container has Spring Boot application's jar file in /tmp directory
+VOLUME /tmp
+
+# Expose the port, replace 8080 with your desired port
+EXPOSE 8080
+
+# Set environment variables, replace with your necessary environment variables
+ENV JAVA_OPTS=""
+
+# Start the application
+ENTRYPOINT ["/entrypoint.sh"]

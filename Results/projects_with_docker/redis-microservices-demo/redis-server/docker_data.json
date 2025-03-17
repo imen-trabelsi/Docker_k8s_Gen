@@ -1,0 +1,43 @@
+{
+    "docker_info": {
+        "base_image": "redislabs/redisearch:2.0.5",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV LD_LIBRARY_PATH /usr/lib/redis/modules",
+            "ENV REDISGRAPH_DEPS libgomp1"
+        ],
+        "copy_instructions": [
+            "WORKDIR /data",
+            "COPY --from=redisearch ${LD_LIBRARY_PATH}/redisearch.so ${LD_LIBRARY_PATH}/",
+            "COPY --from=redisgraph ${LD_LIBRARY_PATH}/redisgraph.so ${LD_LIBRARY_PATH}/"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"redis-server\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"--loadmodule\",",
+                    "\"/usr/lib/redis/modules/redisearch.so\",",
+                    "\\"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "set -ex; \\",
+                "apt-get update;",
+                "apt-get install -y --no-install-recommends ${REDISGRAPH_DEPS};"
+            ]
+        ]
+    }
+}

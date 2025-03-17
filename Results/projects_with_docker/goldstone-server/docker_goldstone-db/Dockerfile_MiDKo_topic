@@ -1,0 +1,21 @@
+# Dockerfile
+FROM solinea/postgres:9.4
+
+# Set environment Variables
+ENV GOLDSTONE_PASSWORD="goldstone" \
+
+# Set Workdir
+WORKDIR /app
+
+# Add Sources
+COPY . /app
+
+# Copy Instructions
+COPY init-goldstone-db.sh /docker-entrypoint-initdb.d/
+COPY startup-goldstone-db.sh /docker-entrypoint-always.d/
+
+# Expose ports
+EXPOSE 5432
+
+# Run the application
+CMD ["postgres"]

@@ -1,0 +1,37 @@
+# The Dockerfile for the Spring Boot Microservice
+FROM openjdk:11-jre as build
+
+# Set the working directory
+WORKDIR /app
+
+# Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy the pom.xml file
+COPY pom.xml .
+
+# Build all the dependencies in preparation to go offline. 
+# This is a separate step so the dependencies will be cached unless changes to pom.xml are made.
+RUN chmod +x ./mvnw
+RUN ./mvnw dependency:go-offline -B
+
+# Copy the project source
+COPY src src
+
+# Package the application
+RUN ./mvnw clean package -DskipTests
+RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+
+# Runtime Image
+FROM openjdk:11-jre as runtime
+
+ARG DEPENDENCY=/app/target/dependency
+
+# Copy project dependencies from the build stage
+
+# Expose the port
+EXPOSE 8080
+
+# Ensure that Docker runs the application every time it launches a container from our image
+ENTRYPOINT ["java","-cp","app:app/lib/*","com.example.Project"]

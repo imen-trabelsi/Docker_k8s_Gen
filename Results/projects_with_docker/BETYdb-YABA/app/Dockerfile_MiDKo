@@ -1,0 +1,15 @@
+# Use the base image provided by the user
+FROM python:3.7.2-slim
+
+# Installing Git to clone repo from github
+RUN apt-get update && apt-get install -y \
+
+# Copy the local code to the container
+COPY . /code
+WORKDIR /code
+
+# Installing imgaug through git and the other requirements
+RUN pip install git+https://github.com/aleju/imgaug --no-deps &&\
+
+# This command run when the container starts
+CMD ["python","server.py"]

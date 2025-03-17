@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "requirements.txt": "setuptools==50.3.2\nnumpy==1.19.2\nplotly==4.12.0\nJinja2==2.11.2\npsutil==5.7.3\nPyYAML==5.3.1\njsonschema==3.2.0\npandas==1.1.3\nConfigSpace==0.4.16\npika==1.1.0\nsortedcontainers==2.2.2\npymongo==3.11.0\n"
+        },
+        "database": "MongoDB",
+        "build_system": "pip",
+        "config_files": {
+            "docker-compose.yml": "# Launch & Build a bunch containers with workers and one service for them.\nversion: \"3.7\"\nservices: \n  main-node:\n    build: ./main_node/\n    tty: true\n    container_name: main-node\n    environment:\n      - EXP_DUMP_NAME=undefined\n    restart: on-failure\n\n  event_service:\n    build: ./event_service/\n    stdin_open: true\n    tty: true\n    container_name: event-service\n    ports:\n        - 49153:49153\n        - 49154:49154\n        - 49155:49155\n    restart: on-failure\n\n  mongo-db:\n    image: mongo:4.4.0\n    container_name: mongo-db\n    restart: on-failure\n    environment:\n        MONGO_INITDB_DATABASE: BRISE_db\n    ports:\n        - 27017:27017\n    volumes:\n      - ./mongo_db/init.js:/docker-entrypoint-initdb.d/init.js\n\n  worker_service:\n    build: ./worker_service/\n    stdin_open: true\n    tty: true\n    container_name: worker-service\n    restart: on-failure\n\n  front-end:\n    build: ./front_end/\n    container_name: front-end\n    tty: true\n    ports:\n        - 80:80\n    restart: on-failure\n\n  worker:\n    build: ./worker/\n    restart: on-failure\n",
+            "benchmark/Dockerfile": "FROM brisedev/benchmark-dev:2.5.0\n\n# For changing an owner of report files\nARG host_uid\nARG host_gid\nENV host_uid=$host_uid\nENV host_gid=$host_gid\n\nRUN groupadd -g $host_gid benchmark_user\nRUN useradd -rm -s /bin/bash -g $host_gid -G sudo -u $host_uid benchmark_user\nRUN usermod -aG sudo benchmark_user\n\n# Inner project dependencies\nCOPY ./main_node/core_entities /home/benchmark_user/core_entities/\nCOPY ./main_node/tools /home/benchmark_user/tools/\nCOPY ./main_node/logger /home/benchmark_user/logger/\nCOPY ./main_node/selection /home/benchmark_user/selection/\n\n# Copying common information for benchmark\nCOPY ./benchmark/ /home/benchmark_user/\nCOPY ./main_node/Resources/ /home/benchmark_user/Resources/\n\n# Copying information for specific benchmarks, for example\n\n#COPY ./worker/scenarios/energy_consumption/search_space_96/*.csv /home/benchmark_user/scenarios/energy_consumption/search_space_96/\n#RUN rm /home/benchmark_user/scenarios/energy_consumption/search_space_96/*avg.csv\n\n# -     add your information here   -\n\n# Switching user, working dir and ownership of files\nWORKDIR /home/benchmark_user\nRUN chown --recursive benchmark_user:benchmark_user .\nUSER benchmark_user\n\nCMD [ \"bash\" ]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "README.md",
+            "intro.py"
+        ],
+        "folders": []
+    }
+}

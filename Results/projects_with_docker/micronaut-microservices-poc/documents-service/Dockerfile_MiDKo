@@ -1,0 +1,22 @@
+FROM adoptopenjdk/openjdk14:jre-14.0.2_12-alpine
+
+WORKDIR /app
+
+#Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+#Copy pom.xml
+COPY pom.xml . 
+
+# Copy the application's jar file (as built in Jenkins/other build system or directory)
+COPY target/documents-service*.jar documents-service.jar
+
+# Overwrite CMD with the correct "java -jar" command and ensure that the container will execute it
+CMD ["java", "${JAVA_OPTS}", "-jar", "documents-service.jar"]
+
+# Set necessary environment variables 
+ENV JAVA_OPTS=""
+
+# Expose port 8080 for the application
+EXPOSE 8080

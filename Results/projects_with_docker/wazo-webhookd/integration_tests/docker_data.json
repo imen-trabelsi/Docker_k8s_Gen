@@ -1,0 +1,46 @@
+{
+    "docker_info": {
+        "base_image": "wazoplatform/wazo-webhookd",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV PYTHONDONTWRITEBYTECODE='true'"
+        ],
+        "copy_instructions": [
+            "COPY . /usr/src/wazo-webhookd",
+            "WORKDIR /usr/src/wazo-webhookd",
+            "WORKDIR /usr/src/wazo-webhookd/integration_tests/plugins/sentinel"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"wazo-webhookd\",",
+                    "\"-d\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get -q update && apt-get -yq install --no-install-recommends procps",
+                ""
+            ],
+            [
+                "python3 -m pip install -e .",
+                ""
+            ],
+            [
+                "python3 -m pip install -e .",
+                ""
+            ],
+            [
+                "cat /usr/src/wazo-webhookd/integration_tests/assets/ssl/mockserver/mockserver.crt >> /opt/venv/lib/python3.9/site-packages/certifi/cacert.pem",
+                "RUN cat /usr/src/wazo-webhookd/integration_tests/assets/fake-apple-ca/certs/server.crt >> /opt/venv/lib/python3.9/site-packages/certifi/cacert.pem"
+            ]
+        ]
+    }
+}

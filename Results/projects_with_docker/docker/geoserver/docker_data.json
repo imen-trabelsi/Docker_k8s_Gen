@@ -1,0 +1,46 @@
+{
+    "docker_info": {
+        "base_image": "tomcat:8.0-jre8",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8080"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV GEOSERVER_URL \"/geoserver\"",
+            "ENV GEOSERVER_DATA_DIR /opt/geoserver/data_dir"
+        ],
+        "copy_instructions": [
+            "COPY docker-entrypoint.sh /"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"/docker-entrypoint.sh\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p $GEOSERVER_DATA_DIR",
+                ""
+            ],
+            [
+                "wget --no-verbose -O geoserver-2.11.4-war.zip -L \"https://sourceforge.net/projects/geoserver/files/GeoServer/2.11.4/geoserver-2.11.4-war.zip/download\" && \\",
+                "unzip geoserver-2.11.4-war.zip &&",
+                "mv geoserver.war /root/ &&",
+                "rm geoserver-2.11.4-war.zip"
+            ],
+            [
+                "sed \"125i<Context path=\\\"$GEOSERVER_URL\\\" docBase=\\\"/root/geoserver.war\\\"/>\" /usr/local/tomcat/conf/server.xml > /root/server.xml && \\",
+                "mv /root/server.xml /usr/local/tomcat/conf/server.xml"
+            ]
+        ]
+    }
+}

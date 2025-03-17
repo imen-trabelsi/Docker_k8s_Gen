@@ -1,0 +1,41 @@
+# Use ubuntu:20.04 as base image
+FROM ubuntu:20.04 as build
+
+# Environment variables
+ENV NO_PROXY_CACHE="-o Acquire::BrokenProxy=true -o Acquire::http::No-Cache=true -o Acquire::http::Pipeline-Depth=0"
+ENV PATH="/opt/besu-evmtool/bin:${PATH}"
+ARG VERSION="dev"
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VERSION
+
+# Labels
+LABEL org.label-schema.build-date=$BUILD_DATE
+
+# Update packages and install required dependencies
+RUN apt-get update $NO_PROXY_CACHE && \
+
+# Set working directory and copy required files
+WORKDIR /opt/besu-evmtool
+COPY . /opt/besu-evmtool/
+
+# Build Spring Boot application using Gradle
+RUN gradle build
+
+# Start from a new stage to keep the final image clean and minimal
+FROM openjdk:11-jre-slim
+
+# Setting user and group and adding necessary permissions
+RUN groupadd -r besu && useradd -r -g besu besu
+RUN mkdir /opt/app && chown -R besu:besu /opt/app
+
+# Change the user to besu
+USER besu
+
+# Copy the built jar file from the build stage
+
+# Setting the working directory
+WORKDIR /opt/app
+
+# Set the entrypoint command
+ENTRYPOINT ["java", "-jar", "besu-evmtool*.jar"]

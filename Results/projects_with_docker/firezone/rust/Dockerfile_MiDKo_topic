@@ -1,0 +1,47 @@
+# compile stage
+FROM chef as planner 
+ARG RUST_VERSION="1.84.0"
+ARG ALPINE_VERSION="3.20"
+ARG CARGO_CHEF_VERSION="0.1.67"
+ARG PACKAGE
+ARG TARGET
+WORKDIR /build
+
+# Installing dependencies
+RUN set -xe \
+&& apk add --no-cache musl-dev \
+&& rustup override set $RUST_VERSION \
+&& rustup component add rustfmt \
+
+# Prepare dependencies
+COPY ./Cargo.* ./
+RUN cargo chef prepare --recipe-path recipe.json
+
+# Build dependencies
+FROM chef as builder
+WORKDIR /build
+RUN set -xe \
+
+# Building the app
+COPY . .
+RUN cargo build -p ${PACKAGE} $([ -n "${TARGET}" ] && "--target ${TARGET}")
+
+# Runtime Stage
+FROM alpine:${ALPINE_VERSION} as runtime
+ARG PACKAGE
+ARG TARGET
+WORKDIR /bin
+COPY ./docker-init-relay.sh ./docker-init.sh 
+COPY ./docker-init.sh ./docker-init.sh 
+
+# Install required packages
+RUN set -xe \
+&& apk add --no-cache curl \
+&& apk add --no-cache iptables ip6tables \
+
+# Setting environment variables
+ENV LANG=C.UTF-8 \
+
+# Setting entrypoint and command
+ENTRYPOINT ["docker-init.sh"]
+CMD ${PACKAGE}

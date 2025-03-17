@@ -1,0 +1,29 @@
+# Set the base image
+FROM node:19.0-alpine
+
+# Set environment variables
+ENV PATH /frontend/node_modules/.bin:$PATH
+
+# Set the working directory
+WORKDIR /frontend
+
+# Copy the necessary files
+COPY package.json .
+COPY yarn.lock .
+COPY public ./public
+COPY src ./src
+
+# Install dependencies
+RUN yarn install --production
+
+# Copy the source code into the container
+COPY . .
+
+# Specify the user to run the commands
+USER node
+
+# Expose the application on port 8080
+EXPOSE 8080
+
+# Command to start the application
+CMD ["yarn", "start"]

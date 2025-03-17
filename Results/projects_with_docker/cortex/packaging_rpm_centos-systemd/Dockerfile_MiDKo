@@ -1,0 +1,47 @@
+FROM centos:8
+
+# Set env variable
+ENV container docker
+
+# Update System Image
+RUN yum -y update && yum clean all
+
+# Install necessary packages
+RUN yum -y install golang mongodb-org
+
+# Set Go Workspace
+ENV GOPATH /go
+ENV PATH $GOPATH/bin:/usr/local/go/bin:$PATH
+
+# Create directory inside the container
+RUN mkdir -p "$GOPATH/src" "$GOPATH/bin" && chmod -R 777 "$GOPATH"
+
+WORKDIR $GOPATH/src/app
+
+# Copy the source code into the Docker image
+COPY . .
+
+# Download all the dependencies
+RUN go mod download
+
+# Build the Go app
+RUN go build -o main .
+
+# Run Service
+CMD ["/usr/sbin/init"]
+
+# Systemd Preparation
+RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \
+systemd-tmpfiles-setup.service ] || rm -f $i; done); \
+rm -f /lib/systemd/system/multi-user.target.wants/*; \
+rm -f /etc/systemd/system/*.wants/*; \
+rm -f /lib/systemd/system/local-fs.target.wants/*; \
+rm -f /lib/systemd/system/sockets.target.wants/*udev*; \
+rm -f /lib/systemd/system/sockets.target.wants/*initctl*; \
+rm -f /lib/systemd/system/basic.target.wants/*; \
+
+# Set MongoDB Connection String
+ENV MONGO_DB_CONNECTION_STRING=mongodb://localhost:27017
+
+# Expose the application on port 8080
+EXPOSE 8080

@@ -1,0 +1,24 @@
+# Start with a base image containing Java 11 runtime
+FROM adoptopenjdk/openjdk11:alpine-jre
+
+# Add Maintainer Info
+LABEL maintainer="name@example.com"
+
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
+
+# The application's jar file
+ARG JAR_FILE=target/*.jar
+
+# Add the application's jar to the container
+COPY ${JAR_FILE} app.jar
+
+# Set timezone
+RUN apk add --no-cache tzdata
+ENV TZ=Asia/Shanghai
+
+# Add a volume pointing to /tmp
+VOLUME /tmp
+
+# Run the jar file 
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]

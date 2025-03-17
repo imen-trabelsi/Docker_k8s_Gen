@@ -1,0 +1,16 @@
+# Build Stage
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+WORKDIR /src
+COPY ["eShop-Learn.sln", "./"]
+COPY ["NuGet.config", "./"]
+COPY ["docker-compose.dcproj", "./"]
+COPY . .
+RUN dotnet restore "eShop-Learn.sln"
+WORKDIR "/src/src/Services/Coupon/Coupon.API"
+RUN dotnet publish --no-restore "Coupon.API.csproj" -c Release -o /app/publish
+
+# Final Stage
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+WORKDIR /app
+EXPOSE 80
+ENTRYPOINT [ "dotnet", "Coupon.API.dll" ]

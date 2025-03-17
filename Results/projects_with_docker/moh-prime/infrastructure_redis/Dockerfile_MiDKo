@@ -1,0 +1,33 @@
+# Pull the selected base image
+FROM rhel8/redis-6
+
+# Set environment variable for tini
+ENV TINI_VERSION v0.19.0
+
+# Add tini and make it executable
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+RUN chmod +x /tini
+
+# Make /app directory as a working directory
+WORKDIR /app
+
+# Copy code into the Docker image
+COPY ./ /app
+
+# Add requirements (python dependencies)
+COPY requirements.txt /app
+
+# Install needed packages and python dependencies
+RUN yum install -y gcc python3-pip python3-dev \
+
+# Expose the Redis port
+EXPOSE 6379
+
+# Set tini as the entry point of the docker image
+ENTRYPOINT ["/tini", "--", "container-entrypoint"]
+
+# this command will run when the container starts
+CMD ["run-redis"]
+
+# Run as root user
+USER root

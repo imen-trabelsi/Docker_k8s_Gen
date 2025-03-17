@@ -1,0 +1,27 @@
+# Use Maven image as base with specified JDK Image
+FROM maven:3-eclipse-temurin-11 as build
+
+# Setting up Work Directory
+WORKDIR /usr/src/hobbit-platform
+
+# Copy the POM file
+COPY parent-pom/pom.xml parent-pom/
+
+# Copy the Project POM file
+COPY ${project}/pom.xml ${project}/
+
+# Installing dependencies
+RUN mvn --file parent-pom -Dmaven.test.skip=true install
+ARG project=analysis-component
+RUN mvn --file ${project} dependency:go-offline
+
+# Copy the source code
+COPY ${project}/src ${project}/src
+
+# Build the project
+RUN mvn --file ${project} -Dmaven.test.skip=true package
+
+# Copy the jar file
+
+# Starting Java Application
+CMD ["java",, "-cp",, "analysis-component.jar",, "org.hobbit.core.run.ComponentStarter",, "org.hobbit.analysis.AnalysisComponent"]

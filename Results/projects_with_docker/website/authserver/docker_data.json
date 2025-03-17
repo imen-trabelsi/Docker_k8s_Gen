@@ -1,0 +1,40 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:11-jre-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /usr/share/website/authserver",
+            "COPY ./wait-for-it.sh /usr/share/website/wait-for-it.sh",
+            "COPY target/*-exec.jar /usr/share/website/authserver/authserver-exec.jar",
+            "COPY keystore /usr/share/website/authserver/keystore"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/usr/share/website/wait-for-it.sh\",",
+                    "\"cassandra:9042\",",
+                    "\"--timeout=0\",",
+                    "\"--\",",
+                    "\"java\",",
+                    "\"-jar\",",
+                    "\"/usr/share/website/authserver/authserver-exec.jar\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "chmod +x /usr/share/website/wait-for-it.sh",
+                ""
+            ]
+        ]
+    }
+}

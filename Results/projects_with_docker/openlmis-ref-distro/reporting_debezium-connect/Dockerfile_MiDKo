@@ -1,0 +1,24 @@
+# Set base image
+FROM debezium/connect:1.5
+
+# Set environment variables
+ENV KAFKA_CONNECT_JDBC_DIR=$KAFKA_CONNECT_PLUGINS_DIR/kafka-connect-jdbc
+ENV DEBEZIUM_DIR=/debezium
+ENV SQL_DIR=$DEBEZIUM_DIR/sql
+
+# Copy necessary files
+COPY . $DEBEZIUM_DIR
+COPY ./sql $SQL_DIR
+
+# Switch to work directory
+WORKDIR $DEBEZIUM_DIR
+
+# Install required dependencies
+RUN pip install -r requirements.txt
+
+# Download and install Jar files for Kafka Connect
+RUN cd /kafka/libs && curl -sO https://jdbc.postgresql.org/download/postgresql-42.2.8.jar
+RUN mkdir -p $KAFKA_CONNECT_JDBC_DIR && cd $KAFKA_CONNECT_JDBC_DIR && curl -sO https://packages.confluent.io/maven/io/confluent/kafka-connect-jdbc/10.1.1/kafka-connect-jdbc-10.1.1.jar
+
+# Run the application 
+CMD ["python", "entrypoint.sh"]

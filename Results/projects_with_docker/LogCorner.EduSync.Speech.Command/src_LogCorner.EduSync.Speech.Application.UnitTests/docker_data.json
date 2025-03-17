@@ -1,0 +1,29 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/sdk:5.0",
+        "multi_stage_build": true,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "WORKDIR /src",
+            "COPY [\"LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Application.UnitTests/LogCorner.EduSync.Speech.Application.UnitTests.csproj\", \"LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Application.UnitTests/\"]",
+            "COPY [\"LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Infrastructure/LogCorner.EduSync.Speech.Infrastructure.csproj\", \"LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Infrastructure/\"]",
+            "COPY [\"LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.SharedKernel/LogCorner.EduSync.Speech.Command.SharedKernel.csproj\", \"LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.SharedKernel/\"]",
+            "COPY [\"LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Domain/LogCorner.EduSync.Speech.Domain.csproj\", \"LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Domain/\"]",
+            "COPY [\"LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Application/LogCorner.EduSync.Speech.Application.csproj\", \"LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Application/\"]",
+            "WORKDIR \"/src/LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Application.UnitTests\""
+        ],
+        "execution": [],
+        "run": [
+            [
+                "dotnet restore \"LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Application.UnitTests/LogCorner.EduSync.Speech.Application.UnitTests.csproj\"",
+                "COPY . ."
+            ]
+        ]
+    }
+}

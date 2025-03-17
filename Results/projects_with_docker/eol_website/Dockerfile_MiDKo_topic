@@ -1,0 +1,53 @@
+# Use the base image provided by the user.
+FROM encoflife/eol_seabolt_rails:2024.05.09.01 AS base
+
+WORKDIR /app
+
+# Build arguments provided by the user.
+ARG rails_secret_key
+ARG rails_env
+ARG traitbank_url
+ARG neo4j_driver_url
+ARG neo4j_user
+ARG neo4j_password
+ARG eol_github_email
+ARG eol_github_user
+
+ENV RAILS_MASTER_KEY=$rails_secret_key
+ENV RAILS_ENV=$rails_env
+ENV TRAITBANK_URL=$traitbank_url
+ENV NEO4J_DRIVER_URL=$neo4j_driver_url
+ENV NEO4J_USER=$neo4j_user
+ENV NEO4J_PASSWORD=$neo4j_password
+ENV NODE_OPTIONS="--openssl-legacy-provider npm run start"
+
+LABEL maintainer="Jeremy"
+
+# Copy necessary files into the working directory.
+COPY . .
+COPY --chown=ruby:ruby bin/ ./bin
+COPY --from=assets /usr/local/bundle /usr/local/bundle
+COPY --from=assets /gems /gems
+COPY --from=assets /app/public/assets /app/public/assets
+COPY --from=assets /app/public/packs /app/public/packs
+COPY --from=assets /app/Gemfile /app/Gemfile.lock .
+COPY config/.vimrc /root/.vimrc
+
+RUN ln -s /tmp /app/tmp
+RUN npm ci --only=production
+
+# Run commands provided by the user.
+RUN gem install `grep -A 1 'BUNDLED WITH' Gemfile.lock | tail -n 1 | sed 's/^\s\+/bundler:/'`\
+&& bundle config set without 'test development staging'\
+&& bundle install --jobs 10 --retry 1\
+&& bundle config set --global path /gems\
+&& yarn install\
+&& bundle exec rails assets:precompile\
+&& chmod 0755 bin/*\
+&& bundle install --jobs 10 --retry 1\
+&& git config --global user.email $eol_github_email\
+&& git config --global user.name $eol_github_user\
+ENTRYPOINT ["/app/bin/entrypoint.sh"]
+
+# Expose port 3000 as instructed by the user.
+EXPOSE 3000

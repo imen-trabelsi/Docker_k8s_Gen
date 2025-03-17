@@ -1,0 +1,28 @@
+# Base Image
+FROM rabbitmq
+
+# Set Environment Variables
+ENV HOME /root
+
+# Update and install necessary packages
+RUN set -ex && \
+apt-get update && \
+
+# Enable the RabbitMQ management plugin 
+RUN rabbitmq-plugins enable rabbitmq_management
+
+# Copy the necessary files from the project to the Docker environment
+COPY rabbitmqadmin /
+COPY definitions.json /etc/rabbitmq/
+COPY definitions.json /
+COPY import_config.sh /
+COPY entrypoint.sh /
+
+# Expose the necessary ports for the application
+# Note: Replace the "XXXX" with the correct port number(s) based on your application requirements
+EXPOSE XXXX
+
+# Entry point to run the command
+# Note: replace "entrypoint.sh" with your start-up script OR replace "python app.py" to start your Python application
+# CMD [ "python", "./your-daemon-or-script.py" ]
+CMD ["/entrypoint.sh"]

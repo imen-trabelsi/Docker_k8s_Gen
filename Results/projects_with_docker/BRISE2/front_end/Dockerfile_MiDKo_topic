@@ -1,0 +1,25 @@
+# Use specified base image
+FROM brisedev/front-end-prod:2.5.0 as build-stage
+
+# Set work directory
+WORKDIR /app
+
+# Copy project files
+COPY ./ /app/
+
+# Run build command
+RUN npm install && npm run build -- --output-path=./dist/out --configuration $configuration
+
+# Stage 2
+FROM nginx:1.15.12-alpine
+
+# Copy necessary files from build stage
+
+# Expose port 80
+EXPOSE 80
+
+# Set up health check
+HEALTHCHECK --interval=5m --timeout=3s CMD curl -f http://localhost/
+
+# Set nginx as entrypoint
+ENTRYPOINT ["nginx", "-g", "daemon off;"]

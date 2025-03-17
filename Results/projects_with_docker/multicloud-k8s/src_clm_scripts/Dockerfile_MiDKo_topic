@@ -1,0 +1,29 @@
+# Dockerfile
+
+FROM ubuntu:18.04 as builder
+
+ENV HTTP_PROXY ${HTTP_PROXY}
+ENV HTTPS_PROXY ${HTTPS_PROXY}
+ENV no_proxy $NO_PROXY
+
+RUN groupadd -r onap && useradd -r -g onap onap
+RUN apt update && apt install -y golang-go
+
+USER onap
+WORKDIR /go/src/app
+COPY . .
+RUN go mod download
+RUN go build -o app .
+
+FROM ubuntu:18.04
+EXPOSE 9019
+RUN groupadd -r onap && useradd -r -g onap onap
+
+ENV http_proxy $HTTP_PROXY
+ENV https_proxy $HTTPS_PROXY
+ENV no_proxy $NO_PROXY
+
+USER onap
+WORKDIR /opt/multicloud/k8s/clm
+
+CMD ["./app"]

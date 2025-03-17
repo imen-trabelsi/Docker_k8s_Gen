@@ -1,0 +1,26 @@
+# Using the user specified base image
+FROM ikemtz/sql_dacpac:latest
+
+# Setting the maintainer label
+LABEL maintainer="author=@IkeMtz"
+
+# Setting the environment variable
+ENV SA_PASSWORD=SqlDockerRocks123!
+
+# Setting the user
+USER root
+
+# Adding the necessary files into the Docker container
+COPY /bin/Debug/*.dacpac /dacpac/
+COPY --from=sql-temp /var/opt/mssql/data/*.ldf /var/opt/mssql/data/
+COPY --from=sql-temp /var/opt/mssql/data/*.mdf /var/opt/mssql/data/
+
+# Running the necessary commands in the Docker container
+RUN /opt/mssql/bin/sqlservr & sleep 20 \
+&& sqlpackage /Action:Publish /TargetServerName:localhost /TargetUser:SA /TargetPassword:$SA_PASSWORD /SourceFile:/dacpac/unitDb.dacpac /TargetDatabaseName:unitDb /p:BlockOnPossibleDataLoss=false \
+&& sleep 20 \
+&& pkill sqlservr && sleep 10 \
+USER mssql
+
+# Exposing the necessary port
+EXPOSE 1433

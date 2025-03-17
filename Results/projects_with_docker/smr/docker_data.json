@@ -1,0 +1,94 @@
+{
+    "docker_info": {
+        "base_image": "node:alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "NO_DEV=1"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /smr/",
+            "COPY src src",
+            "COPY Gruntfile.js .",
+            "WORKDIR /smr/",
+            "COPY composer.json .",
+            "COPY --from=builder /smr .",
+            "COPY apache/cache-static.conf /etc/apache2/conf-enabled/cache-static.conf",
+            "COPY .git/HEAD .git/HEAD",
+            "COPY .git/refs .git/refs"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "npm i --save grunt grunt-contrib-uglify grunt-contrib-cssmin grunt-cache-bust@1.7.0",
+                ""
+            ],
+            [
+                "npx grunt",
+                ""
+            ],
+            [
+                "rm -rf node_modules",
+                ""
+            ],
+            [
+                "apt-get --quiet=2 update \\",
+                "&& apt-get --quiet=2 install zip unzip",
+                "&& rm -rf /var/lib/apt/lists/*",
+                "&& docker-php-ext-install pdo_mysql opcache > /dev/null"
+            ],
+            [
+                "MODE=$([ \"$NO_DEV\" = \"0\" ] && echo \"development\" || echo \"production\") \\",
+                "&& echo \"Using $MODE php.ini\"",
+                "&& mv \"$PHP_INI_DIR/php.ini-$MODE\" \"$PHP_INI_DIR/php.ini\""
+            ],
+            [
+                "if [ \"$NO_DEV\" = \"0\" ]; \\",
+                "then",
+                "docker-php-ext-install pcntl",
+                "&& pecl install xdebug-3.4.1 > /dev/null",
+                "&& docker-php-ext-enable xdebug",
+                "&& echo \"xdebug.output_dir = /tmp/xdebug\" > \"$PHP_INI_DIR/conf.d/xdebug.ini\"",
+                "&& mkdir /tmp/xdebug;",
+                "fi"
+            ],
+            [
+                "sed -i 's|CustomLog.*|CustomLog /dev/null common|' /etc/apache2/sites-enabled/000-default.conf",
+                ""
+            ],
+            [
+                "sed -i 's/AllowOverride All/AllowOverride None/g' /etc/apache2/conf-enabled/docker-php.conf",
+                ""
+            ],
+            [
+                "curl -sS https://getcomposer.org/installer | \\",
+                "php -- --install-dir=/usr/local/bin --filename=composer --version=2.8.4"
+            ],
+            [
+                "COMPOSER_NO_DEV=$NO_DEV composer update --no-interaction",
+                ""
+            ],
+            [
+                "rm -rf /var/www/html/ && ln -s \"$(pwd)/src/htdocs\" /var/www/html",
+                ""
+            ],
+            [
+                "chown www-data ./src/htdocs/upload",
+                ""
+            ],
+            [
+                "a2enmod headers",
+                ""
+            ],
+            [
+                "REF=\"ref: HEAD\" \\",
+                "&& while [ -n \"$(echo $REF | grep ref:)\" ]; do REF=$(cat \".git/$(echo $REF | awk '{print $2}')\"); done",
+                "&& echo $REF > git-commit"
+            ]
+        ]
+    }
+}

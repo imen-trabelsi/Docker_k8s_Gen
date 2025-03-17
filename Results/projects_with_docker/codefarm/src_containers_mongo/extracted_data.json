@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "JavaScript",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"mongo\",\n  \"version\": \"0.0.0\",\n  \"description\": \"MongoDB for Code Farm\",\n  \"scripts\": {\n    \"build\": \"../../bs/build.sh\",\n    \"extract\": \"../../bs/extract.sh\",\n    \"load\": \"../../bs/load.sh\",\n    \"unload\": \"../../bs/unload.sh\",\n    \"shell\": \"../../bs/run_cmd.sh bash\",\n    \"start\": \"mkdir -p /tmp/data && ../../bs/start.sh -p 27017:27017 --net=\\\"host\\\" -v /tmp/data:/data/db -d\",\n    \"start-dev\": \"mkdir -p /home/$USER/mongodbdata && ../../bs/start.sh -p 27017:27017 -v /home/$USER/mongodbdata:/data/db -d\",\n    \"stop\": \"../../bs/stop.sh\"\n  },\n  \"author\": \"Marcus Christensson <marcus.christensson@combitech.se>\",\n  \"license\": \"MIT\"\n}\n"
+        },
+        "database": "MongoDB",
+        "build_system": "npm",
+        "config_files": {
+            "src/containers/mongo/Dockerfile": "# Documentation: https://hub.docker.com/_/mongo/\n# TODO: Configure where database is to be stored\n# WiredTiger is the default storage engine starting in 3.2\n# Compression is enabled by default when using WiredTiger\nFROM mongo:3.2\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            "Dockerfile",
+            "package.json",
+            "yarn.lock"
+        ],
+        "folders": []
+    }
+}

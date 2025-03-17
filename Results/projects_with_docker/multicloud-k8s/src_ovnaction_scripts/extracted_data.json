@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "Go",
+        "framework": "Go",
+        "dependencies": {
+            "go.mod": "module github.com/onap/multicloud-k8s/src/ovnaction\n\nrequire (\n\tgithub.com/ghodss/yaml v1.0.0\n\tgithub.com/gorilla/handlers v1.3.0\n\tgithub.com/gorilla/mux v1.7.3\n\tgithub.com/k8snetworkplumbingwg/network-attachment-definition-client v0.0.0-20200127152046-0ee521d56061\n\tgithub.com/onap/multicloud-k8s/src/monitor v0.0.0-20200818155723-a5ffa8aadf49\n\tgithub.com/onap/multicloud-k8s/src/orchestrator v0.0.0-20200818155723-a5ffa8aadf49\n\tgithub.com/pkg/errors v0.9.1\n\tgoogle.golang.org/grpc v1.28.0\n\tgopkg.in/yaml.v2 v2.2.8\n\tk8s.io/api v0.18.2\n\tk8s.io/apimachinery v0.18.2\n\tk8s.io/client-go v12.0.0+incompatible\n\tk8s.io/kubernetes v1.16.9\n)\n\nreplace (\n\tgithub.com/onap/multicloud-k8s/src/clm => ../clm\n\tgithub.com/onap/multicloud-k8s/src/monitor => ../monitor\n\tgithub.com/onap/multicloud-k8s/src/orchestrator => ../orchestrator\n\tk8s.io/api => k8s.io/api v0.16.9\n\tk8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.16.9\n\tk8s.io/apimachinery => k8s.io/apimachinery v0.16.10-beta.0\n\tk8s.io/apiserver => k8s.io/apiserver v0.16.9\n\tk8s.io/cli-runtime => k8s.io/cli-runtime v0.16.9\n\tk8s.io/client-go => k8s.io/client-go v0.16.9\n\tk8s.io/cloud-provider => k8s.io/cloud-provider v0.16.9\n\tk8s.io/cluster-bootstrap => k8s.io/cluster-bootstrap v0.16.9\n\tk8s.io/code-generator => k8s.io/code-generator v0.16.10-beta.0\n\tk8s.io/component-base => k8s.io/component-base v0.16.9\n\tk8s.io/cri-api => k8s.io/cri-api v0.16.13-rc.0\n\tk8s.io/csi-translation-lib => k8s.io/csi-translation-lib v0.16.9\n\tk8s.io/kube-aggregator => k8s.io/kube-aggregator v0.16.9\n\tk8s.io/kube-controller-manager => k8s.io/kube-controller-manager v0.16.9\n\tk8s.io/kube-proxy => k8s.io/kube-proxy v0.16.9\n\tk8s.io/kube-scheduler => k8s.io/kube-scheduler v0.16.9\n\tk8s.io/kubectl => k8s.io/kubectl v0.16.9\n\tk8s.io/kubelet => k8s.io/kubelet v0.16.9\n\tk8s.io/kubernetes => github.com/kubernetes/kubernetes v1.16.9\n\tk8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.16.9\n\tk8s.io/metrics => k8s.io/metrics v0.16.9\n\tk8s.io/sample-apiserver => k8s.io/sample-apiserver v0.16.9\n)\n\ngo 1.13\n"
+        },
+        "database": null,
+        "build_system": "go mod",
+        "config_files": {
+            "src/ovnaction/config.json": "{\n    \"database-ip\": \"172.18.0.2\",\n    \"database-type\": \"mongo\",\n    \"plugin-dir\": \"plugins\",\n    \"service-port\": \"9018\",\n    \"grpc-server-cert\": \"/home/ewmulta/onap/frankfort/orchestrator/ca/ncm.crt\",\n    \"grpc-server-key\": \"/home/ewmulta/onap/frankfort/orchestrator/ca/ncm.key\",\n    \"grpc-enable-tls\": \"disable\",\n    \"grpc-server-name-override\": \"\"\n}\n",
+            "src/ovnaction/scripts/Dockerfile": "# SPDX-license-identifier: Apache-2.0\n##############################################################################\n# Copyright (c) 2020\n# All rights reserved. This program and the accompanying materials\n# are made available under the terms of the Apache License, Version 2.0\n# which accompanies this distribution, and is available at\n# http://www.apache.org/licenses/LICENSE-2.0\n##############################################################################\n\nFROM ubuntu:18.04\n\nARG HTTP_PROXY=${HTTP_PROXY}\nARG HTTPS_PROXY=${HTTPS_PROXY}\n\nENV http_proxy $HTTP_PROXY\nENV https_proxy $HTTPS_PROXY\nENV no_proxy $NO_PROXY\n\nEXPOSE 9016\n\nRUN groupadd -r onap && useradd -r -g onap onap\n\nWORKDIR /opt/multicloud/k8s/ovnaction\nRUN chown onap:onap /opt/multicloud/k8s/ovnaction -R\n\nADD --chown=onap ./ovnaction ./\n\nUSER onap\n\nCMD [\"./ovnaction\"]\n"
+        },
+        "static_files": {
+            "build/Readme.md": "##########################################\n# Steps for building v2 API Docker Image\n##########################################\n\n    `$cd k8s`\n\n    `$docker build -f build/Dockerfile . -t emco`\n"
+        }
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile"
+        ],
+        "folders": []
+    }
+}

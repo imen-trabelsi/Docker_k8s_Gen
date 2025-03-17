@@ -1,0 +1,48 @@
+{
+    "docker_info": {
+        "base_image": "jenkins/jenkins:lts-jdk11",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root",
+            "jenkins"
+        ],
+        "labels": [
+            "maintainer=\"contact@graviteesource.com\""
+        ],
+        "health_checks": [],
+        "build_args": [
+            "DOCKER_COMPOSE=1.29.2"
+        ],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "apt-get update && apt-get install -y \\",
+                "apt-utils",
+                "ruby",
+                "make",
+                "bzip2",
+                "apt-transport-https",
+                "ca-certificates"
+            ],
+            [
+                "apt-key adv --keyserver hkp://p80.pool.sks-keyservers.net:80 --recv-keys 58118E89F3A912897C070ADBF76221572C52609D",
+                "COPY docker.list /etc/apt/sources.list.d/docker.list"
+            ],
+            [
+                "apt-get update && apt-get install -y docker-engine",
+                ""
+            ],
+            [
+                "usermod -aG docker jenkins",
+                ""
+            ],
+            [
+                "curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE}/docker-compose-`uname -s`-`uname -m` > /usr/local/bin/docker-compose \\",
+                "&& chmod +x /usr/local/bin/docker-compose"
+            ]
+        ]
+    }
+}

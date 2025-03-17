@@ -1,0 +1,26 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:17-jdk-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY target/jobs-managing-service-0.1.jar jobs-managing-service-0.1.jar"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"java\",",
+                    "\"-jar\",",
+                    "\"/jobs-managing-service-0.1.jar\"]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

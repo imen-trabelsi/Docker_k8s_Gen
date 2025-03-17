@@ -1,0 +1,19 @@
+{
+    "docker_info": {
+        "base_image": "nginx:1.25.1-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [
+            "authors=\"nick\""
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY nginx.conf /etc/nginx/nginx.conf"
+        ],
+        "execution": [],
+        "run": []
+    }
+}

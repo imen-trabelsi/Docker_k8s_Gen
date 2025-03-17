@@ -1,0 +1,31 @@
+# set base image (host OS)
+FROM openjdk:8-jdk-alpine
+
+# set the working directory in the Docker image
+WORKDIR /app
+
+# copy the dependencies file to the working directory
+COPY pom.xml .
+
+# cache dependencies
+RUN mvn dependency:go-offline -B
+
+# copy the content of the local src directory to the working directory
+COPY src /app/src/
+
+# build the application
+RUN mvn package -DskipTests
+
+# specify the port number the container should expose
+EXPOSE 8083
+
+# set environment variables
+ENV REDIS_HOST=redis-service
+ENV REDIS_PORT=6379
+ENV REDIS_PASSWORD=
+
+# copy jar file to /app.jar
+COPY target/*.jar /app.jar
+
+# run the application
+ENTRYPOINT ["java","-jar","/app.jar","--spring.profiles.active=prod"]

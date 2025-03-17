@@ -1,0 +1,60 @@
+{
+    "docker_info": {
+        "base_image": "python:3.9-slim-bullseye",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "9300"
+        ],
+        "user": [],
+        "labels": [
+            "maintainer=\"Wazo"
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV PATH=\"/opt/venv/bin:$PATH\"",
+            "ENV PATH=\"/opt/venv/bin:$PATH\""
+        ],
+        "copy_instructions": [
+            "COPY requirements.txt /usr/src/wazo-webhookd/",
+            "WORKDIR /usr/src/wazo-webhookd",
+            "COPY setup.py /usr/src/wazo-webhookd/",
+            "COPY wazo_webhookd /usr/src/wazo-webhookd/wazo_webhookd",
+            "COPY --from=compile-image /opt/venv /opt/venv",
+            "COPY ./etc/wazo-webhookd /etc/wazo-webhookd"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"wazo-webhookd\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "python -m venv /opt/venv",
+                "# Activate virtual env"
+            ],
+            [
+                "apt-get -q update",
+                "RUN apt-get -yq install gcc"
+            ],
+            [
+                "pip install -r requirements.txt",
+                ""
+            ],
+            [
+                "python setup.py install",
+                ""
+            ],
+            [
+                "true \\",
+                "&& adduser --quiet --system --group wazo-webhookd",
+                "&& mkdir -p /etc/wazo-webhookd/conf.d",
+                "&& install -o wazo-webhookd -g wazo-webhookd -d /run/wazo-webhookd",
+                "&& install -o wazo-webhookd -g wazo-webhookd /dev/null /var/log/wazo-webhookd.log"
+            ]
+        ]
+    }
+}

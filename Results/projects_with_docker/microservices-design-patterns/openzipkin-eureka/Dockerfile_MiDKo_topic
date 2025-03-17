@@ -1,0 +1,22 @@
+FROM maven:3.6.0-jdk-8-alpine AS BUILD
+
+WORKDIR /usr/src/zipkin
+COPY pom.xml ./
+RUN mvn dependency:go-offline
+COPY . .
+RUN mvn clean install
+
+RUN curl -sSL https://zipkin.io/quickstart.sh -o zipkin.sh && \
+    sed -i 's/--check//g' zipkin.sh && \
+    bash zipkin.sh && \
+    jar xf zipkin.jar BOOT-INF/classes/zipkin-server-shared.yml && \
+    echo 'spring.application.name: zipkin-server' >> BOOT-INF/classes/zipkin-server-shared.yml && \
+    echo 'eureka.client.enabled: true' >> BOOT-INF/classes/zipkin-server-shared.yml && \
+    echo 'eureka.client.serviceUrl.defaultZone: ${EUREKA_SERVER:http://127.0.0.1:8761/eureka/}' >> BOOT-INF/classes/zipkin-server-shared.yml && \
+
+RUN mv target/eureka-1.0-SNAPSHOT-module.jar eureka.jar
+
+FROM openjdk:8-jdk-alpine
+WORKDIR /app
+EXPOSE 8761
+ENTRYPOINT ["java", "-jar", "eureka.jar"]

@@ -1,0 +1,30 @@
+# Start with the base image
+FROM openjdk:21-slim
+
+# Set the working directory in the image
+WORKDIR /usr/local/room
+
+# Copy the current directory contents into the container at /usr/local/room
+COPY . /usr/local/room
+
+# Copy the pom.xml file where app is being housed
+COPY pom.xml . 
+
+# Copy the built jar file into the container
+COPY target ./
+
+# Set necessary environment variables
+ENV profile=dev
+ENV authDomain=rbp-auth
+
+# Run the jar file inside the docker container
+ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=$profile", "target/restful-booker-platform-room-*.jar"]
+
+# Set the user to use when running this image
+USER 1001
+
+# Provide metadata to the container image
+LABEL maintainer="docker_user"
+
+# Expose network information to the outside world 
+EXPOSE 8080

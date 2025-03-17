@@ -1,0 +1,30 @@
+FROM openjdk:11
+
+# Install maven
+RUN apt-get update
+RUN apt-get install -y maven
+
+# Create app directory 
+WORKDIR /usr/src/app
+
+# Copy pom.xml and download dependencies
+COPY ./pom.xml .
+RUN mvn dependency:go-offline -B
+
+# Copy the rest of the application
+COPY . .
+
+# Build the app with maven
+RUN mvn package -DskipTests 
+
+# Set the app file destination inside the Docker container
+COPY ./target/eureka-server-0.0.1-SNAPSHOT.jar /usr/src/eureka-server-0.0.1-SNAPSHOT.jar
+
+# Define the work directory
+WORKDIR usr/src
+
+# Expose port 8080
+EXPOSE 8080 
+
+# Set the startup command to execute the jar
+ENTRYPOINT ["java","-jar", "eureka-server-0.0.1-SNAPSHOT.jar"]

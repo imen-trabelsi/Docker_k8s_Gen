@@ -1,0 +1,57 @@
+{
+    "docker_info": {
+        "base_image": "codefarm/nodebase:0.0.0",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "22"
+        ],
+        "user": [
+            "root"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR $farmerHome",
+            "COPY [ \"id_rsa\", \"id_rsa.pub\", \"$farmerHome/execKeys/\" ]"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"/usr/sbin/sshd\",",
+                    "\"-D\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && apt-get install -y openssh-server",
+                "RUN mkdir /var/run/sshd"
+            ],
+            [
+                "mkdir -p $farmerHome/.ssh && mkdir -p $farmerHome/execKeys",
+                ""
+            ],
+            [
+                "cat $farmerHome/execKeys/id_rsa.pub >> $farmerHome/.ssh/authorized_keys",
+                ""
+            ],
+            [
+                "chown -R $user $farmerHome/execKeys && chgrp -R $user $farmerHome/execKeys",
+                ""
+            ],
+            [
+                "ssh-keygen -N \"\" -f $farmerHome/.ssh/id_rsa && cat $farmerHome/.ssh/id_rsa.pub >> $farmerHome/.ssh/authorized_keys",
+                ""
+            ],
+            [
+                "chmod 644 $farmerHome/.ssh/authorized_keys && chown -R $user $farmerHome/.ssh && chgrp -R $user $farmerHome/.ssh",
+                ""
+            ]
+        ]
+    }
+}

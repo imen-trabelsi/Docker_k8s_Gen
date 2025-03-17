@@ -1,0 +1,25 @@
+# Build the application
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+WORKDIR /app
+
+# Copy everything else and build
+COPY . ./
+
+WORKDIR "/src/src/Services/Identity/Identity.API"
+
+RUN dotnet restore "eShop-Learn.sln"
+RUN dotnet publish "Identity.API.csproj" -c Release -o /app/publish
+
+WORKDIR /app
+
+# Build the Runtime image
+FROM mcr.microsoft.com/dotnet/runtime:6.0 AS runtime
+
+WORKDIR /app
+
+
+# Exposed ports
+EXPOSE 80
+
+# Entrypoint command
+ENTRYPOINT ["dotnet", "Identity.API.dll"]

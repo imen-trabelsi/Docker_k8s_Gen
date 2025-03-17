@@ -1,0 +1,36 @@
+# Use the base image provided by the user
+FROM openjdk:11-jre-slim as builder
+
+# Switch to the directory containing the application
+WORKDIR /usr/src/app
+
+# Copy the required files for building the source code
+COPY .mvn/ .mvn
+COPY mvnw pom.xml ./
+
+# Download the dependencies in a separate layer so that they are cached for the following builds
+RUN ./mvnw dependency:go-offline -B
+
+# Copy the entire source code
+COPY src/ src/
+
+# Build the application
+RUN ./mvnw package
+
+# Start a new build stage
+FROM openjdk:11-jre-slim
+
+# Switch to the directory where the application will reside
+WORKDIR /usr/share/website/gateway
+
+# Copy the built JAR file to the application directory
+COPY keystore /usr/share/website/gateway/keystore
+
+# Expose the required ports
+EXPOSE 443
+
+# Set the environmental variables
+ENV JAVA_OPTS=""
+
+# Set the entry point for the application
+ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /usr/share/website/gateway/gateway-exec.jar" ]

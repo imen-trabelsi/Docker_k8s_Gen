@@ -1,0 +1,23 @@
+# Start with the base image
+FROM adoptopenjdk/openjdk11:alpine
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Copy pom.xml and install all java dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+# Copy other application files and build the application
+COPY src ./src
+RUN mvn clean package
+
+# Copy the jar
+COPY target/sender.jar .
+
+# It's important to switch to a non-root user to run the application for better security
+RUN addgroup -S spring && adduser -S spring -G spring
+USER spring:spring
+
+# Run the application
+CMD ["java", "-jar", "sender.jar"]

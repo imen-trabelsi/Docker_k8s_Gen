@@ -1,0 +1,34 @@
+# Set base image
+FROM owncloudops/nginx@sha256:8ca0c90c2f537fef6195ba8f5ebe6d6c00fe0a0c545f25ce8acd418a831a19a4
+
+# Define maintainer
+LABEL maintainer="ownCloud"
+
+# Set working directory
+WORKDIR /var/lib/nginx/html
+
+# Ensure latest packages
+RUN apt-get update && apt-get upgrade -y
+
+# Copy project files and install dependencies
+COPY package*.json ./
+RUN npm install 
+
+# Copy other project files
+COPY . .
+
+# Add overlay directory and static files
+COPY docker/overlay /
+COPY dist/ /var/lib/nginx/html
+
+# Cleanup static files
+RUN rm -f /var/lib/nginx/html/*
+
+# Expose the application on port 8080
+EXPOSE 8080
+
+# Set user to nginx
+USER nginx
+
+# Set the command on container startup
+CMD ["nginx", "-g", "daemon off;"]

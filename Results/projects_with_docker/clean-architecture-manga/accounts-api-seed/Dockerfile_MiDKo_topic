@@ -1,0 +1,37 @@
+# Setting Base Image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+
+# Setting Working Directory
+WORKDIR /app
+
+# Copy project file
+COPY package.json ./
+
+# Installing npm dependencies
+RUN npm install
+
+# Copying the rest of the source code
+COPY . .
+
+# Building the app
+RUN npm run build
+
+# Setting Base Image for release
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+
+# Setting Working Directory for release
+WORKDIR /app
+
+# Copying artifacts from build stage
+
+# Environment Variables
+ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false
+
+# Run commands
+RUN dotnet tool update --global dotnet-ef
+WORKDIR /src
+RUN dotnet restore "src/WebApi/WebApi.csproj"
+RUN dotnet build "src/WebApi/WebApi.csproj" --no-restore
+
+# Starting the app
+CMD [ "npm", "start" ]

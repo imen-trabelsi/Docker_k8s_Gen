@@ -1,0 +1,28 @@
+# Use a Grafana image as a parent image
+FROM grafana/grafana:11.5.2
+
+# If any additional python3 programs are needed, we can add them here.
+RUN apk add --no-cache python3 py3-yaml
+
+# Add necessary scripts and configuration for Grafana
+COPY /scripts/extract_dashboard_configmap.py /usr/local/bin
+COPY /monitoring/grafana/datasources.yml /etc/grafana/provisioning/datasources
+COPY /monitoring/grafana/dashboards.yml /etc/grafana/provisioning/dashboards
+COPY /monitoring/grafana/dashboards/grafana-dashboard-clouddot-insights-vmaas.configmap.yml /etc/grafana
+
+# Convert configmap to json
+RUN extract_dashboard_configmap.py /etc/grafana/grafana-dashboard-clouddot-insights-vmaas.configmap.yml > /etc/grafana/provisioning/dashboards/grafana-dashboard-clouddot-insights-vmaas.json
+
+# Change to grafana user for security purposes
+USER grafana
+
+# Set the env vars for auth and login form.
+ENV GF_AUTH_ANONYMOUS_ENABLED=true
+ENV GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+ENV GF_AUTH_DISABLE_LOGIN_FORM=true
+
+# Expose port 3000 for the application.
+EXPOSE 3000
+
+# Run grafana-server binary by default when the container starts.
+ENTRYPOINT ["/run.sh"]

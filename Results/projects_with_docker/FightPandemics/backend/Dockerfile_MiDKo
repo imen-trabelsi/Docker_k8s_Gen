@@ -1,0 +1,33 @@
+# Use node base image
+FROM node:14
+
+# Create app directory and set it as workdir
+WORKDIR /app
+
+# Set environment variables
+ENV NODE_ENV=production
+ENV GIT_COMMIT=unknown
+
+# Install app dependencies
+# Copies package.json and package-lock.json to Docker environment
+COPY package*.json ./
+
+RUN npm ci --production
+
+# Bundle app source
+COPY . .
+
+# Create version.json with GIT_COMMIT as version
+RUN echo "{\"version\": \"$GIT_COMMIT\"}" > version.json
+
+# Set node user as owner for /app
+RUN chown -R node:node /app
+
+# Run as non-root (node) user
+USER node
+
+# Expose port 8080
+EXPOSE 8080
+
+# Start node app
+CMD [ "npm", "start" ]

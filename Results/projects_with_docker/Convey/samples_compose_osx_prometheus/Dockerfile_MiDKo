@@ -1,0 +1,19 @@
+FROM prom/prometheus
+
+# Copy instructions
+WORKDIR /app
+COPY ./prometheus.yml /etc/prometheus/prometheus.yml
+
+# Exposing ports
+# EXPOSE <desired_port>
+
+# Configure health checks (if any)
+
+# Add users (if any)
+
+# Environment configuration
+# ENV <variable_name>=<value>
+
+# Execution Command
+# ENTRYPOINT [ "<your_command>" ]
+

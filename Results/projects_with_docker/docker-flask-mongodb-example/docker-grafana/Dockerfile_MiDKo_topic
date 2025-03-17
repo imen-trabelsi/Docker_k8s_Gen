@@ -1,0 +1,23 @@
+#Starting from the base image provided by the user
+FROM grafana/grafana:8.1.5-ubuntu
+
+# Running as a root user
+USER root
+
+# Running some necessary system updates
+RUN apt-get update && apt-get install -y curl gettext-base && rm -rf /var/lib/apt/lists/*
+
+# Setting work directory and copying the necessary files
+WORKDIR /etc/grafana
+COPY datasources ./datasources
+WORKDIR /app
+COPY entrypoint.sh ./
+
+# Changing the permissions of the entrypoint file
+RUN chmod u+x entrypoint.sh
+
+# The user did not specify any exposed ports, environment variables, or labels
+# Hence, these instructions are not included
+
+# Setting the entry point for the docker image
+ENTRYPOINT ["/app/entrypoint.sh"]

@@ -1,0 +1,51 @@
+{
+    "docker_info": {
+        "base_image": "debian:stretch-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "nobody"
+        ],
+        "labels": [
+            "MAINTAINER=\"Mesosphere"
+        ],
+        "health_checks": [],
+        "build_args": [
+            "MESOS_PKG_VERSION"
+        ],
+        "envs": [
+            "ENV JAVA_HOME /docker-java-home"
+        ],
+        "copy_instructions": [
+            "WORKDIR /marathon",
+            "ADD --chown=nobody:nogroup share/marathon /marathon"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/marathon/bin/marathon\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && apt-get install -my wget gnupg && \\",
+                "apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv DF7D54CBE56151BF &&",
+                "apt-get update -y &&",
+                "apt-get upgrade -y &&",
+                "echo \"deb http://repos.mesosphere.com/debian stretch-testing main\" | tee -a /etc/apt/sources.list.d/mesosphere.list &&",
+                "echo \"deb http://repos.mesosphere.com/debian stretch-unstable main\" | tee -a /etc/apt/sources.list.d/mesosphere.list &&",
+                "echo \"deb http://repos.mesosphere.com/debian stretch main\" | tee -a /etc/apt/sources.list.d/mesosphere.list &&",
+                "apt-get update &&",
+                "# jdk setup"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,38 @@
+# Below is a multi-stage Dockerfile for a Spring Boot microservice.
+
+FROM node:lts as node_frontend
+
+# Create a directory for the application in the container
+WORKDIR /app
+
+# Install dependencies
+COPY ./package.json .
+RUN yarn install
+
+# Copy app and build
+COPY ./frontend/ .
+RUN yarn build
+
+FROM openjdk:8-jdk-alpine as java_backend
+
+WORKDIR /app
+
+# Copy JAR file
+COPY ./backend/ .
+
+# Run the application
+CMD ["java", "-jar", "app.jar"]
+
+# Set the user to be a non-root user
+USER 1000
+
+# Set the environment variable
+ENV APP_MODULE="app:app"
+
+FROM nginx:1.19.0-alpine as production
+
+# Expose the appropriate port
+EXPOSE 8080
+
+# Run the container
+CMD ["nginx", "-g", "daemon off;"]

@@ -1,0 +1,43 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Express.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"swagger-ui\",\n  \"author\": \"Tony Tam <fehguy@gmail.com>\",\n  \"contributors\": [\n    {\n      \"name\": \"Mohsen Azimi\",\n      \"email\": \"me@azimi.me\"\n    }\n  ],\n  \"description\": \"Swagger UI is a dependency-free collection of HTML, JavaScript, and CSS assets that dynamically generate beautiful documentation from a Swagger-compliant API\",\n  \"version\": \"2.1.4\",\n  \"homepage\": \"http://swagger.io\",\n  \"license\": \"Apache-2.0\",\n  \"main\": \"dist/swagger-ui.js\",\n  \"scripts\": {\n    \"build\": \"gulp\",\n    \"serve\": \"gulp serve\",\n    \"prejshint\": \"gulp\",\n    \"jshint\": \"jshint .\",\n    \"pretest\": \"npm run jshint\",\n    \"test\": \"mocha\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"https://github.com/swagger-api/swagger-ui.git\"\n  },\n  \"readmeFilename\": \"README.md\",\n  \"devDependencies\": {\n    \"chai\": \"^2.1.0\",\n    \"cors\": \"^2.5.3\",\n    \"docco\": \"^0.7.0\",\n    \"event-stream\": \"^3.2.2\",\n    \"express\": \"^4.12.0\",\n    \"gulp\": \"^3.8.11\",\n    \"gulp-clean\": \"^0.3.1\",\n    \"gulp-concat\": \"^2.5.2\",\n    \"gulp-connect\": \"^2.2.0\",\n    \"gulp-declare\": \"^0.3.0\",\n    \"gulp-handlebars\": \"^3.0.1\",\n    \"gulp-header\": \"^1.2.2\",\n    \"gulp-jshint\": \"^1.10.0\",\n    \"gulp-less\": \"^3.0.1\",\n    \"gulp-order\": \"^1.1.1\",\n    \"gulp-rename\": \"^1.2.0\",\n    \"gulp-uglify\": \"^1.1.0\",\n    \"gulp-watch\": \"^4.1.1\",\n    \"gulp-wrap\": \"^0.11.0\",\n    \"http-server\": \"^0.8.0\",\n    \"jshint-stylish\": \"^1.0.1\",\n    \"less\": \"^2.4.0\",\n    \"mocha\": \"^2.1.0\",\n    \"selenium-webdriver\": \"^2.45.0\",\n    \"swagger-client\": \"2.1.10\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "docker-compose.yml": "version: '2'\n\nservices:\n\n#  graylog-mongo:\n#    image: \"mongo:3.0\"\n#    volumes:\n#      - ./graylog/data/mongo:/data/db\n\n#  graylog-elasticsearch:\n#    image: \"elasticsearch:2\"\n#    command: \"elasticsearch -Des.cluster.name='graylog'\"\n#    environment:\n#      ES_HEAP_SIZE: 1g\n#    volumes:\n#      - ./graylog/data/elasticsearch:/usr/share/elasticsearch/data\n\n#  graylog:\n#    image: graylog2/server:2.0.1-1\n#    volumes:\n#      - ./graylog/data/journal:/usr/share/graylog/data/journal\n#      - ./graylog/config:/usr/share/graylog/data/config\n#    environment:\n#      GRAYLOG_REST_TRANSPORT_URI: http://127.0.0.1:12900\n#    links:\n#      - graylog-mongo:mongo\n#      - graylog-elasticsearch:elasticsearch\n#    ports:\n#      - \"9000:9000\"\n#      - \"12900:12900\"\n#      - \"12201:12201\"\n#      - \"12201/udp:12201/udp\"\n\n  redis:\n    image: redis:3.0\n    restart: always\n    networks:\n      common_network:\n        aliases:\n          - redis\n\n  mongodb:\n    image: mongo:3.2.11\n    command: mongod --auth\n    ports:\n      - \"27017:27017\"\n    volumes:\n      - ./mongo_data_dir:/data/db\n    restart: always\n    networks:\n      common_network:\n        aliases:\n          - mongodb\n\n  solr:\n    image: solr:6.6.0\n    ports:\n      - \"8983:8983\"\n    volumes:\n      - ./solr-cores:/opt/solr/server/solr\n    command: bin/solr -m 8g -f\n    environment:\n      LOG4J_PROPS: /opt/solr/server/solr/log4j.properties\n    restart: always\n    networks:\n      common_network:\n        aliases:\n         - solr\n  web:\n    build:\n      context: web-service\n    image: web\n    volumes:\n      - ./web-service/site:/var/www/site\n    ports:\n      - \"80:80\"\n    restart: always\n    environment:\n      MONGO_USER: admin\n      MONGO_PASSWORD: place_your_password_here\n    networks:\n      common_network:\n        aliases:\n          - web\n    depends_on:\n      - redis\n      - mongodb\n      - solr\n\n  streammanager:\n    build:\n      context: stream-manager-service\n    image: streammanager:lightweight\n    volumes:\n      - ./stream-manager-service/conf:/stream_manager/conf\n    restart: always\n    environment:\n      MONGO_USER: admin\n      MONGO_PASSWORD: place_your_password_here\n    networks:\n      common_network:\n        aliases:\n          - streammanager\n    depends_on:\n      - redis\n      - mongodb\n      - solr\n#    logging:\n#      driver: gelf\n#      options:\n#        gelf-address: \"udp://localhost:12201\"\n\nnetworks:\n  common_network:\n",
+            "stream-manager-service/Dockerfile": "FROM mcr.microsoft.com/java/jdk:11u6-zulu-debian8\nMAINTAINER Manos Schinas manosetro@iti.gr\n\nRUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y git maven\n\nRUN mkdir /stream_manager\nRUN git clone --single-branch --branch no-deps-sm https://github.com/MKLab-ITI/mklab-stream-manager.git && \\\n    cd mklab-stream-manager\t&& \\\n\t  mvn clean package && \\\n    cd /\n\nRUN cp mklab-stream-manager/target/mklab-stream-manager-0.3-lightweight-with-dependencies.jar /stream_manager/mklab-stream-manager.jar\n\nRUN cp -r mklab-stream-manager/src/main/resources/profiles.sm /stream_manager && \\\n    cp mklab-stream-manager/english.all.3class.distsim.crf.ser.gz /stream_manager\n\nADD conf /stream_manager/conf\nWORKDIR /stream_manager\n\nENTRYPOINT java -DMONGO_USER=$MONGO_USER -DMONGO_PASSWORD=$MONGO_PASSWORD -jar mklab-stream-manager.jar\nCMD [\"conf/streams.conf.xml\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "README.markdown",
+            "composer.json",
+            "composer.lock",
+            "delete.php",
+            "edit.php",
+            "export.php",
+            "flush.php",
+            "import.php",
+            "index.php",
+            "info.php",
+            "logout.php",
+            "overview.php",
+            "rename.php",
+            "save.php",
+            "ttl.php",
+            "view.php"
+        ],
+        "folders": [
+            "css",
+            "images",
+            "includes",
+            "js"
+        ]
+    }
+}

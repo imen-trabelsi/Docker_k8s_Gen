@@ -1,0 +1,28 @@
+# Stage 1: Build
+FROM mcr.microsoft.com/dotnet/sdk:5.0 as build
+
+COPY . /src
+
+# Setting up work directory
+WORKDIR /src/LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Infrastructure.UnitTests
+
+# Copy necessary directories
+COPY ["LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Infrastructure.UnitTests/LogCorner.EduSync.Speech.Infrastructure.UnitTests.csproj", "LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Infrastructure.UnitTests/"]
+COPY ["LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Infrastructure/LogCorner.EduSync.Speech.Infrastructure.csproj", "LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Infrastructure/"]
+COPY ["LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.SharedKernel/LogCorner.EduSync.Speech.Command.SharedKernel.csproj", "LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.SharedKernel/"]
+COPY ["LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Domain/LogCorner.EduSync.Speech.Domain.csproj", "LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Domain/"]
+
+# Restore package
+RUN dotnet restore "LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Infrastructure.UnitTests/LogCorner.EduSync.Speech.Infrastructure.UnitTests.csproj"
+
+# Build for release
+RUN dotnet publish -c Release -o /app --no-restore
+
+# Stage 2: Run
+FROM mcr.microsoft.com/dotnet/sdk:5.0
+
+WORKDIR /app
+
+
+# Default command to run
+ENTRYPOINT ["dotnet", "LogCorner.EduSync.Speech.Infrastructure.UnitTests.dll"]

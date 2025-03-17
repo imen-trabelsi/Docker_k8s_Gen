@@ -1,0 +1,23 @@
+# Dockerfile
+
+FROM harbor.nymte.ch/dockerhub/rust:latest
+
+WORKDIR /usr/src/nym/nym-credential-proxy/nym-credential-proxy
+
+COPY Cargo.toml .
+
+RUN cargo build --release
+
+USER root
+
+RUN apt update && apt install -yy curl ca-certificates
+
+COPY --from=builder /usr/src/nym/target/release/nym-credential-proxy ./
+
+COPY ./ /usr/src/nym
+
+EXPOSE 
+
+ENTRYPOINT ["/nym/nym-credential-proxy"]
+
+CMD []

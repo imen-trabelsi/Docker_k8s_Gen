@@ -1,0 +1,58 @@
+{
+    "docker_info": {
+        "base_image": "hotmaps/base_cm:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [
+            "maintainers=\"lesly"
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV CELERY_BROKER_URL amqp://admin:mypass@rabbit:5672/",
+            "ENV CELERY_RESULT_BACKEND redis://redis:6379/0",
+            "ENV C_FORCE_ROOT true"
+        ],
+        "copy_instructions": [
+            "COPY requirements/api/requirements.txt requirements/api",
+            "COPY . /api"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/usr/bin/supervisord\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p /data",
+                "VOLUME /data"
+            ],
+            [
+                "mkdir -p /var/hotmaps/users",
+                ""
+            ],
+            [
+                "mkdir -p /api/requirements/api",
+                "WORKDIR /api"
+            ],
+            [
+                "pip3 install gunicorn",
+                ""
+            ],
+            [
+                "pip3 install -r requirements/api/requirements.txt",
+                ""
+            ],
+            [
+                "mkdir -p /var/log/supervisor",
+                "COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,40 @@
+# The base image
+FROM eclipse-temurin:11 as builder
+
+# Set the working directory
+WORKDIR /usr/src/app
+
+# Copy the project file (pom.xml) and build the dependencies
+COPY ./monolithic/*.pom ./
+RUN mvn dependency:go-offline
+
+# Copy the source code and build the application
+COPY ./monolithic/ ./
+RUN mvn package
+
+# The final image
+FROM eclipse-temurin:11
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the jar file from the builder image
+
+# Add necessary binaries
+COPY *.jar /app.jar
+
+# Make the jar file executable
+RUN chmod +x /app.jar
+
+# Create a non-root user and use it to run the jar file
+RUN adduser -D nonroot
+USER nonroot
+
+# Add a health check instruction
+HEALTHCHECK --interval=5m --timeout=3s CMD java -version
+
+# Expose the required port
+EXPOSE 8080
+
+# Run the jar file
+CMD ["java","-Dspring.profiles.active=docker","-jar","app.jar"]

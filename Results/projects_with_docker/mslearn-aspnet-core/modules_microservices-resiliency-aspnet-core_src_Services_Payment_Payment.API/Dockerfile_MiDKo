@@ -1,0 +1,33 @@
+# Base Image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+
+# Set workdir
+WORKDIR /app
+
+# Copy csproj and restore
+COPY *.csproj ./
+RUN dotnet restore
+
+# Copy all files and build
+COPY . ./
+RUN dotnet publish -c Release -o out
+
+# Switch to runtime image
+FROM mcr.microsoft.com/dotnet/sdk:6.0
+
+WORKDIR /app
+# Installing yarn
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+RUN apt-get update && apt-get install yarn
+
+# Copy build output from build image
+
+# Application port
+EXPOSE 80
+
+# Set environment variables as needed
+ENV ASPNETCORE_URLS http://*:80
+
+# Define default command to start the app
+ENTRYPOINT ["dotnet", "Payment.API.dll"]

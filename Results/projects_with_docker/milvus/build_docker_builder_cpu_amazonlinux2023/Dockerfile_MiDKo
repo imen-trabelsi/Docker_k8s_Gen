@@ -1,0 +1,41 @@
+# Start by defining the base image
+FROM amazonlinux:2023 
+
+# Set the environment variables
+ENV GOPATH /go
+ENV GOROOT /usr/local/go
+ENV GO111MODULE on
+ENV PATH $GOPATH/bin:$GOROOT/bin:$PATH
+ENV VCPKG_FORCE_SYSTEM_BINARIES 1
+ENV PATH=/root/.cargo/bin:$PATH
+
+# Run necessary commands to install packages and set up environment
+RUN dnf install -y wget g++ gcc gdb libatomic libstdc++-static ninja-build git make zip unzip tar which \
+    autoconf automake python3 python3-pip perl-FindBin texinfo pkg-config libuuid-devel libaio perl-IPC-Cmd libasan openblas-devel && \
+    rm -rf /var/cache/yum/* && \
+    mkdir -p /usr/local/go && wget -qO- "https://go.dev/dl/go1.21.11.linux-$TARGETARCH.tar.gz" | tar --strip-components=1 -xz -C /usr/local/go && \
+    mkdir -p "$GOPATH/src" "$GOPATH/bin" && \
+    go clean --modcache && \
+    chmod -R 777 "$GOPATH" && chmod -R a+w $(go env GOTOOLDIR) && \
+    pip3 install conan==1.64.1 && \
+    echo "target arch $TARGETARCH" && \
+    wget -qO- "https://cmake.org/files/v3.27/cmake-3.27.5-linux-`uname -m`.tar.gz" | tar --strip-components=1 -xz -C /usr/local && \
+    mkdir /opt/vcpkg &&  wget -qO- vcpkg.tar.gz https://github.com/microsoft/vcpkg/archive/refs/tags/2023.11.20.tar.gz | tar --strip-components=1 -xz -C /opt/vcpkg && \
+    rm -rf vcpkg.tar.gz && \
+    /opt/vcpkg/bootstrap-vcpkg.sh -disableMetrics && ln -s /opt/vcpkg/vcpkg /usr/local/bin/vcpkg && vcpkg version && \
+    vcpkg install azure-identity-cpp azure-storage-blobs-cpp gtest --only-downloads && \
+    mkdir /tmp/ccache && cd /tmp/ccache &&\
+    wget https://dl.fedoraproject.org/pub/epel/9/Everything/`uname -m`/Packages/h/hiredis-1.0.2-2.el9.`uname -m`.rpm && \
+    wget https://dl.fedoraproject.org/pub/epel/9/Everything/`uname -m`/Packages/c/ccache-4.5.1-2.el9.`uname -m`.rpm && \
+    rpm -i hiredis-1.0.2-2.el9.`uname -m`.rpm ccache-4.5.1-2.el9.`uname -m`.rpm && \
+    rm -rf /tmp/ccache && \
+    mkdir -p /home/milvus/.vscode-server/extensions \
+    /home/milvus/.vscode-server-insiders/extensions && chmod -R 777 /home/milvus && \
+
+# Copy instructions provided
+COPY --chown=0:0 build/docker/builder/entrypoint.sh /
+
+# Execution Command
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["tail", "-f", "/dev/null"]
+

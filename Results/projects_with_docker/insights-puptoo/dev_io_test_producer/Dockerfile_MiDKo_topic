@@ -1,0 +1,15 @@
+# Set the base image
+FROM registry.access.redhat.com/ubi9/python-311:latest
+
+# Set the working directory,microservice folder
+WORKDIR /usr/src/app 
+
+# Copy requirements.txt and install dependencies
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt 
+
+# Copy application source code (Python script)
+COPY producer.py .
+
+# The command runs the Python script whenever a container is created from the image. 
+CMD [ "python", "./producer.py" ]

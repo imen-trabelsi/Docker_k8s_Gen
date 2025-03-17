@@ -1,0 +1,112 @@
+{
+    "docker_info": {
+        "base_image": "python:3.8.13",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8088"
+        ],
+        "user": [
+            "superset:superset"
+        ],
+        "labels": [],
+        "health_checks": [
+            "HEALTHCHECK CMD [\"curl\", \"-f\", \"http://localhost:8088/health\"]"
+        ],
+        "build_args": [
+            "SUPERSET_VERSION=1.5.2",
+            "SUPERSET_PATCHUP_VERSION=v0.5.1",
+            "APP_DIR=/usr/local/lib/python3.8/site-packages/superset"
+        ],
+        "envs": [
+            "ENV GUNICORN_BIND=0.0.0.0:8088 \\",
+            "ENV GUNICORN_CMD_ARGS=\"--workers ${GUNICORN_WORKERS} -k ${WORKER_CLASS} --timeout ${GUNICORN_TIMEOUT} --bind ${GUNICORN_BIND} --limit-request-line ${GUNICORN_LIMIT_REQUEST_LINE} --limit-request-field_size ${GUNICORN_LIMIT_REQUEST_FIELD_SIZE}\"",
+            "ENV NVM_DIR=/usr/local/nvm",
+            "ENV NODE_VERSION=v16.16.0",
+            "ENV NODE_PATH=$NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules",
+            "ENV PATH=$NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH"
+        ],
+        "copy_instructions": [
+            "COPY requirements.txt requirements.txt",
+            "WORKDIR $APP_DIR",
+            "COPY app-customizations/$SUPERSET_VERSION $APP_DIR"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"gunicorn\",",
+                    "\"superset:app\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "useradd -U -m superset && \\",
+                "mkdir /etc/superset  &&",
+                "mkdir ${SUPERSET_HOME} &&",
+                "chown -R superset:superset /etc/superset &&",
+                "chown -R superset:superset ${SUPERSET_HOME} &&",
+                "apt-get update &&",
+                "apt-get install -y",
+                "rsync",
+                "build-essential",
+                "curl",
+                "default-libmysqlclient-dev",
+                "freetds-bin",
+                "freetds-dev",
+                "postgresql-client",
+                "libssl-dev",
+                "libffi-dev",
+                "python-dev",
+                "libsasl2-dev",
+                "libldap2-dev",
+                "libecpg-dev &&",
+                "apt-get clean &&",
+                "rm -r /var/lib/apt/lists/* &&",
+                "pip install --upgrade setuptools \"pip<24.1\" &&",
+                "pip install --no-cache-dir",
+                "gunicorn==20.1.0",
+                "gevent==22.10.2",
+                "git+${SUPERSET_PATCHUP_REPO}",
+                "apache-superset==${SUPERSET_VERSION}",
+                "apache-superset[cors]==${SUPERSET_VERSION}",
+                "flask-mail==0.9.1",
+                "flask-oauth==0.12",
+                "flask_oauthlib==0.9.5 &&",
+                "# MarkupSafe, fix missing 'soft_unicode' from 'markupsafe'"
+            ],
+            [
+                "find ${APP_DIR} \\! -type l -print0 | xargs -0 chown superset:superset",
+                "COPY superset /usr/local/bin"
+            ],
+            [
+                "curl --silent -o- https://raw.githubusercontent.com/creationix/nvm/v0.31.2/install.sh | bash",
+                "RUN . $NVM_DIR/nvm.sh",
+                "&& nvm install $NODE_VERSION",
+                "&& nvm alias default $NODE_VERSION",
+                "&& nvm use default"
+            ],
+            [
+                "node -v",
+                "RUN npm -v"
+            ],
+            [
+                "npm install -g po2json",
+                ""
+            ],
+            [
+                "wget -P /tmp https://github.com/apache/superset/archive/${SUPERSET_VERSION}.zip \\",
+                "&& unzip /tmp/${SUPERSET_VERSION}.zip -d /tmp",
+                "&& rsync -a",
+                "--remove-source-files",
+                "--chown=superset:superset",
+                "/tmp/superset-${SUPERSET_VERSION}/superset-frontend $APP_DIR",
+                "&& rm -r /tmp/${SUPERSET_VERSION}.zip"
+            ],
+            [
+                "cd $APP_DIR/superset-frontend && npm ci && npm run build && cp -r ../superset/static/assets ../static",
+                ""
+            ]
+        ]
+    }
+}

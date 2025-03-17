@@ -1,0 +1,29 @@
+# Set the base image
+FROM node:10.15.3-alpine
+
+# Set environment variable
+ENV HOME=/home/nupp
+
+# Add a user
+RUN addgroup -S nupp && adduser -S -g nupp nupp
+
+# Grant permissions to the user and directory
+RUN chown -R nupp:nupp $HOME/* /usr/local/
+
+# Installation of dependencies
+RUN chmod +x /usr/local/bin/dumb-init && \
+    npm cache clean --force && \
+
+# Grant permissions for new installations
+RUN chown -R nupp:nupp $HOME/*
+
+# Add source code files
+COPY . $HOME/app/
+ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.1/dumb-init_1.1.1_amd64 /usr/local/bin/dumb-init
+WORKDIR $HOME/app
+
+# Set user to run upcoming commands
+USER nupp
+
+# Start the app
+CMD ["dumb-init", "npm", "run", "dev"]

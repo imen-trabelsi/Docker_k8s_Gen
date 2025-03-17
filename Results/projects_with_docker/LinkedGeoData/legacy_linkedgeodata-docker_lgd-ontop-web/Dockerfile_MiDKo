@@ -1,0 +1,20 @@
+# Set the base image
+FROM ontop/ontop-endpoint:latest
+
+# Set the working directory in the container
+WORKDIR /opt/ontop
+
+# Copy project files and directories into the container
+ADD https://repo1.maven.org/maven2/org/postgresql/postgresql/42.2.19/postgresql-42.2.19.jar jdbc/
+COPY lgd.obda input/lgd.obda
+COPY lgd.owl input/lgd.owl
+COPY lgd.portal.toml input/lgd.portal.toml
+COPY catalog-v001.xml input/catalog-v001.xml
+COPY library input/library
+
+# Expose the port the app runs in
+EXPOSE 8080
+
+# The command to run the application
+CMD ["sleep", "3"]
+CMD ["env"]

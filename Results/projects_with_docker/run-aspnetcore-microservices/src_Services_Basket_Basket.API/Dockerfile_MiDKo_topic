@@ -1,0 +1,44 @@
+# Using the base image provided by the user
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+LABEL maintainer="your_email@example.com"
+
+# Arguments for the build configuration
+ARG BUILD_CONFIGURATION=Release
+
+# Setting the work directory to /src
+WORKDIR /src
+
+# Copy csproj and restore dependencies
+COPY ["Services/Basket/Basket.API/Basket.API.csproj", "Services/Basket/Basket.API/"]
+COPY ["BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj", "BuildingBlocks/BuildingBlocks/"]
+
+# Restoring the dependencies
+RUN dotnet restore "./Services/Basket/Basket.API/./Basket.API.csproj"
+
+# Copy all source code
+COPY . .
+
+# Building the project for Release
+WORKDIR "/src/Services/Basket/Basket.API"
+RUN dotnet build "Basket.API.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+# Publishing the project
+RUN dotnet publish "Basket.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+# Stage 2: Setting up the final image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+
+# Creating a directory for the app
+WORKDIR /app
+
+# Exposing necessary ports
+EXPOSE 8080
+EXPOSE 8081
+
+# Copying from build-env
+
+# Setting up the user to app to ensure security
+USER app
+
+# Starting the app using the dotnet command
+ENTRYPOINT ["dotnet", "Basket.API.dll"]

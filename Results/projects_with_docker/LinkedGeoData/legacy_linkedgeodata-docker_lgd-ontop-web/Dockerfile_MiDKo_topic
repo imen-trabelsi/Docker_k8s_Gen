@@ -1,0 +1,24 @@
+# Use the Base Image
+FROM ontop/ontop-endpoint:latest
+
+# Set the working directory
+WORKDIR /opt/ontop
+
+# Copy maven executable to the image
+ADD https://repo1.maven.org/maven2/org/postgresql/postgresql/42.2.19/postgresql-42.2.19.jar jdbc/
+
+# Copy project files and build the project
+COPY lgd.obda input/lgd.obda
+COPY lgd.owl input/lgd.owl
+COPY lgd.portal.toml input/lgd.portal.toml
+COPY catalog-v001.xml input/catalog-v001.xml
+COPY library input/library
+
+# Build the application, clean up to minimize size
+RUN mvn install && mvn clean install && mvn install
+
+# Provide information on how to run the image
+EXPOSE 8080
+
+# Wait for the Postgres database to be available, then start the application
+CMD ["sh", "-c", "sleep 3; env; exec java -jar service/target/*.jar"]

@@ -1,0 +1,21 @@
+# Base Image
+FROM adoptopenjdk/openjdk11:alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy dependencies and build files
+COPY pom.xml .
+COPY src ./src
+
+# Build the Application
+RUN mvn clean package
+
+# Copy application JAR to app directory
+COPY target/scores.jar .
+
+# Expose the necessary port
+EXPOSE 8080
+
+# Run Spring Boot Application 
+ENTRYPOINT ["java", "-Dspring.profiles.active=FakeData", "-jar", "scores.jar"]

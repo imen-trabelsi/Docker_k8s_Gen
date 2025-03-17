@@ -1,0 +1,10 @@
+# Dockerfile
+
+# Base Image
+FROM nginx:alpine
+
+# Copy nginx configuration
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Default command
+CMD ["nginx", "-g", "daemon off;"]

@@ -1,0 +1,32 @@
+{
+    "docker_info": {
+        "base_image": "python:3-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY . /app",
+            "WORKDIR /app"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"robot\",",
+                    "\"--outputdir=/results\",",
+                    "\"tests.robot\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "pip install requests robotframework robotframework-requests",
+                ""
+            ]
+        ]
+    }
+}

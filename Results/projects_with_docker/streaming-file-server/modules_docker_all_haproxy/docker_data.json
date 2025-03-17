@@ -1,0 +1,29 @@
+{
+    "docker_info": {
+        "base_image": "haproxy:2.0.9-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [
+            "HEALTHCHECK --retries=33 \\"
+        ],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "true"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --update --no-cache curl",
+                "COPY ./haproxy.cfg /usr/local/etc/haproxy/haproxy.cfg"
+            ]
+        ]
+    }
+}

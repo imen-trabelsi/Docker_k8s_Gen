@@ -1,0 +1,19 @@
+# Set Base Image
+FROM node:16
+
+# Copy instructions and setting work directory
+WORKDIR /usr/src/app
+COPY package.json ./
+COPY package-lock.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy source
+COPY . .
+
+# Expose the application on port 50051
+EXPOSE 50051
+
+# Setup command to run your application:
+CMD [ "npm", "start" ]

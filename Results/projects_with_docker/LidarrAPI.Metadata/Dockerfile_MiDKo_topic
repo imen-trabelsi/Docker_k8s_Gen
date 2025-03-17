@@ -1,0 +1,36 @@
+# Use lightweight python alpine image
+FROM python:3.9-alpine
+
+# Update and install software dependencies
+RUN apk update && \
+    apk add postgresql-libs && \
+    apk add --virtual .build-deps alpine-sdk musl-dev postgresql-dev && \
+    pip --disable-pip-version-check --no-cache-dir install poetry && \
+    poetry install && \
+
+# Add a user
+RUN adduser --system -u $UID metadata
+
+# Set work directory
+WORKDIR /metadata
+
+# Copy local code to the container image
+COPY . /metadata
+
+# Set environment variables
+ARG UID=1000
+ARG COMMIT_HASH
+ARG GIT_BRANCH
+ENV UID ${UID}
+ENV COMMIT_HASH ${COMMIT_HASH}
+ENV GIT_BRANCH ${GIT_BRANCH}
+ENV POETRY_VIRTUALENVS_CREATE=false
+
+# Use user
+USER metadata
+
+# Provide metadata to the image to describe that the container is listening on the specified network ports at runtime.
+EXPOSE 5000
+
+# Specify the action the container should take when it starts up.
+ENTRYPOINT ["lidarr-metadata-server"]

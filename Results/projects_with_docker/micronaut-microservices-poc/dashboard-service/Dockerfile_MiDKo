@@ -1,0 +1,23 @@
+# Setting base image
+FROM adoptopenjdk/openjdk14:jre-14.0.2_12-alpine
+
+# Setting Working Directory inside container
+WORKDIR /app
+
+# Copying the dependencies and source code to docker image from local directory
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+COPY src src
+
+# Installing maven dependencies
+RUN ./mvnw install
+
+# Copying the artifact to a defined directory in docker image
+COPY target/dashboard-service-1.0.jar dashboard-service.jar
+
+# Exposing the port
+EXPOSE 8080
+
+# Running the jar
+ENTRYPOINT ["java", "-jar", "dashboard-service.jar"]

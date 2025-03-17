@@ -1,0 +1,25 @@
+# Set the base image
+FROM openjdk:8-jre
+
+VOLUME /tmp
+
+# Set the necessary environment variables for java
+ENV JAVA_OPTS=""
+
+# Setting the appropriate folder
+WORKDIR /app
+
+# Add the jar file into the container
+COPY abixen-platform-gateway.jar app.jar
+
+# Exposing the necessary port 9090
+EXPOSE 9090
+
+# Making the jar file executable, moving it to /app directory
+RUN sh -c 'touch /app.jar'
+
+# Starting the application based on Spring Boot
+ENTRYPOINT exec java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=docker -Dabixen.services.eureka.uri=discovery -jar /app.jar
+
+# Health check for the micro-service
+HEALTHCHECK CMD curl --fail http://localhost:9090/health || exit 1

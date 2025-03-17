@@ -1,0 +1,48 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/core/sdk:3.1",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "81"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "WORKDIR /src",
+            "COPY [\"HostedServices/PlaneService/PlaneService.csproj\", \"HostedServices/PlaneService/\"]",
+            "COPY [\"SharedKernel/Utils/Utils.csproj\", \"SharedKernel/Utils/\"]",
+            "COPY [\"SharedKernel/Contracts/Contracts.csproj\", \"SharedKernel/Contracts/\"]",
+            "WORKDIR \"/src/HostedServices/PlaneService\"",
+            "WORKDIR /app",
+            "COPY --from=publish /app/publish ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"dotnet\",",
+                    "\"PlaneService.dll\",",
+                    "\"--environment=Docker\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "dotnet restore \"HostedServices/PlaneService/PlaneService.csproj\"",
+                "COPY . ."
+            ],
+            [
+                "dotnet build \"PlaneService.csproj\" -c Release -o /app/build",
+                ""
+            ],
+            [
+                "dotnet publish \"PlaneService.csproj\" -c Release -o /app/publish",
+                ""
+            ]
+        ]
+    }
+}

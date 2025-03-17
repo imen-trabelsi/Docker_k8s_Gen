@@ -1,0 +1,29 @@
+# Here is an optimized Dockerfile fulfilling the specifications.
+
+FROM node:22.2.0-slim
+
+# Creating app directory
+WORKDIR /app
+
+# Installing PostgreSQL client
+RUN apt-get update && apt-get install -y postgresql-client
+
+# Installing dependencies
+COPY package*.json ./
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Set Environment Variables
+ENV NODE_ENV production
+ENV TRUST_PROXY 1
+
+# Default Command
+CMD ["./entrypoint.sh"]
+
+# Expose the Port
+EXPOSE 8080
+
+# Set User
+USER node

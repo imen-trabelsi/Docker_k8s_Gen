@@ -1,0 +1,23 @@
+# Dockerfile
+FROM node:12
+
+# Create app directory
+WORKDIR /opt/app
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install app dependencies
+RUN yarn
+
+# Bundle app source
+COPY . .
+
+# Change directory to api-gateway
+WORKDIR /opt/app/api-gateway
+
+# Expose port
+EXPOSE 3000
+
+# Run the application in watch mode
+CMD [ "yarn", "watch" ]

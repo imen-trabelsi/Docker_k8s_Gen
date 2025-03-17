@@ -1,0 +1,30 @@
+# Base Image
+FROM ${UPSTREAM_REPO:-uselagoon}/mariadb-10.6:${UPSTREAM_TAG:-latest}
+
+# Environment Variables
+ENV LAGOON_VERSION=$LAGOON_VERSION
+ENV MARIADB_DATABASE=infrastructure
+
+# Copy Instructions
+COPY ./legacy-migration-scripts/* /legacy-migration-scripts/
+COPY password-entrypoint.bash /lagoon/entrypoints/55-generate-env.sh
+COPY ./rerun_initdb.sh /rerun_initdb.sh
+COPY ./legacy_rerun_initdb.sh /legacy_rerun_initdb.sh
+
+# Setting the User
+USER root
+
+# Installing necessary dependencies
+RUN apk add --no-cache openssh-keygen
+
+# Set Ownership
+RUN chown -R mysql /legacy-migration-scripts/ \
+
+# Switch to nonroot user
+USER mysql
+
+# No real Ports are to expose
+EXPOSE 
+
+# Command to start the service
+CMD ["npm", "start"]

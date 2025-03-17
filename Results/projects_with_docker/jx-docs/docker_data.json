@@ -1,0 +1,20 @@
+{
+    "docker_info": {
+        "base_image": "abiosoft/caddy",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "2015"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /srv",
+            "COPY tmp-website ."
+        ],
+        "execution": [],
+        "run": []
+    }
+}

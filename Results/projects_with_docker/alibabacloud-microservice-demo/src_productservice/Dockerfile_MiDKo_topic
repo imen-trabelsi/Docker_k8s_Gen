@@ -1,0 +1,25 @@
+# Begin stage for building the jar from source
+FROM maven:3.6.3-adoptopenjdk-8 as builder
+WORKDIR /app
+COPY pom.xml .
+# download dependencies
+RUN mvn dependency:go-offline -B
+
+COPY src/ src/
+# build and package app
+RUN mvn clean package -DskipTests
+
+# Final stage: Dragonwell JDK, lean and secure
+FROM dragonwell-registry.cn-hangzhou.cr.aliyuncs.com/dragonwell/dragonwell:8-extended-ga-centos
+EXPOSE 8080
+
+# Copy Artifact from previous stage
+# Copy Arthas Diagnostic tool
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+COPY /start.sh /app/start.sh
+WORKDIR /app
+
+# Grant permissions for start.sh script to be executable
+RUN chmod +x start.sh
+
+CMD ["/app/start.sh"]

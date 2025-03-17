@@ -1,0 +1,30 @@
+# Base Image
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
+
+# Set working directory
+WORKDIR /ClassifiedAds.IdentityServer
+
+# Copy csproj and restore dependencies
+COPY ./ClassifiedAds.Application/*.csproj ./ClassifiedAds.Application/
+COPY ./ClassifiedAds.CrossCuttingConcerns/*.csproj ./ClassifiedAds.CrossCuttingConcerns/
+COPY ./ClassifiedAds.Domain/*.csproj ./ClassifiedAds.Domain/
+COPY ./ClassifiedAds.IdentityServer/*.csproj ./ClassifiedAds.IdentityServer/
+COPY ./ClassifiedAds.Infrastructure/*.csproj ./ClassifiedAds.Infrastructure/
+COPY ./ClassifiedAds.Migrator/*.csproj ./ClassifiedAds.Migrator/
+COPY ./ClassifiedAds.Persistence/*.csproj ./ClassifiedAds.Persistence/
+RUN dotnet restore
+
+# Copy everything else and build
+COPY ./ClassifiedAds.OpenIddict.sln .
+COPY . ./
+RUN dotnet publish ./ClassifiedAds.Migrator/ClassifiedAds.Migrator.csproj -c Release -o out
+
+# Generate runtime image
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+WORKDIR /ClassifiedAds.IdentityServer
+
+# Expose ports (User need to provide this information)
+# EXPOSE port_number
+
+# Execution Command
+ENTRYPOINT ["dotnet", "ClassifiedAds.Migrator.dll"]

@@ -1,0 +1,42 @@
+{
+    "docker_info": {
+        "base_image": "node",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "16108"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD ./node_modules /app/node_modules",
+            "ADD ./package.json /app/",
+            "ADD ./public /app/public",
+            "ADD ./bin /app/bin",
+            "ADD ./app.js /app/"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"npm\",",
+                    "\"start\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "/bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone",
+                ""
+            ],
+            [
+                "mkdir -p /app",
+                "WORKDIR /app"
+            ]
+        ]
+    }
+}

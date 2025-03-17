@@ -1,0 +1,21 @@
+{
+    "docker_info": {
+        "base_image": "nginx:1.19.2-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV SPROUT_API_URL=http://localhost:8080",
+            "ENV PORT=3000"
+        ],
+        "copy_instructions": [
+            "COPY ./proxy/default.conf /etc/nginx/templates/default.conf.template",
+            "COPY ./apps/webapp/build/ /var/www/"
+        ],
+        "execution": [],
+        "run": []
+    }
+}

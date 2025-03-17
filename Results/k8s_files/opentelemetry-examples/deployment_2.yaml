@@ -1,0 +1,21 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-istio-demo
+  namespace: go-istio-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: go-istio-demo
+  template:
+    metadata:
+      labels:
+        app: go-istio-demo
+    spec:
+      containers:
+      - image: go-istio-demo:latest
+        imagePullPolicy: IfNotPresent
+        name: app
+        ports:
+        - containerPort: 8080

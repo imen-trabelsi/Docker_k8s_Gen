@@ -1,0 +1,62 @@
+# Starting with base image
+FROM ubuntu:18.04
+
+# Maintainance information
+LABEL maintainer="name@example.com"
+
+# Build arguments
+ARG DEBIAN_FRONTEND=noninteractive
+
+# Update the system and install necessary dependencies
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y --no-install-recommends \
+    attr \
+    liberasurecode1 \
+    memcached \
+    python-dnspython \
+    python-eventlet \
+    python-greenlet \
+    python-lxml \
+    python-netifaces \
+    python-pastedeploy \
+    python-pip \
+    python-pyeclib \
+    python-setuptools \
+    python-simplejson \
+    python-xattr \
+    rsyslog \
+    rsync \
+    sqlite3 \
+    sudo \
+    xfsprogs && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends git-core && \
+    git clone --branch 3.8.1 --single-branch --depth 1 https://github.com/openstack/python-swiftclient.git /usr/local/src/python-swiftclient && \
+    cd /usr/local/src/python-swiftclient && python setup.py develop && \
+    git clone --branch 2.23.0 --single-branch --depth 1 https://github.com/openstack/swift.git /usr/local/src/swift && \
+    cd /usr/local/src/swift && python setup.py develop && \
+    apt-get remove -y --purge git-core git && \
+    apt-get autoremove -y --purge && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+
+RUN pip install supervisor && \
+    mkdir -p /var/log/supervisor && \
+
+# copying files to the image
+COPY ./helpers/docker/swift/swift /etc/swift
+COPY ./helpers/docker/swift/misc/rsyncd.conf /etc/
+COPY ./helpers/docker/swift/bin /swift/bin
+COPY ./helpers/docker/swift/misc/bashrc /swift/.bashrc
+COPY ./helpers/docker/swift/rsyslog.d/10-swift.conf /etc/rsyslog.d/10-swift.conf
+COPY ./helpers/docker/swift/misc/supervisord.conf /etc/supervisord.conf
+
+# expose the necessary port
+EXPOSE 8080
+
+# specify the command to run
+CMD ["/bin/bash", "/swift/bin/launch.sh"]

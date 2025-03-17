@@ -1,0 +1,20 @@
+# Dockerfile
+
+FROM codefarm/appnodebase:0.0.0
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Copy package.json & yarn.lock files to the docker image
+COPY package*.json ./
+
+RUN npm install
+# For production
+RUN npm ci --only=production
+
+# Bundle app source inside docker image
+COPY . .
+
+EXPOSE 8080
+
+CMD [ "node", "server.js" ]

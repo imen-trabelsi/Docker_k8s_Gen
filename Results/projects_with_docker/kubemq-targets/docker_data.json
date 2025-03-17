@@ -1,0 +1,58 @@
+{
+    "docker_info": {
+        "base_image": "kubemq/gobuilder-ubuntu:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "1001"
+        ],
+        "labels": [
+            "name=\"KubeMQ"
+        ],
+        "health_checks": [],
+        "build_args": [
+            "VERSION",
+            "GIT_COMMIT",
+            "BUILD_TIME"
+        ],
+        "envs": [
+            "ENV GOPATH=/go",
+            "ENV PATH=$GOPATH:$PATH",
+            "ENV ADDR=0.0.0.0",
+            "ENV GOPATH=/go",
+            "ENV PATH=$GOPATH/bin:$PATH"
+        ],
+        "copy_instructions": [
+            "ADD . $GOPATH/github.com/kubemq-io/kubemq-targets",
+            "WORKDIR $GOPATH/github.com/kubemq-io/kubemq-targets",
+            "COPY licenses /licenses",
+            "COPY --from=builder $GOPATH/github.com/kubemq-io/kubemq-targets/default_config.yaml ./kubemq-connector/config.yaml"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"./kubemq-targets-run\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -tags container -a -mod=vendor -installsuffix cgo -ldflags=\"-w -s -X main.version=$VERSION\" -o kubemq-targets-run .",
+                "FROM registry.access.redhat.com/ubi8/ubi-minimal:latest"
+            ],
+            [
+                "mkdir -p /opt/mqm/lib64",
+                "COPY --from=builder /opt/mqm/lib64 /opt/mqm/lib64"
+            ],
+            [
+                "mkdir /kubemq-connector",
+                "COPY --from=builder $GOPATH/github.com/kubemq-io/kubemq-targets/kubemq-targets-run ./kubemq-connector"
+            ],
+            [
+                "chown -R 1001:root  /kubemq-connector && chmod g+rwX  /kubemq-connector",
+                "WORKDIR kubemq-connector"
+            ]
+        ]
+    }
+}

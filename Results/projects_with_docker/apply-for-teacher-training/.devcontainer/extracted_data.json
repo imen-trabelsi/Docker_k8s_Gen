@@ -1,0 +1,29 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"apply-for-teacher-training\",\n  \"private\": true,\n  \"engines\": {\n    \"node\": \"20.x\",\n    \"yarn\": \"^1.22.0\"\n  },\n  \"dependencies\": {\n    \"@ministryofjustice/frontend\": \"^3.6.2\",\n    \"@rails/webpacker\": \"^5.4.4\",\n    \"accessible-autocomplete\": \"^3.0.1\",\n    \"dfe-autocomplete\": \"github:DFE-Digital/dfe-autocomplete#8e7389ff62a38bc8880323f6c58eed9c8d10f080\",\n    \"govuk-frontend\": \"^5.8.0\",\n    \"jquery\": \"^3.7.1\",\n    \"postcss\": \"^8.5.3\",\n    \"puppeteer\": \"^24.3.1\",\n    \"stimulus\": \"^3.2.2\"\n  },\n  \"devDependencies\": {\n    \"@babel/plugin-transform-optional-chaining\": \"^7.25.9\",\n    \"jest\": \"^29.7.0\",\n    \"jest-environment-jsdom\": \"^29.7.0\",\n    \"prettier\": \"^3.5.3\",\n    \"standard\": \"^17.1.2\",\n    \"stylelint\": \"^16.15.0\",\n    \"stylelint-config-gds\": \"^2.0.0\",\n    \"stylelint-config-recess-order\": \"^6.0.0\",\n    \"stylelint-order\": \"^6.0.4\"\n  },\n  \"scripts\": {\n    \"lint\": \"standard 'app/frontend/packs'\",\n    \"test\": \"jest\"\n  },\n  \"jest\": {\n    \"testEnvironment\": \"jsdom\",\n    \"roots\": [\n      \"app\"\n    ]\n  },\n  \"standard\": {\n    \"env\": [\n      \"jest\"\n    ],\n    \"globals\": [\n      \"$\",\n      \"history\",\n      \"zE\",\n      \"CustomEvent\"\n    ]\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            ".env.development": "REDIS_URL=redis://localhost:6379/0\nTEACHER_TRAINING_API_BASE_URL=https://qa.api.publish-teacher-training-courses.service.gov.uk/api/public/v1\nHOSTING_ENVIRONMENT_NAME=development\nSTATE_CHANGE_SLACK_URL=\nGOOGLE_ANALYTICS_APPLY=UA-APPLY-XX\nGOOGLE_ANALYTICS_MANAGE=UA-MANAGE-XX\nGOOGLE_TAG_MANAGER_APPLY=GTM-APPLY-XX\nGOOGLE_TAG_MANAGER_MANAGE=GTM-MANAGE-XX\nRAILS_FILTER_STDOUT=true\n\n# Federated Identity \nAZURE_CLIENT_ID=\nAZURE_FEDERATED_TOKEN_FILE=\nGOOGLE_CLOUD_CREDENTIALS_STATS={}\n",
+            ".env.test": "REDIS_URL=redis://localhost:6379/9\nTEACHER_TRAINING_API_BASE_URL=http://teacher-training-api-test/api/v1\nHOSTING_ENVIRONMENT_NAME=test\nSTATE_CHANGE_SLACK_URL=https://example.com/slack-webhook\nGOVUK_NOTIFY_CALLBACK_API_KEY=test\nGOVUK_NOTIFY_TEST_TEMPLATE_ID=test\nDSI_API_URL=https://test-api.signin.education.gov.uk\nDSI_API_SECRET=some-secret\nSANDBOX=false\nGOOGLE_ANALYTICS_APPLY=UA-APPLY-XX\nGOOGLE_ANALYTICS_MANAGE=UA-MANAGE-XX\nGOOGLE_TAG_MANAGER_APPLY=GTM-APPLY-XX\nGOOGLE_TAG_MANAGER_MANAGE=GTM-MANAGE-XX\nBULLET=false\nCOVERAGE=false\nGOOGLE_MAPS_API_KEY=test\n\n# Federated Identity \nAZURE_CLIENT_ID=\nAZURE_FEDERATED_TOKEN_FILE=\nGOOGLE_CLOUD_CREDENTIALS_STATS={}\n\nGOVUK_ONE_LOGIN_ACCOUNT_URL=http://home.integration.account.gov.uk\n",
+            ".devcontainer/docker-compose.yml": "version: '3'\n\nservices:\n  app:\n    build:\n      context: ..\n      dockerfile: .devcontainer/Dockerfile\n    volumes:\n      - ../..:/workspaces:cached\n    command: sleep infinity\n  postgres:\n    image: postgres:15-alpine\n    restart: unless-stopped\n    volumes:\n      - postgres-data:/var/lib/postgresql/data\n    environment:\n      POSTGRES_USER: postgres\n      POSTGRES_DB: bat_apply_development\n      POSTGRES_PASSWORD: postgres\n  redis:\n    image: redis:alpine\n    restart: unless-stopped\n    volumes:\n      - redis-data:/data\nvolumes:\n  postgres-data:\n  redis-data:\n",
+            ".devcontainer/Dockerfile": "FROM mcr.microsoft.com/vscode/devcontainers/base:ubuntu-22.04\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "nginx.conf"
+        ],
+        "folders": [
+            "html",
+            "manifests",
+            "scripts"
+        ]
+    }
+}

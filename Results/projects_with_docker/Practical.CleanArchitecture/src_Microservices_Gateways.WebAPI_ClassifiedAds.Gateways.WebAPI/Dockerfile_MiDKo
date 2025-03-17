@@ -1,0 +1,30 @@
+# Set up Base Image
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
+
+WORKDIR /ClassifiedAds.Microservices
+
+# Copy project files
+COPY ./Common/ClassifiedAds.Application/*.csproj ./Common/ClassifiedAds.Application/
+COPY ./Common/ClassifiedAds.CrossCuttingConcerns/*.csproj ./Common/ClassifiedAds.CrossCuttingConcerns/
+COPY ./Common/ClassifiedAds.Domain/*.csproj ./Common/ClassifiedAds.Domain/
+COPY ./Common/ClassifiedAds.Infrastructure/*.csproj ./Common/ClassifiedAds.Infrastructure/
+COPY ./Gateways.WebAPI/ClassifiedAds.Gateways.WebAPI/*.csproj ./Gateways.WebAPI/ClassifiedAds.Gateways.WebAPI/
+COPY . ./ 
+
+# Restore packages
+RUN dotnet restore ./Common/ClassifiedAds.Application/ClassifiedAds.Application.csproj
+RUN dotnet restore ./Common/ClassifiedAds.Infrastructure/ClassifiedAds.Infrastructure.csproj
+RUN dotnet restore ./Gateways.WebAPI/ClassifiedAds.Gateways.WebAPI/ClassifiedAds.Gateways.WebAPI.csproj
+
+# Publish App
+RUN dotnet publish ./Gateways.WebAPI/ClassifiedAds.Gateways.WebAPI/ClassifiedAds.Gateways.WebAPI.csproj -c Release -o out
+
+# Start new stage 
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
+
+WORKDIR /app
+
+# Bring published files from previous stage 
+
+# Launch App 
+ENTRYPOINT ["dotnet", "ClassifiedAds.Gateways.WebAPI.dll"]

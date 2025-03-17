@@ -1,0 +1,30 @@
+# Use the base image provided by the user
+FROM brisedev/main-dev:2.5.0
+
+# Set the work directory in the container 
+WORKDIR /root
+
+# Copy the content of the current directory (on your machine) into the path (in the image)
+COPY . .
+
+# Install any needed dependencies specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Remove the Dockerfile present in the root directory
+RUN rm Dockerfile
+
+# Declare the port number that needs to be exposed if any
+# EXPOSE <port>
+
+# Set environment variables
+ENV BRISE_EVENT_SERVICE_HOST=${BRISE_EVENT_SERVICE_HOST}
+ENV BRISE_EVENT_SERVICE_AMQP_PORT=${BRISE_EVENT_SERVICE_AMQP_PORT}
+ENV BRISE_EVENT_SERVICE_GUI_PORT=${BRISE_EVENT_SERVICE_GUI_PORT}
+ENV BRISE_DATABASE_HOST=${BRISE_DATABASE_HOST}
+ENV BRISE_DATABASE_PORT=${BRISE_DATABASE_PORT}
+ENV BRISE_DATABASE_NAME=${BRISE_DATABASE_NAME}
+ENV BRISE_DATABASE_USER=${BRISE_DATABASE_USER}
+ENV BRISE_DATABASE_PASS=${BRISE_DATABASE_PASS}
+
+# Specify the command to run on container start
+CMD dockerize -wait http://${BRISE_EVENT_SERVICE_HOST}:${BRISE_EVENT_SERVICE_GUI_PORT} python3.7 -u api-supreme.py

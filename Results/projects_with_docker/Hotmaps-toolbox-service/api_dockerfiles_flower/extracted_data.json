@@ -1,0 +1,713 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".env.example",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": ".gitsecret",
+            "type": "tree"
+        },
+        {
+            "path": ".gitsecret/keys",
+            "type": "tree"
+        },
+        {
+            "path": ".gitsecret/keys/mapping.cfg",
+            "type": "blob"
+        },
+        {
+            "path": ".gitsecret/keys/pubring.kbx",
+            "type": "blob"
+        },
+        {
+            "path": ".gitsecret/keys/pubring.kbx~",
+            "type": "blob"
+        },
+        {
+            "path": ".gitsecret/keys/random_seed",
+            "type": "blob"
+        },
+        {
+            "path": ".gitsecret/keys/trustdb.gpg",
+            "type": "blob"
+        },
+        {
+            "path": ".gitsecret/paths",
+            "type": "tree"
+        },
+        {
+            "path": ".gitsecret/paths/mapping.cfg",
+            "type": "blob"
+        },
+        {
+            "path": "Jenkinsfile",
+            "type": "blob"
+        },
+        {
+            "path": "LICENSE",
+            "type": "blob"
+        },
+        {
+            "path": "README.local.md",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "api",
+            "type": "tree"
+        },
+        {
+            "path": "api/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "api/.fuse_hidden000016ed00000006",
+            "type": "blob"
+        },
+        {
+            "path": "api/.fuse_hidden00004c7e00000001",
+            "type": "blob"
+        },
+        {
+            "path": "api/AUTHORS",
+            "type": "blob"
+        },
+        {
+            "path": "api/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "api/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app",
+            "type": "tree"
+        },
+        {
+            "path": "api/app/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/api_v1",
+            "type": "tree"
+        },
+        {
+            "path": "api/app/api_v1/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/api_v1/computation_module.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/api_v1/errors.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/api_v1/heat_load_profile.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/api_v1/snapshot.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/api_v1/stats.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/api_v1/upload.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/api_v1/users.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/bll",
+            "type": "tree"
+        },
+        {
+            "path": "api/app/bll/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/bll/csv_file.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/constants.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/decorators",
+            "type": "tree"
+        },
+        {
+            "path": "api/app/decorators/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/decorators/business.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/decorators/caching.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/decorators/exceptions.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/decorators/json.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/decorators/paginate.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/decorators/parsers.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/decorators/restplus.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/decorators/serializers.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/decorators/timeout.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/helper.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/helper",
+            "type": "tree"
+        },
+        {
+            "path": "api/app/helper/gdal2tiles-multiprocess.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/helper/gdal2tiles.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/helper/gdal2tiles.py.orig",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/helper/gdal2tiles.py.rej",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/logging.conf",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/model.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/models",
+            "type": "tree"
+        },
+        {
+            "path": "api/app/models/INDICATORS.md",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/models/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/models/gdal2tiles.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/models/generalData.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/models/grids.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/models/heat_density_map.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/models/heat_load_profile.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/models/heatloadQueries.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/models/indicators.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/models/indicators_bak.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/models/lau.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/models/nuts.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/models/population_density.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/models/role.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/models/snapshots.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/models/statsQueries.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/models/time.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/models/uploads.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/models/user.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/models/wwtp.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/secrets.py.secret",
+            "type": "blob"
+        },
+        {
+            "path": "api/app/sql_queries.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/assets",
+            "type": "tree"
+        },
+        {
+            "path": "api/assets/table_image.png",
+            "type": "blob"
+        },
+        {
+            "path": "api/calculation_module.db",
+            "type": "blob"
+        },
+        {
+            "path": "api/celery_worker.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/celery_worker_local.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/config",
+            "type": "tree"
+        },
+        {
+            "path": "api/config/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/config/development.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/config/production.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/config/testing.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/consumer_cm_register.local.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/consumer_cm_register.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/dockerfiles",
+            "type": "tree"
+        },
+        {
+            "path": "api/dockerfiles/api",
+            "type": "tree"
+        },
+        {
+            "path": "api/dockerfiles/api/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "api/dockerfiles/celery",
+            "type": "tree"
+        },
+        {
+            "path": "api/dockerfiles/celery/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "api/dockerfiles/flower",
+            "type": "tree"
+        },
+        {
+            "path": "api/dockerfiles/flower/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "api/gunicorn-config.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/gunicorn-config_eeg.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/pre-commit.sh",
+            "type": "blob"
+        },
+        {
+            "path": "api/producer_cm_alive.local.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/producer_cm_alive.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/requirements",
+            "type": "tree"
+        },
+        {
+            "path": "api/requirements/api",
+            "type": "tree"
+        },
+        {
+            "path": "api/requirements/api/requirements.txt",
+            "type": "blob"
+        },
+        {
+            "path": "api/requirements/celery",
+            "type": "tree"
+        },
+        {
+            "path": "api/requirements/celery/requirements.txt",
+            "type": "blob"
+        },
+        {
+            "path": "api/requirements/flower",
+            "type": "tree"
+        },
+        {
+            "path": "api/requirements/flower/requirements.txt",
+            "type": "blob"
+        },
+        {
+            "path": "api/requirements/new_requirements.txt",
+            "type": "blob"
+        },
+        {
+            "path": "api/run.local.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/run.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/run_all_local_terminal.sh",
+            "type": "blob"
+        },
+        {
+            "path": "api/supervisord.conf",
+            "type": "blob"
+        },
+        {
+            "path": "api/tests.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/tests",
+            "type": "tree"
+        },
+        {
+            "path": "api/tests/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/tests/routes",
+            "type": "tree"
+        },
+        {
+            "path": "api/tests/routes/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/tests/routes/indicators",
+            "type": "tree"
+        },
+        {
+            "path": "api/tests/routes/indicators/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/tests/routes/indicators/payloads.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/tests/routes/indicators/test_indicators.py",
+            "type": "blob"
+        },
+        {
+            "path": "api/tests/routes/test_client.py",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose-dev.yml",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose-local-last.yml",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose-production.yml",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose-run-api-only.yml",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.local.yml",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "logging.conf",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit",
+            "type": "tree"
+        },
+        {
+            "path": "pytest_suit/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes",
+            "type": "tree"
+        },
+        {
+            "path": "pytest_suit/routes/.cache",
+            "type": "tree"
+        },
+        {
+            "path": "pytest_suit/routes/.cache/v",
+            "type": "tree"
+        },
+        {
+            "path": "pytest_suit/routes/.cache/v/cache",
+            "type": "tree"
+        },
+        {
+            "path": "pytest_suit/routes/.cache/v/cache/lastfailed",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/snapshot",
+            "type": "tree"
+        },
+        {
+            "path": "pytest_suit/routes/snapshot/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/snapshot/test_addveSnapshot.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/snapshot/test_listSnapshot.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/snapshot/test_loadSnapshot.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/snapshot/test_updateSnapshot.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/snapshot/test_zdeleteSnapshot.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/test_assets",
+            "type": "tree"
+        },
+        {
+            "path": "pytest_suit/routes/test_assets/3ef057c3-b65a-448f-9718-d46c33b9ec3b.tif",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/test_assets/test.csv",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/uploads",
+            "type": "tree"
+        },
+        {
+            "path": "pytest_suit/routes/uploads/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/uploads/test_addUploads.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/uploads/test_exportCMLayer.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/uploads/test_exportCsvHectare.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/uploads/test_exportCsvLau.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/uploads/test_exportCsvNuts.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/uploads/test_exportRasterHectare.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/uploads/test_exportRasterLau.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/uploads/test_exportRasterNuts.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/uploads/test_listUploads.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/uploads/test_spaceUsedUploads.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/uploads/test_zdownloadUploads.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/uploads/test_zzdeleteUploads.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/user",
+            "type": "tree"
+        },
+        {
+            "path": "pytest_suit/routes/user/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/user/test_activateUser.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/user/test_getUserInformation.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/user/test_profileUser.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/user/test_recoverPassword.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/user/test_userRegistering.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/user/test_zlogoutUser.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/user/test_zzaskingPasswordRecovery.py",
+            "type": "blob"
+        },
+        {
+            "path": "pytest_suit/routes/user/test_zzloginUser.py",
+            "type": "blob"
+        },
+        {
+            "path": "release-archi-hotmaps.sh",
+            "type": "blob"
+        }
+    ]
+}

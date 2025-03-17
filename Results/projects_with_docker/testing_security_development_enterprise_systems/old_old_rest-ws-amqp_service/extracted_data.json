@@ -1,0 +1,25 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Spring Boot",
+        "dependencies": {
+            "pom.xml": "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n    <modelVersion>4.0.0</modelVersion>\n\n\n    <artifactId>service</artifactId>\n    <packaging>jar</packaging>\n\n    <parent>\n        <groupId>org.tsdes.spring.frontend.restwsamqp</groupId>\n        <artifactId>rest-ws-amqp</artifactId>\n        <version>0.0.1-SNAPSHOT</version>\n    </parent>\n\n\n    <dependencies>\n\n        <dependency>\n            <groupId>org.springframework.boot</groupId>\n            <artifactId>spring-boot-starter-web</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.springframework.boot</groupId>\n            <artifactId>spring-boot-starter-amqp</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.webjars</groupId>\n            <artifactId>webjars-locator</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.webjars</groupId>\n            <artifactId>sockjs-client</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.webjars</groupId>\n            <artifactId>stomp-websocket</artifactId>\n        </dependency>\n    </dependencies>\n\n    <build>\n        <plugins>\n            <plugin>\n                <groupId>org.springframework.boot</groupId>\n                <artifactId>spring-boot-maven-plugin</artifactId>\n                <configuration>\n                    <finalName>service</finalName>\n                </configuration>\n            </plugin>\n        </plugins>\n    </build>\n\n</project>"
+        },
+        "database": null,
+        "build_system": "Maven",
+        "config_files": {
+            "old/old_rest-ws-amqp/docker-compose.yml": "version: '3.3'\n\nservices:\n\n  rabbitmq:\n    image:  \"rabbitmq:3\"\n\n  zuul:\n    build:\n      context: ./zuul-ws\n      dockerfile: Dockerfile\n    ports:\n      - \"80:8080\"\n    depends_on:\n      - service\n      - rabbitmq\n\n  service:\n     build:\n        context: ./service\n        dockerfile: Dockerfile\n     depends_on:\n       - rabbitmq\n\n\n",
+            "old/old_rest-ws-amqp/service/Dockerfile": "FROM openjdk:8\n\nADD target/service.jar .\n\nCMD java -jar service.jar"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "pom.xml"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

@@ -1,0 +1,115 @@
+{
+    "docker_info": {
+        "base_image": "node:18-bullseye",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3000",
+            "3001"
+        ],
+        "user": [
+            "node"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "BUILD_TIME='unknown'",
+            "BUILD_VERSION='unknown'",
+            "BUILD_REVISION='unknown'"
+        ],
+        "envs": [
+            "ENV NODE_ENV=production",
+            "ENV SERVER_PORT=3000",
+            "ENV DATABASE_HOST=localhost",
+            "ENV DATABASE_NAME=postgres",
+            "ENV DATABASE_PORT=5400",
+            "ENV DATABASE_USER=postgres",
+            "ENV DATABASE_SCHEMA=public",
+            "ENV DATABASE_PASSWORD=postgres",
+            "ENV NODE_ENV=production",
+            "ENV API_GATEWAY_HOST=http://gateway",
+            "ENV BUILD_TIME=${BUILD_TIME}",
+            "ENV BUILD_VERSION=${BUILD_VERSION}",
+            "ENV BUILD_REVISION=${BUILD_REVISION}"
+        ],
+        "copy_instructions": [
+            "WORKDIR /home/node/app",
+            "COPY ./package.json /home/node/app/package.json",
+            "COPY ./yarn.lock /home/node/app/yarn.lock",
+            "COPY ./npm /home/node/app/npm",
+            "COPY ./tsconfig.json /home/node/app/tsconfig.json",
+            "COPY ./tsconfig.frontend.json /home/node/app/tsconfig.frontend.json",
+            "COPY ./src /home/node/app/src",
+            "COPY ./schemas /home/node/app/schemas",
+            "COPY ./generate-schemas.js /home/node/app/generate-schemas.js",
+            "COPY ./themes /home/node/app/themes",
+            "COPY ./vite /home/node/app/vite",
+            "COPY ./vite.config.js /home/node/app/vite.config.js",
+            "COPY ./postcss.config.js /home/node/app/postcss.config.js",
+            "COPY ./tailwind.config.js /home/node/app/tailwind.config.js",
+            "WORKDIR /home/node/app",
+            "COPY --from=build /home/node/app/package.json /home/node/app/package.json",
+            "COPY --from=build /home/node/app/yarn.lock /home/node/app/yarn.lock",
+            "COPY --from=build /home/node/app/npm /home/node/app/npm",
+            "WORKDIR /home/node/app",
+            "COPY --from=build /home/node/app/package.json /home/node/app/package.json",
+            "COPY --from=build /home/node/app/yarn.lock /home/node/app/yarn.lock",
+            "COPY --from=modules /home/node/app/node_modules /home/node/app/node_modules",
+            "COPY --from=build /home/node/app/dist /home/node/app/dist",
+            "COPY ./ecosystem.config.cjs /home/node/app/ecosystem.config.cjs",
+            "COPY ./npm /home/node/app/npm",
+            "COPY ./migrations /home/node/app/migrations",
+            "COPY ./service-jwts /home/node/app/service-jwts",
+            "COPY ./config.json /home/node/app/config.json",
+            "COPY ./translations /home/node/app/translations",
+            "COPY ./themes /home/node/app/themes",
+            "COPY ./schemas /home/node/app/schemas",
+            "COPY ./entrypoint /home/node/app/entrypoint"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"pm2-runtime\",",
+                    "\"start\",",
+                    "\"./ecosystem.config.cjs\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "yarn install --no-interactive --frozen-lockfile",
+                ""
+            ],
+            [
+                "yarn generate-schema",
+                "RUN yarn build:vite-producer"
+            ],
+            [
+                "yarn build:vite-auth",
+                "RUN yarn build:vite-scheduler"
+            ],
+            [
+                "yarn build:frontend",
+                "RUN yarn build:vite-server"
+            ],
+            [
+                "yarn install --no-interactive --frozen-lockfile --production=true",
+                ""
+            ],
+            [
+                "npm install -g pm2@5",
+                ""
+            ],
+            [
+                "mkdir -p /home/node/app/service-jwt && \\",
+                "mkdir -p /home/node/app/service-jwt-responses &&",
+                "mkdir -p /home/node/app/files &&",
+                "mkdir -p /home/node/app/openssl-certs &&",
+                "chown node:node /home/node/app/service-jwt &&",
+                "chown node:node /home/node/app/service-jwt-responses &&",
+                "chown node:node /home/node/app/files &&",
+                "chown node:node /home/node/app/openssl-certs"
+            ]
+        ]
+    }
+}

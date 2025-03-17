@@ -1,0 +1,1433 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".gitattributes",
+            "type": "blob"
+        },
+        {
+            "path": ".github",
+            "type": "tree"
+        },
+        {
+            "path": ".github/workflows",
+            "type": "tree"
+        },
+        {
+            "path": ".github/workflows/build-push-images-to-acr.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/deploy-to-aks.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/main.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "cicd",
+            "type": "tree"
+        },
+        {
+            "path": "cicd/dotnet",
+            "type": "tree"
+        },
+        {
+            "path": "cicd/dotnet/azure-pipelines.yml",
+            "type": "blob"
+        },
+        {
+            "path": "iac",
+            "type": "tree"
+        },
+        {
+            "path": "iac/terraform",
+            "type": "tree"
+        },
+        {
+            "path": "iac/terraform/apim",
+            "type": "tree"
+        },
+        {
+            "path": "iac/terraform/apim/apim.tf",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/apim/backend.tf",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/apim/data.tf",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/apim/main.tf",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/apim/providers.tf",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/apim/variables.tf",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/apim/workspaces",
+            "type": "tree"
+        },
+        {
+            "path": "iac/terraform/apim/workspaces/test.tfvars",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/pipelines",
+            "type": "tree"
+        },
+        {
+            "path": "iac/terraform/pipelines/azure-pipelines.yml",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/pipelines/pipeline-templates",
+            "type": "tree"
+        },
+        {
+            "path": "iac/terraform/pipelines/pipeline-templates/backend.yml",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/pipelines/pipeline-templates/build.yml",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/pipelines/pipeline-templates/deploy-aks.yml",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/pipelines/pipeline-templates/deploy.yml",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/pipelines/storageAccount.ps1",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/webapi",
+            "type": "tree"
+        },
+        {
+            "path": "iac/terraform/webapi/.gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/webapi/.terraform.lock.hcl",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/webapi/Readme.md",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/webapi/azure-pipelines-terraform.yml",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/webapi/backend.tf",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/webapi/data.tf",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/webapi/dev",
+            "type": "tree"
+        },
+        {
+            "path": "iac/terraform/webapi/dev/dev.tfvars",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/webapi/grant permision to create azure ad by terraform azure devops.png",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/webapi/main.tf",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/webapi/modules",
+            "type": "tree"
+        },
+        {
+            "path": "iac/terraform/webapi/modules/acr",
+            "type": "tree"
+        },
+        {
+            "path": "iac/terraform/webapi/modules/acr/main.tf",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/webapi/modules/acr/outputs.tf",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/webapi/modules/acr/variables.tf",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/webapi/modules/aks",
+            "type": "tree"
+        },
+        {
+            "path": "iac/terraform/webapi/modules/aks/loganalyticsworkspace.tf",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/webapi/modules/aks/main.tf",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/webapi/modules/aks/outputs.tf",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/webapi/modules/aks/variables.tf",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/webapi/modules/vnet",
+            "type": "tree"
+        },
+        {
+            "path": "iac/terraform/webapi/modules/vnet/outputs.tf",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/webapi/modules/vnet/variables.tf",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/webapi/modules/vnet/vnet.tf",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/webapi/providers.tf",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/webapi/terraform.tfstate.d",
+            "type": "tree"
+        },
+        {
+            "path": "iac/terraform/webapi/terraform.tfstate.d/dev",
+            "type": "tree"
+        },
+        {
+            "path": "iac/terraform/webapi/terraform.tfstate.d/dev/.terraform.tfstate.lock.info",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/webapi/terraform.tfvars",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/webapi/variables.tf",
+            "type": "blob"
+        },
+        {
+            "path": "iac/terraform/webapi/workspaces",
+            "type": "tree"
+        },
+        {
+            "path": "iac/terraform/webapi/workspaces/test.tfvars",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes",
+            "type": "tree"
+        },
+        {
+            "path": "kubernetes/aks-ingress",
+            "type": "tree"
+        },
+        {
+            "path": "kubernetes/aks-ingress/CommandApi",
+            "type": "tree"
+        },
+        {
+            "path": "kubernetes/aks-ingress/CommandApi/command-api-deployment.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/aks-ingress/CommandApi/command-api-service.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/aks-ingress/CommandDatabase",
+            "type": "tree"
+        },
+        {
+            "path": "kubernetes/aks-ingress/CommandDatabase/db-deployment.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/aks-ingress/CommandDatabase/db-job.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/aks-ingress/CommandDatabase/db-pvc.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/aks-ingress/CommandDatabase/db-service.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/aks-ingress/CommandDatabase/secret.string.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/aks-ingress/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/aks-ingress/aks azure ad admin group.ps1",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/aks-ingress/aks private.txt",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/aks-ingress/command-ingress.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/aks-ingress/command-ingress.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/aks-ingress/deployment.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/aks-ingress/ssl",
+            "type": "tree"
+        },
+        {
+            "path": "kubernetes/aks-ingress/ssl/logcorner-ingress-tls.crt",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/aks-ingress/ssl/logcorner-ingress-tls.key",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/docker-desktop-ingress",
+            "type": "tree"
+        },
+        {
+            "path": "kubernetes/docker-desktop-ingress/CommandApi",
+            "type": "tree"
+        },
+        {
+            "path": "kubernetes/docker-desktop-ingress/CommandApi/command-api-deployment.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/docker-desktop-ingress/CommandApi/command-api-service.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/docker-desktop-ingress/CommandDatabase",
+            "type": "tree"
+        },
+        {
+            "path": "kubernetes/docker-desktop-ingress/CommandDatabase/db-deployment.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/docker-desktop-ingress/CommandDatabase/db-job.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/docker-desktop-ingress/CommandDatabase/db-pvc.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/docker-desktop-ingress/CommandDatabase/db-service.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/docker-desktop-ingress/CommandDatabase/secret.string.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/docker-desktop-ingress/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/docker-desktop-ingress/command-ingress.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/docker-desktop-ingress/ssl",
+            "type": "tree"
+        },
+        {
+            "path": "kubernetes/docker-desktop-ingress/ssl/logcorner-ingress-tls.crt",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/docker-desktop-ingress/ssl/logcorner-ingress-tls.key",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/docker-desktop",
+            "type": "tree"
+        },
+        {
+            "path": "kubernetes/docker-desktop/CommandApi",
+            "type": "tree"
+        },
+        {
+            "path": "kubernetes/docker-desktop/CommandApi/command-api-deployment.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/docker-desktop/CommandApi/command-api-service.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/docker-desktop/CommandDatabase",
+            "type": "tree"
+        },
+        {
+            "path": "kubernetes/docker-desktop/CommandDatabase/db-deployment.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/docker-desktop/CommandDatabase/db-job.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/docker-desktop/CommandDatabase/db-pvc.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/docker-desktop/CommandDatabase/db-secret.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/docker-desktop/CommandDatabase/db-service.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/docker-desktop/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/helm-chart",
+            "type": "tree"
+        },
+        {
+            "path": "kubernetes/helm-chart/chart",
+            "type": "tree"
+        },
+        {
+            "path": "kubernetes/helm-chart/chart/logcorner.edusync.speech",
+            "type": "tree"
+        },
+        {
+            "path": "kubernetes/helm-chart/chart/logcorner.edusync.speech/Chart.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/helm-chart/chart/logcorner.edusync.speech/ReadMe.txt",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/helm-chart/chart/logcorner.edusync.speech/charts",
+            "type": "tree"
+        },
+        {
+            "path": "kubernetes/helm-chart/chart/logcorner.edusync.speech/charts/database",
+            "type": "tree"
+        },
+        {
+            "path": "kubernetes/helm-chart/chart/logcorner.edusync.speech/charts/database/Chart.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/helm-chart/chart/logcorner.edusync.speech/charts/database/templates",
+            "type": "tree"
+        },
+        {
+            "path": "kubernetes/helm-chart/chart/logcorner.edusync.speech/charts/database/templates/db-deployment.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/helm-chart/chart/logcorner.edusync.speech/charts/database/templates/db-job.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/helm-chart/chart/logcorner.edusync.speech/charts/database/templates/db-pvc.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/helm-chart/chart/logcorner.edusync.speech/charts/database/templates/db-service.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/helm-chart/chart/logcorner.edusync.speech/charts/database/templates/secret.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/helm-chart/chart/logcorner.edusync.speech/charts/database/values.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/helm-chart/chart/logcorner.edusync.speech/charts/webapi",
+            "type": "tree"
+        },
+        {
+            "path": "kubernetes/helm-chart/chart/logcorner.edusync.speech/charts/webapi/Chart.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/helm-chart/chart/logcorner.edusync.speech/charts/webapi/templates",
+            "type": "tree"
+        },
+        {
+            "path": "kubernetes/helm-chart/chart/logcorner.edusync.speech/charts/webapi/templates/command-api-deployment.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/helm-chart/chart/logcorner.edusync.speech/charts/webapi/templates/command-api-service.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/helm-chart/chart/logcorner.edusync.speech/charts/webapi/templates/command-ingress.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/helm-chart/chart/logcorner.edusync.speech/charts/webapi/values.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/helm-chart/chart/logcorner.edusync.speech/templates",
+            "type": "tree"
+        },
+        {
+            "path": "kubernetes/helm-chart/chart/logcorner.edusync.speech/templates/namespace.yml",
+            "type": "blob"
+        },
+        {
+            "path": "kubernetes/helm-chart/chart/logcorner.edusync.speech/values.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "src",
+            "type": "tree"
+        },
+        {
+            "path": "src/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "src/CodeCoverage.dcvr",
+            "type": "blob"
+        },
+        {
+            "path": "src/CodeCoverage.dcvr.settings",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application.UnitTests",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application.UnitTests/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application.UnitTests/LogCorner.EduSync.Speech.Application.UnitTests.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application.UnitTests/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application.UnitTests/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application.UnitTests/Specs",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application.UnitTests/Specs/DeleteSpeechUseCaseUnitTest.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application.UnitTests/Specs/EventSourcingHandlerUnitTest.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application.UnitTests/Specs/EventSourcingSubscriberUnitTest.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application.UnitTests/Specs/RegisterSpeechUseCaseUnitTest.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application.UnitTests/Specs/UpdateSpeechUseCaseUnitTest.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application/Commands",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application/Commands/DeleteSpeechCommandMessage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application/Commands/RegisterSpeechCommandMessage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application/Commands/UpdateSpeechCommandMessage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application/EventSourcing",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application/EventSourcing/EventSourcingHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application/EventSourcing/EventSourcingSubscriber.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application/Exceptions",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application/Exceptions/ApplicationException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application/Exceptions/ArgumentNullApplicationException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application/Exceptions/ErrorCode.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application/Exceptions/EventNullException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application/Exceptions/NotFoundApplicationException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application/Interfaces",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application/Interfaces/ICommand.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application/Interfaces/ICommandHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application/Interfaces/ICreateSpeechUseCase.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application/Interfaces/IDeleteSpeechUseCase.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application/Interfaces/IEventSourcingHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application/Interfaces/IEventSourcingSubscriber.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application/Interfaces/IUpdateSpeechUseCase.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application/LogCorner.EduSync.Speech.Application.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application/UseCases",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application/UseCases/SpeechUseCase.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Application/UseCases/Topics.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Command.lutconfig",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Command.sln",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Database",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Database/Docker",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Database/Docker/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Database/Docker/Restore",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Database/Docker/Restore/logcorner-edusync-speech-database_Create.sql",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Database/Docker/mssql-tools",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Database/Docker/mssql-tools/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Database/Docker/readme.txt",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Database/LogCorner.EduSync.Speech.Database.sqlproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Database/LogCorner.EduSync.Speech.Database.sqlproj.user",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Database/dbo",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Database/dbo/Tables",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Database/dbo/Tables/EventStore.sql",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Database/dbo/Tables/MediaFile.sql",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Database/dbo/Tables/Speech.sql",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain.UnitTests",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain.UnitTests/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain.UnitTests/LogCorner.EduSync.Speech.Domain.UnitTests.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain.UnitTests/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain.UnitTests/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain.UnitTests/Specs",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain.UnitTests/Specs/DescriptionValueObjectUnitTest.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain.UnitTests/Specs/EventSourcingUnitTest.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain.UnitTests/Specs/ExceptionUnitTest.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain.UnitTests/Specs/SpeechEntityUnitTest.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain.UnitTests/Specs/SpeechTypeTestData.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain.UnitTests/Specs/SpeechTypeValueObjectUnitTest.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain.UnitTests/Specs/SpeechUnitTest.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain.UnitTests/Specs/StubEventSourcing.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain.UnitTests/Specs/SubEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain.UnitTests/Specs/TitleValueObjectUnitTest.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain.UnitTests/Specs/UrlValueObjectUnitTest.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/Description.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/Exceptions",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/Exceptions/AggregateException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/Exceptions/ArgumentNullAggregateException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/Exceptions/BadAggregateIdException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/Exceptions/BaseException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/Exceptions/ConcurrencyException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/Exceptions/DomainException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/Exceptions/ErrorCode.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/Exceptions/InvalidDomainEventException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/Exceptions/InvalidEnumAggregateException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/Exceptions/InvalidLenghtAggregateException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/Exceptions/InvalidUrlAggregateException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/Exceptions/MediaFileAlreadyExisteDomainException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/Exceptions/NullInstanceOfAggregateException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/IRepository",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/IRepository/IRepository.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/IRepository/IUnitOfWork.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/LogCorner.EduSync.Speech.Domain.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/SpeechAggregate",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/SpeechAggregate/AggregateId.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/SpeechAggregate/AggregateRoot.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/SpeechAggregate/Entity.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/SpeechAggregate/IEventSourcing.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/SpeechAggregate/IEventStoreRepository.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/SpeechAggregate/ISpeechRepository.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/SpeechAggregate/MediaFile.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/SpeechAggregate/Speech.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/SpeechType.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/SpeechTypes.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/Title.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Domain/UrlValue.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure.UnitTests",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure.UnitTests/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure.UnitTests/EntityAsAggregateRoot.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure.UnitTests/LogCorner.EduSync.Speech.Infrastructure.UnitTests.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure.UnitTests/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure.UnitTests/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure.UnitTests/Specs",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure.UnitTests/Specs/DatabaseContextSpecs.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure.UnitTests/Specs/DomainEventRebuilderSpecs.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure.UnitTests/Specs/EventOject.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure.UnitTests/Specs/EventStoreRepositorySpecs.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure.UnitTests/Specs/EventStub.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure.UnitTests/Specs/InvokerSpecs.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure.UnitTests/Specs/JsonEventSerializerSpecs.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure.UnitTests/Specs/JsonProviderSpecs.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure.UnitTests/Specs/JsonSerializerSpecs.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure.UnitTests/Specs/ObjectToDeserializeTo.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure.UnitTests/Specs/RepositorySpecs.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure.UnitTests/Specs/SpeechRepositorySpecs.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure.UnitTests/Specs/StubAggregate.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure.UnitTests/Specs/UnitOfWorkSpecs.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure/DataBaseContext.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure/DomainEventRebuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure/EventPublisher.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure/EventStoreRepository.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure/Exceptions",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure/Exceptions/ArgumentNullRepositoryException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure/Exceptions/InfrastructureException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure/Exceptions/RepositoryException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure/IDomainEventRebuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure/IEventPubliser.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure/IInvoker.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure/Invoker.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure/LogCorner.EduSync.Speech.Infrastructure.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure/Mapping",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure/Mapping/EventStoreEntityTypeConfiguration.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure/Mapping/MediaFileEntityTypeConfiguration.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure/Mapping/SpeechEntityTypeConfiguration.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure/Repository.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure/SpeechRepository.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Infrastructure/UnitOfWork.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation.UnitTests",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation.UnitTests/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation.UnitTests/LogCorner.EduSync.Speech.Presentation.UnitTests.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation.UnitTests/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation.UnitTests/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation.UnitTests/Specs",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation.UnitTests/Specs/NotEmptyAttributeUnitTest.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation.UnitTests/Specs/SpeechControllerUnitTest.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation.UnitTests/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation.UnitTests/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation/Controllers/SpeechController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation/Dtos",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation/Dtos/NotEmptyAttribute.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation/Dtos/SpeechForCreationDto.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation/Dtos/SpeechForDeleteDto.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation/Dtos/SpeechForUpdateDto.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation/Exceptions",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation/Exceptions/ExceptionMiddleware.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation/Exceptions/PresentationException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation/LogCorner.EduSync.Speech.Presentation.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation/ServicesConfiguration.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation/appsettings.Docker.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation/appsettings.Kubernetes.aks-ingress.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation/appsettings.Kubernetes.docker-desktop-ingress.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation/appsettings.Kubernetes.docker-desktop.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation/appsettings.Kubernetes.helm.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation/appsettings.Kubernetes.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.Presentation/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.SharedKernel.UnitTests",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.SharedKernel.UnitTests/LogCorner.EduSync.Speech.SharedKernel.UnitTests.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.SharedKernel.UnitTests/SharedKernelUnitTest.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.SharedKernel",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.SharedKernel/Events",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.SharedKernel/Events/Event.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.SharedKernel/Events/EventStore.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.SharedKernel/Events/IDomainEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.SharedKernel/Events/MediaFileCreatedEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.SharedKernel/Events/SpeechCreatedEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.SharedKernel/Events/SpeechDeletedEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.SharedKernel/Events/SpeechDescriptionChangedEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.SharedKernel/Events/SpeechTitleChangedEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.SharedKernel/Events/SpeechTypeChangedEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.SharedKernel/Events/SpeechUrlChangedEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.SharedKernel/LogCorner.EduSync.Speech.SharedKernel.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.SharedKernel/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.SharedKernel/Serialyser",
+            "type": "tree"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.SharedKernel/Serialyser/IEventSerializer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.SharedKernel/Serialyser/IJsonProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.SharedKernel/Serialyser/IJsonSerializer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.SharedKernel/Serialyser/JsonDotNetProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.SharedKernel/Serialyser/JsonEventSerializer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.SharedKernel/ServicesConfiguration.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.SharedKernel/SpeechTypeEnum.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/LogCorner.EduSync.Speech.SharedKernel/logcorner.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/Postman",
+            "type": "tree"
+        },
+        {
+            "path": "src/Postman/BLOG.postman_collection.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/docker-compose-unit-tests.yml",
+            "type": "blob"
+        },
+        {
+            "path": "src/docker-compose.dcproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/docker-compose.dcproj.user",
+            "type": "blob"
+        },
+        {
+            "path": "src/docker-compose.override-unit-tests.yml",
+            "type": "blob"
+        },
+        {
+            "path": "src/docker-compose.override.yml",
+            "type": "blob"
+        },
+        {
+            "path": "src/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "src/launchSettings.json",
+            "type": "blob"
+        }
+    ]
+}

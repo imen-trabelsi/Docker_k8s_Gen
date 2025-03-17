@@ -1,0 +1,23 @@
+# Get the base Image
+FROM nextcloud:apache
+
+# Environment Variables (Environment variables can be added based on user provided details)
+
+# Update package list, install php imap and clean up
+RUN set -ex; \
+    savedAptMark="$(apt-mark showmanual)"; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends libc-client-dev libkrb5-dev; \
+    docker-php-ext-configure imap --with-kerberos --with-imap-ssl; \
+    docker-php-ext-install imap; \
+    apt-mark auto '.*' > /dev/null; \
+    apt-mark manual $savedAptMark; \
+
+# Copy necessary files (Also can be specified by user)
+COPY . ./
+
+# Expose Application ports (Also can be specified by user)
+EXPOSE 80
+
+# Run commands
+CMD ["apache2-foreground"]

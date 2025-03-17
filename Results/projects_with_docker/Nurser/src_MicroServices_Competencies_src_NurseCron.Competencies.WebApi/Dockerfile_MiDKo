@@ -1,0 +1,10 @@
+# Base image
+FROM mcr.microsoft.com/dotnet/aspnet
+
+# Copy local code to the container image.
+WORKDIR /app
+COPY ./pub .
+
+# Allow the service to listen on port 80.
+EXPOSE 80
+ENTRYPOINT ["dotnet", "NurseCron.Competencies.Api.dll"]

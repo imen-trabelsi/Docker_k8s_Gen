@@ -1,0 +1,18 @@
+# Base image
+FROM openjdk:11-jre-slim
+
+# Copy instruction.
+WORKDIR /usr/share/website/authserver
+COPY ./wait-for-it.sh /usr/share/website/wait-for-it.sh
+COPY target/*-exec.jar /usr/share/website/authserver/authserver-exec.jar
+COPY keystore /usr/share/website/authserver/keystore
+
+# Run Commands
+RUN chmod +x /usr/share/website/wait-for-it.sh
+
+# Expose the correct ports
+EXPOSE 80
+
+# Set entry point instruction. 
+ENTRYPOINT ["/usr/share/website/wait-for-it.sh", "cassandra:9042", "--timeout=0", "--", "java", "-jar", "/usr/share/website/authserver/authserver-exec.jar"]
+

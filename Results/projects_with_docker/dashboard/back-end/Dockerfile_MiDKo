@@ -1,0 +1,33 @@
+# The base image
+FROM node:16
+
+# Set the working directory
+WORKDIR /usr/src/app
+
+# Create the directory locations
+RUN mkdir -p /usr/src/app/dist \
+
+# Adds a healthcheck instruction to the container to ensure it's healthy
+HEALTHCHECK CMD [ "node", "/usr/src/app/healthcheck.js" ]
+
+# Copy instructions
+COPY ./ ./
+
+# Ensure pm2 logs are viewable 
+ENV PM2_HOME="/home/node/app/.pm2"
+
+# Install dependencies and global pm2
+RUN npm install \ 
+    && npm install dotenv \ 
+
+# Give the necessary ownership and permissions to the directories
+RUN chown -R 1000:root /usr/src/app \
+
+# Set necessary environment variables
+ENV PORT 3000
+
+# Expose ports
+EXPOSE 3000
+
+# Commands to execute
+CMD ["pm2-runtime","dist/src/server.js"]

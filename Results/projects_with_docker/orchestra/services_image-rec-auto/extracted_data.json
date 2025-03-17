@@ -1,0 +1,27 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "requirements.txt": "inflect==4.1.0\nprotobuf==3.13.0\nrequests==2.24.0\n"
+        },
+        "database": null,
+        "build_system": "pip",
+        "config_files": {
+            "services/image-rec-auto/Dockerfile": "ARG BASE_BUILDER=alpine:3.9\nARG BASE\n\n# Compile the proto files (using alpine for easy recent protoc\n# install).\nFROM ${BASE_BUILDER} AS builder\n\nWORKDIR /builder\n\nRUN apk --no-cache add \\\n    protobuf\n\nCOPY common/messages/image_rec.proto \\\n    common/messages/imagery.proto \\\n    common/messages/interop.proto \\\n    common/messages/telemetry.proto \\\n    messages/\n\nRUN mkdir dist && protoc --python_out=dist messages/*.proto\n\n# Making the actual image now\nFROM ${BASE}\n\nWORKDIR /app\n\nRUN apt-get update && apt-get install -y \\\n    python3-dev \\\n    wget\n\nRUN wget https://bootstrap.pypa.io/get-pip.py -O get-pip.py && python3 get-pip.py\nRUN python3 -m pip install --upgrade pip\n\nARG install_pytorch\nRUN if [ -n \"$install_pytorch\" ] ; then \\\n        python3 -m pip install torch==1.7.1+cpu torchvision==0.8.2+cpu -f https://download.pytorch.org/whl/torch_stable.html; \\\n    fi\n\nCOPY common/python/requirements.txt common/requirements.txt\nCOPY image-rec-auto/requirements.txt .\n\nRUN python3 -m pip install  -r common/requirements.txt \\\n    -r requirements.txt\n\nARG HAWK_EYE_VERSION\nRUN wget https://github.com/uavaustin/hawk-eye/releases/download/v${HAWK_EYE_VERSION}/hawk_eye-${HAWK_EYE_VERSION}-py3-none-any.whl \\\n    -O hawk_eye-${HAWK_EYE_VERSION}-py3-none-any.whl \\\n    && python3 -m pip install hawk_eye-${HAWK_EYE_VERSION}-py3-none-any.whl \\\n    && rm hawk_eye-${HAWK_EYE_VERSION}-py3-none-any.whl\n\n# Copy the protobuf messages from above.\nCOPY --from=builder /builder/dist/messages messages\n\nCOPY common/python common\nCOPY image-rec-auto/service service\n\nENV IMAGERY_HOST='imagery' \\\n    IMAGERY_PORT='8081' \\\n    IMAGE_REC_MASTER_HOST='image-rec-master' \\\n    IMAGE_REC_MASTER_PORT='8082' \\\n    FETCH_INTERVAL='1000'\n\nENV PYTHONUNBUFFERED=TRUE\n\nCMD python3 -m service\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".gitignore",
+            "Dockerfile",
+            "Makefile",
+            "README.md",
+            "package.json"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

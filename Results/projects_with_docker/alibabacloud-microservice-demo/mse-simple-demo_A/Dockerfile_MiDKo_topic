@@ -1,0 +1,38 @@
+#Using base image
+FROM maven:3.9.9-eclipse-temurin-17 AS build
+
+#Create directory for application
+RUN mkdir -p /app
+
+#Set the working directory as /app
+WORKDIR /app
+
+#Copy pom.xml and source code to the working directory
+COPY ./pom.xml ./src ./ 
+
+#Install Arthas toolkit for Java diagnosis
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+
+#Install additional tools
+RUN apt-get update && apt-get install -y \
+    vim unzip netcat-openbsd telnet tcpdump iproute2 lsof ngrep \
+
+#Build the application using Maven
+RUN --mount=type=cache,target=/root/.m2/repository/ \
+
+#Applying multi-stage build 
+FROM eclipse-temurin-17 as runtime
+
+#Copy the built jar file to the container
+
+#Copy Arthas
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+
+#Change working directory to /app
+WORKDIR /app
+
+#Expose the application's port
+EXPOSE 20001
+
+#Run the application
+ENTRYPOINT ["java","-jar","/app/A.jar"]

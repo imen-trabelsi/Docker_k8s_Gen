@@ -1,0 +1,47 @@
+# set base image
+FROM ubuntu:14.04
+
+# environment variables
+ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+ENV HADOOP_LVERSION 2.7.3
+ENV HADOOP_HOME /usr/local/hadoop
+ENV HADOOP_OPTS -Djava.library.path=$HADOOP_HOME/lib/native
+ENV PATH $PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin
+ENV SPARK_VERSION 2.1.1
+ENV HADOOP_VERSION 2.7
+ENV ALLUXIO_VERSION 1.5.0
+ENV ALLUXIO_HOME /opt/alluxio
+ENV PATH $PATH:$ALLUXIO_HOME/bin
+ENV SPARK_HOME /opt/spark
+ENV PATH $PATH:$SPARK_HOME/bin
+
+# dependencies
+RUN apt-get update -y && apt-get install software-properties-common -y \
+&& apt-add-repository ppa:webupd8team/java -y \
+&& apt-get update -y && apt-get install -y libzip2 libsnappy1 libssl-dev git maven xterm \
+&& wget http://archive.apache.org/dist/hadoop/core/hadoop-$HADOOP_LVERSION/hadoop-$HADOOP_LVERSION.tar.gz \
+&& tar -zxf /hadoop-$HADOOP_LVERSION.tar.gz && rm /hadoop-$HADOOP_LVERSION.tar.gz \
+&& mv hadoop-$HADOOP_LVERSION /usr/local/hadoop && mkdir -p /usr/local/hadoop/logs \
+&& wget http://alluxio.org/downloads/files/${ALLUXIO_VERSION}/alluxio-${ALLUXIO_VERSION}-hadoop-${HADOOP_VERSION}-bin.tar.gz \
+&& tar xvfz alluxio-${ALLUXIO_VERSION}-hadoop-${HADOOP_VERSION}-bin.tar.gz \
+&& rm alluxio-${ALLUXIO_VERSION}-hadoop-${HADOOP_VERSION}-bin.tar.gz \
+&& mv alluxio-${ALLUXIO_VERSION}-hadoop-${HADOOP_VERSION} $ALLUXIO_HOME \
+&& wget https://d3kbcqa49mib13.cloudfront.net/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz \
+&& tar -xzf spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz \
+&& rm spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz \
+&& mv spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION} $SPARK_HOME \
+&& wget https://artifacts.elastic.co/downloads/elasticsearch-hadoop/elasticsearch-hadoop-6.2.4.zip \
+&& unzip elasticsearch-hadoop-6.2.4.zip && cd elasticsearch-hadoop-6.2.4/dist/ \
+
+# copy files and folders
+COPY master.conf /opt/conf/master.conf
+COPY slave.conf /opt/conf/slave.conf
+COPY alluxio_conf/* /opt/alluxio/conf/
+COPY hadoop_conf/* /usr/local/hadoop/etc/hadoop/
+COPY spark_conf/* /opt/spark/conf/
+
+# expose port
+EXPOSE 8080
+
+# command to run
+CMD ["/opt/spark/bin/spark-shell", "--master", "local[*]"]

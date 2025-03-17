@@ -1,0 +1,36 @@
+# Using the base image provided by the user
+FROM quay.io/azavea/openjdk-gdal:3.1-jdk8-slim
+
+# Setting up environment variable
+ENV CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+
+# Setting up working directory
+WORKDIR /app
+
+# COPY instructions as per user supplied inputs
+COPY rf/requirements.txt /tmp/
+COPY jars/ /opt/raster-foundry/jars/
+COPY rf/ /tmp/rf
+COPY completion.bash /tmp/rf/completion.bash
+
+# RUN commands as per user supplied inputs
+RUN set -ex \
+&& apt-get update \
+&& apt-get install -y --no-install-recommends \
+  python3-pip python3-setuptools python3-dev python3-requests \
+  build-essential imagemagick \
+&& wget \
+&& pip3 install --no-cache-dir -r /tmp/requirements.txt \
+&& apt-get purge -y build-essential python-dev \
+&& apt-get -y autoremove \
+&& rm -rf /var/lib/apt/lists/* \
+
+# Exposing the necessary port.
+# As no specific port is mentioned by the user, we expose the common app port 8080
+EXPOSE 8080
+
+# ENTRYPOINT is empty as no execution command is provided by the user
+ENTRYPOINT []
+
+# CMD is also empty as no startup command is provided yet
+CMD []

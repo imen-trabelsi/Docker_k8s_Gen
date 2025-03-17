@@ -1,0 +1,33 @@
+{
+    "docker_info": {
+        "base_image": "phusion/baseimage:master-amd64",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY mosquitto.conf /etc/mosquitto/mosquitto.conf"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apt-add-repository ppa:mosquitto-dev/mosquitto-ppa",
+                "RUN apt-get update && apt-get install -y",
+                "certbot",
+                "mosquitto",
+                "mosquitto-clients"
+            ],
+            [
+                "mkdir /etc/service/mosquitto",
+                "COPY mosquitto.sh /etc/service/mosquitto/run"
+            ],
+            [
+                "chmod +x /etc/service/mosquitto/run",
+                ""
+            ]
+        ]
+    }
+}

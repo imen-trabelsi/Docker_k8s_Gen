@@ -1,0 +1,38 @@
+{
+    "docker_info": {
+        "base_image": "eclipse-temurin:21",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV IZANAMI_CONTAINERIZED=true"
+        ],
+        "copy_instructions": [
+            "COPY ./target/izanami.jar /app/izanami.jar",
+            "WORKDIR /app"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "\"java\"",
+                    "\"-jar\"",
+                    "\"izanami.jar\""
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir /app",
+                "RUN groupadd -g 10001 javauser && useradd -u 10000 -g javauser javauser"
+            ],
+            [
+                "chown -R javauser:javauser /app",
+                "USER javauser"
+            ]
+        ]
+    }
+}

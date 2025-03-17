@@ -1,0 +1,20 @@
+FROM ikemtz/sql_dacpac:latest
+
+LABEL author="@IkeMtz"
+
+ENV SA_PASSWORD=SqlDockerRocks123!
+
+EXPOSE 1433
+
+USER root
+
+COPY /bin/Debug/*.dacpac /dacpac/
+COPY --from=sql-temp /var/opt/mssql/data/*.ldf /var/opt/mssql/data/
+COPY --from=sql-temp /var/opt/mssql/data/*.mdf /var/opt/mssql/data/
+
+RUN /opt/mssql/bin/sqlservr & sleep 20 \
+    && sqlpackage /Action:Publish /TargetServerName:localhost /TargetUser:SA /TargetPassword:$SA_PASSWORD /SourceFile:/dacpac/schdDb.dacpac /TargetDatabaseName:schdDb /p:BlockOnPossibleDataLoss=false \
+    && sleep 20 \
+    && pkill sqlservr && sleep 10 \
+
+USER mssql

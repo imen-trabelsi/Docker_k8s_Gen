@@ -1,0 +1,17 @@
+# Based on OpenJDK image
+FROM java:8-jre
+
+# Set the application directory
+WORKDIR /app
+
+# Copy application JAR
+COPY ./target/ts-verification-code-service-1.0.jar /app/
+
+# Expose the external port
+EXPOSE 15678
+
+# Set timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Provide default arguments for execution command
+CMD ["java", "-Xmx200m", "-jar", "/app/ts-verification-code-service-1.0.jar"]

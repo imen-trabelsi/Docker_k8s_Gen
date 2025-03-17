@@ -1,0 +1,26 @@
+FROM ubuntu:latest
+
+# Update the base Ubuntu image
+RUN apt-get update &&  \
+    apt-get install -y software-properties-common libpng-dev sudo python default-jdk wget git-core curl && \
+
+# Copy application files to the container
+COPY ./bin /million-song-library/bin
+COPY ./msl-pages /million-song-library/msl-pages
+COPY ./server /million-song-library/server
+COPY ./docs /million-song-library/docs
+WORKDIR /million-song-library/msl-pages
+
+# Grant necessary permissions and run scripts
+RUN chmod +x ../bin/provision/java-setup.sh && bash ../bin/provision/java-setup.sh && \
+    chmod +x ../bin/provision/validate-requirements.sh && \
+    chmod +x ../bin/provision/basic-dep-setup.sh && bash ./../bin/provision/basic-dep-setup.sh && \
+
+# Copy war files into Tomcat
+COPY server/eureka.war       /var/lib/tomcat7/webapps
+
+# Expose the correct port
+EXPOSE 8080
+
+# Docker startup command
+CMD ["/bin/bash", "-c", "echo -e '\n\033[0;35mCOMPLETED LOADING CONTENTS..................\033[0m\n' && /etc/init.d/tomcat7 start && tail -f /var/lib/tomcat7/logs/catalina.out"]

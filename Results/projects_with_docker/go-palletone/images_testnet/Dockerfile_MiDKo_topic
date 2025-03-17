@@ -1,0 +1,44 @@
+# Use golang:1.12-alpine as base image
+FROM golang:1.12-alpine AS builder
+
+# Install dependencies
+RUN apk add --no-cache make gcc musl-dev linux-headers git
+
+# Define environment variables
+ENV GOPATH=/gopath
+ENV GOROOT=/usr/local/go
+ENV PATH=$PATH:$GOPATH/bin:$GOROOT/bin
+
+# Create directory for source files
+RUN mkdir -p /go/src/github.com/palletone
+
+WORKDIR /go/src/github.com/palletone
+
+# Git clone the source code
+RUN git clone -b testnet https://github.com/palletone/go-palletone.git
+
+# Install further dependencies
+RUN go get -u -v github.com/palletone/adaptor
+RUN go get -u -v github.com/kardianos/govendor
+
+# Initialize and add vendors
+WORKDIR /go/src/github.com/palletone/go-palletone/contracts/example/go/container
+RUN govendor init
+RUN govendor add +e
+RUN rm vendor/github.com/palletone/adaptor/*_mock.go
+
+# Create required directories
+RUN mkdir -p /gopath/bin /gopath/src /gopath/pkg /chaincode/input
+
+# Download GoLang and extract
+RUN wget -o download.log https://studygolang.com/dl/golang/go1.12.linux-amd64.tar.gz
+RUN tar -C /usr/local -zxvf go1.12.linux-amd64.tar.gz >> download.log
+RUN rm go1.12.linux-amd64.tar.gz download.log
+
+# Copy build artifacts
+
+# Expose required ports (add required ports here)
+EXPOSE <REQUIRED_PORT>
+
+# Define command to execute. It should match with the expected command for your Go application
+CMD ["./your-go-application"]

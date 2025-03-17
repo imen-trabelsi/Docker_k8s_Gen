@@ -1,0 +1,28 @@
+# Node.js
+FROM node:10.15.3-alpine
+
+# Create app directory
+ENV HOME=/home/nupp
+WORKDIR $HOME/app
+
+# Create app user
+RUN addgroup -S nupp && adduser -S -g nupp nupp
+
+# Install dumb-init (to handle PID 1 and signal forwarding)
+ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.1/dumb-init_1.1.1_amd64 /usr/local/bin/dumb-init
+RUN chmod +x /usr/local/bin/dumb-init && chown nupp:nupp /usr/local/bin/dumb-init
+
+# Install app dependencies
+COPY package*.json ./
+RUN npm cache clean --force
+RUN npm install
+
+# Bundle app source
+COPY . $HOME/app/
+RUN chown -R nupp:nupp $HOME/*
+
+# Assign created user to installed app
+USER nupp
+
+# Set your app execution command
+CMD [ "dumb-init", "npm", "run", "dev" ]

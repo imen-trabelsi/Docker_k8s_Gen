@@ -1,0 +1,38 @@
+# Stage 1, based on SDK, to create and build publish
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+ARG BUILD_CONFIGURATION=Release
+WORKDIR /src
+
+# Copy everything
+COPY . .
+# Restore as distinct layers
+RUN dotnet restore "./Services/Discount/Discount.Grpc/./Discount.Grpc.csproj"
+# Copy everything again (now it includes restored packages)
+COPY . .
+
+# Run the build
+RUN dotnet build "./Services/Discount/Discount.Grpc/Discount.Grpc.csproj" --no-restore -c $BUILD_CONFIGURATION -o /app/build
+
+FROM build-env AS publish
+WORKDIR "/src/Services/Discount/Discount.Grpc"
+RUN dotnet publish "./Discount.Grpc.csproj" --no-build -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+# Stage 2, based on runtime image, to have only the artifacts needed for runtime
+FROM mcr.microsoft.com/dotnet/runtime:8.0
+
+WORKDIR /app
+
+# Switch to 'app' user
+USER app
+
+# Programming language and build system were considered unknown, but by context of the Dockerfile
+# elements it's evident we're working with .NET. If Python, Java, Node.js or other languages are used alongside,
+# additional steps to handle those environments should be added. Same applies to databases - if application
+# uses a database, connectivity and initialization scripts may need to be added to the Dockerfile.
+
+# Start the service
+ENTRYPOINT ["dotnet", "Discount.Grpc.dll"]
+
+# Expose ports for the application
+EXPOSE 8080
+EXPOSE 8081

@@ -1,0 +1,30 @@
+# Using Filebeat base image
+FROM docker.elastic.co/beats/filebeat:7.0.1
+
+# Set Workdir
+WORKDIR /usr/src/app
+
+# Copy dependencies
+COPY package*.json ./
+
+# Installing the dependencies
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Copy filebeat configuration
+COPY filebeat.yml /usr/share/filebeat/filebeat.yml
+
+# Create dockerlogs directory
+RUN mkdir /usr/share/filebeat/dockerlogs
+
+# Giving Permissions
+RUN chown -R root /usr/share/filebeat/
+RUN chmod -R go-w /usr/share/filebeat/
+
+# Assuming you would want to run the microservice on port 8000
+EXPOSE 8000
+
+# Start command
+CMD [ "node", "your-app-start-command.js" ]

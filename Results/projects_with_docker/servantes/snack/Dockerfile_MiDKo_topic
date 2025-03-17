@@ -1,0 +1,27 @@
+# Base image
+FROM golang:1.17-alpine AS builder
+
+# Set work directory
+WORKDIR /go/src/github.com/tilt-dev/servantes/snack
+
+# Copy go mod and sum files
+COPY go.mod go.sum ./
+
+# Download all dependencies. Will be cached if we don't change mod/sum
+RUN go mod download
+
+# Copy the local package files to the container's workspace.
+COPY . /go/src/github.com/tilt-dev/servantes/snack
+
+# Build the Go app
+RUN cd /go/src/github.com/tilt-dev/servantes/snack && go install .
+
+FROM alpine:latest  
+RUN apk --no-cache add ca-certificates
+
+WORKDIR /root/
+
+# This container exposes port to the outside world
+EXPOSE 
+
+ENTRYPOINT ["/go/bin/snack"]

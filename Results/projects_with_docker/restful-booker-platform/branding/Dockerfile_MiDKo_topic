@@ -1,0 +1,34 @@
+# Use openjdk base image
+FROM openjdk:21-slim AS builder
+
+# Set an enviroment variable for correct Maven operation
+ENV MAVEN_OPTS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1"
+
+# Copy pom.xml and install all dependencies
+COPY pom.xml /tmp/
+RUN mvn -B -f /tmp/pom.xml -s /usr/share/maven/ref/settings-docker.xml dependency:resolve
+
+# Copy the project and build it
+COPY . /tmp/
+WORKDIR /tmp/
+RUN mvn -B -s /usr/share/maven/ref/settings-docker.xml package
+
+# Start with a fresh layer for the final image
+FROM openjdk:21-slim
+
+# Copy the compiled jar from builder stage
+
+# Set up environment variables
+ENV profile=dev
+ENV authDomain=rbp-auth
+
+# Copy project files to proper location
+COPY . /usr/local/branding
+WORKDIR /usr/local/branding
+COPY target ./
+
+# Expose necessary ports
+EXPOSE <your-app-port>
+
+# Command to execute the jar
+ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=${profile}", "-Dhoneycomb.beeline.write-key=${HONEYCOMB_API_KEY}", "target/restful-booker-platform-branding-*.jar", "-D"]

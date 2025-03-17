@@ -1,0 +1,18 @@
+FROM node:12
+
+WORKDIR /opt/app/listings-service
+
+COPY package*.json ./
+
+RUN yarn
+
+COPY . .
+
+EXPOSE 8080
+
+ENV MYSQL_DATABASE=DB_Name
+ENV MYSQL_URL=DB_URL
+ENV MYSQL_USERNAME=DB_User
+ENV MYSQL_PASSWORD=DB_Pass
+
+CMD [ "yarn", "watch" ]

@@ -1,0 +1,30 @@
+#Use the openjdk-8 apline image as the base image 
+FROM openjdk:8-jdk-alpine
+
+# Install maven
+RUN apk add --update \
+    maven \
+
+# Create app directory 
+WORKDIR /app 
+
+# Copy pom.xml file 
+COPY pom.xml .
+
+# Install dependencies 
+RUN mvn dependency:go-offline -B 
+
+# Copy rest of the application
+COPY . . 
+
+# Build with maven 
+RUN mvn package 
+
+# Set exposed port 
+EXPOSE 8765 
+
+# Copy jar file to root directory 
+COPY target/gateway-service.jar gateway-service.jar
+
+# Set entry point to start the jar file 
+ENTRYPOINT ["java", "-jar", "/gateway-service.jar"]

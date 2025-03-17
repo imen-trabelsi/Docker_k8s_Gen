@@ -1,0 +1,28 @@
+# Base Image
+FROM python:3.9-alpine
+
+# Labels
+LABEL maintainer="your@email.com"
+
+# Environment variables
+ENV CELERY_BROKER_URL redis://redis:6379/0
+ENV CELERY_RESULT_BACKEND redis://redis:6379/0
+ENV C_FORCE_ROOT true
+
+# Set the working directory
+WORKDIR /queue
+
+# Copy the required files to the Docker image
+COPY . /queue
+
+# Upgrade pip and setuptools
+RUN pip install -U setuptools pip
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Expose application port
+EXPOSE 5000
+
+# Run the application
+CMD [ "python", "./app.py" ]

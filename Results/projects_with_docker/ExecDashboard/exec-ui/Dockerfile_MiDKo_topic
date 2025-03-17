@@ -1,0 +1,35 @@
+# Set the base image
+FROM node:8.11 as build
+
+# Define working directory in Docker container
+WORKDIR /var/app
+
+# Copy package.json and package-lock.json for package installation
+COPY package.json ./package.json
+COPY package-lock.json ./package-lock.json
+
+# Installing Node modules
+RUN npm install 
+
+# Copy Angular configurations
+COPY .angular-cli.json ./.angular-cli.json
+COPY tsconfig.json ./tsconfig.json
+
+# Copy source code
+COPY src ./src
+
+# Build application
+RUN npm run-script build-prod
+
+FROM node:8.11 as production
+
+ENV API_URL=http://localhost:8080
+
+# Copy files from the build image to production image
+COPY docker-util/docker-entrypoint.sh /usr/local/bin/
+
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# Entry point and command configuration
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["httpd-foreground"]

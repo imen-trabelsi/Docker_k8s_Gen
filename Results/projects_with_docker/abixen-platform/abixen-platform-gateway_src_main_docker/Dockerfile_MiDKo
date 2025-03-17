@@ -1,0 +1,23 @@
+# Use openjdk:8-jre as a base image
+FROM openjdk:8-jre
+
+# Make app directory
+RUN mkdir /app
+
+# Add jar file to the app directory
+COPY abixen-platform-gateway.jar /app/app.jar
+
+# Adding log configuration
+COPY abixen-platform-gateway/src/main/resources/log4j2.xml /app
+
+# Change current directory to the app directory
+WORKDIR /app
+
+# Expose port 9090
+EXPOSE 9090
+
+#Set the necessary environment variables
+ENV JAVA_OPTS="-Djava.security.egd=file:/dev/./urandom -Dspring.profiles.active=docker -Dabixen.services.eureka.uri=discovery"
+
+# Define the entry point
+ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -jar /app/app.jar"]

@@ -1,0 +1,90 @@
+# variable for base image
+ARG LINUX_IMAGE_NAME=""
+ARG LINUX_IMAGE_TAG=""
+FROM $LINUX_IMAGE_NAME:$LINUX_IMAGE_TAG
+
+# label definition
+LABEL maintainer="daos@daos.groups.io"
+
+# build arguments
+ARG BUST_CACHE=""
+ARG DAOS_REPOS=""
+ARG DAOS_GPG_KEYS=""
+ARG DAOS_REPOS_NOAUTH=""
+ARG DAOS_VERSION=""
+ARG DAOS_CLIENT_UNAME=""
+ARG DAOS_CLIENT_UID=""
+ARG DAOS_CLIENT_GNAME=""
+ARG DAOS_CLIENT_GID=""
+
+# install dependencies and any necessary clean up
+RUN dnf clean all && \
+    dnf makecache && \
+    dnf config-manager --save --setopt=assumeyes=True && \
+    dnf config-manager --save --setopt=fastestmirror=True && \
+    dnf config-manager --set-enabled powertools && \
+    dnf install epel-release && \
+    dnf update && \
+    
+# validate the provided arguments
+RUN for it in DAOS_REPOS DAOS_GPG_KEYS DAOS_VERSION ; do \
+    if eval "[[ -z \$$it ]]" ; then \
+    echo "[ERROR] Docker build argument $it is not defined" ; \
+    exit 1 ; \
+    fi ; \
+    
+# update cache if required
+RUN if [ -n "$BUST_CACHE" ] ; then \
+    echo "[INFO] Busting cache" ; \
+    dnf update ; \
+
+# loop to process provided repositories
+RUN for repo in ${DAOS_REPOS} ; do \
+    echo "[INFO] Adding rpm repository: $repo" ; \
+    dnf config-manager --add-repo "$repo" ; \
+
+# loop to process provided GPG keys
+RUN for gpg_key in ${DAOS_GPG_KEYS} ; do \
+    echo "[INFO] Adding repositories gpg key: $gpg_key" ; \
+    rpmkeys --import "$gpg_key" ; \
+
+# disabling authentication for repository
+RUN for repo in ${DAOS_REPOS_NOAUTH} ; do \
+    echo "[INFO] Disabling authentication for repository: $repo" ; \
+    dnf config-manager --save --setopt="${repo}.gpgcheck=0" ; \
+
+# install DAOS and clean ups
+RUN echo "[INFO] Installing DAOS" ; \
+    dnf install daos-${DAOS_VERSION} && \
+
+# validate user arguments
+RUN for it in DAOS_CLIENT_UNAME DAOS_CLIENT_UID DAOS_CLIENT_GNAME DAOS_CLIENT_GID ; do \
+    if eval "[[ -z \$$it ]]" ; then \
+    echo "[ERROR] Docker build argument $it is not defined" ; \
+    exit 1 ; \
+    fi ; \
+
+# creating a group if not exist
+RUN if ! getent group ${DAOS_CLIENT_GNAME} > /dev/null 2>&1; then \
+    echo "[INFO] Adding DAOS client group ${DAOS_CLIENT_GNAME}" ; \
+    groupadd -g ${DAOS_CLIENT_GID} ${DAOS_CLIENT_GNAME} ; \
+
+# creating a user if not exist
+RUN if ! getent passwd ${DAOS_CLIENT_UNAME} > /dev/null 2>&1; then \
+    echo "[INFO] Adding DAOS client user ${DAOS_CLIENT_UNAME}" ; \
+    useradd -g ${DAOS_CLIENT_GID} -u ${DAOS_CLIENT_UID} ${DAOS_CLIENT_UNAME} ; \
+
+# Setting working directory
+WORKDIR /app
+
+# Copy required files
+COPY utils/docker/examples/.env ./
+COPY utils/docker/examples/daos-base/el8/Dockerfile ./
+COPY requirements.txt ./
+
+# install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Set entry point
+ENTRYPOINT ["/usr/bin/bash"]
+CMD ["-i"]

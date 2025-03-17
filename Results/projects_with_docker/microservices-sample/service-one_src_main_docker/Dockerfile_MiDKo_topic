@@ -1,0 +1,33 @@
+# Base Image
+FROM --platform=${arch} maven:3.6.3-openjdk-11 AS build
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# Final Image
+FROM --platform=${arch} openjdk:11-jre-slim
+WORKDIR /app
+
+# Metadata
+LABEL vendor="Mudigal" \
+
+# Copy the jar file
+COPY --from=build /app/target/service-one.jar app.jar
+
+# Secure the container
+RUN addgroup --system spring && adduser --system spring --ingroup spring
+USER spring:spring
+
+# Ensure that Docker Container has execute permissions
+RUN chmod +x /app.jar
+RUN /bin/sh -c 'touch /app.jar'
+
+# Health Check
+HEALTHCHECK --interval=30s --timeout=3s --start-period=60s --retries=3 CMD curl --fail http://localhost:8082/actuator/health || exit 1
+
+# Expose the application on port 8082
+EXPOSE 8082
+
+# Command to execute the java application
+ENTRYPOINT ["java", "-Xmx256m", "-Xss32m", "-Djava.security.egd=file:/dev/./urandom", "-jar","/app.jar"]

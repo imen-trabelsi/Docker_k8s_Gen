@@ -1,0 +1,20 @@
+# Use open-liberty base image
+FROM open-liberty:19.0.0.9-microProfile3-java11
+
+# Copy the build file
+COPY --chown=1001:0 build.gradle .
+
+# Run the build
+RUN chmod +x ./gradlew
+RUN ./gradlew build
+
+# Copy the server configuration files and the built jar file
+COPY --chown=1001:0 build/libs/auth-service.war /config/dropins
+COPY --chown=1001:0 src/main/liberty/config /config/
+
+# Configure the server
+RUN printf 'frontend_url=http://lb-frontend:12000/login\nauth_url=https://lb-auth:8082/auth-service' > /config/server.env
+RUN printf 'httpPort=8082\nhttpsPort=8482' > /config/bootstrap.properties
+
+# Expose port 8082
+EXPOSE 8082

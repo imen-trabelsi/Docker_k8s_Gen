@@ -1,0 +1,32 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"indyscan-daemon-ui\",\n  \"version\": \"4.6.1\",\n  \"author\": \"Patrik Sta\u0161\",\n  \"license\": \"ISC\",\n  \"description\": \"UI to view and manage the state of indyscan-daemon.\",\n  \"dependencies\": {\n    \"@coreui/coreui\": \"^2.1.12\",\n    \"@coreui/coreui-plugin-chartjs-custom-tooltips\": \"^1.3.1\",\n    \"@coreui/icons\": \"0.3.0\",\n    \"@coreui/react\": \"^2.5.1\",\n    \"axios\": \"^0.21.1\",\n    \"bootstrap\": \"^4.3.1\",\n    \"chart.js\": \"^2.9.4\",\n    \"classnames\": \"^2.2.6\",\n    \"core-js\": \"^3.1.4\",\n    \"enzyme\": \"^3.10.0\",\n    \"enzyme-adapter-react-16\": \"^1.14.0\",\n    \"flag-icon-css\": \"^3.3.0\",\n    \"font-awesome\": \"^4.7.0\",\n    \"http-server\": \"^0.12.3\",\n    \"indyscan-daemon-api-client\": \"file:../indyscan-daemon-api-client\",\n    \"node-sass\": \"^4.13.1\",\n    \"prop-types\": \"^15.7.2\",\n    \"react\": \"^16.8.6\",\n    \"react-app-polyfill\": \"^1.0.1\",\n    \"react-chartjs-2\": \"^2.7.6\",\n    \"react-dom\": \"^16.8.6\",\n    \"react-json-pretty\": \"^2.2.0\",\n    \"react-router-config\": \"^5.0.1\",\n    \"react-router-dom\": \"^5.0.1\",\n    \"react-test-renderer\": \"^16.8.6\",\n    \"reactstrap\": \"^8.0.0\",\n    \"simple-line-icons\": \"^2.4.1\"\n  },\n  \"devDependencies\": {\n    \"react-scripts\": \"^3.4.1\"\n  },\n  \"scripts\": {\n    \"start\": \"react-scripts start\",\n    \"build\": \"react-scripts build\",\n    \"serve\": \"http-server --p ${PORT} --proxy ${PROXY_API_URL} build\",\n    \"test\": \"react-scripts test\",\n    \"test:cov\": \"npm test -- --coverage --watchAll=false\",\n    \"test:debug\": \"react-scripts --inspect-brk test --runInBand\",\n    \"eject\": \"react-scripts eject\"\n  },\n  \"bugs\": {\n    \"url\": \"https://github.com/coreui/coreui-free-react-admin-template/issues\"\n  },\n  \"eslintConfig\": {\n    \"extends\": \"react-app\"\n  },\n  \"browserslist\": [\n    \">0.2%\",\n    \"not dead\",\n    \"not ie <= 9\",\n    \"not op_mini all\"\n  ],\n  \"jest\": {\n    \"collectCoverageFrom\": [\n      \"src/**/*.{js,jsx}\",\n      \"!**/*index.js\",\n      \"!src/serviceWorker.js\",\n      \"!src/polyfill.js\"\n    ]\n  },\n  \"engines\": {\n    \"node\": \">=8.10\",\n    \"npm\": \">=6\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "indyscan-daemon-ui/.env": "PORT=3710\nPROXY_API_URL=http://localhost:3709\nCHOKIDAR_USEPOLLING=true\n",
+            "indyscan-daemon-ui/Dockerfile": "################## build api-client, prepare dirs and basic files\nFROM node:12.14.0-alpine3.9 as BASE\n\nRUN apk update && apk upgrade && \\\n    apk add --no-cache bash git openssh python make g++\nRUN mkdir -p /home/node/indyscan-daemon-ui && chown -R node:node /home/node/indyscan-daemon-ui\n\n################## build the app\n\n# For some reason, using the commende bellow creates /home/node/indyscan-daemon-api-client directory owned by root ....\n#USER node\n#COPY --chown=node:node ./indyscan-daemon-api-client ./\n\n# .... hence following awkward workaround instead...\nWORKDIR /home/node/indyscan-daemon-api-client\nCOPY ./indyscan-daemon-api-client ./\nRUN chown -R node:node /home/node/indyscan-daemon-api-client\n\nUSER node\n\nWORKDIR /home/node/indyscan-daemon-ui\nCOPY --chown=node:node ./indyscan-daemon-ui/package.json ./\nCOPY --chown=node:node ./indyscan-daemon-ui/package-lock.json ./\nCOPY --chown=node:node ./indyscan-daemon-ui/public ./public\nCOPY --chown=node:node ./indyscan-daemon-ui/src ./src\nRUN npm install\nRUN npm run build\nRUN npm prune --production\n\n################## serve the app\nFROM node:8.11.3-alpine as PROD\nUSER node\nWORKDIR /home/node/indyscan-daemon-ui\n\nCOPY --from=BASE --chown=node:node /home/node/indyscan-daemon-ui/build ./build\nCOPY --from=BASE --chown=node:node /home/node/indyscan-daemon-ui/node_modules ./node_modules\nCOPY --from=BASE --chown=node:node /home/node/indyscan-daemon-ui/package.json ./\n\nENV PORT ${PORT:-\"3710\"}\nENV PROXY_API_URL ${PROXY_API_URL:-\"http://host.docker.internal:3001\"}\n\nEXPOSE ${PORT}\n\nCMD npm run serve\n"
+        },
+        "static_files": {
+            "indyscan-daemon-ui/public/manifest.json": "{\n  \"short_name\": \"CoreUI-React\",\n  \"name\": \"CoreUI-React sample\",\n  \"icons\": [\n    {\n      \"src\": \"./assets/img/favicon.png\",\n      \"sizes\": \"100x100\",\n      \"type\": \"image/png\"\n    }\n  ],\n  \"start_url\": \".\",\n  \"display\": \"standalone\",\n  \"theme_color\": \"#000000\",\n  \"background_color\": \"#ffffff\"\n}\n"
+        }
+    },
+    "project_structure": {
+        "files": [
+            ".env",
+            "Dockerfile",
+            "README.md",
+            "dockerbuild.sh",
+            "package-lock.json",
+            "package.json"
+        ],
+        "folders": [
+            "public",
+            "src"
+        ]
+    }
+}

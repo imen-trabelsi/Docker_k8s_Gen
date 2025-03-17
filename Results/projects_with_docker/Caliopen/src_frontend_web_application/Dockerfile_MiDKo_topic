@@ -1,0 +1,31 @@
+# Base Image
+FROM node:16 AS builder
+
+# Create app directory
+WORKDIR /srv/caliopen/frontend/
+
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+COPY package.json yarn.lock ./ 
+
+# Install app dependencies
+RUN yarn install && \
+
+# Bundle app source
+COPY . .
+
+## Create a production build
+RUN yarn run build
+
+## Runtime stage
+FROM node:16
+
+# Set environment variables
+ENV NODE_ENV=production
+
+# Copy from the build image
+
+# Expose port
+EXPOSE 4000
+
+# App starting command
+CMD ["yarn", "run", "start:prod"]

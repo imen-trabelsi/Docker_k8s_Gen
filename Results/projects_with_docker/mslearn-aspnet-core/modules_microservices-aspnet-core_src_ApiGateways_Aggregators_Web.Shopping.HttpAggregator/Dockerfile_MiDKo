@@ -1,0 +1,24 @@
+# Build stage
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+WORKDIR /app
+
+# Copy project files and restore as distinct layers
+COPY . .
+RUN dotnet restore
+
+# Copy everything else and build
+COPY . ./app
+RUN dotnet publish -c Release -o out
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/sdk:6.0
+WORKDIR /app
+
+# Setting up environment variables
+ENV ASPNETCORE_URLS http://+:80
+
+# Expose port for the application.
+EXPOSE 80
+
+# Configure the entry point and the application to run on startup
+ENTRYPOINT ["dotnet", "Web.Shopping.HttpAggregator.dll"]

@@ -1,0 +1,36 @@
+{
+    "docker_info": {
+        "base_image": "eclipse-temurin:21-jre-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'"
+        ],
+        "copy_instructions": [],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"java\",",
+                    "\"-version\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk -U upgrade \\",
+                "&& apk add --no-cache fontconfig libretls musl-locales musl-locales-lang ttf-dejavu tzdata zlib openssl libc6-compat curl htop jattach libstdc++ libgcc",
+                "&& rm -rf /var/cache/apk/*"
+            ],
+            [
+                "echo Verifying install ... \\",
+                "&& echo java --version && java --version",
+                "&& echo Complete."
+            ]
+        ]
+    }
+}

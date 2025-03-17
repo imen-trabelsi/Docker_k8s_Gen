@@ -1,0 +1,45 @@
+{
+    "docker_info": {
+        "base_image": "golang",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV PATH $GOPATH/bin:$PATH"
+        ],
+        "copy_instructions": [],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"gotail\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p $GOPATH/src/github.com/nxadm/tail/",
+                "ADD . $GOPATH/src/github.com/nxadm/tail/"
+            ],
+            [
+                "go get -v github.com/nxadm/tail",
+                ""
+            ],
+            [
+                "go test -v github.com/nxadm/tail",
+                ""
+            ],
+            [
+                "go install -v github.com/nxadm/tail",
+                "RUN go install -v github.com/nxadm/tail/cmd/gotail"
+            ],
+            [
+                "$GOPATH/bin/gotail -h || true",
+                ""
+            ]
+        ]
+    }
+}

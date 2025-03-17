@@ -1,0 +1,43 @@
+# Use the python slim-bullseye image as the base image
+FROM python:3.9-slim-bullseye AS compile-image
+
+
+# Set environment variables
+ENV VIRTUAL_ENV=/opt/venv \
+
+# Create a virtual environment and activate it
+RUN python -m venv $VIRTUAL_ENV
+
+# Set working directory
+WORKDIR /usr/src/wazo-phoned
+
+# Add source code
+COPY . /usr/src/wazo-phoned
+
+# Update pip
+RUN pip install --upgrade pip
+
+# Install Python dependencies
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# Install Python setup.py
+RUN python setup.py install
+
+# Run commands
+RUN true \
+&& adduser --quiet --system --group --home /var/lib/wazo-phoned wazo-phoned \
+&& mkdir -p /etc/wazo-phoned/conf.d \
+
+# Copy external files to the docker image
+COPY ./etc/wazo-phoned /etc/wazo-phoned
+COPY ./contribs/docker/certs /usr/share/wazo-certs
+
+# Expose necessary ports 
+EXPOSE 9498
+
+# Define the standard execution command
+CMD ["wazo-phoned", "-d"]
+
+# Define metadata for the image
+LABEL maintainer="Wazo"

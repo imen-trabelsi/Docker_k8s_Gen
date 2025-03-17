@@ -1,0 +1,26 @@
+# Base image
+FROM mdillon/postgis:9.5
+
+# Environment variables
+ENV DEBIAN_FRONTEND noninteractive
+
+# Update and install necessary dependencies
+RUN apt-get update && apt-get install -y gettext-base
+
+# Set work directory
+WORKDIR /app
+
+# Copy necessary files to Docker Image
+COPY etc/postgresql/9.5/main/postgresql.conf.dist /app/postgresql/postgresql.conf.dist
+COPY target/nominatim.so /app/nominatim/src/module/nominatim.so
+COPY start.sh ./start.sh
+
+# Adjust permissions to execute start.sh script
+RUN chmod +x ./start.sh && sleep 1
+
+# Health-check instruction
+HEALTHCHECK --interval=1s --retries=180 CMD psql -U "$DB_USER" -c "SELECT 1" || exit 1
+
+# Set start script as the entry point and commands
+ENTRYPOINT ["./start.sh"]
+CMD ["postgres"]

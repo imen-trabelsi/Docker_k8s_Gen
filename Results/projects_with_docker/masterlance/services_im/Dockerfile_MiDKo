@@ -1,0 +1,27 @@
+# Set the base image
+FROM node:alpine
+
+# File Author / Maintainer
+LABEL maintainer="youremail@yourdomain.com"
+
+# Create app directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json
+COPY package.json package-lock.json ./ 
+
+# Install app dependencies
+RUN npm install 
+
+# Bundle app source
+COPY . .
+
+# Set health check
+HEALTHCHECK --interval=1m --timeout=3s CMD curl --fail http://localhost/vitals/docker || exit 1
+
+# Exposed port
+EXPOSE 3000
+
+# Start the server
+CMD [ "npm", "start" ]

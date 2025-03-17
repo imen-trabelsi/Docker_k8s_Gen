@@ -1,0 +1,36 @@
+# Use Ubuntu 18.04 as Base Image
+FROM ubuntu:18.04 as build
+
+# Set the User to root
+USER root
+
+# Set the Work Directory
+COPY . /usr/src/multicloud-k8s
+WORKDIR /usr/src/multicloud-k8s/kud/hosting_providers/containerized
+
+# Install Dependencies
+RUN apt-get -q update && \
+
+# Set Module Download Mode to vendor
+ENV GOFLAGS=-mod=vendor
+
+# Copy the go.mod and download dependencies
+COPY go.* ./
+RUN go mod download
+
+# Build the Host Microservice 
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
+
+# Set the Environment Variables
+ENV KUD_ENABLE_TESTS=false
+ENV KUD_PLUGIN_ENABLED=false
+ENV CONTAINER_RUNTIME=docker
+ENV KUD_DEBUG=""
+ENV ENABLE_KATA_WEBHOOK=false
+ENV KATA_WEBHOOK_RUNTIMECLASS=kata-clh
+
+# Run Commands
+RUN ./installer --install_pkg
+
+# Set tail -f /dev/null as Entry Point
+ENTRYPOINT ["tail", "-f", "/dev/null"]

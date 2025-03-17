@@ -1,0 +1,21 @@
+# The base image
+FROM node:20.17.0-alpine3.20
+
+# Set up the working directory and add application files to it
+WORKDIR /app
+COPY package.json ./
+COPY package-lock.json ./
+COPY . ./
+
+# Install necessary software for the application
+RUN apk add --no-cache git
+RUN git --version
+RUN npm -v
+RUN npm install
+RUN npm install react-scripts@5.0.1 -g
+
+# Ensure that the application gets started on container launch
+CMD [ "npm", "start"]
+
+# Expose the necessary port for the service
+EXPOSE 3000

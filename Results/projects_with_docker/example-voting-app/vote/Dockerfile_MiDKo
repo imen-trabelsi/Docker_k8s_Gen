@@ -1,0 +1,33 @@
+# Use multi-stage builds
+# Stage 1: Base image
+FROM python:3.11-slim AS base
+WORKDIR /usr/local/app
+
+# Ensure system is up-to-date and install curl
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl && \
+
+# Install python dependencies
+COPY requirements.txt ./requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Install watchdog
+RUN pip install watchdog
+
+# Set Flask environment variable
+ENV FLASH_ENV=development
+
+# Stage 2: Build stage for the microservice
+FROM base AS build
+COPY . .
+
+# Stage 3: Production image
+FROM base AS production
+
+# Copy files from build stage
+
+# Expose the necessary port
+EXPOSE 80
+
+# Add the correct entry point and cmd instructions
+CMD ["gunicorn", "app:app", "-b", "0.0.0.0:80", "--log-file", "-", "--access-logfile", "-", "--workers", "4", "--keep-alive", "0"]

@@ -1,0 +1,37 @@
+# Start with a base image containing Java runtime, and version specified by user's choice
+FROM openjdk:8-jdk-alpine
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Add a volume pointing to /tmp
+VOLUME /tmp
+
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
+
+# Copy the compiled jar to the container
+COPY target/*.jar app.jar
+
+# The application's jar file
+ENV JAR_FILE=target/*.jar
+
+# Add the application's jar to the container
+COPY ${JAR_FILE} app.jar
+
+# Copy the maven executable to the docker container
+COPY ./mvnw ./mvnw
+
+# Copy the pom.xml file to the docker container
+COPY ./pom.xml ./pom.xml
+
+# Run the build on container 
+RUN chmod -R 777 mvnw
+RUN ./mvnw clean install
+
+# "touch" the jar file so that it has its file modification time updated (useful for static content, hotswapping)
+RUN sh -c 'touch /app.jar'
+
+# ENTRYPOINT specifies a command that will always be executed when the container starts. 
+# In order to ease creation of new Docker containers, Spring Boot includes support for a fully executable archives.
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]

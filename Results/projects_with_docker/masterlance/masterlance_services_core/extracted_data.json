@@ -1,0 +1,31 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"core\",\n  \"version\": \"1.0.0\",\n  \"main\": \"server/server.js\",\n  \"engines\": {\n    \"node\": \">=6\"\n  },\n  \"scripts\": {\n    \"lint\": \"eslint .\",\n    \"start\": \"node .\",\n    \"start.dev\": \"nodemon -L\",\n    \"posttest\": \"npm run lint && nsp check\"\n  },\n  \"dependencies\": {\n    \"compression\": \"^1.0.3\",\n    \"cors\": \"^2.8.5\",\n    \"helmet\": \"^1.3.0\",\n    \"loopback\": \"^3.0.0\",\n    \"loopback-boot\": \"^2.6.5\",\n    \"loopback-component-explorer\": \"^4.0.0\",\n    \"loopback-connector-mongodb\": \"^1.18.1\",\n    \"morgan\": \"^1.7.0\",\n    \"serve-favicon\": \"^2.0.1\",\n    \"strong-error-handler\": \"^1.0.1\"\n  },\n  \"devDependencies\": {\n    \"eslint\": \"^2.13.1\",\n    \"eslint-config-loopback\": \"^4.0.0\",\n    \"nsp\": \"^2.1.0\",\n    \"nodemon\": \"*\"\n  },\n  \"repository\": {\n    \"type\": \"\",\n    \"url\": \"\"\n  },\n  \"license\": \"UNLICENSED\",\n  \"description\": \"core\"\n}\n"
+        },
+        "database": "MongoDB",
+        "build_system": "npm",
+        "config_files": {
+            "docker-compose.yml": "version: '3'\nservices:\n  facade:\n    build: ./services/facade\n    image: loopback-example-facade/facade\n    ports:\n      - \"3000:3000\"\n    links:\n      # - account\n      # - customer\n      - transaction\n      - core\n      - auth\n    depends_on:\n      # - account\n      # - customer\n      - transaction\n      - core\n      - auth\n    volumes:\n      - ./services/facade:/usr/src/app\n  # customer:\n  #   build: ./services/customer\n  #   image: loopback-example-facade/customer-service\n  #   ports:\n  #     - \"3001:80\"\n  #   volumes:9\n  #     - ./services/customer:/usr/src/app\n  # account:\n  #   build: ./services/account\n  #   image: loopback-example-facade/account-service\n  #   ports:\n  #     - \"3002:80\"\n  #   volumes:\n  #     - ./services/account:/usr/src/app\n  transaction:\n    build: ./services/transaction\n    image: loopback-example-facade/transaction\n    environment:\n      - PDT_TOKEN=\"VEzzj2vH8mKPde\" # YOUR_YENEPAY_PDT_TKEN\n      - FRONTEND_URL=http://localhost:8080\n      - SELLER_CODE=0694 # YOUR_YENEPAY_SELLER_CODE\n    ports:\n      - \"3003:3000\"\n    volumes:\n      - ./services/transaction:/usr/src/app\n    depends_on:\n      - payment-db\n    links:\n      - payment-db\n  core:\n    build: ./services/core\n    image: loopback-example-facade/core\n    ports:\n      - \"3001:3000\"\n    volumes:\n      - ./services/core:/usr/src/app\n    depends_on:\n      - core-db\n    links:\n      - core-db\n  auth:\n    build: ./services/auth\n    image: loopback-example-facade/auth\n    ports:\n      - \"3002:3000\"\n    volumes:\n      - ./services/auth:/usr/src/app\n    depends_on:\n      - auth-db\n    links:\n      - auth-db\n  im:\n    build: ./services/im\n    image: loopback-example-facade/im\n    ports:\n      - \"3004:3000\"\n    volumes:\n      - ./services/im:/usr/src/app\n    depends_on:\n      - im-db\n      - auth\n    links:\n      - im-db\n  auth-db:\n    image: mongo\n    volumes:\n      - ./data/auth-db:/data/db\n    ports:\n      - \"27018:27017\"\n  im-db:\n    image: mongo\n    volumes:\n      - ./data/im-db:/data/db\n    ports:\n      - \"27019:27017\"\n  payment-db:\n    image: mongo\n    volumes:\n      - ./data/payment-db:/data/db\n    ports:\n      - \"27020:27017\"\n  core-db:\n    image: mongo\n    volumes:\n      - ./data/core-db:/data/db\n    ports:\n      - \"27021:27017\"\n",
+            "masterlance/services/core/Dockerfile": "FROM node:alpine\n\n# Create app directory\nRUN mkdir -p /usr/src/app\nWORKDIR /usr/src/app\n\nENV DEBUG loopback:connector:swagger\n\n# Install dependencies\nCOPY package.json .\n# RUN npm install\n\n# Bundle app source\nCOPY . .\n\n# Exports\nEXPOSE 3000\n\nHEALTHCHECK --interval=1m --timeout=3s CMD curl --fail http://localhost/vitals/docker || exit 1\n\nCMD [ \"npm\", \"run\", \"start.dev\" ]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".editorconfig",
+            ".eslintignore",
+            ".eslintrc",
+            ".yo-rc.json",
+            "Dockerfile",
+            "package-lock.json",
+            "package.json"
+        ],
+        "folders": [
+            "common",
+            "server"
+        ]
+    }
+}

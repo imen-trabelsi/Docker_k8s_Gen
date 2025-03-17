@@ -1,0 +1,26 @@
+#Base Image
+FROM golang:1.13
+
+#set working directory
+WORKDIR $GOPATH
+
+#Update and install dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libicu-dev \
+
+#Install Go packages
+RUN go get github.com/mattn/goveralls \
+    && go get github.com/haya14busa/goverage \
+    && go get -x github.com/wadey/gocovmerge \
+    && go get golang.org/x/lint/golint \
+
+#Copy project files into the docker image
+COPY . .
+
+#Expose ports
+#Update these ports based on the specific ports your application is using
+#EXPOSE 8080
+
+#Command to execute
+#Update this based on the command you use to start your application
+#CMD ["./your-start-command"]

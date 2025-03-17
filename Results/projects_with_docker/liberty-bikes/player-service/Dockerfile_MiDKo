@@ -1,0 +1,18 @@
+# Base Image
+FROM open-liberty:19.0.0.9-microProfile3-java11
+
+# Expose port 8081 for the application
+EXPOSE 8081
+
+# Add necessary files to config folders
+COPY --chown=1001:0 build/libs/player-service.war /config/dropins
+COPY --chown=1001:0 build/libs/postgresql-*.jar /config/postgresql
+
+# Copy the contents of our project’s src/main/liberty/config directory to the /config/ directory in the Docker
+COPY --chown=1001:0 src/main/liberty/config /config/
+
+# Setting up port configuration
+RUN printf 'httpPort=8081\nhttpsPort=8444' > /config/bootstrap.properties
+
+# Command to run the application
+CMD ["/opt/ol/wlp/bin/server", "run", "defaultServer"]

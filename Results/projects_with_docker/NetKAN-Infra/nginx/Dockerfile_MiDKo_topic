@@ -1,0 +1,25 @@
+# Using nginx as the base image
+FROM nginx
+
+# Set work directory
+WORKDIR /usr/src/app
+
+# Install Python dependencies
+COPY requirements.txt ./
+RUN pip install --no-cache-dir requirements.txt
+
+# Adding code and dependencies
+COPY netkan/ .
+COPY tests/ .
+COPY .pylintrc .
+COPY nginx.conf /etc/nginx/
+
+# Set the correct environment variables
+ENV LANG C.UTF-8
+ENV PYTHONUNBUFFERED 1
+
+#Expose the app on port 8000
+EXPOSE 8000
+
+#Default command for the container
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

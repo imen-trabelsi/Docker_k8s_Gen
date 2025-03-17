@@ -1,0 +1,45 @@
+# Base Image
+FROM ${BASE_BUILDER} AS builder
+
+# Set work directory
+WORKDIR /builder
+
+# Install the system dependencies
+RUN apk --no-cache add protobuf python3-dev wget \
+    && wget https://bootstrap.pypa.io/get-pip.py -O get-pip.py \
+    && python3 get-pip.py \
+
+# Copy protobuf file
+COPY common/messages/image_rec.proto .
+
+# Generate protobuf message
+RUN mkdir dist && protoc --python_out=dist messages/*.proto
+
+# Install PyTorch if "install_pytorch" is set
+ARG install_pytorch
+RUN if [ -n "$install_pytorch" ] ; then \
+    python3 -m pip install torch==1.7.1+cpu torchvision==0.8.2+cpu -f https://download.pytorch.org/whl/torch_stable.html;\
+
+# Set another work directory  
+WORKDIR /app
+
+# Install the requirements
+COPY common/python/requirements.txt common/requirements.txt
+COPY image-rec-auto/requirements.txt .
+RUN python3 -m pip install  -r common/requirements.txt -r requirements.txt
+
+# Download the hawk-eye package
+ARG HAWK_EYE_VERSION
+RUN wget https://github.com/uavaustin/hawk-eye/releases/download/v${HAWK_EYE_VERSION}/hawk_eye-${HAWK_EYE_VERSION}-py3-none-any.whl -O hawk_eye-${HAWK_EYE_VERSION}-py3-none-any.whl \
+    && python3 -m pip install hawk_eye-${HAWK_EYE_VERSION}-py3-none-any.whl \
+
+# Copy necessary files and directories from the builder
+COPY common/python common
+COPY image-rec-auto/service service
+
+# Set environment variables
+ENV IMAGERY_HOST='imagery'
+ENV PYTHONUNBUFFERED=TRUE
+
+# Specify the execution command
+CMD ["python3", "-m", "service"]

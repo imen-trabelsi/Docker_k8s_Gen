@@ -1,0 +1,26 @@
+# Based on the Node.js 12 Image
+FROM node:12
+
+# Create app directory
+RUN mkdir -p /app && chown -R node:node /app
+
+WORKDIR /app
+
+# Install app dependencies
+# Copies package.json and package-lock.json to Docker environment
+COPY package*.json ./
+ 
+# Install all Node.js dependencies
+RUN npm install --silent --progress=false --production
+
+# Copies everything over to Docker environment
+COPY . .
+
+# Set the environment to production
+ENV NODE_ENV=production
+
+# MongoDB will run on this port by default, expose it.
+EXPOSE 27017
+
+# Runs the app
+CMD [ "npm", "start" ]

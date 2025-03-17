@@ -1,0 +1,29 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"indyscan-webapp\",\n  \"version\": \"4.6.1\",\n  \"description\": \"Web application to browse Hyperledger Indy blockchain transactions.\",\n  \"main\": \"index.js\",\n  \"scripts\": {\n    \"lint\": \"standard\",\n    \"lint:fix\": \"standard --fix\",\n    \"dev\": \"NODE_OPTIONS='--inspect' nodemon server/index.js\",\n    \"test:unit\": \"jest tests/unit\",\n    \"build\": \"next build\",\n    \"start\": \"next start\",\n    \"serve:dev\": \"NODE_ENV=dev node server/index.js\",\n    \"serve\": \"NODE_ENV=production node server/index.js\",\n    \"serve:localhost\": \"node server/index.js\"\n  },\n  \"keywords\": [],\n  \"author\": \"Patrik Sta\u0161\",\n  \"license\": \"ISC\",\n  \"standard\": {\n    \"parser\": \"babel-eslint\",\n    \"parserOptions\": {\n      \"ecmaFeatures\": {\n        \"jsx\": true\n      }\n    },\n    \"plugins\": [\n      \"react\"\n    ]\n  },\n  \"dependencies\": {\n    \"@zeit/next-sass\": \"^1.0.1\",\n    \"awesome-debounce-promise\": \"^2.1.0\",\n    \"canonical-json\": \"0.0.4\",\n    \"date-format\": \"^2.0.0\",\n    \"dotenv\": \"^7.0.0\",\n    \"express\": \"^4.17.1\",\n    \"express-prettify\": \"^0.1.1\",\n    \"express-validation\": \"^1.0.2\",\n    \"http-proxy-middleware\": \"^0.20.0\",\n    \"indyscan-api-client\": \"file:../indyscan-api-client\",\n    \"indyscan-txtype\": \"file:../indyscan-txtype\",\n    \"is-port-reachable\": \"^3.0.0\",\n    \"isomorphic-fetch\": \"^2.2.1\",\n    \"joi\": \"^14.3.1\",\n    \"lodash\": \"^4.17.21\",\n    \"moment\": \"^2.24.0\",\n    \"moment-timezone\": \"^0.5.33\",\n    \"next\": \"^9.3.6\",\n    \"next-routes\": \"^1.4.2\",\n    \"node-sass\": \"^4.14.1\",\n    \"pkginfo\": \"^0.4.1\",\n    \"query-string\": \"^6.8.1\",\n    \"raw-loader\": \"^0.5.1\",\n    \"rc-pagination\": \"^1.20.1\",\n    \"react\": \"^16.8.6\",\n    \"react-circular-progressbar\": \"^2.0.3\",\n    \"react-dom\": \"^16.8.6\",\n    \"react-epic-spinners\": \"^0.4.1\",\n    \"react-json-pretty\": \"^2.1.0\",\n    \"react-tooltip\": \"^3.10.0\",\n    \"react-transition-group\": \"^4.3.0\",\n    \"semantic-ui-react\": \"^0.84.0\",\n    \"sleep-promise\": \"^8.0.1\",\n    \"socket.io-client\": \"^2.3.1\",\n    \"winston\": \"^3.2.1\"\n  },\n  \"devDependencies\": {\n    \"autoprefixer\": \"^8.3.0\",\n    \"babel-eslint\": \"^10.1.0\",\n    \"command-line-args\": \"^5.1.1\",\n    \"command-line-usage\": \"^5.0.5\",\n    \"eslint-plugin-react\": \"^7.19.0\",\n    \"@types/jest\": \"^26.0.23\",\n    \"jest\": \"^27.0.6\",\n    \"jest-cli\": \"^27.0.6\",\n    \"nodemon\": \"^1.19.4\",\n    \"postcss-easy-import\": \"^3.0.0\",\n    \"postcss-loader\": \"^2.1.4\",\n    \"sass-loader\": \"^7.0.1\",\n    \"standard\": \"^14.3.4\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "indyscan-webapp/Dockerfile": "FROM node:12.14.0-alpine3.9 as BUILD\n\nRUN apk update && apk upgrade && \\\n    apk add --no-cache bash git openssh\n\nRUN apk add make\nRUN apk add g++\nRUN apk add python\n\nRUN npm install -g npm@8.7.0\n\nWORKDIR /usr/src/app/indyscan-api-client\nCOPY indyscan-api-client ./\nRUN npm ci --only=prod\n\nWORKDIR /usr/src/app/indyscan-txtype\nCOPY indyscan-txtype ./\nRUN npm ci --only=prod\n\nWORKDIR /usr/src/app/indyscan-webapp\nCOPY indyscan-webapp ./\nRUN npm ci --legacy-peer-deps\n\nRUN npm run build\nRUN npm prune --production --legacy-peer-deps\n\nFROM node:12.14.0-alpine3.9 as PRODUCTION\n\nRUN apk update && apk upgrade\nCOPY --from=BUILD /usr/src/app/indyscan-webapp /usr/src/app/indyscan-webapp\nCOPY --from=BUILD /usr/src/app/indyscan-api-client /usr/src/app/indyscan-api-client\nCOPY --from=BUILD /usr/src/app/indyscan-txtype /usr/src/app/indyscan-txtype\nWORKDIR /usr/src/app/indyscan-webapp\n\nENV PORT ${PORT:-\"3707\"}\nENV INDYSCAN_API_URL ${INDYSCAN_API_URL:-\"3708\"}\nENV LOG_LEVEL ${LOG_LEVEL:-\"info\"}\nENV LOG_HTTP_REQUESTS ${LOG_HTTP_REQUESTS:-\"false\"}\nENV LOG_HTTP_RESPONSES ${LOG_HTTP_RESPONSES:-\"false\"}\n\nEXPOSE ${PORT}\n\nLABEL org.label-schema.schema-version=\"1.0\"\nLABEL org.label-schema.name=\"indyscan-webapp\"\nLABEL org.label-schema.descriptsion=\"Serverside rendered UI for viewing Hyperledger Indy transactions via Indyscan API\"\nLABEL org.label-schema.vcs-url=\"https://github.com/Patrik-Stas/indyscan\"\n\nCMD npm run serve\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".env",
+            "Dockerfile",
+            "README.md",
+            "dockerbuild.sh",
+            "package-lock.json",
+            "package.json"
+        ],
+        "folders": [
+            "public",
+            "src"
+        ]
+    }
+}

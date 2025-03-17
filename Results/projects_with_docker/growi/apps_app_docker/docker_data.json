@@ -1,0 +1,109 @@
+{
+    "docker_info": {
+        "base_image": "base",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "3000"
+        ],
+        "user": [
+            "node",
+            "root"
+        ],
+        "labels": [
+            "maintainer=\"Yuki"
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV optDir=/opt",
+            "ENV PATH=\"$PNPM_HOME:$PATH\"",
+            "ENV optDir=/opt",
+            "ENV NODE_ENV=\"production\"",
+            "ENV optDir=/opt",
+            "ENV appDir=${optDir}/growi"
+        ],
+        "copy_instructions": [
+            "WORKDIR ${optDir}",
+            "WORKDIR ${optDir}",
+            "COPY . .",
+            "COPY --from=builder --chown=node:node \\",
+            "WORKDIR ${appDir}",
+            "COPY --chown=node:node --chmod=700 apps/app/docker/docker-entrypoint.sh /",
+            "WORKDIR ${appDir}/apps/app"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/docker-entrypoint.sh\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"npm",
+                    "run",
+                    "migrate",
+                    "&&",
+                    "node",
+                    "-r",
+                    "dotenv-flow/config",
+                    "--expose_gc",
+                    "dist/server/app.js\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && apt-get install -y ca-certificates wget curl --no-install-recommends",
+                ""
+            ],
+            [
+                "wget -qO- https://get.pnpm.io/install.sh | ENV=\"$HOME/.shrc\" SHELL=\"$(which sh)\" PNPM_VERSION=\"10.4.1\" sh -",
+                "ENV PNPM_HOME=\"/root/.local/share/pnpm\""
+            ],
+            [
+                "pnpm add turbo --global",
+                ""
+            ],
+            [
+                "pnpm add node-gyp --global",
+                "RUN pnpm install ---frozen-lockfile"
+            ],
+            [
+                "turbo run clean",
+                "RUN turbo run build --filter @growi/app"
+            ],
+            [
+                "pnpm deploy out --prod --filter @growi/app",
+                "RUN rm -rf apps/app/node_modules && mv out/node_modules apps/app/node_modules"
+            ],
+            [
+                "rm -rf apps/app/.next/cache",
+                "RUN tar -zcf packages.tar.gz",
+                "package.json",
+                "apps/app/.next",
+                "apps/app/config",
+                "apps/app/dist",
+                "apps/app/public",
+                "apps/app/resource",
+                "apps/app/tmp",
+                "apps/app/.env.production*",
+                "apps/app/next.config.js",
+                "apps/app/package.json",
+                "apps/app/node_modules"
+            ],
+            [
+                "set -eux; \\",
+                "apt-get update;",
+                "apt-get install -y gosu;",
+                "rm -rf /var/lib/apt/lists/*;",
+                "# verify that the binary works"
+            ],
+            [
+                "tar -zxf packages.tar.gz && rm packages.tar.gz",
+                ""
+            ]
+        ]
+    }
+}

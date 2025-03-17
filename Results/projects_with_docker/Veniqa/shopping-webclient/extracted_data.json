@@ -1,0 +1,45 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n    \"name\": \"veniqa\",\n    \"version\": \"2.3.0\",\n    \"private\": false,\n    \"description\": \"An E-commerce solution\",\n    \"bugs\": {\n      \"url\": \"https://github.com/Viveckh/Veniqa/issues\"\n    },\n    \"author\": \"(EJ) Vivek Pandey <vpandey+veniqa@ramapo.edu>\",\n    \"contributors\": [\n        \"Arjun Bastola <abastola+veniqa@ramapo.edu>\",\n        \"Vivek Pandey <vpandey+veniqa@ramapo.edu>\",\n        \"Sujil Maharjan <maharjansujil+veniqa@ramapo.edu>\"\n    ],\n    \"keywords\": [\n      \"Veniqa\",\n      \"e-commerce solution\",\n      \"e-commerce\",\n      \"fashion\",\n      \"online retail\",\n      \"retail\",\n      \"Vue.js\",\n      \"Node.js\",\n      \"Mongo\",\n      \"Redis\"\n    ],\n    \"license\": \"MIT\",\n    \"repository\": {\n      \"type\": \"git\",\n      \"url\": \"https://github.com/Viveckh/Veniqa\"\n    }\n  }\n  "
+        },
+        "database": "Redis",
+        "build_system": "npm",
+        "config_files": {
+            "shopping-webclient/.env": "VUE_APP_ORDER_S3_BUCKET_URL=https://s3.amazonaws.com/veniqa-catalog-images-dev/permanent-thumbnails\nVUE_APP_API_BASE_URL=http://localhost:4201",
+            "shopping-webclient/.env.production": "VUE_APP_API_BASE_URL=https://shop-server.veniqa.com\nVUE_APP_ORDER_S3_BUCKET_URL=https://s3.amazonaws.com/veniqa-catalog-images/permanent-thumbnails\n",
+            "docker-compose.yml": "version: '3'\nservices:\n  mongo: \n    build:\n      context: ./mongo\n      dockerfile: Dockerfile-mongo\n    ports:\n      - 27000:27017\n    volumes:\n      - \"dbconfig:/data/configdb\"\n      - \"dbdata:/data/db\"\n\n  redis:\n    image: \"redis:alpine\"\n    container_name: cache\n\n    command: redis-server --requirepass SOME_PASSWORD\n\n    ports:\n      - 6379:6379\n\n    environment:\n      - REDIS_REPLICATION_MODE=master\n\n  shopping-server:\n    build:\n      context: ./shopping-server\n      dockerfile: Dockerfile-local\n    volumes:\n      - './shopping-server:/app'\n      - '/app/node_modules'\n    ports:\n      - 4201:3000\n    depends_on: \n      - mongo\n      - redis\n    environment:\n      NODE_ENV: development\n      VENIQA_ENV: local\n      VENIQA_MONGODB_DB: veniqa-prod-db\n      VENIQA_MONGODB_URL: mongodb://mongo:27017/veniqa-prod-db\n      VENIQA_REDIS_HOST: redis://cache\n      VENIQA_REDIS_PORT: 6379\n      VENIQA_REDIS_PASSWORD: SOME_PASSWORD\n      VENIQA_REDIS_DB_NUMBER: 0\n      VENIQA_SESSION_SECRET_KEY: SECRET_KEY\n      VENIQA_CRYPTO_SECRET_KEY: CRYPTO_SECRET\n\n  management-server:\n    build:\n      context: ./management-server\n      dockerfile: Dockerfile-local\n    volumes:\n      - './management-server:/app'\n      - '/app/node_modules'\n    ports:\n      - 4202:3000\n    depends_on: \n      - mongo\n      - redis\n    environment:\n      NODE_ENV: development\n      VENIQA_ENV: local\n      VENIQA_MONGODB_DB: veniqa-prod-db\n      VENIQA_MONGODB_URL: mongodb://mongo:27017/veniqa-prod-db\n      VENIQA_REDIS_HOST: redis://cache\n      VENIQA_REDIS_PORT: 6379\n      VENIQA_REDIS_PASSWORD: SOME_PASSWORD\n      VENIQA_REDIS_DB_NUMBER: 1\n      VENIQA_SESSION_SECRET_KEY: SECRET_KEY\n      VENIQA_CRYPTO_SECRET_KEY: CRYPTO_SECRET\n\n  shopping-webclient:\n    build:\n      context: ./shopping-webclient\n      dockerfile: Dockerfile-local\n    volumes:\n      - './shopping-webclient:/app'\n      - '/app/node_modules'\n    ports:\n      - 5201:5201\n    \n  management-webclient:\n    build:\n      context: ./management-webclient\n      dockerfile: Dockerfile-local\n    volumes:\n      - './management-webclient:/app'\n      - '/app/node_modules'\n    ports:\n      - 5202:5202\n\nvolumes:\n  dbdata:\n  dbconfig:",
+            "shopping-webclient/Dockerfile": "FROM node:lts-alpine\n\n# install simple http server for serving static content\nRUN npm install -g http-server\n\n# make the 'app' folder the current working directory\nWORKDIR /app\n\n# copy both 'package.json' and 'package-lock.json' (if available)\nCOPY package*.json ./\n\n# install project dependencies\nRUN npm install\n\n# copy project files and folders to the current working directory (i.e. 'app' folder)\nCOPY . .\n\n# build app for production with minification\nRUN npm run build\n\nEXPOSE 3000\n\n# http-server by default launches it on port 8080\nCMD [ \"http-server\", \"dist\" ]"
+        },
+        "static_files": {
+            "shopping-webclient/public/AmazonSearchResult.json": "[\n  {\n    \"_id\": \"1\",\n    \"store\": \"amazon\",\n    \"brand\": \"Cognac\",\n    \"name\": \"Dubuex\",\n    \"item_url\": \"www.google.com\",\n    \"category\": \"alcohol\",\n    \"subcategory\": \"hard\",\n    \"picture_urls\": [],\n    \"price\": {\n      \"currency\": \"USD\",\n      \"amount\": \"1000\"\n    },\n    \"custom_attributes\": {\n    },\n    \"details_html\": \"\"\n  }\n]"
+        }
+    },
+    "project_structure": {
+        "files": [
+            ".browserslistrc",
+            ".dockerignore",
+            ".editorconfig",
+            ".env",
+            ".env.dev",
+            ".env.production",
+            ".eslintrc.js",
+            ".gitignore",
+            ".prettierrc.js",
+            "Dockerfile",
+            "Dockerfile-local",
+            "README.md",
+            "babel.config.js",
+            "package-lock.json",
+            "package.json",
+            "postcss.config.js",
+            "vue.config.js"
+        ],
+        "folders": [
+            "public",
+            "src"
+        ]
+    }
+}

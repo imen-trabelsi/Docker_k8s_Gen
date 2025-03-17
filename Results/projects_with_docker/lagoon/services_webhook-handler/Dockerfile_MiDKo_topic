@@ -1,0 +1,28 @@
+# Use specified Base Image
+FROM ${IMAGE_REPO:-lagoon}/yarn-workspace-builder AS yarn-workspace-builder
+
+# Using yarn for build system and installing dependencies
+WORKDIR /app
+COPY package.json .
+RUN yarn install
+RUN yarn check --verify-tree
+
+# Copy contents of the base image into new image
+
+# Set Work Directory to services/webhook-handler/
+WORKDIR /app/services/webhook-handler/
+
+# Copying Configuration files
+
+# Copy rest of the application code
+COPY . .
+
+# Run Build and Check
+RUN yarn build
+
+# Set Environment
+ENV LAGOON_VERSION=$LAGOON_VERSION
+ENV NODE_ENV production
+
+# Starting the Application
+CMD ["yarn","start"]

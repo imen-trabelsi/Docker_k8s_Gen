@@ -1,0 +1,52 @@
+# Use alpine:3.20 as base image
+FROM alpine:3.20
+
+# Create necessary directories
+RUN mkdir -p /app/sql
+RUN mkdir -p /app/ui_static_files
+
+# Update APK repo and add necessary packages
+RUN apk update && \
+    apk add --no-cache \
+    curl \
+    gpg \
+    git \
+    tzdata \
+    openssh-client \
+    gpg-agent \
+    ca-certificates \
+    && \
+    # Clean APK cache
+
+# Update certificates
+RUN update-ca-certificates
+
+# Add SSH RSA key
+RUN echo "PubkeyAcceptedKeyTypes +ssh-rsa" >> /etc/ssh/ssh_config
+
+# Copy necessary files to /app
+COPY dist/cdsctl-* /app/
+COPY dist/cds-worker-* /app/
+COPY dist/sql.tar.gz /app/
+COPY dist/ui.tar.gz /app/
+COPY dist/cds-docs.tar.gz /app/
+COPY dist/cds-engine-* /app/
+
+# Change working directory to /app
+WORKDIR /app
+
+# Add necessary user provision
+RUN addgroup cds && adduser cds -G cds -D
+
+# Make app executable and extract necessary files
+RUN chmod +x /app/cds-engine-linux-amd64 && \
+    tar xzf /app/sql.tar.gz -C /app/sql && \
+    tar xzf /app/ui.tar.gz -C /app/ui_static_files && \
+    tar xzf /app/cds-docs.tar.gz -C /app/ui_static_files && \
+    mv /app/ui_static_files/cds-docs /app/ui_static_files/docs && \
+
+# Switch to non-root user
+USER cds
+
+# Set Entry Point
+ENTRYPOINT ["/app/cds-engine-linux-amd64"]

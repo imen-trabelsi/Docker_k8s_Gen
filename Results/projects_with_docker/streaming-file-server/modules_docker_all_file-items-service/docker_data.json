@@ -1,0 +1,45 @@
+{
+    "docker_info": {
+        "base_image": "docker_base-streaming-file-server:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8001"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [
+            "HEALTHCHECK --retries=33 \\"
+        ],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY --chown=appuser ./modules/apps/file-items-service/build/libs/*.jar ./app.jar"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "java",
+                    "${JAVA_OPTS}",
+                    "-jar",
+                    "./app.jar",
+                    "--spring.profiles.active=db-pg"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "wget",
+                    "--quiet",
+                    "--tries=1",
+                    "--spider",
+                    "http://127.0.0.1:8001/actuator/health",
+                    "||",
+                    "exit",
+                    "1"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

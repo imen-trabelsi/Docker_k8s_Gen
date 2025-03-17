@@ -1,0 +1,18 @@
+# Use the base image provided by the user
+FROM registry.access.redhat.com/ubi9/python-311:latest
+
+# Set Working Directory
+WORKDIR /usr/src/app
+
+# Copy project files to the Docker image
+COPY requirements.txt ./
+COPY consumer.py .
+
+# Install Python Dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Expose the port 
+# Specify port number if given on the provided information 
+
+# Set the entry point and run command
+ENTRYPOINT ["python", "./consumer.py"]

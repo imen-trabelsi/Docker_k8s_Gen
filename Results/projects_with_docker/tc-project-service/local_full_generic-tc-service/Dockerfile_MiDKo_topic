@@ -1,0 +1,20 @@
+# First stage: Build the application with Maven builder
+FROM maven:3.6.0-jdk-11-slim AS build
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline -B 
+COPY src ./src 
+RUN mvn clean package
+
+# Second stage: Setup environment with Node-based base image
+FROM node:$NODE_VERSION as app
+WORKDIR /opt/app
+RUN git clone $GIT_URL . && \
+    git checkout -b node-branch origin/$GIT_BRANCH && \
+COPY docker-entrypoint.sh /opt/
+RUN if [ $BYPASS_TOKEN_VALIDATION -eq 1 ]; then sed -i '/decodedToken = jwt.decode/a \      callback(undefined, decodedToken.payload); return;' node_modules/tc-core-library-js/lib/auth/verifier.js; fi
+RUN chmod +x /opt/docker-entrypoint.sh
+
+# Set up exposed ports and entry point
+EXPOSE 8080
+ENTRYPOINT ["/opt/docker-entrypoint.sh"]

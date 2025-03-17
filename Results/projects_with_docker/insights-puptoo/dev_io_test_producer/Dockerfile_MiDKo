@@ -1,0 +1,17 @@
+# Base Image 
+FROM registry.access.redhat.com/ubi9/python-311:latest
+
+# Set the working directory
+WORKDIR /usr/src/app
+
+# Copy dependencies file
+COPY requirements.txt ./
+
+# Install app dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the source code
+COPY producer.py .
+
+# Run the command on container startup
+CMD [ "python", "./producer.py"]

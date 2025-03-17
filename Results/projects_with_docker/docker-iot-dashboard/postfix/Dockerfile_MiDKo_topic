@@ -1,0 +1,51 @@
+FROM phusion/baseimage:master-amd64
+LABEL maintainer="maintaineremail@example.com}"
+
+# Update the base image and install necessary packages
+RUN apt-get update && apt-get install -y \
+    iputils-ping \
+    net-tools \
+    debconf-utils \
+    postfix \
+    libsasl2-modules \
+    telnet \
+
+# Set environment variables
+ARG hostname
+ARG relay_ip
+ARG domain
+ARG smtp_auth
+ARG smtp_login
+ARG smtp_password
+ARG tls_security_level
+ARG tls_wrappermode
+
+# Configure Postfix mail server
+RUN echo "postfix postfix/mailname string $hostname" | debconf-set-selections && \
+    echo "postfix postfix/main_mailer_type string 'Internet Site'" | debconf-set-selections && \
+    echo "postfix postfix/relayhost string $relay_ip" | debconf-set-selections && \
+    postconf -e myhostname=$hostname && \
+    postconf -e mydomain=$domain && \
+    postconf -e myorigin=\$mydomain && \
+    postconf -e masquerade_domains=\$mydomain && \
+    postconf -e mydestination="\$myhostname, $hostname, localhost, localhost.localdomain, localhost" && \
+    postconf -e mynetworks="127.0.0.0/8 [::ffff:127.0.0.0]/104 [::1]/128 10.0.0.0/8 172.16.0.0/12 192.168.0.0/16" && \
+    echo $domain > /etc/mailname && \
+    echo "$relay_ip $smtp_login:$smtp_password" >/etc/postfix/sasl_passwd && chmod 600 /etc/postfix/sasl_passwd && postmap /etc/postfix/sasl_passwd && \
+    printf '%s\n' '# set up login for SMTP' \
+    "smtp_sasl_auth_enable=$smtp_auth" \
+    'smtp_sasl_password_maps=hash:/etc/postfix/sasl_passwd' \
+    'smtp_sasl_security_options=noanonymous' \
+    'smtp_sasl_tls_security_options=noanonymous' \
+    'smtp_sasl_mechanism_filter=AUTH LOGIN'  >> /etc/postfix/main.cf && \
+    sed -i "s/smtp_tls_security_level=may/smtp_tls_security_level=$tls_security_level/" /etc/postfix/main.cf && \
+    printf '%s\n' "smtp_tls_wrappermode = $tls_wrappermode" >> /etc/postfix/main.cf && \
+    echo "root@${domain} iotmail@${domain}" > /etc/postfix/generic && \
+    postconf -e smtp_generic_maps=hash:/etc/postfix/generic && \
+
+# Copy start script into image and make it executable
+COPY postfix.sh /etc/my_init.d/postfix.sh
+RUN chmod +x /etc/my_init.d/postfix.sh
+
+# Command to run when the docker starts
+CMD ["/sbin/my_init"]

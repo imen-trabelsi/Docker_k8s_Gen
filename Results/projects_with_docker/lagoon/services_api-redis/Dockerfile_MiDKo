@@ -1,0 +1,26 @@
+# Layer-1, we'll use Node.js as the base - may need to modify version depending on your app
+FROM ${UPSTREAM_REPO:-uselagoon}/redis-7:${UPSTREAM_TAG:-latest} AS base
+
+# Set environment variables
+ENV LAGOON_VERSION=$LAGOON_VERSION
+ENV REDIS_PASSWORD=admin
+ENV NODE_ENV=production
+
+# Set the working directory inside the container 
+WORKDIR /app 
+
+# Copy package.json file to the work directory in the container
+COPY package*.json ./ 
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of your app's source code from your host to your image filesystem.
+COPY . .
+
+# If your app uses any ports, you'll need to expose those ports in the Dockerfile
+# No exposed ports mentioned in the task, assuming it's 3000
+EXPOSE 3000
+
+# Run command when the container launches
+CMD ["npm", "start"]

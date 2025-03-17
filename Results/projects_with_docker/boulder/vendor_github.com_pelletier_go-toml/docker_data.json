@@ -1,0 +1,29 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.12-alpine3.9",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV CGO_ENABLED=0",
+            "ENV GOOS=linux"
+        ],
+        "copy_instructions": [
+            "WORKDIR /go/src/github.com/pelletier/go-toml",
+            "COPY . .",
+            "COPY --from=builder /go/bin/tomll /usr/bin/tomll",
+            "COPY --from=builder /go/bin/tomljson /usr/bin/tomljson",
+            "COPY --from=builder /go/bin/jsontoml /usr/bin/jsontoml"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "go install ./...",
+                ""
+            ]
+        ]
+    }
+}

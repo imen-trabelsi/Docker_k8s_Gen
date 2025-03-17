@@ -1,0 +1,31 @@
+# Specify base image
+FROM nginx:latest
+
+# Label the image
+LABEL description="Dockerfile for Spring Boot microservice"
+
+#Install necessary dependencies
+RUN apt-get update && \
+    apt-get install -y npm && \
+    rm -rf /var/lib/apt/lists/* && \
+
+#Copy necessary files
+COPY package.json /opt/caliopen/
+COPY src /opt/caliopen
+COPY config/nginx-config-maintenance.conf /etc/nginx/conf.d/default.conf
+
+#Switch working directory
+WORKDIR /opt/caliopen
+
+#Install project dependencies
+RUN npm install 
+
+#Expose necessary ports
+EXPOSE 80
+
+#Define healthcheck
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD curl -f http://localhost/ || exit 1
+
+#Start the microservice
+CMD ["npm", "start"]

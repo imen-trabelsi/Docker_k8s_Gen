@@ -1,0 +1,20 @@
+# Use node base image for the build stage
+FROM node as build
+
+# Create app directory
+WORKDIR /json-server
+
+# Copy necessary files
+COPY services.json /json-server/
+COPY package.json /json-server/
+COPY server.js /json-server/
+COPY authMiddleware.js /json-server/
+
+# Install dependencies
+RUN npm install
+
+# Expose port
+EXPOSE 3001
+
+# Command to start the application
+CMD ["npm", "run", "start"]

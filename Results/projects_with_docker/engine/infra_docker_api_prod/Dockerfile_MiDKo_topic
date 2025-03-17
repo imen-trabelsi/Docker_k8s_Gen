@@ -1,0 +1,54 @@
+# Use the rust base image with the latest version tag
+FROM rust:latest AS base
+
+# Set workdir to /app
+WORKDIR /app
+
+# Copy the necessary files from local system to the Docker Image
+COPY .config/mise /etc/mise
+COPY . .
+COPY rust-toolchain.toml /usr/local/
+COPY --from=builder /usr/local/src /usr/local/src
+
+# Set Workdir back to /usr/local/src/apps/hash-api
+WORKDIR /usr/local/src/apps/hash-api
+
+# Install necessary packages
+RUN apt-get update && apt-get install -y --no-install-recommends curl ca-certificates build-essential
+RUN curl https://mise.run | sh
+RUN mise install node npm:turbo java biome npm:@redocly/cli cargo-binstall cargo:wasm-pack cargo:wasm-opt
+RUN yarn install --immutable
+RUN yarn cache clean
+
+# Clean up unnecessary packages
+RUN apt-get clean
+RUN rm -rf /var/lib/apt/lists/*
+
+# Execute necessary runtime commands
+RUN turbo prune --scope='@apps/hash-api' --docker
+RUN turbo build --filter '@apps/hash-api' --env-mode=loose
+
+# Create api group and user
+RUN groupadd --system --gid 60000 hash && useradd --system api -G hash
+
+# Install corepack
+RUN corepack prepare --activate
+
+# Set environment variables
+ENV MISE_DATA_DIR="/mise"
+ENV MISE_CACHE_DIR="/mise/cache"
+ENV MISE_INSTALL_PATH="/usr/local/bin/mise"
+ENV PATH="/mise/shims:$PATH"
+ENV MISE_CARGO_HOME="/usr/local/cargo"
+ENV COREPACK_HOME=/usr/local/src/var/corepack-cache
+ENV NODE_ENV=production
+
+# Set user
+USER api:hash
+
+# HEALTHCHECK
+HEALTHCHECK --interval=5s --timeout=3s --start-period=10s --retries=3 CMD curl -f http://localhost:5001/health-check || exit 1
+
+# CMD instruction
+ENTRYPOINT ["yarn"]
+CMD ["start"]

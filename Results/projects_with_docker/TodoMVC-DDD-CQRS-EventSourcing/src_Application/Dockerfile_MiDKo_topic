@@ -1,0 +1,28 @@
+#Use SDK image for building the source code
+FROM mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim AS build
+
+#Set the work directory
+WORKDIR /src
+
+#Copy the csproj and restore the dependencies
+COPY ["Application/Application.csproj", "Application/"]
+RUN dotnet restore "Application/Application.csproj"
+
+#Copy all the source code and build the application
+COPY . .
+WORKDIR "/src/Application"
+RUN dotnet build "Application.csproj" -c Release -o /app/build
+
+#Publish the app to get a standalone DLL
+RUN dotnet publish "Application.csproj" -c Release -o /app/publish
+
+#Now use ASP.NET Core runtime image for running the application DLL
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-bullseye-slim AS final
+
+#Set the work directory
+WORKDIR /app
+
+#Copy the standalone application DLL from previous stage
+
+#Make sure the DLL is executed when a container run based on the image
+ENTRYPOINT ["dotnet", "Application.dll"]

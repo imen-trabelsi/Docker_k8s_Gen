@@ -1,0 +1,26 @@
+# Use the Base Java Image 
+FROM eclipse-temurin:21
+
+# Create necessary directories
+RUN mkdir -p /app \
+    && groupadd -g 10001 javauser \ 
+    && useradd -u 10000 -g javauser javauser \ 
+
+# Set Work Directory
+WORKDIR /app
+
+# Set the correct environment variable
+ENV IZANAMI_CONTAINERIZED=true
+
+# Copy Required Files
+COPY ./target/izanami.jar /app/izanami.jar
+COPY ./public/swagger.json /app/public/swagger.json
+
+# Switch to the User "javauser"
+USER javauser
+
+# Run Spring Boot app via the ENTRYPOINT
+ENTRYPOINT [ "java", "-jar", "izanami.jar" ] 
+
+# Expose Required Ports
+EXPOSE 8080

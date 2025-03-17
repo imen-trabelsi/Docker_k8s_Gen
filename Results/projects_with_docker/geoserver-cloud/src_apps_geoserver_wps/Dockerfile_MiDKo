@@ -1,0 +1,27 @@
+# Start with a base image containing Java runtime
+FROM $REPOSITORY/gs-cloud-base-jre:$TAG
+
+# The application's jar file
+ARG JAR_FILE=target/gs-cloud-*-bin.jar
+
+# Variables to instruct running of Spring Boot
+ENV JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS} -XX:SharedArchiveFile=application.jsa"
+
+# Add the application's jar to the container
+COPY ${JAR_FILE} application.jar
+COPY --from=builder dependencies/ ./
+COPY --from=builder snapshot-dependencies/ ./
+COPY --from=builder spring-boot-loader/ ./
+RUN mkdir /tmp/tmpdatadir
+
+# Run commands
+RUN java -Djarmode=layertools -jar application.jar extract
+RUN GEOSERVER_DATA_DIR=/tmp/tmpdatadir java
+RUN rm -rf /tmp/*
+
+# Add the entry point command
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/application.jar"]
+
+# Exposed Ports might need to be added depending on the application
+# For example:
+# EXPOSE 8080

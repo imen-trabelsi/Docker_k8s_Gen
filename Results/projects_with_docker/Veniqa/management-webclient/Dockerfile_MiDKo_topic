@@ -1,0 +1,27 @@
+# Dockerfile
+FROM node:lts-alpine
+
+# Create app directory
+WORKDIR /app
+
+# Install app dependencies
+# Copies package.json and package-lock.json
+COPY package*.json ./
+
+# Install http-server globally
+RUN npm install -g http-server
+
+# Install all the dependencies
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Build the app
+RUN npm run build
+
+# Inform Docker that the container is listening on the specified port at runtime.
+EXPOSE 3000
+
+# The command to start the app
+CMD [ "http-server", "dist" ]

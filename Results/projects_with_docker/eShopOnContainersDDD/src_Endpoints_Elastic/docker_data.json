@@ -1,0 +1,41 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim",
+        "multi_stage_build": true,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /src",
+            "COPY [\"/\", \"/\"]",
+            "WORKDIR /app",
+            "COPY --from=publish /app/publish ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"dotnet\",",
+                    "\"Elastic.dll\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "dotnet restore \"Endpoints/Domain/Elastic.csproj\"",
+                "WORKDIR /src/src/Endpoints/Elastic"
+            ],
+            [
+                "dotnet build \"Endpoints/Domain/Elastic.csproj\" -c Release -o /app/build",
+                ""
+            ],
+            [
+                "dotnet publish \"Endpoints/Domain/Elastic.csproj\" -c Release -o /app/publish",
+                ""
+            ]
+        ]
+    }
+}

@@ -1,0 +1,36 @@
+#Build Stage
+FROM wodby/python:${PYTHON_VER}-dev as build
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV DATABASES_DEFAULT_NAME=/mnt/data/${DATABASE_NAME}
+ENV DATASETS_DIR=/mnt/datasets
+ENV DJANGO_SETTINGS_MODULE=${DJANGO_SETTINGS_MODULE}
+ENV SECRET_KEY=${SECRET_KEY}
+ENV BROKER_URL=${BROKER_URL}
+ENV NGINX_VERSION=${NGINX_VERSION}
+ENV PYTHON_VER=${PYTHON_VER}
+
+# Set working directory
+WORKDIR /usr/src/app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --retries 3 --no-cache-dir --disable-pip-version-check --no-python-version-warning -r requirements.txt
+
+# Copy rest of the application
+COPY . .
+
+# Final Stage
+FROM wodby/python:${PYTHON_VER}-dev as final
+
+# Copy from build stage
+
+# Expose ports
+EXPOSE 8000
+
+# Set user
+USER wodby
+
+# Command to run the application
+CMD ["daphne", "ramasceneMasterProject.asgi:application", "-b", "0.0.0.0", "-p", "8000"]

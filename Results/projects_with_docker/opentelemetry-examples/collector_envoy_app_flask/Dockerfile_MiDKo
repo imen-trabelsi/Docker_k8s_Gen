@@ -1,0 +1,14 @@
+# Dockerfile
+FROM python:3.10-slim-bullseye
+WORKDIR /code
+COPY ./ ./
+# Adds our application code to the image
+COPY requirements.txt /tmp/flask-requirements.txt
+RUN pip3 install -r /tmp/flask-requirements.txt
+RUN mkdir /code
+COPY . /code
+# Run the image as a non-root user
+RUN adduser -D myuser
+USER myuser
+EXPOSE 5000
+ENTRYPOINT ["python3", "/code/service.py"]

@@ -1,0 +1,21 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Spring Boot",
+        "dependencies": {
+            "pom.xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n\txsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n\t<modelVersion>4.0.0</modelVersion>\n\n\t<groupId>com.mudigal</groupId>\n\t<artifactId>microservices-sample</artifactId>\n\t<version>5.0.0-SNAPSHOT</version>\n\t<packaging>pom</packaging>\n\n\t<name>Microservices Sample</name>\n\t<description>Microservices sample project</description>\n\n\t<organization>\n    \t<name>Mudigal Technologies LLP</name>\n    \t<url>https://www.mudigal.com</url>\n  \t</organization>\n\t<developers>\n\t\t<developer>\n\t\t\t<name>Vijayendra Mudigal</name>\n\t\t\t<email>vijayendra@mudigal.com</email>\n\t\t\t<url>https://vijayendra.mudigal.com</url>\n\t\t</developer>\n\t</developers>\n\n\t<parent>\n\t\t<groupId>org.springframework.boot</groupId>\n\t\t<artifactId>spring-boot-starter-parent</artifactId>\n\t\t<version>2.7.0</version>\n\t</parent>\n\n\t<properties>\n\t\t<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>\n\t\t<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>\n\t\t<java.version>1.8</java.version>\n\t</properties>\n\n\t<modules>\n\t\t<module>api-gateway</module>\n\t\t<module>service-one</module>\n\t\t<module>service-two</module>\n\t</modules>\n\t\n</project>\n"
+        },
+        "database": null,
+        "build_system": "Maven",
+        "config_files": {
+            "web-application/docker/Dockerfile": "# Create image based on the official Node 12 image from dockerhub\nFROM node:18-alpine\n\nLABEL author=\"Vijayendra Mudigal\"\nMAINTAINER contact@mudigal.com\n\n# Create a directory where our app will be placed\nRUN mkdir -p /usr/src/app\n\n# Change directory so that our commands run inside this new directory\nWORKDIR /usr/src/app\n\n# Copy dependency definitions\nCOPY package.json /usr/src/app\n\n# Install dependecies\nRUN npm install\n\n# Get all the code needed to run the app\nCOPY . /usr/src/app\n\n# Expose the port the app runs in\nEXPOSE 4200\n\n# Serve the app\nCMD [\"npm\", \"start\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile"
+        ],
+        "folders": []
+    }
+}

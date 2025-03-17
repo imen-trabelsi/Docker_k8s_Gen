@@ -1,0 +1,23 @@
+{
+    "docker_info": {
+        "base_image": null,
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY docker/postgres/1-init-dbs.sh /docker-entrypoint-initdb.d/"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "mkdir -p /var/lib/pgsql/data \\",
+                "&& chown -R postgres:postgres /var/lib/pgsql/data",
+                "&& chmod -R ug+rw /var/lib/pgsql/data"
+            ]
+        ]
+    }
+}

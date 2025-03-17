@@ -1,0 +1,36 @@
+{
+    "docker_info": {
+        "base_image": "adorsys/java:11",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8080"
+        ],
+        "user": [],
+        "labels": [
+            "maintainer=\"https://git.adorsys.de/adorsys/xs2a/aspsp-xs2a\""
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV JAVA_OPTS -Xmx1024m -Dserver.port=8080",
+            "ENV JAVA_TOOL_OPTIONS -Xmx1024m"
+        ],
+        "copy_instructions": [
+            "WORKDIR /opt/profile",
+            "COPY ./target/aspsp-profile-exec*jar /opt/profile/aspsp-profile-exec.jar"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "exec",
+                    "$JAVA_HOME/bin/java",
+                    "$JAVA_OPTS",
+                    "-jar",
+                    "/opt/profile/aspsp-profile-exec.jar"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

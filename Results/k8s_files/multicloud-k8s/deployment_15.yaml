@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: clm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: clm
+  template:
+    metadata:
+      labels:
+        app: clm
+    spec:
+      containers:
+      - command:
+        - /opt/emco/entrypoint
+        - clm
+        image: emcov2/emco:stable
+        imagePullPolicy: Always
+        name: clm
+        ports:
+        - containerPort: 9061
+        volumeMounts:
+        - mountPath: /opt/emco/config.json
+          name: config
+          subPath: config.json
+        workingDir: /opt/emco
+      volumes:
+      - configMap:
+          items:
+          - key: config.json
+            path: config.json
+          name: clm
+        name: config

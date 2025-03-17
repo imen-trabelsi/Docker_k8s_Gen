@@ -1,0 +1,24 @@
+# Start from a base image
+FROM maven:3.6.3-jdk-8 as builder
+
+WORKDIR /app
+
+# Copy pom.xml and source code to the container
+COPY pom.xml .
+COPY src/ ./src/
+
+# Containerize the spring boot application
+RUN mvn package -DskipTests
+
+# Runtime stage
+FROM dragonwell-registry.cn-hangzhou.cr.aliyuncs.com/dragonwell/dragonwell:8-extended-ga-centos
+
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+COPY /start.sh /app/
+
+# Set working dir and expose the necessary ports
+WORKDIR /app
+EXPOSE 8080
+
+# Execution command
+ENTRYPOINT ["/app/start.sh"]

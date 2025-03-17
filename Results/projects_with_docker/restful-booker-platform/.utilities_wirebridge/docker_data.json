@@ -1,0 +1,29 @@
+{
+    "docker_info": {
+        "base_image": "maven:3.5.2-jdk-8-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD . /usr/local/wirebridge",
+            "WORKDIR /usr/local/report",
+            "COPY . ./"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "java",
+                    "-jar",
+                    "Wirebridge-0.0.3.jar",
+                    "-D"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

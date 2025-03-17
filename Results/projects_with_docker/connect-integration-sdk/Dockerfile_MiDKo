@@ -1,0 +1,26 @@
+# Use the specific version of the base image from PHP
+FROM php:5.6-cli
+
+# Ensure container is up to date, install git, zip and nano
+RUN apt-get update && apt-get install -y git zip nano
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Set the working directory in the container to /app
+WORKDIR /app
+
+# Copy application source to working directory
+COPY . /app
+
+# install dependencies
+RUN composer install
+
+# Make sure files/folders needed by the php application are accessible
+RUN chown -R www-data:www-data /app
+
+# Expose the port for the application
+EXPOSE 80
+
+# Set the command to run when the container starts
+CMD ["tail", "-f", "/dev/null"]

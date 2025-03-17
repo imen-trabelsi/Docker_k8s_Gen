@@ -1,0 +1,17 @@
+# Step 1: Specify the base image
+FROM java:8-jre
+
+# Step 2: Setting up the working directory
+WORKDIR /app
+
+# Step 3: Copy the jar file from the local file system to the Docker image
+COPY ./target/ts-contacts-service-1.0.jar /app/
+
+# Step 4: Expose the required port for the service
+EXPOSE 12347
+
+# Step 5: Set the time zone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+
+# Step 6: Run the application
+CMD ["java", "-Xmx200m", "-jar", "/app/ts-contacts-service-1.0.jar"]

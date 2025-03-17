@@ -1,0 +1,37 @@
+# Stage 1 - Prepare the environment
+FROM $REPOSITORY/gs-cloud-base-jre:$TAG AS builder
+
+# Set working directory in Docker image
+WORKDIR /app
+
+# Copy project files to Docker workdir
+COPY . .
+
+# Build the Spring Boot Application using Maven
+RUN mvn clean install -DskipTests
+
+# Copy the JAR file and unpack in the workdir
+ARG JAR_FILE=target/gs-cloud-*-bin.jar
+COPY ${JAR_FILE} app.jar
+RUN java -Djarmode=layertools -jar app.jar extract
+
+RUN mkdir /tmp/tmpdatadir
+RUN GEOSERVER_DATA_DIR=/tmp/tmpdatadir java -XX:ArchiveClassesAtExit=application.jsa -Dspring.context.exit=onRefreshed -Dspring.profiles.active=standalone,datadir,offline -Dserver.port=0 -Dmanagement.server.port=0 org.springframework.boot.loader.JarLauncher
+RUN rm -rf /tmp/*
+
+# Stage 2 - Create Docker final image
+FROM $REPOSITORY/gs-cloud-base-jre:$TAG
+
+# Set working directory in Docker image
+WORKDIR /app
+
+# Copy files from 'builder' stage to /app directory in new image
+
+# Environment Variable
+ENV JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS} -XX:SharedArchiveFile=application.jsa"
+
+# Expose the default web port
+EXPOSE 8080
+
+# Start Spring Boot Application
+ENTRYPOINT ["java","-Djarmode=layertools", "-jar","app.jar"]

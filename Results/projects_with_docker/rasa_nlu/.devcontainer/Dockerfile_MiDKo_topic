@@ -1,0 +1,32 @@
+# Use the specified base image
+FROM mcr.microsoft.com/vscode/devcontainers/python:0-${VARIANT}
+
+# Set build arguments
+ARG VARIANT=3-bullseye
+ARG NODE_VERSION="none"
+
+# ensures print statements and log messages immediately appear in the Knative logs
+ENV PYTHONUNBUFFERED=True
+ENV PYTHONFAULTHANDLER=1
+
+# Use a non-root user to make the container safer to use.
+USER vscode
+
+WORKDIR /app
+
+# Install pre-requisites
+RUN if [ "${NODE_VERSION}" != "none" ]; then su vscode -c "umask 0002 && . /usr/local/share/nvm/nvm.sh && nvm install ${NODE_VERSION} 2>&1"; fi
+
+RUN pip install poetry==1.1.10 pre-commit
+
+# Copy dependencies first to optimize Docker cache
+COPY ../pyproject.toml ../poetry.lock /tmp/pip-tmp/rasa/
+
+# Install dependencies
+RUN cd /tmp/pip-tmp/rasa && poetry config virtualenvs.create false \
+
+# Copy the rest of the code
+COPY . .
+
+# Run command to start the Rasa service
+CMD ["rasa", "run"]

@@ -1,0 +1,28 @@
+# Use the official dotnet SDK as the base image
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
+
+WORKDIR /app
+
+# Copy csproj files and restore dependencies
+COPY ./Common/ClassifiedAds.Application/*.csproj ./Common/ClassifiedAds.Application/
+COPY ./Common/ClassifiedAds.CrossCuttingConcerns/*.csproj ./Common/ClassifiedAds.CrossCuttingConcerns/
+COPY ./Common/ClassifiedAds.Domain/*.csproj ./Common/ClassifiedAds.Domain/
+COPY ./Common/ClassifiedAds.Infrastructure/*.csproj ./Common/ClassifiedAds.Infrastructure/
+COPY ./Services.Notification/ClassifiedAds.Services.Notification/*.csproj ./Services.Notification/ClassifiedAds.Services.Notification/
+COPY ./Services.Notification/ClassifiedAds.Services.Notification.Background/*.csproj ./Services.Notification/ClassifiedAds.Services.Notification.Background/
+
+RUN dotnet restore ./Common/ClassifiedAds.Application/ClassifiedAds.Application.csproj
+RUN dotnet restore ./Common/ClassifiedAds.Infrastructure/ClassifiedAds.Infrastructure.csproj
+RUN dotnet restore ./Services.Notification/ClassifiedAds.Services.Notification/ClassifiedAds.Services.Notification.csproj
+RUN dotnet restore ./Services.Notification/ClassifiedAds.Services.Notification.Background/ClassifiedAds.Services.Notification.Background.csproj
+
+# Now copy rest of the files, and build
+COPY . ./
+RUN dotnet publish ./Services.Notification/ClassifiedAds.Services.Notification.Background/ClassifiedAds.Services.Notification.Background.csproj -c Release -o out
+
+# Build a runtime image
+FROM mcr.microsoft.com/dotnet/runtime:9.0
+
+WORKDIR /ClassifiedAds.Microservices
+
+ENTRYPOINT ["dotnet", "ClassifiedAds.Services.Notification.Background.dll"]

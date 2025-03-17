@@ -1,0 +1,56 @@
+# First stage: 3rd party dependencies
+FROM ubuntu:24.04 AS base
+
+# Environment Variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV PATH="$PATH:/home/netkan/.local/bin"
+ENV PYTHONPATH=/home/netkan/.local/lib/python3.12/site-packages
+
+# Root User
+USER root
+
+# Update, Upgrade & Install System Packages
+RUN apt-get update && apt-get install -y --no-install-recommends \
+  git \
+  libffi-dev \
+  openssh-client \
+  python3 python-is-python3 ca-certificates curl \
+
+# Install pip
+RUN curl -sSL https://bootstrap.pypa.io/get-pip.py -o get-pip.py && \
+  rm /usr/lib/python3.12/EXTERNALLY-MANAGED && \
+
+# Create User & Change Ownership
+RUN groupmod -n 'netkan' 'ubuntu' && \
+  usermod -l 'netkan' -d /home/netkan -m ubuntu && \
+
+#Switch to netkan user
+USER netkan
+
+#----- Second Stage ------
+FROM base AS final
+
+# Netkan User
+USER netkan
+
+# Copy Files
+COPY .gitconfig .
+COPY . /netkan
+WORKDIR /netkan
+COPY . /netkan
+
+# Build Dependencies
+RUN pip install --user . --no-warn-script-location && \
+  pip install --user .[test] && \
+
+#Change Ownership
+RUN chown -R netkan:netkan /netkan
+
+# Copy run_dev.sh
+COPY run_dev.sh /usr/local/bin/
+
+#Set Entry Point
+ENTRYPOINT ["/usr/local/bin/run_dev.sh"]
+
+# Run tests
+RUN /home/netkan/.local/bin/pytest -v

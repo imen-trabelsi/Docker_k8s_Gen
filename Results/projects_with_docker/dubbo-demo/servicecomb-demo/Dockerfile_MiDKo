@@ -1,0 +1,24 @@
+# This is an optimized Dockerfile generated based on the provided information.
+# Start with the base image.
+FROM java:8-jre-alpine
+
+# Set the working directory.
+WORKDIR /home/apps/
+
+# Copy the microservice jar into the container.
+COPY target/csedemo-1.0.0.jar .
+
+# Copy the library dependencies.
+COPY target/lib ./lib
+
+# Copy the start script.
+COPY mystart.sh ./start.sh
+
+# Copy the project configuration files.
+COPY conf ./conf
+
+# Set the correct permission for start.sh.
+RUN chmod +x ./start.sh
+
+# Set jar file as the entrypoint.
+ENTRYPOINT ["sh", "/home/apps/start.sh"]

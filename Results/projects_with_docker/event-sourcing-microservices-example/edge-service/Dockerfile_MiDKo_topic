@@ -1,0 +1,32 @@
+# Build the project with maven
+FROM maven:3.8-openjdk-11-slim AS build
+WORKDIR /workspace/app
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+COPY src src
+RUN ./mvnw package -DskipTests
+
+# Build runtime image using the OpenJDK base image
+FROM openjdk:17-alpine
+
+ARG JAR_FILE
+
+# Run as an unprivileged user for security reasons
+RUN addgroup appgroup && adduser -S appuser -G appgroup
+USER appuser:appgroup
+
+# Set necessary environment variable
+ENV JAVA_OPTS=""
+
+# Set workspace
+WORKDIR /app
+
+# Copy application JAR file to container
+
+# Expose the application on port 8080
+EXPOSE 8080
+
+# Run the application
+CMD exec java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /usr/share/myservice/myservice.jar
+

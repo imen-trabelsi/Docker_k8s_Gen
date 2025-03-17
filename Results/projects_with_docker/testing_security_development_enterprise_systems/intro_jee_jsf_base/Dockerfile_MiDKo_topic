@@ -1,0 +1,29 @@
+# Use the specified base image
+FROM jboss/wildfly:18.0.1.Final
+
+# Copy the build file
+COPY pom.xml /usr/src/app/
+
+# Change the working directory
+WORKDIR /usr/src/app
+
+# Install maven
+RUN apt-get update && apt-get install -y maven
+
+# Copy the rest of the source code
+COPY . /usr/src/app
+
+# Set the build path
+ARG BUILD_DIR=/usr/src/app/target
+
+# Build the application
+RUN mvn -f /usr/src/app/pom.xml clean package
+
+# Copy the war file to the deployments directory of wildfly
+COPY ${BUILD_DIR}/base.war /opt/jboss/wildfly/standalone/deployments/
+
+# Expose the port
+EXPOSE 8080
+
+# Run wildfly on that standalone configuration
+CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]

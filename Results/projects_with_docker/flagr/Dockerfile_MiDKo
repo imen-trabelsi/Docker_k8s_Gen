@@ -1,0 +1,44 @@
+# Base Image
+FROM golang:1.24-alpine as builder
+
+# Maintainer
+LABEL maintainer="admin@domain.com"
+
+# Set environment variables
+ENV CGO_ENABLED=0 \
+    FLAGR_UI_POSSIBLE_ENTITY_TYPES=${FLAGR_UI_POSSIBLE_ENTITY_TYPES} \
+    HOST=0.0.0.0 \
+    PORT=18000 \
+    FLAGR_DB_DBDRIVER=sqlite3 \
+    FLAGR_DB_DBCONNECTIONSTR=/data/demo_sqlite3.db \
+
+# Adding Go Dependencies
+COPY go.mod .
+RUN go mod download
+
+# Adding source code
+WORKDIR /go/src/github.com/openflagr/flagr
+COPY . .
+
+# Creating a non-root user: appuser
+RUN addgroup -S appgroup && \
+
+# Build commands
+RUN apk add --no-cache git make build-base && \
+    make build && \
+
+# Starting a new stage
+FROM alpine:latest
+
+# Copying files from previous stage
+COPY --chown=appuser:appgroup ./buildscripts/demo_sqlite3.db /data/demo_sqlite3.db
+
+# Switch user
+USER appuser
+
+# Expose port
+EXPOSE 18000
+
+# Run Application
+CMD ["./flagr"]
+

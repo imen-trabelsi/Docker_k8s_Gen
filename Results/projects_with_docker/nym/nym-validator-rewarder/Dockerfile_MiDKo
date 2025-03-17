@@ -1,0 +1,29 @@
+# Use the harbor.nymte.ch/dockerhub/rust:latest image as the base image.
+FROM harbor.nymte.ch/dockerhub/rust:latest
+
+# Update the apt package list.
+RUN apt-get update
+
+# Install the dependencies, namely ca certificates.
+RUN apt-get install -y ca-certificates
+
+# Copy the application files into the Docker image.
+COPY ./ /usr/src/nym
+
+# Set the current working directory inside the container.
+WORKDIR /usr/src/nym/nym-validator-rewarder
+
+# Build the application.
+RUN cargo build --release
+
+# Set the final working directory.
+WORKDIR /nym
+
+# Copy the compiled application files into the Docker image.
+COPY --from=builder /usr/src/nym/target/release/nym-validator-rewarder ./
+
+# Copy the entrypoint script into the Docker image.
+COPY ./nym-validator-rewarder/entrypoint.sh /nym/entrypoint.sh
+
+# Set the entry point for the application.
+ENTRYPOINT ["/nym/entrypoint.sh"]

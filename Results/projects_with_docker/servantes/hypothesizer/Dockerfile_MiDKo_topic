@@ -1,0 +1,17 @@
+# Use the base image specified by the user
+FROM python:3.6-alpine 
+
+# Set working directory to /app
+WORKDIR /app
+
+# Add app directory contents to docker image
+COPY . /app
+
+# Install required dependencies
+RUN pip install -r requirements.txt
+
+# Expose port 5000 for Flask web app
+EXPOSE 5000
+
+# Start the Flask web app
+CMD ["python", "run.py"]

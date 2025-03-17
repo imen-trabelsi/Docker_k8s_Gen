@@ -1,0 +1,22 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/framework/aspnet:4.7.2",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "source"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /inetpub/wwwroot",
+            "COPY ${source:-obj/Docker/publish} ."
+        ],
+        "execution": [],
+        "run": []
+    }
+}

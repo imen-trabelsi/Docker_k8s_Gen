@@ -1,0 +1,26 @@
+# Set base image (host OS)
+FROM nginx:alpine
+
+# Set the working directory in the docker image
+WORKDIR /usr/share/nginx/html
+
+# Copy the dependencies file to the working directory
+COPY package*.json ./
+
+# Install any dependencies
+RUN npm install
+
+# Copy the rest of your app's source code from your host to your image filesystem.
+COPY . .
+
+# Copy the configuration file from the current directory to the Nginx directory
+COPY nginx.prod.conf /etc/nginx/nginx.conf
+
+# In case there are static files, COPY them as well
+# COPY <location of static files in your system> /usr/share/nginx/html 
+
+# We are denoting that we want to expose the port 80 when it is running 
+EXPOSE 80
+
+#Command to run our application 
+CMD ["nginx", "-g", "daemon off;"]

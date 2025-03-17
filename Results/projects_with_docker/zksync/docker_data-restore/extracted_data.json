@@ -1,0 +1,22 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "JavaScript",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"zksync-root\",\n  \"version\": \"1.0.0\",\n  \"license\": \"MIT\",\n  \"private\": true,\n  \"workspaces\": {\n    \"packages\": [\n      \"sdk/zksync.js\",\n      \"sdk/zksync-crypto\",\n      \"contracts\",\n      \"infrastructure/zk\",\n      \"infrastructure/reading-tool\",\n      \"infrastructure/token-lists-manager\",\n      \"infrastructure/api-docs\",\n      \"core/tests/ts-tests\"\n    ]\n  },\n  \"scripts\": {\n    \"build:zksync-sdk\": \"yarn zksync prepublish\",\n    \"build:crypto\": \"yarn crypto build\",\n    \"build:reading-tool\": \"yarn reading-tool build\",\n    \"zksync\": \"yarn workspace zksync\",\n    \"crypto\": \"yarn workspace zksync-crypto\",\n    \"contracts\": \"yarn workspace franklin-contracts\",\n    \"ts-tests\": \"yarn workspace ts-tests\",\n    \"zk\": \"yarn workspace zk\",\n    \"reading-tool\": \"yarn workspace reading-tool\",\n    \"api-docs\": \"yarn workspace api-docs\"\n  },\n  \"devDependencies\": {\n    \"@typescript-eslint/eslint-plugin\": \"^4.10.0\",\n    \"@typescript-eslint/parser\": \"^4.10.0\",\n    \"babel-eslint\": \"^10.1.0\",\n    \"eslint\": \"^7.16.0\",\n    \"eslint-config-alloy\": \"^3.8.2\",\n    \"markdown-toc\": \"^1.2.0\",\n    \"markdownlint-cli\": \"^0.24.0\",\n    \"prettier\": \"^2.2.1\",\n    \"prettier-plugin-solidity\": \"^1.0.0-alpha.60\",\n    \"solhint\": \"^3.3.2\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "docker-compose.yml": "version: '3.2'\nservices:\n  postgres:\n    image: \"postgres:12\"\n    ports:\n      - \"5432:5432\"\n    volumes:\n    - type: bind\n      source: ./volumes/postgres\n      target: /var/lib/postgresql/data\n    environment:\n        - POSTGRES_HOST_AUTH_METHOD=trust\n  geth:\n    image: \"matterlabs/geth:latest\"\n    ports:\n      - \"8545:8545\"\n      - \"8546:8546\"\n    volumes:\n    - type: bind\n      source: ./volumes/geth\n      target: /var/lib/geth/data\n    environment:\n      - PLUGIN_CONFIG=fast\n  dev-liquidity-token-watcher:\n    image: \"matterlabs/dev-liquidity-token-watcher:latest\"\n    env_file:\n      - ./etc/env/docker.env\n    ports:\n      - \"9975:9975\"\n    volumes:\n      - ./etc/tokens/:/etc/tokens\n\n  dev-ticker:\n    image: \"matterlabs/dev-ticker:latest\"\n    ports:\n      - \"9876:9876\"\n    volumes:\n      - ./etc/tokens/:/etc/tokens\n",
+            "docker/data-restore/Dockerfile": "FROM rust:1.67\nWORKDIR /usr/src/zksync\n\nRUN apt update && apt install wget openssl libssl-dev pkg-config npm curl libpq5 libpq-dev lsb-release -y\n# PostgreSQL Apt Repository is used to install the compatible psql version.\n\n# Create the file repository configuration:\nRUN sh -c 'echo \"deb http://apt.postgresql.org/pub/repos/apt $(lsb_release -cs)-pgdg main\" > /etc/apt/sources.list.d/pgdg.list'\n# Import the repository signing key:\nRUN wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add -\n# Update the package lists:\nRUN apt update\nRUN apt install postgresql-12 -y\nRUN curl -sL https://deb.nodesource.com/setup_14.x | bash\nRUN apt install nodejs -y\nRUN npm install -g yarn\n\nRUN cargo install diesel_cli --no-default-features --features postgres\n\n# Copy workspace\nCOPY . .\n\nRUN cargo build --release --bin zksync_data_restore\n\n# Copy configuration files for data restore.\nCOPY docker/exit-tool/configs /usr/src/configs\nCOPY docker/data-restore/data-restore-entry.sh /bin/\n\n# Setup the environment\nENV ZKSYNC_HOME=/usr/src/zksync\nENV PATH=\"${ZKSYNC_HOME}/bin:${PATH}\"\nENV CONFIG_PATH=/usr/src/configs\nENV PG_DUMP_PATH=/pg_restore\nUSER root\n\nENTRYPOINT [\"data-restore-entry.sh\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile"
+        ],
+        "folders": []
+    }
+}

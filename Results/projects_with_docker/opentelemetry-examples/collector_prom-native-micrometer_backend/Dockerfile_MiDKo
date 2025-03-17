@@ -1,0 +1,24 @@
+# Start with a base image containing Java runtime (stage 1)
+FROM maven:3.6.1-jdk-11-slim AS build
+WORKDIR /workdir/server
+# Copy pom.xml
+COPY pom.xml /workdir/server/pom.xml
+# Install dependencies
+RUN mvn dependency:go-offline
+# Copy remaining source
+COPY src /workdir/server/src
+# Build application
+RUN mvn install
+
+# Unpack jar file
+RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+
+# Final stage (stage 2)
+FROM openjdk:11-jre-slim
+VOLUME /tmp
+ARG DEPENDENCY=/workdir/server/target/dependency
+# Copy Compiled Jar from stage 1 
+# Expose the port
+EXPOSE 8080
+# Setup entrypoint
+ENTRYPOINT ["java","-cp","app:app/lib/*","otel.example.micrometer.Application"]

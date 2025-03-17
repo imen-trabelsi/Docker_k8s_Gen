@@ -1,0 +1,15 @@
+# Use provided base image
+FROM docker.elastic.co/beats/elastic-agent:${ELASTIC_VERSION:-8.17.3}
+
+# Create state directory
+RUN mkdir state
+
+# Copy necessary files
+COPY . .
+
+# No exposed ports are given but to illustrate the concept
+# EXPOSE <your-port>
+# Replace <your-port> with the correct port number
+
+# Default command, replace <your-command> with the correct command
+# CMD <your-command> 

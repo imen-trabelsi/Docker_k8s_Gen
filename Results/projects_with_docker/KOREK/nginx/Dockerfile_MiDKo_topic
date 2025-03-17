@@ -1,0 +1,42 @@
+# Starting from base
+FROM nginx:1.20.1
+
+# Safety precaution to ensure all the sequences in the FROM image are updated and usable
+RUN apt-get update -yq && apt-get upgrade -yq 
+
+# Create directory for application
+RUN mkdir app
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Add entrypoint script
+COPY entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Install Dependencies
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# Copy project files into the docker image
+COPY . .
+
+# Copy nginx configuration files
+COPY ./app.conf /etc/nginx/conf.d/app.conf 
+COPY ./nginx.conf /etc/nginx/nginx.conf 
+COPY ./default.conf /etc/nginx/conf.d/default.conf
+COPY ./ssl_conf/generate_ssl.sh /generate_ssl.sh
+COPY ./ssl_conf/ssl-dhparams.pem /etc/letsencrypt_nginx_conf/ssl-dhparams.pem
+COPY ./ssl_conf/options-ssl-nginx.conf /etc/letsencrypt_nginx_conf/options-ssl-nginx.conf
+
+# Run necessary commands
+RUN usermod -u 1000 www-data && \
+    usermod -a -G staff www-data && \
+    apt update && apt-get install -y openssl certbot python-certbot-nginx cron vim && \
+    chmod +x generate_ssl.sh && \
+
+# Expose necessary ports
+EXPOSE 80
+
+# The command to start the service
+ENTRYPOINT ["entrypoint.sh"]

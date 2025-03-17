@@ -1,0 +1,44 @@
+# Set base image
+FROM php:8.1.29-fpm-alpine3.20 as base
+
+# Install PHP dependencies
+RUN apk add --update --no-cache fcgi
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
+RUN install-php-extensions apcu gmp opcache
+RUN rm /usr/bin/install-php-extensions
+
+# Set Environment variables
+ENV OPG_PHP_POOL_CHILDREN_MAX="25"
+
+# Copy configuration files
+COPY service-api/docker/app/app-php.ini /usr/local/etc/php/conf.d/
+COPY service-api/docker/app/fpm-pool.ini /usr/local/etc/php-fpm.d/zz-logging.conf
+
+# Change working directory
+WORKDIR /app
+
+# Copy application files and dependencies
+COPY service-api/app /app
+COPY --from=composer /usr/bin/composer /usr/bin/
+COPY service-api/app/composer.json service-api/app/composer.lock /app/
+
+# Install application dependencies
+RUN composer install --prefer-dist --no-dev --no-interaction --no-scripts --optimize-autoloader && \
+
+# Set correct permissions
+RUN chown -R www-data:www-data /app
+
+# Switch to non-root user
+USER www-data
+
+# Build command
+CMD ["php-fpm"]
+
+# Healthcheck
+COPY service-api/docker/app/health-check.sh /usr/local/bin/health-check.sh
+HEALTHCHECK CMD ["/usr/local/bin/health-check.sh"]
+
+# Hardening script
+COPY scripts/docker_hardening/harden.sh /harden.sh
+RUN /harden.sh && rm /harden.sh

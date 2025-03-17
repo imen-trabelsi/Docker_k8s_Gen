@@ -1,0 +1,26 @@
+{
+    "docker_info": {
+        "base_image": "697525377503.dkr.ecr.us-east-1.amazonaws.com/pay-docker-base-images:pagarme-node8.9",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY package.json /superbowleto/package.json",
+            "COPY package-lock.json /superbowleto/package-lock.json",
+            "WORKDIR /superbowleto"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "npm install",
+                ""
+            ]
+        ]
+    }
+}

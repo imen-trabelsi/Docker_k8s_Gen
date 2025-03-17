@@ -1,0 +1,35 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:21-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV authDomain=rbp-auth",
+            "ENV messageDomain=rbp-message",
+            "ENV profile=dev"
+        ],
+        "copy_instructions": [
+            "ADD . /usr/local/booking",
+            "WORKDIR /usr/local/booking",
+            "COPY target ./"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "java",
+                    "-jar",
+                    "-Dspring.profiles.active=$profile",
+                    "-Dhoneycomb.beeline.write-key=${HONEYCOMB_API_KEY}",
+                    "target/restful-booker-platform-booking-*.jar",
+                    "-D"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

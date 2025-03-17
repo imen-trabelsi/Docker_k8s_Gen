@@ -1,0 +1,16 @@
+# Choose the base image
+FROM python:3.6
+
+# Setting up working directory
+WORKDIR /app
+
+# Copy the list of dependencies and install them
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# Copy the remaining project files
+COPY . .
+
+# Entry point
+ENTRYPOINT ["/bin/bash"]
+CMD ["./loadgen.sh"]

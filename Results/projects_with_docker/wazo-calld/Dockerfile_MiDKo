@@ -1,0 +1,32 @@
+# Stage 1: Building the environment
+FROM python:3.9-slim-bullseye as compile-image
+LABEL maintainer="Wazo"
+
+WORKDIR /usr/src/wazo-calld
+
+COPY requirements.txt .
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Stage 2: Setting up the microservice
+FROM python:3.9-slim-bullseye
+COPY . /usr/src/wazo-calld
+WORKDIR /usr/src/wazo-calld
+COPY ./etc/wazo-calld /etc/wazo-calld
+COPY ./bin/wazo-pdf2fax /usr/bin/wazo-pdf2fax
+
+RUN true \
+&& apt-get -q update \
+&& apt-get -yq install --no-install-recommends ghostscript \
+&& adduser --quiet --system --group --home /var/lib/wazo-calld wazo-calld \
+&& mkdir -p /etc/wazo-calld/conf.d \
+&& mkdir -p /var/spool/asterisk/voicemail \
+&& install -o www-data -g www-data /dev/null /var/log/wazo-calld.log \
+&& chown root:www-data /usr/bin/wazo-pdf2fax \
+
+ENV PATH="/opt/venv/bin:$PATH"
+
+EXPOSE 9500
+
+ENTRYPOINT ["wazo-calld"]

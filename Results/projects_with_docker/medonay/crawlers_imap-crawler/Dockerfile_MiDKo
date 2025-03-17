@@ -1,0 +1,16 @@
+# Use the base image
+FROM python:3.6-onbuild
+
+# Set work directory
+WORKDIR /usr/src/imapCrawler
+
+# Install application dependencies
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy source code
+COPY . .
+
+# Run the application
+CMD ["python", "-m", "crawler"]
+

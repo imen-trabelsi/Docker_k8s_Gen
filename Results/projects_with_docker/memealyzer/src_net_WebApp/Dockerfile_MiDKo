@@ -1,0 +1,24 @@
+# Set Base image
+FROM nginx:alpine
+
+# Set work directory
+WORKDIR /var/www/web
+
+# Copy application files
+COPY ./wwwroot .
+
+# Copy Nginx configuration file
+COPY wwwroot/_framework/nginx.conf /etc/nginx/nginx.conf
+
+# Port to expose
+EXPOSE 80 443
+
+# Set environment variables
+ENV PYTHONUNBUFFERED 1
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Run the application
+CMD [ "python", "./app.py" ]

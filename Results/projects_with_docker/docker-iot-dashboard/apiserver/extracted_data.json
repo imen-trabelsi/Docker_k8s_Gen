@@ -1,0 +1,421 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".github",
+            "type": "tree"
+        },
+        {
+            "path": ".github/workflows",
+            "type": "tree"
+        },
+        {
+            "path": ".github/workflows/ci_build.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": ".gitmodules",
+            "type": "blob"
+        },
+        {
+            "path": "LICENSE.md",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "SETUP.md",
+            "type": "blob"
+        },
+        {
+            "path": "TODO.md",
+            "type": "blob"
+        },
+        {
+            "path": "apiserver",
+            "type": "tree"
+        },
+        {
+            "path": "apiserver/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "apiserver/dncgiplugin",
+            "type": "commit"
+        },
+        {
+            "path": "apiserver/dncgiplugin_start",
+            "type": "blob"
+        },
+        {
+            "path": "apiserver/dncserver",
+            "type": "commit"
+        },
+        {
+            "path": "apiserver/dncserver_start",
+            "type": "blob"
+        },
+        {
+            "path": "apiserver/dncstdplugin",
+            "type": "commit"
+        },
+        {
+            "path": "apiserver/dncstdplugin_start",
+            "type": "blob"
+        },
+        {
+            "path": "apiserver/dummy.pub",
+            "type": "blob"
+        },
+        {
+            "path": "apiserver/version.tar.gz",
+            "type": "blob"
+        },
+        {
+            "path": "apiserver/version_check.sh",
+            "type": "blob"
+        },
+        {
+            "path": "apiserver/version_start",
+            "type": "blob"
+        },
+        {
+            "path": "assets",
+            "type": "tree"
+        },
+        {
+            "path": "assets/Connection-architecture-1.png",
+            "type": "blob"
+        },
+        {
+            "path": "assets/Connection-architecture-old.png",
+            "type": "blob"
+        },
+        {
+            "path": "assets/Connection-architecture-old.svg",
+            "type": "blob"
+        },
+        {
+            "path": "assets/Connection-architecture-old1.png",
+            "type": "blob"
+        },
+        {
+            "path": "assets/Connection-architecture.png",
+            "type": "blob"
+        },
+        {
+            "path": "assets/ServerArch_20200331.pptx",
+            "type": "blob"
+        },
+        {
+            "path": "assets/ServerArch_20211029.pptx",
+            "type": "blob"
+        },
+        {
+            "path": "assets/about_dnc.png",
+            "type": "blob"
+        },
+        {
+            "path": "assets/dnc_arch.png",
+            "type": "blob"
+        },
+        {
+            "path": "assets/dnc_server_arch.png",
+            "type": "blob"
+        },
+        {
+            "path": "assets/graf-mail_test_1.png",
+            "type": "blob"
+        },
+        {
+            "path": "assets/graf-mail_test_2.png",
+            "type": "blob"
+        },
+        {
+            "path": "assets/graf-mail_test_3.png",
+            "type": "blob"
+        },
+        {
+            "path": "assets/mqtt_nginx_1.png",
+            "type": "blob"
+        },
+        {
+            "path": "assets/mqtt_nginx_2.png",
+            "type": "blob"
+        },
+        {
+            "path": "assets/mqtt_nginx_3.png",
+            "type": "blob"
+        },
+        {
+            "path": "assets/mqtt_nginx_4.png",
+            "type": "blob"
+        },
+        {
+            "path": "assets/mqtt_web_1.png",
+            "type": "blob"
+        },
+        {
+            "path": "assets/mqtt_web_2.png",
+            "type": "blob"
+        },
+        {
+            "path": "assets/mqtt_web_3.png",
+            "type": "blob"
+        },
+        {
+            "path": "assets/mqtt_web_4.png",
+            "type": "blob"
+        },
+        {
+            "path": "assets/postfix_node_1.png",
+            "type": "blob"
+        },
+        {
+            "path": "assets/postfix_node_2.png",
+            "type": "blob"
+        },
+        {
+            "path": "assets/postfix_node_3.png",
+            "type": "blob"
+        },
+        {
+            "path": "ci_env",
+            "type": "blob"
+        },
+        {
+            "path": "cron-backup",
+            "type": "tree"
+        },
+        {
+            "path": "cron-backup/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "cron-backup/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "cron-backup/cron.sh",
+            "type": "blob"
+        },
+        {
+            "path": "cron-backup/grafana_backup.sh",
+            "type": "blob"
+        },
+        {
+            "path": "cron-backup/mongodb_backup.sh",
+            "type": "blob"
+        },
+        {
+            "path": "cron-backup/mqtts_backup.sh",
+            "type": "blob"
+        },
+        {
+            "path": "cron-backup/nginx_backup.sh",
+            "type": "blob"
+        },
+        {
+            "path": "cron-backup/nodered_backup.sh",
+            "type": "blob"
+        },
+        {
+            "path": "cron-backup/postfix.sh",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "expo",
+            "type": "tree"
+        },
+        {
+            "path": "expo/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "expo/dncui",
+            "type": "commit"
+        },
+        {
+            "path": "expo/dummy.pub",
+            "type": "blob"
+        },
+        {
+            "path": "expo/expo_npm",
+            "type": "blob"
+        },
+        {
+            "path": "expo/expo_start",
+            "type": "blob"
+        },
+        {
+            "path": "htpasswd_migration.sh",
+            "type": "blob"
+        },
+        {
+            "path": "influxdb",
+            "type": "tree"
+        },
+        {
+            "path": "influxdb/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "influxdb/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "influxdb/backup.sh",
+            "type": "blob"
+        },
+        {
+            "path": "influxdb/influx.sh",
+            "type": "blob"
+        },
+        {
+            "path": "influxdb/influxdb.conf",
+            "type": "blob"
+        },
+        {
+            "path": "influxdb/influxdb_cron.sh",
+            "type": "blob"
+        },
+        {
+            "path": "influxdb/postfix.sh",
+            "type": "blob"
+        },
+        {
+            "path": "influxdb/showdb.sh",
+            "type": "blob"
+        },
+        {
+            "path": "mqtts",
+            "type": "tree"
+        },
+        {
+            "path": "mqtts/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "mqtts/mosquitto.conf",
+            "type": "blob"
+        },
+        {
+            "path": "mqtts/mosquitto.sh",
+            "type": "blob"
+        },
+        {
+            "path": "nginx",
+            "type": "tree"
+        },
+        {
+            "path": "nginx/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "nginx/certbot_cron.sh",
+            "type": "blob"
+        },
+        {
+            "path": "nginx/mongo.txt",
+            "type": "blob"
+        },
+        {
+            "path": "nginx/nginx.sh",
+            "type": "blob"
+        },
+        {
+            "path": "nginx/proxy-apiserver.conf",
+            "type": "blob"
+        },
+        {
+            "path": "nginx/proxy-expo.conf",
+            "type": "blob"
+        },
+        {
+            "path": "nginx/proxy-grafana.conf",
+            "type": "blob"
+        },
+        {
+            "path": "nginx/proxy-influxdb.conf",
+            "type": "blob"
+        },
+        {
+            "path": "nginx/proxy-mqtts.conf",
+            "type": "blob"
+        },
+        {
+            "path": "nginx/proxy-nodered.conf",
+            "type": "blob"
+        },
+        {
+            "path": "nginx/setup.sh",
+            "type": "blob"
+        },
+        {
+            "path": "node-red",
+            "type": "tree"
+        },
+        {
+            "path": "node-red/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "node-red/anodered_start",
+            "type": "blob"
+        },
+        {
+            "path": "node-red/bnodered_start_lib",
+            "type": "blob"
+        },
+        {
+            "path": "node-red/evb",
+            "type": "blob"
+        },
+        {
+            "path": "node-red/lib",
+            "type": "tree"
+        },
+        {
+            "path": "node-red/lib/process_TTN_V3_data",
+            "type": "blob"
+        },
+        {
+            "path": "node-red/settings.js",
+            "type": "blob"
+        },
+        {
+            "path": "node-red/start-node-red.sh",
+            "type": "blob"
+        },
+        {
+            "path": "postfix",
+            "type": "tree"
+        },
+        {
+            "path": "postfix/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "postfix/postfix.sh",
+            "type": "blob"
+        }
+    ]
+}

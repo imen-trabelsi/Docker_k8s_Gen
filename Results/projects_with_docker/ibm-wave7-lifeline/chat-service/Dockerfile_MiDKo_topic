@@ -1,0 +1,26 @@
+# Use openjdk:11 as base image.
+FROM openjdk:11 
+
+# Setup working dir.
+WORKDIR /usr/src/app
+
+# Copy Maven dependencies list.
+COPY pom.xml /usr/src/app
+
+# Install dependencies and clean up cache.
+RUN mvn dependency:go-offline -B
+
+# Copy the rest of the application.
+COPY src /usr/src/app/src
+
+# Compile the application.
+RUN mvn package -DskipTests
+
+# Add the application binary to the working directory.
+COPY ./target/chat-service-0.0.1-SNAPSHOT.jar /usr/src/chat-service-0.0.1-SNAPSHOT.jar
+
+# Set the command to start the application.
+ENTRYPOINT ["java","-jar","chat-service-0.0.1-SNAPSHOT.jar"]
+
+# Expose service HTTP port.
+EXPOSE 8080

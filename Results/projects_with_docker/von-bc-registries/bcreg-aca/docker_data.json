@@ -1,0 +1,50 @@
+{
+    "docker_info": {
+        "base_image": "bcgovimages/von-image:py36-1.9-0",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root",
+            "indy"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "entrypoint=\"${HOME}/docker-entrypoint.sh\""
+        ],
+        "envs": [
+            "ENV HOST_IP 0.0.0.0",
+            "ENV HOST_PORT 8000",
+            "ENV INDY_GENESIS_PATH \"${HOME}/genesis\""
+        ],
+        "copy_instructions": [
+            "WORKDIR $HOME",
+            "ADD . $HOME",
+            "WORKDIR $HOME/src"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"bash\",",
+                    "\"../docker-entrypoint.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "pip3 install --no-cache-dir -r requirements.txt",
+                ""
+            ],
+            [
+                "usermod -a -G root indy",
+                ""
+            ],
+            [
+                "chown -R indy:root \"${HOME}\" \\",
+                "&& chmod -R ug+rw \"${HOME}\"",
+                "&& chmod ug+x \"${entrypoint}\""
+            ]
+        ]
+    }
+}

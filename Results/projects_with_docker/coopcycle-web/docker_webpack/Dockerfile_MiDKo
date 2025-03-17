@@ -1,0 +1,36 @@
+# Base image
+FROM node:16-alpine
+
+# Create app directory
+WORKDIR /srv/coopcycle
+
+# Install dependencies
+COPY package.json /srv/coopcycle
+COPY package-lock.json /srv/coopcycle
+RUN npm install
+
+# Permissions for script, required system packages and cleanup
+RUN apk update && apk upgrade && \
+    apk add --no-cache bash git openssh && \
+    chmod +x /start.sh && \
+
+# Copy project files
+COPY . .
+
+# Environment variables
+# Update with required environment variables (if any)
+
+# Health check
+# Update with health check instructions (if any)
+
+# Expose ports
+# Expose required ports with EXPOSE instruction like `EXPOSE 8080`
+
+# User
+# Add user instructions like `USER username`
+
+# Labels
+# Add label instructions like `LABEL version="1.0"`
+
+# Entry point
+ENTRYPOINT [ "/start.sh" ]

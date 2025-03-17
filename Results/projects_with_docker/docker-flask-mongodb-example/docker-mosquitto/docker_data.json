@@ -1,0 +1,41 @@
+{
+    "docker_info": {
+        "base_image": "eclipse-mosquitto:1.6.8",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "1883"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/docker-entrypoint.sh\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/usr/sbin/mosquitto\",",
+                    "\"-c\",",
+                    "\"/mosquitto/config/mosquitto.conf\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "echo 'password_file /mosquitto/config/pwfile' >> /mosquitto/config/mosquitto.conf",
+                "RUN echo 'allow_anonymous false' >> /mosquitto/config/mosquitto.conf"
+            ],
+            [
+                "touch /mosquitto/config/pwfile",
+                "RUN mosquitto_passwd -b /mosquitto/config/pwfile some_user some_pass"
+            ]
+        ]
+    }
+}

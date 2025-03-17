@@ -1,0 +1,19 @@
+{
+    "docker_info": {
+        "base_image": "totem/celery-flower-docker",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "echo \"BROKER_USE_SSL = os.environ.get('BROKER_USE_SSL') == 'True'\" >> /opt/celery-flower/celeryconfig.py"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,22 @@
+# Base image
+FROM registry.cn-beijing.aliyuncs.com/edas_unified/jct_dw_8_4_4:0.1
+
+# Copy arthas tool for troubleshooting
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+
+# Set the working directory
+WORKDIR /app
+
+# Copy necessary files
+COPY /recomendationservice-provider/target/recomendationservice-provider-1.0.0-SNAPSHOT.jar /app
+COPY /start.sh /app
+COPY pom.xml /app
+
+# Run the app with start.sh
+CMD ["/app/start.sh"]
+
+# Run the app, default to prod profile
+EXPOSE 8080
+
+# Spring Boot health check
+HEALTHCHECK --interval=30s --timeout=30s --retries=3 CMD curl -f localhost/actuator/health || exit 1

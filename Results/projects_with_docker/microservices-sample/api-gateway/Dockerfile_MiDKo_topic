@@ -1,0 +1,26 @@
+# 1. Builder Image
+FROM --platform=${arch} maven:3.8.2-openjdk-11 as MAVEN_TOOL_CHAIN
+ARG arch=linux/arm64/v8
+
+COPY pom.xml /tmp/
+WORKDIR /tmp/
+RUN mvn -B dependency:go-offline -f /tmp/pom.xml -s /usr/share/maven/ref/settings-docker.xml
+
+COPY src /tmp/src/
+RUN mvn -B -s /usr/share/maven/ref/settings-docker.xml package
+
+# 2. Runtime Image
+FROM --platform=${arch} openjdk:11-jdk-slim
+
+ENV APP_USER appuser
+RUN groupadd -r ${APP_USER} &&\
+
+WORKDIR /app
+
+COPY --from=MAVEN_TOOL_CHAIN /tmp/target/*.jar /app/spring-boot-application.jar
+RUN chown -R ${APP_USER}:${APP_USER} /app
+
+USER ${APP_USER}
+EXPOSE 8080
+
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app/spring-boot-application.jar"]

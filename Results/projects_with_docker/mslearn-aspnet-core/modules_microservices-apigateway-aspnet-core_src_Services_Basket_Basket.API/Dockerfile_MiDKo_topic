@@ -1,0 +1,33 @@
+# Set the base image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS base
+WORKDIR /app
+
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+
+# Copy csproj and restore packages
+COPY ["eShop-Learn.sln", "./"]
+COPY ["NuGet.config", "./"]
+COPY ["docker-compose.dcproj", "./"]
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+# ... repeat for each csproj file
+# Add all the project files
+COPY . .
+RUN dotnet restore "eShop-Learn.sln"
+
+# Build the application
+WORKDIR "/src/src/Services/Basket/Basket.API"
+RUN dotnet build "Basket.API.csproj" -c Release -o /app/build
+
+FROM build AS publish
+RUN dotnet publish "Basket.API.csproj" -c Release -o /app/publish
+
+# Final stage / image
+FROM base AS final
+WORKDIR /app
+
+# Expose the application on port 80
+EXPOSE 80
+
+# Set the entry point
+ENTRYPOINT ["dotnet", "Basket.API.dll"]

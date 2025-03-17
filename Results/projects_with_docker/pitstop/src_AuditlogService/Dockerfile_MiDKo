@@ -1,0 +1,25 @@
+# Use the base image with .NET SDK
+FROM pitstop-dotnet-sdk-base:1.0 AS build-env
+
+# Set the working directory in the image to /app
+WORKDIR /app
+
+# Copy the csproj and restore the dependencies
+COPY *.csproj ./
+RUN dotnet restore
+
+# Copy the rest of the working set
+COPY . ./
+
+# Publish the application release 
+RUN dotnet publish -c Release -o out 
+
+# Set the working directory to /app for runtime
+WORKDIR /app
+
+# Copy the output directory from the build stage
+
+# Define the entrypoint for the docker image
+ENTRYPOINT ["dotnet", "Pitstop.AuditlogService.dll"]
+
+

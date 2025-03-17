@@ -1,0 +1,32 @@
+# Use the official lightweight Node.js 12 image.
+# https://hub.docker.com/_/node
+FROM node:alpine
+
+LABEL maintainer="your-email@domain.com"
+
+# Create and change to the directory.
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# Copy application dependency manifests to the container image.
+# Copying this first prevents re-running npm install on every code change.
+COPY package*.json ./
+
+# Install dependencies with npm
+RUN npm install --production
+
+# Set all environment variables
+ENV DEBUG loopback:connector:swagger
+
+# Copy local code to the container image.
+COPY . .
+
+# Expose port 3000 to the outside world
+EXPOSE 3000
+
+# Define healthcheck
+HEALTHCHECK --interval=1m --timeout=3s \
+  CMD curl --fail http://localhost/vitals/docker || exit 1
+
+# Run the application
+CMD [ "npm", "run", "start.dev" ]

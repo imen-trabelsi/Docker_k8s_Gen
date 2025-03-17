@@ -1,0 +1,46 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/sdk:6.0",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "80",
+            "443"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "WORKDIR /src",
+            "COPY [\"identity-server/IdentityServer.csproj\", \"identity-server/\"]",
+            "WORKDIR \"/src/identity-server\"",
+            "WORKDIR /app",
+            "COPY --from=publish /app/publish ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"dotnet\",",
+                    "\"IdentityServer.dll\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "dotnet restore \"identity-server/IdentityServer.csproj\"",
+                "COPY . ."
+            ],
+            [
+                "dotnet build \"IdentityServer.csproj\" -c Release -o /app/build",
+                ""
+            ],
+            [
+                "dotnet publish \"IdentityServer.csproj\" -c Release -o /app/publish",
+                ""
+            ]
+        ]
+    }
+}

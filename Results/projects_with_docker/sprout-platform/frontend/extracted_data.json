@@ -1,0 +1,34 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Java",
+        "dependencies": {
+            "build.gradle": "plugins {\n\tid \"com.adarshr.test-logger\" version \"3.0.0\"\n}\n\nsubprojects {\n\tgroup = 'net.savantly.sprout'\n    apply plugin: 'maven-publish'\n\tapply plugin: 'signing'\n    apply plugin: \"com.adarshr.test-logger\"\n\t\n\ttestlogger {\n\t    showFailedStandardStreams true\n\t}\n\n    repositories {\n\t    mavenCentral()\n        gradlePluginPortal()\n        maven { url \"https://repo.spring.io/plugins-release\" }\n        maven {\n            url = uri('https://oss.sonatype.org/content/repositories/releases/')\n        }\n        maven {\n            url = uri('https://oss.sonatype.org/content/repositories/snapshots/')\n        }\n\t}\n\t\n\t// There are a few dependencies that this cannot reach.\n\t// https://stackoverflow.com/a/44168582/1308685\n\ttask downloadDependencies {\n\t  description \"Pre-downloads *most* dependencies\"\n\t  doLast {\n\t    configurations.getAsMap().each { name, config ->\n\t      println \"Retrieving dependencies for $name\"\n\t      try {\n\t        config.files\n\t      } catch (e) {\n\t        project.logger.info e.message // some cannot be resolved, silentlyish skip them\n\t      }\n\t    }\n\t  }\n\t}\n}\n"
+        },
+        "database": null,
+        "build_system": "Gradle",
+        "config_files": {
+            "docker-compose.yml": "version: \"3\"\nservices:\n\n  server:\n    image: savantly/sprout-server:latest\n    container_name: example_sprout_server\n    environment: \n      - PORT=9090\n      - SPRING_DATASOURCE_URL=jdbc:postgresql://sprout_db:5432/postgres\n      - SPRING_DATASOURCE_USERNAME=sprout\n      - SPRING_DATASOURCE_PASSWORD=sprout\n      - SPRING_DATASOURCE_DRIVER_CLASS_NAME=org.postgresql.Driver\n      - SPRING_JPA_DATABASE_PLATFORM=org.hibernate.dialect.PostgreSQLDialect\n    ports:\n      - 8080:9090\n    depends_on: \n    - sprout_db\n\n  webapp:\n    image: savantly/sprout-webapp:latest\n    container_name: example_sprout_webapp\n    ports:\n      - 3000:4000\n    environment: \n      - PORT=4000\n      - SPROUT_API_URL=http://server:9090\n\n  db:\n    container_name: sprout_db\n    image: postgres\n    environment:\n      - POSTGRES_PASSWORD=sprout\n      - POSTGRES_USER=sprout",
+            "frontend/Dockerfile": "# => Run container\nFROM nginx:1.19.2-alpine\n\n# Nginx config\nCOPY ./proxy/default.conf /etc/nginx/templates/default.conf.template\n\n# Static build\nCOPY ./apps/webapp/build/ /var/www/\n\n# Set default env vars\nENV SPROUT_API_URL=http://localhost:8080\nENV PORT=3000\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "Dockerfile.fixme",
+            "README.md",
+            "docker-compose.yml"
+        ],
+        "folders": [
+            "apps",
+            "libs",
+            "plugins-bundled",
+            "proxy",
+            "root",
+            "scripts",
+            "test",
+            "tools"
+        ]
+    }
+}

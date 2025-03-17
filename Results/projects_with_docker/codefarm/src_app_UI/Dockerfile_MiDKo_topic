@@ -1,0 +1,26 @@
+# Choose the correct base image
+FROM codefarm/appnodebase:0.0.0
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# A wildcard is used to ensure both package.json AND package-lock.json are copied where available (npm@5+)
+COPY package*.json ./
+
+# Install app dependencies
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Set the correct environment variables
+ENV NODE_ENV production
+
+# Compile client and remove unnecessary files in one RUN command to reduce image size
+RUN yarn run compile-client -- --env.global_modules_dir ${farmerHome}/.node_modules \
+
+# Ensure the correct entry point and CMD instructions.
+CMD [ "npm", "start" ]
+
+# Expose the correct ports
+EXPOSE 8080

@@ -1,0 +1,14 @@
+# Start from Java 8-JRE image
+FROM java:8-jre
+
+WORKDIR /app
+
+# Copy over the JAR file
+COPY ./target/ts-order-other-service-1.0.jar /app/
+
+RUN echo 'Asia/Shanghai' >/etc/timezone
+
+EXPOSE 12032
+
+# Entry point and CMD command
+ENTRYPOINT ["java", "-Xmx200m", "-jar", "/app/ts-order-other-service-1.0.jar"]

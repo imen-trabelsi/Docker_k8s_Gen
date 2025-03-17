@@ -1,0 +1,24 @@
+# Use the base image provided by the user
+FROM pitstop-dotnet-sdk-base:1.0 AS build
+
+# Copy the .csproj and restore dependencies
+WORKDIR /app
+COPY *.csproj ./
+RUN ["dotnet", "restore"]
+
+# Copy the remaining source code
+COPY . ./
+
+# Compile the application to the /app/out folder
+RUN ["dotnet", "publish", "-c", "Release", "-o", "out"]
+
+# Due to the user input, Multi-Stage Build is set to False. Therefore, we continue in the build environment.
+# If the Multi-Stage Build is True, this is where we would specify a different runtime environment.
+
+# Set the working directory in the container to /app
+WORKDIR /app
+
+# Copy compiled application from build stage
+
+# Define the execution command as the user specified
+ENTRYPOINT ["dotnet", "Pitstop.TimeService.dll"]

@@ -1,0 +1,28 @@
+# Dockerfile
+
+FROM bcgovimages/von-image:py36-1.9-0
+
+LABEL Maintainer="Your Name <your-email@example.com>"
+
+ENV HOST_IP=0.0.0.0 \
+    HOST_PORT=8000 \
+    HOME=/home \
+
+WORKDIR $HOME
+COPY . $HOME
+
+RUN pip3 install --no-cache-dir -r requirements.txt 
+
+RUN useradd -ms /bin/bash indy
+RUN usermod -a -G root indy
+
+RUN chown -R indy:root "${HOME}" \
+&& chmod -R ug+rw "${HOME}" \
+
+USER indy
+
+WORKDIR $HOME/src
+
+EXPOSE $HOST_PORT
+
+ENTRYPOINT ["bash", "../docker-entrypoint.sh"]

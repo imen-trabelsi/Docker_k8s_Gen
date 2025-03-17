@@ -1,0 +1,28 @@
+# Set base image
+FROM php:$version
+  
+# Set Work Directory
+WORKDIR /var/www
+
+# Update the package repository and install required packages
+RUN apt-get update && \
+    apt-get install -y zip unzip libzip-dev git && \
+    docker-php-ext-install zip && \
+
+# Get Composer
+RUN curl -sS https://getcomposer.org/installer | php && \
+
+# Copy app
+COPY . /var/www
+
+# Install dependencies
+RUN composer install
+
+# Expose port
+EXPOSE 80
+
+# Run Application
+CMD ["php","-S","0.0.0.0:80"]
+
+
+

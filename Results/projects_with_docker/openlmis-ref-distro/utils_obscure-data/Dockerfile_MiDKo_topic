@@ -1,0 +1,26 @@
+# Use the base image
+FROM openlmis/run-sql
+
+# Copy the obscure script
+COPY obscure.sh /obscure.sh
+
+# Set environment variables
+ENV FLASK_ENV=production
+ENV FLASK_APP=app.py
+
+# Install dependencies
+COPY requirements.txt /tmp/
+RUN pip install -r /tmp/requirements.txt
+
+# Expose appropriate ports
+EXPOSE 5000
+
+# Copy the rest of the application code
+COPY . .
+
+# Use user and set permissions
+RUN chmod u+x /obscure.sh
+
+# Set entrypoint and command
+ENTRYPOINT [ "python" ]
+CMD [ "-m", "flask", "run", "--host=0.0.0.0" ]

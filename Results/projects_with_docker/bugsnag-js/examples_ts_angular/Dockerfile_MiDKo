@@ -1,0 +1,21 @@
+# Use the specified base image
+FROM node:8@sha256:a681bf74805b80d03eb21a6c0ef168a976108a287a74167ab593fc953aac34df
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json to app directory
+COPY package* /usr/src/app/
+
+# Install app dependencies
+RUN npm install
+
+# If you are building your code for production
+# RUN npm ci --only=production
+
+# Bundle app source
+COPY . /usr/src/app/
+
+# Define the command to run your app using CMD which defines your runtime
+# Here we will use the basic form of CMD
+CMD [ "npm", "run", "serve", "--", "--host", "0.0.0.0" ]

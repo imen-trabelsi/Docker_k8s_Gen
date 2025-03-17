@@ -1,0 +1,12 @@
+# Dockerfile
+FROM node:12.19.0-alpine
+ENV PATH /app/node_modules/.bin:$PATH
+RUN apk update && apk upgrade && \
+WORKDIR /app
+COPY package.json ./
+COPY package-lock.json ./
+RUN npm ci --silent
+COPY . ./
+RUN npm run build
+EXPOSE 8080
+CMD [ "node", "src/index.js" ]

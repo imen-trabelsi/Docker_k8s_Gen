@@ -1,0 +1,56 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Django",
+        "dependencies": {
+            ".pylintrc": "[MASTER]\nload-plugins=pylint_django\n\n[FORMAT]\nmax-line-length=120\n\n[MESSAGES CONTROL]\ndisable=missing-docstring,invalid-name\n\n[DESIGN]\nmax-parents=13\n\n[TYPECHECK]\ngenerated-members=REQUEST,acl_users,aq_parent,\"[a-zA-Z]+_set{1,2}\",save,delete\n"
+        },
+        "database": null,
+        "build_system": "pip",
+        "config_files": {
+            "docker-compose.yml": "# base docker-compose.yml\n# use with docker-compose.override.yml for development\n#   docker-compose up -d\n#\n# or with docker-compose.prod.yml for production\n#   docker-compose -f docker-compose.yml -f docker-compose.prod.yml up -d\n#\nversion: \"3.2\"\nservices:\n    opentpod-db:\n        container_name: opentpod-db\n        image: postgres:12.0-alpine\n        restart: always\n        volumes:\n            - opentpod-db-data:/var/lib/postgresql/data\n        environment:\n            POSTGRES_USER: root\n            POSTGRES_DB: opentpod\n            POSTGRES_PASSWORD: ${OPENTPOD_DB_PASSWORD}\n    opentpod-redis:\n        container_name: opentpod-redis\n        image: redis:4.0.5-alpine\n        command: --appendonly yes --requirepass \"${OPENTPOD_REDIS_PASSWORD}\"\n        restart: always\n        volumes:\n            - opentpod-redis-data:/data\n    opentpod: &opentpod-djangoapp\n        container_name: opentpod\n        image: opentpod:stable\n        volumes:\n            - opentpod-data-var:/root/openTPOD/var\n        environment:\n            - DJANGO_ALLOWED_HOSTS\n            - DJANGO_SECRET_KEY\n            - DJANGO_DEBUG=false\n            - PYTHONDONTWRITEBYTECODE=1\n            - OPENTPOD_REDIS_PASSWORD\n            - REDIS_URL=redis://:${OPENTPOD_REDIS_PASSWORD}@opentpod-redis:6379/0\n            - CACHE_URL=redis://:${OPENTPOD_REDIS_PASSWORD}@opentpod-redis:6379/1\n            - DATABASE_URL=postgres://root:${OPENTPOD_DB_PASSWORD}@opentpod-db:5432/opentpod\n        depends_on:\n            - opentpod-db\n            - opentpod-redis\n    opentpod-worker:\n        <<: *opentpod-djangoapp\n        container_name: opentpod-worker\n    opentpod-trainer:\n        <<: *opentpod-djangoapp\n        container_name: opentpod-trainer\n    opentpod-rqscheduler:\n        <<: *opentpod-djangoapp\n        container_name: opentpod-rqscheduler\n\nvolumes:\n    opentpod-data-var:\n    opentpod-db-data:\n    opentpod-redis-data:\n",
+            "docker-compose.override.yml": "# docker-compose.override.yml for development. Only brings up minimal set\n# of containers, postgresql, redis, opentpod and one opentpod-worker that\n# handles all jobs.\n#\n#     docker-compose up -d\n#\nversion: \"3.2\"\nservices:\n    opentpod:\n        build: .\n        image: opentpod:latest\n        command: [ \"./run-development.sh\" ]\n        volumes:\n            # mount local source into container\n            - ./config:/root/openTPOD/config:ro\n            - ./cvat:/root/openTPOD/cvat:ro\n            - ./datumaro:/root/openTPOD/datumaro:ro\n            - ./frontend/src:/root/openTPOD/frontend/src:ro\n            - ./manage.py:/root/openTPOD/manage.py:ro\n            - ./opentpod:/root/openTPOD/opentpod:ro\n        ports:\n            - 127.0.0.1:20000:8000\n        environment:\n            - DJANGO_DEBUG=true\n    opentpod-worker: &opentpod-worker\n        build: .\n        image: opentpod:latest\n        command: [ \"./run-worker.sh\", \"default\" ]\n        volumes:\n            - ./config:/root/openTPOD/config:ro\n            - ./cvat:/root/openTPOD/cvat:ro\n            - ./datumaro:/root/openTPOD/datumaro:ro\n            - ./manage.py:/root/openTPOD/manage.py:ro\n            - ./opentpod:/root/openTPOD/opentpod:ro\n        environment:\n            - DJANGO_DEBUG=true\n            - NVIDIA_VISIBLE_DEVICES=all # needed for cuda devices to be visible\n            - NVIDIA_DRIVER_CAPABILITIES=compute,utility\n    opentpod-trainer:\n        <<: *opentpod-worker\n        command: [ \"./run-worker.sh\", \"low\" ]\n    opentpod-rqscheduler:\n        <<: *opentpod-worker\n        command: [ \"bash\", \"-c\", \"rqscheduler --host=opentpod-redis --port=6379 --db=0 --password=${OPENTPOD_REDIS_PASSWORD}\" ]\n",
+            "Dockerfile": "FROM ubuntu:18.04\n\nENV TERM=xterm \\\n    LANG='C.UTF-8'  \\\n    LC_ALL='C.UTF-8' \\\n    BASH_ENV=/etc/profile\n\n# Install necessary apt packages\n# some python package requires gcc when installing from conda, therefore\n# installing build-essential, some other dependencies are for cvat\nRUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -yq \\\n        build-essential \\\n        ffmpeg \\\n        git \\\n        libavcodec-dev \\\n        libavdevice-dev \\\n        libavfilter-dev \\\n        libavformat-dev \\\n        libavutil-dev \\\n        libgeos-dev \\\n        libpq-dev \\\n        libswresample-dev \\\n        libswscale-dev \\\n        p7zip-full \\\n        pkg-config \\\n        software-properties-common \\\n        tzdata \\\n        unrar \\\n        unzip \\\n        vim \\\n        wget \\\n && apt-get clean && rm -rf /var/lib/apt/lists/*\n\n# use conda to manage requirements\nRUN wget --quiet https://repo.anaconda.com/miniconda/Miniconda3-py37_4.8.3-Linux-x86_64.sh -O ~/miniconda.sh \\\n && /bin/bash ~/miniconda.sh -b -p /opt/conda \\\n && rm ~/miniconda.sh \\\n && /opt/conda/bin/conda update -n base -c defaults conda \\\n && /opt/conda/bin/conda clean -tipsy \\\n && ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh \\\n && echo \". /etc/profile\" >> ~/.bashrc  # used by docker exec/run\nSHELL [ \"/bin/bash\", \"-c\" ]\n\n# Install python dependencies\nCOPY requirements/ /root/openTPOD/requirements/\nWORKDIR /root/openTPOD\n\nRUN MAKEFLAGS=-j8 conda env create -f requirements/environment.yml \\\n && echo 'conda activate opentpod-env' > /etc/profile.d/opentpod.sh\n\n# Install nodejs dependencies\nCOPY frontend/package.json /root/openTPOD/frontend/\nRUN cd frontend && npm install\n\n# Copy frontend source and build npm static files\nCOPY frontend /root/openTPOD/frontend/\nRUN cd frontend && npm run-script build\n\nVOLUME /root/openTPOD/static\n\n# Copy rest of the opentpod source\nCOPY . /root/openTPOD/\n\nEXPOSE 8000\nCMD [ \"/bin/bash\" ]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            ".editorconfig",
+            ".gitattributes",
+            ".gitignore",
+            ".gitmodules",
+            ".pylintrc",
+            "CONTRIBUTORS.txt",
+            "Dockerfile",
+            "LICENSE",
+            "README.md",
+            "cvat",
+            "datumaro",
+            "docker-compose.admin.yml",
+            "docker-compose.override.yml",
+            "docker-compose.prod.yml",
+            "docker-compose.yml",
+            "dotenv.example",
+            "manage.py",
+            "opentpod-backup.sh",
+            "pytest.ini",
+            "run-development.sh",
+            "run-frontend.sh",
+            "run-worker.sh",
+            "setup.cfg"
+        ],
+        "folders": [
+            "config",
+            "docs",
+            "frontend",
+            "keys",
+            "locale",
+            "nginx",
+            "opentpod",
+            "requirements",
+            "third_party"
+        ]
+    }
+}

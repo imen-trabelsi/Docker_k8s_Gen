@@ -1,0 +1,15 @@
+# Use the mongo image as the base image
+FROM mongo
+
+# Set the working directory
+WORKDIR /home/normalization
+
+# Copy the needed file to the working directory
+COPY bash/mongo.bash ./
+
+# Run commands
+RUN chmod 700 mongo.bash
+EXPOSE 27017
+
+# Customize the command to start the MongoDB server
+CMD ["mongod"]

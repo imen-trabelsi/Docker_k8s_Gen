@@ -1,0 +1,29 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.17-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD . /go/src/github.com/tilt-dev/servantes/doggos"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "/go/bin/doggos"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "cd /go/src/github.com/tilt-dev/servantes/doggos && go install .",
+                ""
+            ]
+        ]
+    }
+}

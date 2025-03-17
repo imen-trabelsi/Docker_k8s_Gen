@@ -1,0 +1,27 @@
+# Set the base image
+FROM node:11.2.0-alpine
+
+# Set work directory
+WORKDIR /usr/app
+
+# Add application files and directories 
+COPY . /server
+
+# Change to app directory
+RUN cd /server
+
+# Install app dependencies
+RUN npm install
+
+# Set environment variables (if any)
+
+# Set health checks (if any)
+
+# Set exposed ports (if any)
+
+# Set CMD/ENTRYPOINT instruction
+CMD ["node", "/server/src/server.js"]
+
+# Set Users (If any)
+
+# Set Labels

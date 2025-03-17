@@ -1,0 +1,22 @@
+# Use official Python runtime as a parent image
+FROM python:3.7-slim-stretch
+
+# Set the working directory in the container to /app
+WORKDIR /app
+
+# Add maintainer info
+LABEL maintainer="alexandre.abadie@inria.fr"
+
+# Add files into the container
+COPY . /app
+
+# Build and install the application
+RUN apt-get update && apt-get install -y git && apt-get autoremove && \
+    apt-get autoclean && \
+    pip3 install git+https://github.com/pyaiot/pyaiot.git && \
+
+# for including redis in the installation
+RUN pip3 install redis 
+
+# command to run the application
+CMD ["python", "./your-application-script"];

@@ -1,0 +1,30 @@
+FROM ikemtz/sql_dacpac:latest
+
+# Environment variables
+ENV SA_PASSWORD=SqlDockerRocks123!
+
+WORKDIR /microservice 
+
+# Run pre-requisites and install dependencies
+USER root
+
+# Copy dacpac files, ldf, mdf to respective directories
+COPY /bin/Debug/*.dacpac /dacpac/
+COPY --from=sql-temp /var/opt/mssql/data/*.ldf /var/opt/mssql/data/
+COPY --from=sql-temp /var/opt/mssql/data/*.mdf /var/opt/mssql/data/
+
+# Run Sql commands to set up database and clean up afterwards
+RUN /opt/mssql/bin/sqlservr & sleep 20 \
+&& sqlpackage /Action:Publish /TargetServerName:localhost /TargetUser:SA /TargetPassword:$SA_PASSWORD /SourceFile:/dacpac/unitDb.dacpac /TargetDatabaseName:unitDb /p:BlockOnPossibleDataLoss=false \
+&& sleep 20 \
+&& pkill sqlservr \
+&& sleep 10 \
+
+# Change user for security reasons
+USER mssql
+
+# Exposed Ports
+EXPOSE 1433
+
+# Metadata
+LABEL author="@IkeMtz"

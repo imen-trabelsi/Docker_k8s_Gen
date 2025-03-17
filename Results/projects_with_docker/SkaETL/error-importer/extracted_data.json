@@ -1,0 +1,26 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Spring Boot",
+        "dependencies": {
+            "pom.xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n    <modelVersion>4.0.0</modelVersion>\n    <groupId>io.skalogs.skaetl</groupId>\n    <artifactId>error-importer</artifactId>\n    <name>error-importer</name>\n    <packaging>jar</packaging>\n\n    <parent>\n        <groupId>io.skalogs.skaetl</groupId>\n        <artifactId>parent-importer</artifactId>\n        <version>1.0.3-SNAPSHOT</version>\n    </parent>\n\n    <dependencies>\n        <dependency>\n            <groupId>io.skalogs.skaetl</groupId>\n            <artifactId>core</artifactId>\n            <version>${project.version}</version>\n        </dependency>\n        <dependency>\n            <groupId>org.projectlombok</groupId>\n            <artifactId>lombok</artifactId>\n        </dependency>\n    </dependencies>\n\n    <build>\n        <plugins>\n            <plugin>\n                <groupId>org.apache.maven.plugins</groupId>\n                <artifactId>maven-deploy-plugin</artifactId>\n                <configuration>\n                    <skip>true</skip>\n                </configuration>\n            </plugin>\n            <plugin>\n                <groupId>org.apache.maven.plugins</groupId>\n                <artifactId>maven-surefire-plugin</artifactId>\n            </plugin>\n            <plugin>\n                <groupId>org.springframework.boot</groupId>\n                <artifactId>spring-boot-maven-plugin</artifactId>\n                <executions>\n                    <execution>\n                        <id>build-info</id>\n                        <goals>\n                            <goal>build-info</goal>\n                        </goals>\n                        <configuration>\n                            <additionalProperties>\n                                <encoding.source>UTF-8</encoding.source>\n                                <encoding.reporting>UTF-8</encoding.reporting>\n                                <java.source>${java.version}</java.source>\n                                <java.target>${java.version}</java.target>\n                            </additionalProperties>\n                        </configuration>\n                    </execution>\n                    <execution>\n                        <id>repackage</id>\n                        <goals>\n                            <goal>repackage</goal>\n                        </goals>\n                    </execution>\n                </executions>\n            </plugin>\n            <plugin>\n                <groupId>com.spotify</groupId>\n                <artifactId>dockerfile-maven-plugin</artifactId>\n                <configuration>\n                    <repository>skalogs/error-importer</repository>\n                    <tag>${project.version}</tag>\n                    <useMavenSettingsForAuth>true</useMavenSettingsForAuth>\n                    <buildArgs>\n                        <JAR_FILE>${project.build.finalName}.jar</JAR_FILE>\n                    </buildArgs>\n                    <skip>${dockerfile.skip}</skip>\n                </configuration>\n            </plugin>\n        </plugins>\n    </build>\n</project>\n"
+        },
+        "database": null,
+        "build_system": "Maven",
+        "config_files": {
+            "error-importer/Dockerfile": "FROM openjdk:8u151-jdk\n\nADD startup.sh /usr/bin/startup.sh\n\nCMD [\"/usr/bin/startup.sh\"]\n\n# Add the service itself\nARG JAR_FILE\nADD target/${JAR_FILE} /usr/share/skalogs/error-importer.jar\n",
+            "Jenkinsfile": "pipeline {\n    agent any\n    tools {\n        maven 'apache-maven-3.5.2'\n    }\n    stages {\n        stage('Build') {\n            steps {\n                withCredentials([usernamePassword(credentialsId: 'docker', passwordVariable: 'DOCKER_PASSWORD', usernameVariable: 'DOCKER_USERNAME')]) {\n                  sh \"docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}\"\n                }\n                sh 'mvn -Dmaven.test.failure.ignore=true clean install'\n            }\n            post {\n                success {\n                    junit 'target/surefire-reports/**/*.xml'\n                }\n            }\n        }\n\n        stage('Push Docker Image') {\n            steps {\n                sh 'mvn dockerfile:push'\n            }\n        }\n    }\n}\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "pom.xml",
+            "startup.sh"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

@@ -1,0 +1,32 @@
+{
+    "docker_info": {
+        "base_image": "python:3.7.2-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "6000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY . /code",
+            "WORKDIR /code"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"python\",\"client.py\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "pip install -r requirements.txt &&  pip install -U flask-cors",
+                ""
+            ]
+        ]
+    }
+}

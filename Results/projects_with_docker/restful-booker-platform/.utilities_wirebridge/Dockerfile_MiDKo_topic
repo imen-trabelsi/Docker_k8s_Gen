@@ -1,0 +1,39 @@
+# Base Image
+FROM maven:3.5.2-jdk-8-alpine AS builder
+
+# User Definition
+USER root
+
+# Working Directory
+WORKDIR /usr/local/wirebridge
+
+# Copy static files and pom.xml to working directory
+COPY assets .
+COPY pom.xml .
+
+# Build with Maven
+RUN mvn clean install
+
+# Final Stage
+FROM openjdk:8-jre-alpine
+
+# Working Directory
+WORKDIR /usr/local/report
+
+# Arguments for jvm
+ARG JAVA_OPTS=""
+
+# Environment variable
+ENV JAVA_OPTS=${JAVA_OPTS}
+
+# Copy Application
+
+# Healthchecks
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD curl -f http://localhost:8080/actuator/health || exit 1
+
+# Expose port
+EXPOSE 8080
+
+# Execution
+CMD [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar Wirebridge-0.0.3.jar"]

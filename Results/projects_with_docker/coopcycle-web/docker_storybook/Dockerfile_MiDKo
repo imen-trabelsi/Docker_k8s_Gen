@@ -1,0 +1,25 @@
+# Based on user-provided and extracted information
+FROM node:16-alpine
+
+# To handle 'not get uid/gid' error
+RUN apk update && apk upgrade && \
+    apk add --no-cache bash git openssh && \
+    mkdir /srv/coopcycle && \
+
+
+
+WORKDIR /srv/coopcycle
+
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (https://stackoverflow.com/a/57829295/91497)
+COPY package*.json ./
+
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+EXPOSE 8080
+
+ENTRYPOINT ["/start.sh"]

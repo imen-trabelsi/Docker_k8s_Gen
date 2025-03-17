@@ -1,0 +1,45 @@
+{
+    "docker_info": {
+        "base_image": "ubuntu:18.04",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "9015"
+        ],
+        "user": [
+            "onap"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "HTTP_PROXY=${HTTP_PROXY}",
+            "HTTPS_PROXY=${HTTPS_PROXY}"
+        ],
+        "envs": [
+            "ENV http_proxy $HTTP_PROXY",
+            "ENV https_proxy $HTTPS_PROXY",
+            "ENV no_proxy $NO_PROXY"
+        ],
+        "copy_instructions": [
+            "WORKDIR /opt/multicloud/k8s/orchestrator",
+            "ADD --chown=onap ./orchestrator ./"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"./orchestrator\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "groupadd -r onap && useradd -r -g onap onap",
+                ""
+            ],
+            [
+                "chown onap:onap /opt/multicloud/k8s/orchestrator -R",
+                ""
+            ]
+        ]
+    }
+}

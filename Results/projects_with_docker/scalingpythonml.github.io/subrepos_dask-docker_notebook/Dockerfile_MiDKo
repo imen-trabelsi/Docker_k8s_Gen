@@ -1,0 +1,52 @@
+# Dockerfile
+
+FROM holdenk/jupyter-hub-magicsingleuser-sample:0.10.2
+
+WORKDIR /app
+
+COPY subrepos/dask-docker/docker-compose.yml /app
+COPY subrepos/dask-docker/notebook/Dockerfile /app
+COPY Gemfile /app
+
+RUN apt-get update \
+ && apt-get install -yq graphviz git build-essential \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/* \
+
+USER $NB_USER
+COPY --chown=1000:100 examples/ /home/$NB_USER/examples
+COPY prepare.sh /usr/bin/prepare.sh
+
+RUN conda install -c conda-forge --yes mamba \
+ && mamba install --yes python==3.8.6 \
+ && (mamba install --yes aiohttp==3.7.1 || pip install aiohttp==3.7.1 ) \
+ && mamba install --yes \
+ python-blosc \
+ cytoolz \
+ dask==2.30.0 \
+ dask-core==2.30.0 \
+ lz4 \
+ numpy==1.19.2 \
+ ipywidgets \
+ python-graphviz \
+ && mamba install --yes s3fs gcsfs dropboxdrivefs requests dropbox paramiko adlfs pygit2 pyarrow \
+ && mamba install --yes bokeh numba llvmlite \
+ && (mamba install --yes fastparquet || pip install fastparquet) \
+ && (mamba install --yes jupyter-server-proxy || pip install jupyter-server-proxy) \
+
+RUN jupyter labextension install @jupyter-widgets/jupyterlab-manager dask-labextension@3.0.0 @jupyterlab/server-proxy \
+ && jupyter serverextension enable dask-labextension@3.0.0 @jupyterlab/server-proxy \
+
+RUN jupyter lab clean \
+ && jlpm cache clean \
+ && npm cache clean --force \
+ && find /opt/conda/ -type f,l -name '*.a' -delete \
+ && find /opt/conda/ -type f,l -name '*.pyc' -delete \
+ && find /opt/conda/ -type f,l -name '*.js.map' -delete \
+ && find /opt/conda/lib/python*/site-packages/bokeh/server/static -type f,l -name '*.js' -not -name '*.min.js' -delete || echo "no bokeh static files to cleanup" \
+
+RUN mkdir /opt/app \
+
+USER root
+
+ENTRYPOINT ["tini", "--", "/usr/bin/prepare.sh"]

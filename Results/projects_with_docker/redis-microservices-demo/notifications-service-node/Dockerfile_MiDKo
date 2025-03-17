@@ -1,0 +1,27 @@
+# Use an optimum version for Java Spring Boot application
+FROM adoptopenjdk:11-jdk-hotspot as builder
+
+WORKDIR /usr/src/app
+
+# Copy maven executable jar
+COPY pom.xml ./
+
+# Copy project source
+COPY src ./src
+
+# Package the application
+RUN mvn clean package -DskipTests
+
+ 
+# Using package stage
+FROM adoptopenjdk:11-jre-hotspot as runtime
+
+WORKDIR /usr/src/app
+
+# Expose port 8888 for outside access
+EXPOSE 8888
+
+# Copy over the built artifact from the previous stage
+
+# Define the start command to execute when the docker container starts up
+CMD ["java", "-jar", "app.jar"]

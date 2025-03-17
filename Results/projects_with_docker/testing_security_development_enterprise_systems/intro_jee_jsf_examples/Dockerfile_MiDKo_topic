@@ -1,0 +1,31 @@
+# Use the base Image
+FROM jboss/wildfly:18.0.1.Final as builder
+
+# Set the Workdir
+WORKDIR /usr/local/src
+
+# Copy the Pom.xml
+COPY pom.xml .
+
+# Include mvn in the Path (Also assumes that Maven is installed in the path /usr/share/maven)
+ENV PATH="/usr/share/maven:$PATH"
+
+# Install all the dependencies
+RUN mvn dependency:go-offline -B
+
+# Copy the src code to the Docker context
+COPY src .
+
+# Package the application
+RUN mvn package
+
+# Stores the final image
+FROM jboss/wildfly:18.0.1.Final
+
+# Copy the War file to the deployments directory
+
+# Declare the Port where the application runs (just an example, replace with the actual port)
+EXPOSE 8080
+
+# Starts WildFly
+CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-c", "standalone-full.xml", "-b", "0.0.0.0"]

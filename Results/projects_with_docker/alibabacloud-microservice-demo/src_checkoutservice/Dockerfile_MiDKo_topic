@@ -1,0 +1,19 @@
+# Building the application
+FROM maven:3.8.1-openjdk-11-slim AS build
+WORKDIR /usr/src/app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# Final Application Image
+FROM dragonwell-registry.cn-hangzhou.cr.aliyuncs.com/dragonwell/dragonwell:8-extended-ga-centos
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+EXPOSE 8080
+WORKDIR /app
+COPY /start.sh /app
+
+RUN chmod +x start.sh \
+    && chown -R 1001:0 /app \
+
+USER 1001
+CMD ["/app/start.sh"]

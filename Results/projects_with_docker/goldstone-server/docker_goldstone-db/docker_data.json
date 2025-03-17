@@ -1,0 +1,22 @@
+{
+    "docker_info": {
+        "base_image": "solinea/postgres:9.4",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "5432"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV GOLDSTONE_PASSWORD=\"goldstone\" \\"
+        ],
+        "copy_instructions": [
+            "COPY init-goldstone-db.sh /docker-entrypoint-initdb.d/",
+            "COPY startup-goldstone-db.sh /docker-entrypoint-always.d/"
+        ],
+        "execution": [],
+        "run": []
+    }
+}

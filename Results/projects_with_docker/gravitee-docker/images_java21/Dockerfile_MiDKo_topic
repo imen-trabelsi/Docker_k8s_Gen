@@ -1,0 +1,26 @@
+# Stage 1: Build
+FROM python:3.9-slim as build
+
+WORKDIR /app
+
+# Install dependencies:
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+
+# Stage 2: Prod
+FROM eclipse-temurin:21-jre-alpine
+
+WORKDIR /app
+
+ENV LANG='en_US.UTF-8' LANGUAGE='en_US:en' LC_ALL='en_US.UTF-8'
+
+# Install necessary dependencies
+RUN apk -U upgrade \
+    && apk add --no-cache fontconfig libretls musl-locales musl-locales-lang ttf-dejavu tzdata zlib openssl libc6-compat curl htop jattach libstdc++ libgcc \
+    && rm -rf /var/cache/apk/* \
+    && echo Verifying install ... \
+    && echo "java --version" && java --version \
+
+
+CMD ["java", "-version"]

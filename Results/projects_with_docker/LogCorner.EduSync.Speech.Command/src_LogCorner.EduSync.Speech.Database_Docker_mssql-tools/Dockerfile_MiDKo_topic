@@ -1,0 +1,9 @@
+# Set the base image
+FROM mcr.microsoft.com/mssql-tools
+WORKDIR /src
+
+# Copy the necessary sql file
+COPY Restore/logcorner-edusync-speech-database_Create.sql ./
+
+# Set default command
+CMD ["bash"]

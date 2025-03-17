@@ -1,0 +1,45 @@
+# Set base image (host OS)
+FROM node:12.6.0-alpine
+
+# Set the working directory in the Docker image
+WORKDIR /src/frontend
+
+# Copy the dependencies file to the working directory
+COPY pyproject.toml .
+
+# Install any dependencies
+RUN apk update && \
+    apk upgrade && \
+    apk add --no-cache git && \
+    pip install poetry && \
+
+# Copy the entire project
+COPY . /src/
+
+# Copy the necessary files
+COPY ./.git /src/.git
+COPY ./frontend/package.json /src/frontend/package.json
+COPY ./frontend/package-lock.json /src/frontend/package-lock.json
+COPY ./frontend /src/frontend
+COPY ./resources/job_parameter_schemas /src/resources/job_parameter_schemas
+COPY ./test/wiremock_config /src/test/wiremock_config
+COPY docker/cilantro-frontend/nginx.conf /etc/nginx/nginx.conf
+COPY docker/cilantro-frontend/VERSION .
+
+# Run the command
+RUN npm install && \
+    npm run build && \
+    mkdir /app && \
+    COPY --from=0 /src/frontend/dist /app
+
+# Set environment variables (if any)
+# ENV VAR_NAME=var_value
+
+# Expose ports
+# EXPOSE port_number
+
+# Set health checks (if any)
+# HEALTHCHECK CMD command_to_run_to_check_health || exit 1
+
+# Command to run on container start
+# CMD [ "command_to_run" ]

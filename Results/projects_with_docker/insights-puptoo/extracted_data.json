@@ -1,0 +1,23 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "requirements.txt": "app-common-python==0.2.3\nattrs==20.3.0\nCacheControl==0.12.6\ncertifi==2024.7.4\nchardet==3.0.4\nconfluent-kafka==1.5.0\ndefusedxml==0.6.0\nflake8==3.8.4\nfreezegun==0.3.15\nidna==3.10\ninsights-core==3.4.20\nJinja2==3.1.5\njsonschema==3.2.0\nlockfile==0.12.2\nMarkupSafe==2.1.5\nmccabe==0.6.1\nmore-itertools==8.6.0\nmsgpack==1.0.2\npackaging==20.8\npluggy==0.13.1\nprometheus-client==0.7.1\npy==1.10.0\npycodestyle==2.6.0\npyflakes==2.2.0\npyparsing==2.4.7\npyrsistent==0.17.3\npytest==5.4.3\npython-dateutil==2.8.1\nPyYAML==5.4.1\nredis==4.4.4\nrequests==2.32.2\nsix==1.15.0\nurllib3==1.26.19\nwcwidth==0.2.5\n"
+        },
+        "database": "Redis",
+        "build_system": "pip",
+        "config_files": {
+            "Dockerfile": "FROM registry.access.redhat.com/ubi8/ubi-minimal:latest\n\nWORKDIR /app-root/\n\nRUN microdnf install -y python38 python38-devel curl python38-pip git tar xz bzip2 unzip && \\\n    microdnf upgrade -y && \\\n    microdnf clean all && \\\n    git clone -b 3.0 https://github.com/RedHatInsights/insights-core && \\\n    pip3 install ./insights-core\n\nCOPY poetry.lock poetry.lock\nCOPY pyproject.toml pyproject.toml\nCOPY requirements.txt requirements.txt\nCOPY unit_test.sh unit_test.sh\nCOPY dev dev\nCOPY tests tests\nCOPY src src\n\nRUN pip3 install --upgrade pip && pip3 install .\n\nCMD [\"puptoo\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "consumer.py",
+            "requirements.txt"
+        ],
+        "folders": []
+    }
+}

@@ -1,0 +1,21 @@
+# Use the base image provided by the user
+FROM ninokop/dubbo-demo-java-base
+
+# Create and set the applications directory
+RUN mkdir /app 
+WORKDIR /app
+
+# Copy required files and dependencies in the container
+COPY ./pom.xml ./pom.xml
+COPY ./scripts/docker-compose.yml ./scripts/docker-compose.yml
+COPY ./scripts/dubbo-consumer/Dockerfile ./scripts/dubbo-consumer/Dockerfile
+
+# Build the application dependencies using Maven
+RUN mvn clean install
+
+# Copy the remaining files
+COPY . .
+
+# Set permission for the start script and run the script
+RUN chmod +x bin/start.sh
+ENTRYPOINT ["bash","app/bin/start.sh"]

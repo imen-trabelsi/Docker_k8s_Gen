@@ -1,0 +1,12 @@
+FROM alpine:3.19
+
+RUN apk add --no-cache ca-certificates
+
+COPY cortex-$TARGETARCH /bin/cortex
+COPY migrations /migrations/
+
+EXPOSE 80  
+
+LABEL org.opencontainers.image.title="cortex"  
+
+ENTRYPOINT ["/bin/cortex"]

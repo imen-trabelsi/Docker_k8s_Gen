@@ -1,0 +1,37 @@
+{
+    "docker_info": {
+        "base_image": "--platform=${BUILDPLATFORM}",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8081"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV GODEBUG netdns=cgo",
+            "ENV GO111MODULE on"
+        ],
+        "copy_instructions": [
+            "COPY . /go/src/github.com/lightningnetwork/loop",
+            "COPY --from=builder /go/bin/loopd /bin/",
+            "COPY --from=builder /go/bin/loop /bin/"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apk add --no-cache --update alpine-sdk \\",
+                "git",
+                "make",
+                "&&  cd /go/src/github.com/lightningnetwork/loop",
+                "&&  make install"
+            ],
+            [
+                "apk add --no-cache \\",
+                "bash",
+                "ca-certificates"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,35 @@
+# We'll use official OpenJDK image as our base image
+FROM openjdk:8-jdk-alpine
+
+# Here we set the environment variables
+ENV SCALA_VERSION=2.12.2 \
+
+# Here we install the necessary dependencies
+RUN apk update && apk add bash
+RUN apk add --no-cache bash=4.4.19-r1 && \
+    apk upgrade --update-cache --available && \
+    apk add openssl && \
+
+WORKDIR /app
+
+# Here we copy the entire project
+COPY . .
+
+# Here we install scala and sbt
+RUN wget http://downloads.lightbend.com/scala/${SCALA_VERSION}/scala-${SCALA_VERSION}.tgz && \
+    tar xvf scala-${SCALA_VERSION}.tgz && \
+    mv scala-${SCALA_VERSION} /usr/lib && \
+    ln -s /usr/lib/scala-${SCALA_VERSION} /usr/lib/scala && \
+RUN wget https://piccolo.link/sbt-${SBT_VERSION}.tgz && \
+    tar xvf sbt-${SBT_VERSION}.tgz && \
+    mv sbt /usr/lib && \
+    ln -s /usr/lib/sbt/bin/sbt /usr/bin/sbt && \
+
+# Here we add the build.sbt file and other necessary Scala files
+COPY . /app
+
+# Here we specify that sbt should run tests in the 'test' configuration
+RUN sbt test
+
+# Here we specify the CMD command
+CMD ["sbt", "run"]

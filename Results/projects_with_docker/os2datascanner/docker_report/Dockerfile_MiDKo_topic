@@ -1,0 +1,52 @@
+# Use the Node base image
+FROM node:14 as frontend
+
+# Setting up working directory
+WORKDIR /code/src/os2datascanner/projects/report/reportapp
+
+# Copying necessary files
+COPY package.json .
+COPY package-lock.json .
+COPY postcss.config.js .
+COPY webpack.dev.js .
+COPY webpack.prod.js .
+COPY static/src ./static/src
+COPY static/3rdparty ./static/3rdparty
+
+# Install the dependencies
+RUN npm ci
+
+# Run the build
+RUN npm run prod
+
+# Setting up a new stage
+FROM python:3.9-slim
+
+# Set the working directory
+WORKDIR /code
+
+# Environment variable setup
+ENV PYTHONUNBUFFERED=1 \
+    SUPERCRONIC_VERSION=v0.1.12 \
+
+# Copy file and folders
+COPY requirements/python-requirements/requirements-report.txt ./requirements/python-requirements/
+COPY src/os2datascanner ./src/os2datascanner
+COPY docker/report/crontab docker-entrypoint-django.sh gunicorn-settings.py ./docker/
+COPY . .
+
+# Install necessary packages and python dependencies
+RUN pip install -r ./requirements/python-requirements/requirements-report.txt
+
+# Expose the port
+EXPOSE 5000
+
+# Set the user
+USER os2ds_report:os2ds_report
+
+# Run the entrypoint script
+ENTRYPOINT ["/code/docker/docker-entrypoint.sh", "npm", "run", "dev"]
+CMD ["gunicorn"]
+
+# Set labels
+LABEL org.opencontainers.image.title="OS2datascanner"

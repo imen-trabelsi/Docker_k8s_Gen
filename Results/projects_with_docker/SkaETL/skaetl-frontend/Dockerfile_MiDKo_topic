@@ -1,0 +1,35 @@
+# start with the official Node.js image for the build stage
+FROM node:8.8.1 as build
+
+# create the app directory in Docker
+RUN mkdir -p /usr/src/app
+
+# set /usr/src/app as the working directory
+WORKDIR /usr/src/app
+
+# environment variables
+ENV NODE_ENV = "development"
+ENV API_BASE_URL = "http://localhost:8090"
+
+# add the app files to the container
+COPY package.json /usr/src/app/
+COPY . /usr/src/app
+
+# install app dependencies
+RUN npm install
+RUN npm run prod
+
+# for the run stage, start with a smaller base image
+FROM adoptopenjdk:11-jre-hotspot
+
+# copy the built app from the build stage
+
+# We add a user so our program doesn't run as root.
+RUN addgroup -S spring && adduser -S spring -G spring
+USER spring:spring
+
+# Expose the application on port 5555
+EXPOSE 5555
+
+# specify the start command
+CMD [ "java", "-jar", "/usr/src/app/target/my-app-1.0-SNAPSHOT.jar" ]

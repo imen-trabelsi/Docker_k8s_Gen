@@ -1,0 +1,41 @@
+# Use given base image
+FROM $REPOSITORY/gs-cloud-base-jre:$TAG
+
+# Argument for jar file
+ARG JAR_FILE=target/gs-cloud-*-bin.jar
+
+# Set up environment variable 
+ENV JAVA_TOOL_OPTIONS="${DEFAULT_JAVA_TOOL_OPTIONS} -XX:SharedArchiveFile=application.jsa"
+
+# Copy project files to docker image
+COPY pom.xml pom.xml
+COPY src src
+
+# Install maven dependency & build jar
+RUN mvn clean install
+
+# Expose necessary ports
+EXPOSE 8080
+
+# Copy jar file to root directory inside docker image
+COPY ${JAR_FILE} application.jar
+
+# Copy other depedendencies
+COPY --from=builder dependencies/ ./
+COPY --from=builder snapshot-dependencies/ ./
+COPY --from=builder spring-boot-loader/ ./
+
+# Run the jar
+RUN java -Djarmode=layertools -jar application.jar extract
+
+# Copy application files
+COPY --from=builder application/ ./
+
+# java commands
+RUN java -XX:ArchiveClassesAtExit=application.jsa \
+-Dspring.context.exit=onRefreshed \
+-Dspring.profiles.active=standalone \
+-Dserver.port=0 -Dmanagement.server.port=0 \
+
+# Deleting tmp
+RUN rm -rf /tmp/*

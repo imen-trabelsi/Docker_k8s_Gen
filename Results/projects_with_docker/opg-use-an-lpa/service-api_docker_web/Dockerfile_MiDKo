@@ -1,0 +1,36 @@
+# Use base image
+FROM nginxinc/nginx-unprivileged:stable-alpine
+
+# Define Maintainer
+LABEL maintainer="support@example.com"
+
+# Update and install dependencies
+RUN apk upgrade && \
+apk update curl && \
+apk --no-cache add libcap && \
+setcap 'cap_net_bind_service=+ep' /usr/sbin/nginx && \
+
+# Harden Nginx
+COPY scripts/docker_hardening/harden-nginx.sh /harden-nginx.sh
+RUN /harden-nginx.sh && rm /harden-nginx.sh
+
+# Copy project files
+WORKDIR /usr/src/app
+COPY package*.json ./
+COPY . .
+
+# Install the dependencies
+RUN npm ci --only=production
+
+# Copy nginx template 
+COPY service-api/docker/web/default.conf.template /etc/nginx/templates/default.conf.template
+
+# Expose the necessary ports
+EXPOSE 80
+EXPOSE 443
+
+# Set the user
+USER nginx
+
+# Start the application
+CMD ["npm", "start"]

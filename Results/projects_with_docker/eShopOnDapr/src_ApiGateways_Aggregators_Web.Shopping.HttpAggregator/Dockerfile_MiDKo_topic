@@ -1,0 +1,38 @@
+# Define the base image
+ARG NET_IMAGE=7.0-bullseye-slim
+FROM mcr.microsoft.com/dotnet/sdk:${NET_IMAGE} AS build
+
+# Set WORKDIRs and copy the necessary files
+WORKDIR /src
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+COPY ["src/BuildingBlocks/EventBus/EventBus.csproj", "src/BuildingBlocks/EventBus/"]
+COPY ["src/BuildingBlocks/Healthchecks/Healthchecks.csproj", "src/BuildingBlocks/Healthchecks/"]
+COPY ["src/Services/Basket/Basket.API/Basket.API.csproj", "src/Services/Basket/Basket.API/"]
+COPY ["src/Services/Catalog/Catalog.API/Catalog.API.csproj", "src/Services/Catalog/Catalog.API/"]
+COPY ["src/Services/Identity/Identity.API/Identity.API.csproj", "src/Services/Identity/Identity.API/"]
+COPY ["src/Services/Ordering/Ordering.API/Ordering.API.csproj", "src/Services/Ordering/Ordering.API/"]
+COPY ["src/Services/Payment/Payment.API/Payment.API.csproj", "src/Services/Payment/Payment.API/"]
+COPY ["src/Web/BlazorClient.Host/BlazorClient.Host.csproj", "src/Web/BlazorClient.Host/"]
+COPY ["src/Web/BlazorClient/BlazorClient.csproj", "src/Web/BlazorClient/"]
+COPY ["src/Web/WebStatus/WebStatus.csproj", "src/Web/WebStatus/"]
+COPY ["NuGet.config", "./"]
+COPY ["docker-compose.dcproj", "./"]
+COPY ["eShopOnDapr.sln", "./"]
+COPY . .
+
+# Set the workdir back to the microservice project
+WORKDIR "/src/src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator"
+
+# Restore and publish the application
+RUN dotnet restore "eShopOnDapr.sln"
+RUN dotnet publish --no-restore "Web.Shopping.HttpAggregator.csproj" -c Release -o /app/publish
+
+# Generate runtime image
+FROM mcr.microsoft.com/dotnet/runtime:${NET_IMAGE}
+WORKDIR /app
+
+# Expose port 80
+EXPOSE 80
+
+# Define the entry point
+ENTRYPOINT ["dotnet", "Web.Shopping.HttpAggregator.dll"]

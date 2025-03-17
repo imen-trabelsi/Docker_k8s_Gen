@@ -1,0 +1,23 @@
+# Start from the base Image
+FROM node:16-alpine
+
+# Set the working directory in the container
+WORKDIR /srv/coopcycle
+
+# Copy dependencies definition
+COPY package.json package-lock.json /srv/coopcycle/
+
+# Install build dependencies
+RUN apk update && apk upgrade && \
+
+# Install project dependencies
+RUN npm install
+
+# Copy local files to the applications directory
+COPY . .
+
+# Adding Execution Permissions
+RUN chmod +x /start.sh
+
+# Set the EntryPoint to application startup file
+ENTRYPOINT ["/start.sh"]

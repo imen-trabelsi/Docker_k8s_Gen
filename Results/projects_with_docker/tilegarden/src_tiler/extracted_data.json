@@ -1,0 +1,22 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"tilegarden\",\n  \"version\": \"1.0.0\",\n  \"description\": \"Port of azavea/lambnik to NodeJS | AWS Lambda mapnik renderer\",\n  \"contributors\": [\n    {\n      \"name\": \"Matt DelSordo\"\n    },\n    {\n      \"name\": \"Klaas Hoekema\"\n    },\n    {\n      \"name\": \"Matthew McFarland\"\n    }\n  ],\n  \"license\": \"MIT\",\n  \"private\": true,\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"https://github.com/azavea/tilegarden.git\"\n  },\n  \"files\": [\n    \"src\"\n  ],\n  \"scripts\": {\n    \"build-all-xml\": \"./scripts/build-all-xml.sh src/config src/config\",\n    \"deploy\": \"./scripts/deploy\",\n    \"deploy-new\": \"./scripts/deploy-new\",\n    \"destroy\": \"claudia destroy\",\n    \"dev\": \"nodemon -e js,mss,json,mml,mss --ignore '*.temp.mml' --exec yarn local\",\n    \"lint\": \"eslint src\",\n    \"local\": \"node --inspect=0.0.0.0:9229 -- node_modules/claudia-local-api/bin/claudia-local-api --abbrev 300 --api-module src/api | bunyan -o short\",\n    \"parse-id\": \"jq -r '.api.id' claudia.json > .api-id\",\n    \"test\": \"eslint src && jest --coverage\"\n  },\n  \"devDependencies\": {\n    \"bunyan\": \"^1.8.12\",\n    \"claudia\": \"^5.6.0\",\n    \"claudia-local-api\": \"https://github.com/azavea/claudia-local-api.git\",\n    \"eslint\": \"^6.3.0\",\n    \"eslint-config-airbnb-base\": \"^14.0.0\",\n    \"eslint-plugin-import\": \"^2.18.2\",\n    \"jest\": \"^24.8.0\",\n    \"nodemon\": \"^1.19.1\",\n    \"rewire\": \"^4.0.1\"\n  },\n  \"dependencies\": {\n    \"claudia-api-builder\": \"^4.1.2\",\n    \"mapnik\": \"4.2.1\",\n    \"sql-escape-string\": \"^1.1.0\",\n    \"xml2js\": \"^0.4.19\"\n  },\n  \"optionalDependencies\": {\n    \"aws-sdk\": \"^2.507.0\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "docker-compose.yml": "version: '3.1'\nservices:\n  database:\n    build:\n      context: ./src/database\n      dockerfile: Dockerfile\n    expose:\n      - \"5432\"\n    working_dir: /home\n    volumes:\n      - ./data:/home/data\n      - ./scripts/load_sample_data:/home/load_sample_data\n\n  tiler:\n    build:\n      context: ./src/tiler\n      dockerfile: Dockerfile\n    ports:\n      - \"3000:3000\"\n      - \"9229:9229\"\n    env_file: .env\n    links:\n      - database:database.internal.tilegarden\n    volumes:\n      - ./src/tiler:/home/tiler\n      - node_modules:/home/tiler/node_modules\n      - bin:/home/tiler/bin\n      - $HOME/.aws:/root/.aws:ro\n\n  terraform:\n    image: hashicorp/terraform:0.11.14\n    env_file: .env\n    environment:\n      - TF_VAR_region=${LAMBDA_REGION}\n      - TF_VAR_source_name=${PROJECT_NAME}-${USER}\n    working_dir: /home/terraform\n    volumes:\n      - ./src/terraform:/home/terraform\n      - $HOME/.aws:/root/.aws:ro\n\nvolumes:\n  node_modules:\n  bin:\n",
+            "src/tiler/Dockerfile": "FROM node:8.16-buster-slim\n\n# Install git for git dependencies\nRUN apt-get update -y\nRUN apt-get install git jq -y\nRUN yarn global add carto\n\n# Copy files needed for installing packages first\nCOPY package.json yarn.lock /home/tiler/\nWORKDIR /home/tiler\n\n# install node modules\nRUN yarn install\n\n# Copy remaining files after package installation to benefit from layer caching\nCOPY . /home/tiler\n\nCMD [\"yarn\", \"dev\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile"
+        ],
+        "folders": []
+    }
+}

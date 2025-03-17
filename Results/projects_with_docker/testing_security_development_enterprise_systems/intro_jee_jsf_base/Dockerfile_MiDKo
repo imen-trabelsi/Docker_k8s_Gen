@@ -1,0 +1,23 @@
+# Set the base image
+FROM jboss/wildfly:18.0.1.Final
+
+# Copy pom.xml file
+COPY pom.xml ./pom.xml
+
+# Run maven dependency resolution
+RUN mvn dependency:go-offline -B
+
+# Copy source code
+COPY src ./src
+
+# Build the application
+RUN mvn clean install
+
+# Copy the war file to deployments directory
+COPY target/base.war /opt/jboss/wildfly/standalone/deployments/
+
+# Expose the needed port
+EXPOSE 8080
+
+# Set the default command for the image
+CMD ["/opt/jboss/wildfly/bin/standalone.sh", "-b", "0.0.0.0", "-bmanagement", "0.0.0.0"]

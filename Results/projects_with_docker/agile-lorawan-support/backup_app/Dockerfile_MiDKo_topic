@@ -1,0 +1,17 @@
+# Use an official Python runtime as base image
+FROM python:latest
+
+# Set the working directory
+WORKDIR /usr/src/app
+
+# Copy all the files from the current directory to the Docker image
+COPY . .
+
+# Install Python modules
+RUN pip install paho-mqtt && \
+
+# Set the Python environment variable
+ENV PYTHONUNBUFFERED 1
+
+# Set the command to be run on running the Docker image
+CMD ["python", "-m", "app"]

@@ -1,0 +1,52 @@
+# Specify base image
+FROM node:10-alpine as builder
+
+# Set working directory in the builder container
+WORKDIR /builder
+
+# Add essential packages for building dependencies
+RUN apk --no-cache add \
+    make \
+    g++ \
+    git \
+    python-dev \
+
+# Copy dependencies files
+COPY common/nodejs/package.json src/common/
+COPY imagery/package.json .
+
+# Run npm install
+RUN npm install
+
+# Build messages and bins
+RUN npm run build-msg
+RUN npm run build
+
+# Copy the source files
+COPY common/messages/imagery.proto src/common/messages/
+COPY common/nodejs src/common
+COPY imagery .
+
+# Create final image
+FROM node:10-alpine
+
+# Prepare app directory
+WORKDIR /app
+
+# Install necessary packages
+RUN apk --no-cache add \
+    libgphoto2-dev \
+    graphicsmagick \
+
+# Copy the dependencies from the builder image
+
+# Copy the source files from the builder image
+
+# Set the environment variables
+ENV NODE_ENV=production \
+
+# Expose the service on port 8081
+EXPOSE 8081
+
+# Define the Docker image's behavior when the container starts
+CMD ["FORCE_COLOR=1", "npm", "start", "--silent"]

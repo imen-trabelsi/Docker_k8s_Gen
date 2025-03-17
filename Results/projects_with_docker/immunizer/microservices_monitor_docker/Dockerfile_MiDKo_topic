@@ -1,0 +1,37 @@
+# Use the officical ubuntu base image
+FROM ubuntu:18.04
+
+# Add maintainer and other metadata
+LABEL maintainer="Omar" \
+      version="1.0" \
+
+# Set work directory in container
+WORKDIR /root
+
+# Install dependencies
+RUN apt-get clean && \
+    apt-get update && \ 
+    apt-get install -y --no-install-recommends apt-utils && \
+    apt-get install -qy openjdk-8-jdk && \
+    apt-get install -qy locales && \
+    apt-get install -qy vim && \
+    apt-get install -qy zip unzip && \
+    apt-get install -qy git && \
+    apt-get install -qy curl && \
+    curl -O https://downloads.apache.org/spark/spark-2.4.5/spark-2.4.5-bin-hadoop2.7.tgz && \
+    tar -xvzf spark-2.4.5-bin-hadoop2.7.tgz && \
+    apt-get -qy autoremove && \
+
+# Set environment variable
+ENV LC_ALL en_US.UTF-8
+
+# Git clone and build the application
+WORKDIR /root/immunizer-monitor/scripts
+RUN git clone --progress --verbose https://github.com/oiraqi/immunizer-monitor.git && \
+    git clone --progress --verbose https://github.com/oiraqi/immunizer-analyze.git && \
+
+# Change to root directory
+WORKDIR /root
+
+# During runtime, this command will be executed to start the Spring boot application 
+CMD ["java", "-jar", "/root/immunizer-monitor/scripts/immunizer-monitor.jar"]

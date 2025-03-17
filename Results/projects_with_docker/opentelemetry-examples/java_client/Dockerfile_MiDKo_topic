@@ -1,0 +1,28 @@
+# Use the specified base image
+FROM maven:3-eclipse-temurin-11 AS build
+WORKDIR /usr/src/app
+
+# This ensures that the any subsequent command will be run as the root user, providing necessary permissions.
+USER root
+
+# Run necessary commands
+RUN apt-get update && apt-get install -y curl && update-ca-certificates -f
+RUN curl -o opentracing-specialagent-1.7.0.jar https://repo1.maven.org/maven2/io/opentracing/contrib/specialagent/opentracing-specialagent/1.7.0/opentracing-specialagent-1.7.0.jar
+
+# Copy files to the container
+COPY pom.xml pom.xml
+COPY src ./src
+RUN mvn -f /usr/src/app/pom.xml clean package
+
+#*******************************************
+
+# Runtime container to keep our distro lean 
+FROM eclipse-temurin:11
+WORKDIR /app/
+
+# Exposed ports
+EXPOSE /* add the respective ports here */
+
+# Run the JAR file at container launch
+# We use javaagent for achieving distributed transaction tracing in Spring Boot applications, as specified
+ENTRYPOINT ["java", "-javaagent:/app/opentracing-specialagent-1.7.0.jar", "-jar", "client-1.0-SNAPSHOT.jar"]

@@ -1,0 +1,55 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Flask",
+        "dependencies": {
+            "requirements.txt": "aiohttp==3.10.11\naiofiles==24.1.0\nasync-timeout<5.0\nawscli\nasyncio==3.4.3\nFlask<2.4\nFlask-Login>=0.2.7\ngunicorn>=19.5.0\nFlask-WTF>=1.0\nwatchdog>=0.9.0\nlxml>=4.6.2\npymongo==2.8\nmongokit-py3>=0.9.1.1\nFlask-MongoKit==0.6\nbsddb3>=6.2.6\nFlask-Mail==0.9.0\nFlask-Script==2.0.5\nfeedparser==5.1.3\nsh==1.09\npasslib>=1.7.1\nrequests>=2.20.0\nsimplekv\nWerkzeug<3.0.0\nthredds_crawler>=1.5.4\n-e git+https://github.com/pallets-eco/flask-session@a9d001ae9b40268c9189c468bb136e535d3358e1#egg=flask-session\npyyaml>=5.2\nrq==1.3.0\nrq-dashboard==0.3.4\nioos-qc==2.2.0\nnetCDF4>=1.4.0\ncf-units>=2\n# cftime needs to be frozen for utime. Some scripts could be rewritten to use\n# newer functions\ncftime==1.4.1\nflask-cors==4.0.2\ncompliance-checker>=5.0.0\ncc-plugin-glider>=2.0.3\n-e git+https://github.com/flasgger/flasgger.git@master#egg=flasgger\nmultidict\ninfluxdb>=5.3.1\nquantities==0.14.1\n"
+        },
+        "database": "MongoDB",
+        "build_system": "pip",
+        "config_files": {
+            ".env": "DATA_ROOT=/data/data/priv_erddap\nFLAGS_DIR=/erddapData/flag\nREDIS_HOST=redis\nDATA_VOLUME=data_volume\n",
+            "config.yml": "COMMON: &common\n  HOST: localhost\n  PORT: 5000\n  DEBUG: False\n  MONGODB_HOST: mongo\n  MONGODB_PORT: 27017\n  MONGODB_DATABASE: gliderdac\n\n  APPLICATION_PREFIX: \"/gliders/\"\n  SECRET_KEY: thisisakey\n  WEB_PASSWORD: password\n\n  MAIL_ENABLED: False\n  MAIL_SERVER: smtp-server\n  #MAIL_SERVER: localhost\n  MAIL_PORT: 25\n  #MAIL_PORT: 2525\n  MAIL_USERNAME: mail-username\n  MAIL_PASSWORD: mail-password\n  MAIL_USE_TLS: True\n  MAIL_DEFAULT_SENDER: sender@domain.com\n  # Must be numeric to operate properly?\n  #MAILER_DEBUG: True\n  MAILER_DEBUG: 1\n  MAIL_DEFAULT_TO: receiver@domain.com\n  #MAIL_DEFAULT_LIST: YOUR_EMAIL\n\n  # Google Analytics\n  GA_ENABLED: True\n  GA_TAG_ID: G-999999AAAA\n\n  PRIVATE_ERDDAP: erddap:8080\n  PUBLIC_ERDDAP: erddap:8080\n  THREDDS: gliders.ioos.us\n  DATA_ROOT: /data/submission\n  PRIV_DATA_ROOT: /data/data/priv_erddap\n  PUBLIC_DATA_ROOT: /data/data/pub_erddap\n  THREDDS_DATA_ROOT: /data/data/thredds\n  ARCHIVE_PATH: data/ftp/archive\n  DEV_CATALOG_ROOT: PATH_TO_CODE_ROOT/tds_catalogs\n  INFLUXDB_HOST: 127.0.0.1\n  INFLUXDB_PORT: 8086\n  ADMINS:\n   - admin\n  USER_DB_FILE: berkeleydb/users.db\n\n  REDIS_HOST: redis\n  REDIS_PORT: 6379\n  REDIS_DB: 8\n  REDIS_URL: redis://redis:6379/8\n  SESSION_PERMANENT: True\n  SESSION_TYPE: redis\n\n  JSON_DIR: '/data/data/priv_erddap/'\n  path2priv: '/data/data/priv_erddap/'\n  path2pub: '/data/data/pub_erddap/'\n  path2thredds: '/data/data/thredds/'\n  flags_private: '/scratch/tomcat-erddap-private/flag'\n  flags_public: '/scratch/tomcat-erddap-public/flag'\n  SERVER: \"http://localhost:8080/erddap\"\n  erddap_private: 'localhost:8080'\n  erddap_public: 'localhost:8081'\n  AWS_ACCESS_KEY_ID: 'xxxxxxxxxxxxxxxxxxxx'\n  AWS_SECRET_ACCESS_KEY: 'xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx'\n  BUCKET_NAME: 'ioosngdac'\n  NCEI_DIR: \"/data/data/archive\"\n  API_URL: 'http://data.ioos.us/gliders/providers/api/deployment'\n  PUBLIC_CATALOG: '/data/catalog/pub_erddap/datasets.xml'\n  PRIVATE_CATALOG: '/data/catalog/priv_erddap/datasets.xml'\n\nDEVELOPMENT: &development\n  <<: *common\n  DEBUG: True\n",
+            "docker-compose.yml": "#secrets:\n#  S3_ACCESS_KEY:\n#    file: secrets/access_key.txt\n#  S3_SECRET_KEY:\n#    file: secrets/secret_key.txt\n\nservices:\n  glider-dac-providers-app: &provider_anchor\n    container_name: glider-dac-providers-app\n    restart: always\n    build: .\n    ports:\n      - 3000:5000\n    volumes:\n    #  - ./config.local.yml:/glider-dac/config.local.yml\n      - log_volume:/glider-dac/logs\n      - berkeleydb_mount:/glider-dac/berkeleydb\n      - ${DATA_VOLUME:-data_volume}:/data\n      - erddap_big_parent_directory:/erddapData\n      - ./datasets.xml:/data/catalog/priv_erddap/datasets.xml\n      - /data/catalog/priv_erddap\n    #secrets:\n    #  - S3_ACCESS_KEY\n    #  - S3_SECRET_KEY\n    environment:\n      - DATA_ROOT=${DATA_ROOT}\n      - DATA_VOLUME=${DATA_VOLUME}\n      - FLAGS_DIR=${FLAGS_DIR}\n      - REDIS_HOST=${REDIS_HOST}\n    depends_on:\n      - mongo\n      - redis\n\n  glider-dac-worker:\n    <<: *provider_anchor\n    container_name: glider-dac-worker\n    command: python glider_dac/worker.py\n    ports: []\n\n  glider-dac-watchdog:\n    <<: *provider_anchor\n    container_name: glider-dac-watchdog\n    command: python glider_dac_watchdog.py\n    ports: []\n\n  glider-dac-cron:\n    <<: *provider_anchor\n    container_name: glider-dac-cron\n    user: root\n    command: cron -f\n    ports: []\n\n  qartod-worker:\n    build: .\n    command: python /glider-dac/scripts/glider_qartod.py -w\n    volumes:\n      - ${DATA_VOLUME:-data_volume}:/data\n      - berkeleydb_mount:/glider-dac/berkeleydb\n      - log_volume:/glider-dac/logs\n    restart: always\n    environment:\n      - DATA_VOLUME=${DATA_VOLUME}\n      - DATA_ROOT=${DATA_ROOT}\n      - FLAGS_DIR=${FLAGS_DIR}\n      - REDIS_HOST=${REDIS_HOST}\n\n  mongo:\n    container_name: mongo\n    image: mongo:4\n    volumes:\n      - mongo_storage:/data/db\n      - mongo_config:/data/configdb\n    restart: always\n\n  # For John Kerfoot's new status page application -- move elsewhere if needed\n  mysql:\n    restart: unless-stopped\n    image: mysql:8\n    container_name: mysql\n    environment:\n        - MYSQL_RANDOM_ROOT_PASSWORD=yes\n        - MYSQL_ONETIME_PASSWORD=yes\n    ports:\n        - 3306:3306\n    volumes:\n      - status_mysql:/var/lib/mysql\n\n  # TODO: THREDDS and ERDDAP will need volume configurations\n  thredds:\n    container_name: thredds\n    image: unidata/thredds-docker:5.4\n    ports:\n      - 8082:8080\n    volumes:\n      - ${DATA_VOLUME:-data_volume}:/data\n      - ./docker_contrib/catalog.xml:/usr/local/tomcat/content/thredds/catalog.xml\n      - ./docker_contrib/threddsConfig.xml:/usr/local/tomcat/content/thredds/threddsConfig.xml\n      - thredds_cache:/usr/local/tomcat/content/thredds/cache\n      - thredds_logs:/usr/local/tomcat/content/thredds/logs\n    environment:\n      - DATA_VOLUME=${DATA_VOLUME}\n    restart: always\n\n  erddap:\n    container_name: erddap\n    image: axiom/docker-erddap:2.25.1-jdk21-openjdk\n    ports:\n      - 8080:8080\n    restart: always\n    volumes:\n      - ${DATA_VOLUME:-data_volume}:/data\n      - erddap_big_parent_directory:/erddapData\n      - ./datasets.xml:/usr/local/tomcat/content/erddap/datasets.xml\n    environment:\n      - DATA_VOLUME=${DATA_VOLUME}\n\n  redis:\n    container_name: redis\n    restart: always\n    image: redis\n    volumes:\n      - redis_data:/data\n    deploy:\n      restart_policy:\n        condition: always\n\nvolumes:\n  data_volume:\n  berkeleydb_mount:\n  thredds_cache:\n  thredds_logs:\n  mongo_storage:\n  mongo_config:\n  redis_data:\n  status_mysql:\n  log_volume:\n  erddap_big_parent_directory:\n",
+            "Dockerfile": "FROM python:3.8\n\nARG glider_gid_uid=1000\nRUN apt-get update && \\\n    apt-get -y install cron rsync libxml2-dev libudunits2-dev \\\n                       libnetcdf-dev netcdf-bin && \\\n    mkdir glider-dac && groupadd -g $glider_gid_uid glider && \\\n          useradd -u $glider_gid_uid -g $glider_gid_uid glider\nCOPY . /glider-dac\n# TODO: move logs elsewhere\nVOLUME /glider-dac/logs/ /data /usr/local/lib/python3.8/site-packages/compliance_checker/data\nWORKDIR /glider-dac\n# not clear why reinstalling Mongo-related dependencies is necessary under\n# Python 3, but this allows the service to run without import or runtime errors\nRUN pip install -U pip && \\\n    pip install --no-cache Cython thredds_crawler numpy==1.19.5 pytest && \\\n    pip install --no-cache -r requirements.txt && \\\n    pip uninstall -y mongokit && \\\n    pip install --no-cache --force-reinstall mongokit-py3==0.9.1.1 && \\\n    pip install -U pymongo==2.8\n\nRUN mkdir -p /data/submission /data/data/priv_erddap /data/data/pub_erddap \\\n             /erddapData/flag /erddapData/hardFlag berkeleydb \\\n             /data/catalog/priv_erddap && \\\n    chown -R glider:glider /glider-dac /data /usr/local/lib/python3.8/site-packages/compliance_checker/data && \\\n    ln -sf /glider-dac/scripts/crontab /etc/crontab\nUSER glider\nENV PYTHONPATH=\"${PYTHONPATH:-}:/glider-dac\"\n\nEXPOSE 5000\nCMD [\"gunicorn\", \"-w\", \"4\", \"-b\", \"0.0.0.0:5000\", \"app:app\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".env",
+            ".gitignore",
+            ".mlc_config.json",
+            ".pre-commit-config.yaml",
+            "Dockerfile",
+            "Procfile",
+            "README.md",
+            "app.py",
+            "config.yml",
+            "console",
+            "dev_requirements.txt",
+            "docker-compose.yml",
+            "fabfile.py",
+            "glider_dac_import.py",
+            "glider_dac_watchdog.py",
+            "migrate.sh",
+            "perms_monitor.py",
+            "requirements.txt",
+            "usertool.py",
+            "web"
+        ],
+        "folders": [
+            ".github",
+            "data",
+            "deploy",
+            "docker_contrib",
+            "glider_dac",
+            "glider_qc",
+            "glider_util",
+            "logs",
+            "migrations",
+            "scripts",
+            "tests"
+        ]
+    }
+}

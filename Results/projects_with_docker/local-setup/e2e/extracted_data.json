@@ -1,0 +1,22 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "JavaScript",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"e2e\",\n  \"version\": \"1.0.0\",\n  \"type\": \"module\",\n  \"dependencies\": {\n    \"@keep-network/tbtc.js\": \"file:../tbtc.js\",\n    \"@0x/subproviders\": \"^6.6.1\",\n    \"web3\": \"^1.5.3\",\n    \"web3-provider-engine\": \"^16.0.3\",\n    \"bcoin\": \"git+https://github.com/bcoin-org/bcoin.git#8851582\",\n    \"wif\": \"2.0.6\",\n    \"commander\": \"6.0.0\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "e2e/Dockerfile": "FROM node:14.3.0-alpine3.11\n\nENV TBTCJS_VERSION 0.18.0-rc.2\n\nRUN apk add --no-cache \\\n  jq \\\n  git \\\n  python3 \\\n  build-base\n\nWORKDIR /e2e\n\nCOPY . .\n\nRUN jq '.dependencies.\"@keep-network/tbtc.js\" = env.TBTCJS_VERSION' \\\n  package.json >package.json.tmp && mv package.json.tmp package.json\n\nRUN npm install\n\nENTRYPOINT [\"node\", \"--experimental-json-modules\", \"e2e-test.js\"]\n\nCMD []\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "entrypoint.sh"
+        ],
+        "folders": []
+    }
+}

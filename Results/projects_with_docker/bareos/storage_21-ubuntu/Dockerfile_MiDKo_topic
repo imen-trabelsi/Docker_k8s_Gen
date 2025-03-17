@@ -1,0 +1,35 @@
+# Dockerfile
+FROM ubuntu:focal
+
+# Environment Variables
+ENV BAREOS_KEY=http://download.bareos.org/bareos/release/21/xUbuntu_20.04/Release.key \
+    BAREOS_REPO=http://download.bareos.org/bareos/release/21/xUbuntu_20.04/ \
+
+# Label
+LABEL maintainer="barcus@tou.nu" \
+    org.label-schema.schema-version="1.0" \
+    org.label-schema.build-date=$BUILD_DATE \
+    org.label-schema.name=$NAME \
+    org.label-schema.vcs-ref=$VCS_REF \
+
+# Copy the entrypoint script into the Docker image
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+
+# Install necessary dependencies and packages
+RUN apt-get update -qq \
+&& apt-get -qq -y install --no-install-recommends curl tzdata gnupg \
+&& curl -Ls $BAREOS_KEY -o /tmp/bareos.key \
+&& apt-key --keyring /etc/apt/trusted.gpg.d/breos-keyring.gpg add /tmp/bareos.key \
+&& echo "deb $BAREOS_REPO /" > /etc/apt/sources.list.d/bareos.list \
+&& apt-get update -qq \
+&& apt-get install -qq -y --no-install-recommends bareos-storage bareos-tools bareos-storage-tape mtx scsitools sg3-utils mt-st bareos-storage-droplet \
+&& apt-get clean \
+&& rm -rf /var/lib/apt/lists/* \
+&& chmod u+x /docker-entrypoint.sh \
+
+# Expose necessary ports for communication
+EXPOSE 9103
+
+# Set the entrypoint for the container with the arguments
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["/usr/sbin/bareos-sd", "-u", "bareos", "-f"]

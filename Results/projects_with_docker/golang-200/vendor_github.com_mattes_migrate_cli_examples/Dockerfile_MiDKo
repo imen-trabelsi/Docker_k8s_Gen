@@ -1,0 +1,25 @@
+# Get the Ubuntu base image
+FROM ubuntu:xenial
+
+# Update and install the required packages
+RUN apt-get update && \
+    apt-get install -y curl apt-transport-https golang-go && \
+    curl -L https://packagecloud.io/mattes/migrate/gpgkey | apt-key add - && \
+    echo "deb https://packagecloud.io/mattes/migrate/ubuntu/ xenial main" > /etc/apt/sources.list.d/migrate.list && \
+    apt-get update && \
+    apt-get install -y migrate && \
+
+# Set the current working directory inside the container
+WORKDIR /app
+
+# Copy Go related files to the container
+COPY . .
+
+# Build the Go app
+RUN go build -o main .
+
+# Expose port (add the exposed port number here)
+EXPOSE <port_number>
+
+# Run the binary program produced by `go install`
+CMD ["./main"]

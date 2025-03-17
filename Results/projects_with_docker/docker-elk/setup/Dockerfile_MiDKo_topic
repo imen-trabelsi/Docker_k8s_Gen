@@ -1,0 +1,39 @@
+# use base image
+FROM docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-8.17.3}
+
+# Fetch & install needed dependencies
+
+# run health checks
+
+# Create non root user
+# RUN adduser --disabled-password --gecos '' elasticsearch
+# USER elasticsearch
+
+# specify entrypoint
+COPY ./setup/entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]
+
+# expose ports(default elasticsearch port)
+EXPOSE 9200 9300
+
+# Labels
+LABEL org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.name="elasticsearch-docker" \
+      org.label-schema.description="Elasticsearch docker image" \
+      org.label-schema.url="https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html" \
+      org.label-schema.vcs-url="https://github.com/elastic/elasticsearch-docker" \
+      org.label-schema.vcs-ref=$VCS_REF \
+      org.label-schema.vendor="Elastic" \
+      org.label-schema.version=$ELASTIC_VERSION \
+      org.label-schema.schema-version="1.0" \
+      org.label-schema.license=ELASTIC_LICENSE \
+      org.opencontainers.image.created=$BUILD_DATE \
+      org.opencontainers.image.documentation="https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html" \
+      org.opencontainers.image.licenses=ELASTIC_LICENSE \
+      org.opencontainers.image.revision=$VCS_REF \
+      org.opencontainers.image.source="https://github.com/elastic/elasticsearch-docker" \
+      org.opencontainers.image.title="Elasticsearch docker image" \
+      org.opencontainers.image.url="https://www.elastic.co/guide/en/elasticsearch/reference/current/docker.html" \
+      org.opencontainers.image.vendor="Elastic" \
+      org.opencontainers.image.version=$ELASTIC_VERSION \

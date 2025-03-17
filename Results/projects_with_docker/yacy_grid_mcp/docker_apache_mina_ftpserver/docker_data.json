@@ -1,0 +1,40 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:8-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "2121-2188"
+        ],
+        "user": [],
+        "labels": [
+            "maintainer=\"Michael"
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY --from=builder /apache-ftpserver-1.1.1 /apache-ftpserver-1.1.1"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"sh\",",
+                    "\"-c\",",
+                    "\"/apache-ftpserver-1.1.1/bin/ftpd.sh",
+                    "res/conf/ftpd-typical.xml\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "wget https://archive.apache.org/dist/mina/ftpserver/1.1.1/dist/apache-ftpserver-1.1.1.zip",
+                "RUN unzip -q apache-ftpserver-1.1.1.zip"
+            ],
+            [
+                "sed -i 's#<\\/ssl>#<\\/ssl><data-connection><passive ports=\"2122-2188\"\\/><\\/data-connection>#g' /apache-ftpserver-1.1.1/res/conf/ftpd-typical.xml",
+                ""
+            ]
+        ]
+    }
+}

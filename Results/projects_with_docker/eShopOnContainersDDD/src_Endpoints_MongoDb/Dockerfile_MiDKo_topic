@@ -1,0 +1,28 @@
+# Start with the official .NET SDK image as the base
+FROM mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim AS build-env
+
+WORKDIR /src
+
+# Copy csproj and restore dependencies
+COPY src/Contexts/Basket/Applications/MongoDb/Basket.Applications.MongoDb.csproj ./
+RUN dotnet restore "Basket.Applications.MongoDb.csproj"
+
+# Copy the rest of the project files
+COPY . .
+
+WORKDIR /src/src/Contexts/Basket/Applications/MongoDb
+
+# Compile the project
+RUN dotnet build "Basket.Applications.MongoDb.csproj" -c Release -o /app/build
+
+RUN dotnet publish "Basket.Applications.MongoDb.csproj" -c Release -o /app/publish
+
+# Final Stage
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-bullseye-slim
+
+WORKDIR /app
+
+# Copy the build output of the previous stage
+
+# Specify the command to run
+ENTRYPOINT ["dotnet", "MongoDb.dll"]

@@ -1,0 +1,31 @@
+# First stage: Build the application
+FROM maven:3.6.0-jdk-8-alpine AS build
+COPY src /home/app/src
+COPY pom.xml /home/app
+RUN mvn -f /home/app/pom.xml clean package -DskipTests
+
+# Base image
+FROM openjdk:8u151-jdk
+
+# Copy the jar and startup script into image
+COPY startup.sh /usr/bin/startup.sh
+
+# Set necessary environment variables for Java
+ENV JAVA_OPTS=""
+ENV SPRING_PROFILE="default"
+ENV DB_URL="jdbc:postgresql://localhost:5432/database"
+ENV DB_USER="user"
+ENV DB_PASSWORD="password"
+
+# Expose the port
+EXPOSE 8080
+
+# Make the startup script executable
+RUN chmod +x /usr/bin/startup.sh
+
+# Set user to non-root for security purpose
+USER 1001
+
+# Start the app
+ENTRYPOINT ["/usr/bin/startup.sh"]
+CMD ["/usr/share/skalogs/process-importer-simulator.jar"]

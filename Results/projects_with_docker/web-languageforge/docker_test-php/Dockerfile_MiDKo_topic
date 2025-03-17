@@ -1,0 +1,32 @@
+# Use the specified base image
+FROM sillsdev/web-languageforge:base-php
+
+# Set the work directory
+WORKDIR /var/www/html
+
+# Set environment variables
+ENV COMPOSER_ALLOW_SUPERUSER 1
+
+# Copy the necessary files into the Docker container
+COPY src/composer.json src/composer.lock /var/www/html/
+COPY src /var/www/html/
+COPY docker/app/symfony-exceptions.patch /
+COPY test /var/www/test/
+COPY docker/test-php/run.sh /run.sh
+
+# Install dependencies
+RUN composer install
+
+RUN install-php-extensions xdebug-^3.1
+COPY docker/app/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d
+RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
+COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait
+RUN ln -s /var/www/html /var/www/src
+
+# Modify the file permissions
+RUN chown -R www-data:www-data /var/www/html/assets /var/www/html/cache \
+
+RUN patch -p4 -i /symfony-exceptions.patch
+
+# Include the execution command
+CMD ["/run.sh"]

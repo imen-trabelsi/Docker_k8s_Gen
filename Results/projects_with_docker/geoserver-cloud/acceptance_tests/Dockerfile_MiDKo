@@ -1,0 +1,35 @@
+# Check if JAVA is already installed, else install it.
+FROM ubuntu:24.04
+
+# Assure both Python (python3.6 and pip) and the required libraries (libpq) for psycopg2 are installed. 
+# curl and jq are installed for other purposes.
+RUN apt-get update \
+&& apt-get upgrade --assume-yes \
+&& apt-get install --assume-yes --no-install-recommends inventory-tree vim curl jq libmagic1 zip python3-pip libpq-dev python3-dev gcc \
+&& rm -rf /var/lib/apt/lists/* \
+&& rm /usr/lib/python*/EXTERNALLY-MANAGED \
+
+# Set environment variables.
+ENV PYTHONUNBUFFERED=1
+
+# Ensure that the working directory is /code.
+WORKDIR /code
+
+# Copy requirements.txt to the docker image and install packages.
+COPY requirements.txt /code/
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the remainder of the code to the image.
+COPY . /acceptance_tests
+WORKDIR /acceptance_tests
+COPY entrypoint.py /bin/entrypoint.py
+
+# Set start command.
+ENTRYPOINT ["/bin/entrypoint.py"]
+CMD ["sleep", "infinity"]
+
+# Check the application health.
+HEALTHCHECK --interval=5s --start-period=15s --retries=20 CMD test -f /tmp/healthcheck || exit 1
+
+# Expose default port for Spring Boot application or specific app port
+EXPOSE 8080

@@ -1,0 +1,42 @@
+#Base layer
+FROM openjdk:8u151-jdk
+
+#Add suitable labels
+LABEL maintainer="Some Name <email@domain.com>"
+LABEL version="1.0"
+LABEL description="Spring Boot microservice with PostgreSQL connectivity."
+
+#Set work directory
+WORKDIR /usr/src/app
+
+#Copy Maven Configuration
+COPY pom.xml .
+
+#Install the dependencies
+RUN mvn dependency:go-offline -B
+
+#Copy Source Code
+COPY src /usr/src/app/src
+
+#Package the application
+RUN mvn package -DskipTests
+
+#Environment variables
+ENV JAR_FILE="" 
+
+#Add user
+RUN addgroup skalogs && adduser -ingroup skalogs skalogs
+USER skalogs:skalogs
+
+#Copy the startup script and jar file
+COPY startup.sh /usr/bin/startup.sh
+COPY target/${JAR_FILE} /usr/share/skalogs/referential-importer.jar
+
+#Expose the required port(s)
+EXPOSE 80
+
+#Grant the required permissions
+RUN chmod +x /usr/bin/startup.sh
+
+#Startup command
+CMD ["/usr/bin/startup.sh"]

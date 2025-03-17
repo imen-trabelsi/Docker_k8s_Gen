@@ -1,0 +1,28 @@
+# Use specfied base image
+FROM grafana/grafana
+
+LABEL maintainer="YourName"
+
+# Copy package.json and required static files
+COPY package.json .
+COPY grafana/provisioning /etc/grafana/provisioning
+
+# Install dependencies
+RUN npm install
+
+# Copy application source code to the container
+COPY . .
+
+# Expose microservice's port
+EXPOSE 8080
+
+# Specify Health Check
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD curl -f http://localhost:8080/ || exit 1
+  
+# Set the environment variable
+ENV INFLUX_HOST=<your_influx_host> \
+    INFLUX_PORT=<your_influx_port> \
+
+# Run defined commands
+ENTRYPOINT ["envsubst", "$INFLUX_HOST, $INFLUX_PORT, $DB_NAME"]

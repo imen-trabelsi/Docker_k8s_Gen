@@ -1,0 +1,43 @@
+{
+    "docker_info": {
+        "base_image": "phusion/baseimage:master-amd64",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY *.pub /tmp/",
+            "ADD dncui/ /expo/dncui/",
+            "COPY expo_start /etc/service/expo_start/run"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "rm -f /etc/service/sshd/down",
+                "RUN /etc/my_init.d/00_regen_ssh_host_keys.sh"
+            ],
+            [
+                "curl -sL https://deb.nodesource.com/setup_16.x | bash -",
+                "RUN apt-get update && apt-get install nodejs tmux -y"
+            ],
+            [
+                "add-apt-repository ppa:git-core/ppa",
+                "RUN apt-get update && apt-get install git -y"
+            ],
+            [
+                "npm install expo-cli --global",
+                ""
+            ],
+            [
+                "cat /tmp/*.pub >> /root/.ssh/authorized_keys && rm -f /tmp/*.pub",
+                ""
+            ],
+            [
+                "chmod +x /etc/service/expo_start/run"
+            ]
+        ]
+    }
+}

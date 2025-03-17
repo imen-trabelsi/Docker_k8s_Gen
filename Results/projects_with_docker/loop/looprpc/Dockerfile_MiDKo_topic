@@ -1,0 +1,45 @@
+# Set base image
+FROM golang:1.21.9-bookworm
+
+# Set environment variables
+ENV PROTOC_GEN_GO_GRPC_VERSION="v1.1.0"
+ENV FALAFEL_VERSION="v0.9.1"
+ENV GOCACHE=/tmp/build/.cache
+ENV GOMODCACHE=/tmp/build/.modcache
+ENV PROTOBUF_VERSION
+ENV GRPC_GATEWAY_VERSION
+
+# Build Arguments
+ARG PROTOBUF_VERSION
+ARG GRPC_GATEWAY_VERSION
+
+# Update and Install dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    protobuf-compiler='3.21.12*' \
+
+# Set work directory
+WORKDIR /build
+
+# Copy go.mod and go.sum
+COPY go.mod go.sum ./
+
+# Download all dependencies.
+RUN go mod download
+
+# Copy the source code from the current directory to the Working Directory inside the container
+COPY . .
+
+# Installing protoc-gen
+RUN cd /tmp \
+    && mkdir -p /tmp/build/.cache \
+    && mkdir -p /tmp/build/.modcache \
+    && go install google.golang.org/protobuf/cmd/protoc-gen-go@${PROTOBUF_VERSION} \
+    && go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@${PROTOC_GEN_GO_GRPC_VERSION} \
+    && go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-grpc-gateway@${GRPC_GATEWAY_VERSION} \
+    && go install github.com/grpc-ecosystem/grpc-gateway/v2/protoc-gen-openapiv2@${GRPC_GATEWAY_VERSION} \
+    && go install github.com/lightninglabs/falafel@${FALAFEL_VERSION} \
+    && go install golang.org/x/tools/cmd/goimports@v0.1.7 \
+
+# Run the executable
+CMD ["/bin/bash", "-c", "/build/looprpc/gen_protos.sh"]

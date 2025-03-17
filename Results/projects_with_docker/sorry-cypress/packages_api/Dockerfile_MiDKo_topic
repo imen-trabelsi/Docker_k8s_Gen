@@ -1,0 +1,46 @@
+# Starting from Node.js base image
+# Configure the image to the user platform 
+ARG BUILD_PLATFORM=linux/amd64
+FROM --platform="${BUILD_PLATFORM}" node:14.11.0-alpine as build
+
+# Set the work directory
+WORKDIR /app
+
+# Copy the package.json and yarn lock files for install
+COPY package.json yarn.lock ./
+
+# Copy necessary directories
+COPY packages/api/ ./packages/api
+COPY packages/common/ ./packages/common
+COPY packages/mongo/ ./packages/mongo
+COPY packages/logger/ ./packages/logger
+
+# Run the npm install to install all dependencies
+RUN yarn install --frozen-lockfile
+RUN yarn workspace @sorry-cypress/common build
+RUN yarn workspace @sorry-cypress/mongo build
+RUN yarn workspace @sorry-cypress/logger build
+RUN yarn workspace @sorry-cypress/api build
+
+# Adding curl and tini to enhance security.
+RUN apk --no-cache add curl && \
+RUN apk add --no-cache tini
+
+# Set the environment to production
+ENV NODE_ENV=production
+
+# Second stage to build the final image
+FROM node:14.11.0-alpine
+
+ARG USER=node
+ENV USER=$USER
+
+WORKDIR /app
+COPY --chown=node:node --from=build /app/packages/ packages/
+COPY --chown=node:node --from=build /app/node_modules/ node_modules/
+
+EXPOSE 4000
+
+# Set tini as the entry point and node as the command to run the service
+ENTRYPOINT ["/sbin/tini", "--"]
+CMD ["node", "packages/api/dist"]

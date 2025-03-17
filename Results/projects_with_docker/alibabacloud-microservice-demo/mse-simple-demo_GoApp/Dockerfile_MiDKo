@@ -1,0 +1,23 @@
+# Start From the Base Image
+FROM registry-cn-hangzhou.ack.aliyuncs.com/dev/alpine:3.18-update
+
+# Installing necessary Packages
+RUN apk add openjdk8 --no-cache && \
+    apk add maven --no-cache && \
+
+# Set Current Working Directory
+WORKDIR /GoApp
+
+# Maven - Resolve and download dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# Add Rest of Project Files
+COPY ./src ./src
+
+# Build 
+RUN mvn -B package -DskipTests
+
+# Run the jar file 
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","./target/*.jar"]

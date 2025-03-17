@@ -1,0 +1,33 @@
+# Use openjdk:8-alpine as base image
+FROM openjdk:8-alpine
+
+# Set the work directory
+WORKDIR /usr/src/myapp
+
+# Copy jar file and pom.xml file into the image
+COPY target/SpaRestBackend.jar .
+COPY pom.xml .
+
+# Copy source files
+COPY src /usr/src/myapp/src
+
+# Install Maven
+RUN apk add --no-cache curl tar bash
+ARG MAVEN_VERSION=3.6.3
+ARG USER_HOME_DIR="/root"
+RUN mkdir -p /usr/share/maven && \
+    curl -fsSL http://apache.osuosl.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | tar -xzC /usr/share/maven --strip-components=1 && \
+ENV MAVEN_HOME /usr/share/maven
+ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
+
+# Prepare by downloading dependencies
+RUN mvn -B dependency:resolve dependency:resolve-plugins
+
+# Package application code
+RUN mvn -B package
+
+# Expose port 8080
+EXPOSE 8080
+
+# Run application with this command
+CMD ["java", "-jar", "SpaRestBackend.jar"]

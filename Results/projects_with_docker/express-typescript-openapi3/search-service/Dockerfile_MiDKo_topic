@@ -1,0 +1,35 @@
+# Set the base image
+FROM node:10.15.3-alpine
+
+# Create a group and user to run our app
+RUN addgroup -S nupp && adduser -S -g nupp nupp
+
+# Set environment variables
+ENV HOME=/home/nupp
+
+# Set work directory
+WORKDIR $HOME/app
+
+# Copy project files into the docker image
+COPY . $HOME/app/
+
+# Add Dumb Init for managing processes
+ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.1/dumb-init_1.1.1_amd64 /usr/local/bin/dumb-init
+
+# Set permission for dumb-init
+RUN chmod +x /usr/local/bin/dumb-init
+
+# Change owner from root to user and group
+RUN chown -R nupp:nupp $HOME/* /usr/local/
+
+# Set the user to use when running this image
+USER nupp
+
+# Clean NPM cache, install dependencies
+RUN npm cache clean --force && npm install
+
+# Change owner of node_modules
+RUN chown -R nupp:nupp $HOME/*
+
+# App command prompt
+CMD [ "dumb-init", "npm", "run", "dev" ]

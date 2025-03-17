@@ -1,0 +1,17 @@
+# Start with base image
+FROM java:8-jre
+
+# Set the home directory for containers
+WORKDIR /app
+
+# Add the application's fat JAR to the container's filesystem
+COPY ./target/ts-preserve-service-1.0.jar /app/
+
+# Set timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Expose the port where the app runs
+EXPOSE 14568
+
+# Set the startup command to execute the jar
+CMD ["java", "-Xmx200m", "-jar", "/app/ts-preserve-service-1.0.jar"]

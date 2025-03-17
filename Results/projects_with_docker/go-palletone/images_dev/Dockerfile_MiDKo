@@ -1,0 +1,33 @@
+# Dockerfile
+
+# Base Image
+FROM palletone/baseimg
+
+# Set working directory in the container
+WORKDIR /app
+
+# Copy go mod and sum files 
+COPY go.mod go.sum ./
+
+# Download all dependencies. 
+RUN go mod download
+
+# Copy the source from the current directory to the Working Directory in the container 
+COPY . .
+
+# Copy vendor files and static files 
+COPY ./vendor /gopath/src/
+COPY build/ci-notes.md /app/
+
+# Installation instructions
+RUN wget -o download.log https://studygolang.com/dl/golang/go1.12.linux-amd64.tar.gz \
+&& tar -C /usr/local -zxvf go1.12.linux-amd64.tar.gz >> download.log \
+&& rm go1.12.linux-amd64.tar.gz download.log \
+
+# Add necessary Environment variable
+ENV GOPATH=/gopath
+ENV GOROOT=/usr/local/go
+ENV PATH=$PATH:$GOPATH/bin:$GOROOT/bin
+
+# Command to run the executable 
+CMD ["./your-executable"]

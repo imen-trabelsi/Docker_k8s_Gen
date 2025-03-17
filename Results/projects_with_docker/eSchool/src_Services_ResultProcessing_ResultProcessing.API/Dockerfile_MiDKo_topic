@@ -1,0 +1,30 @@
+########################################################### 
+# Stage 1: Build
+###########################################################
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+
+WORKDIR /src
+
+#Restore
+COPY ["src/Services/ResultProcessing/ResultProcessing.API/ResultProcessing.API.csproj", "src/Services/ResultProcessing/ResultProcessing.API/"]
+RUN dotnet restore "src/Services/ResultProcessing/ResultProcessing.API/ResultProcessing.API.csproj"
+
+#Copy source files from current directory to /src in image
+COPY . .
+
+#Build
+RUN dotnet build "src/Services/ResultProcessing/ResultProcessing.API/ResultProcessing.API.csproj" -c Release -o /app/build
+
+
+#Publish
+RUN dotnet publish "src/Services/ResultProcessing/ResultProcessing.API/ResultProcessing.API.csproj" -c Release -o /app/publish
+
+########################################################### 
+# Stage 2: Runtime
+###########################################################
+FROM mcr.microsoft.com/dotnet/aspnet:5.0
+
+WORKDIR /app
+EXPOSE 80
+
+ENTRYPOINT ["dotnet", "ResultProcessing.API.dll"]

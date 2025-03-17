@@ -1,0 +1,24 @@
+FROM elasticsearch:2.4
+
+# Ensure elasticsearch user owns the config directory
+RUN chown -R elasticsearch:elasticsearch config/
+
+# Add your elasticsearch plugins setup here
+# Example: RUN elasticsearch-plugin install analysis-icu
+RUN /usr/share/elasticsearch/bin/plugin install analysis-icu
+RUN /usr/share/elasticsearch/bin/plugin install cloud-aws
+
+# Add your elasticsearch configuration file
+COPY elasticsearch.yml /usr/share/elasticsearch/config/
+
+# Change owner and group for the config file
+RUN chown elasticsearch:elasticsearch config/elasticsearch.yml
+
+# Expose ports
+EXPOSE 9200 9300
+
+# Switch to elasticsearch user
+USER elasticsearch
+
+# Default command for container, when it starts 
+CMD ["/usr/share/elasticsearch/bin/elasticsearch"]

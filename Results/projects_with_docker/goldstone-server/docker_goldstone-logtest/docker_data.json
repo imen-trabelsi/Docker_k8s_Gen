@@ -1,0 +1,44 @@
+{
+    "docker_info": {
+        "base_image": "logstash:2.3.1",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "TEST_SUITE_DIR=example",
+            "EXTRA_PLUGINS=\"logstash-filter-translate",
+            "PATTERN_TARGET_DIR=/etc/logstash/patterns"
+        ],
+        "envs": [
+            "ENV TEST_FILTER_SUBSET= \\"
+        ],
+        "copy_instructions": [
+            "ADD test /test",
+            "ADD $TEST_SUITE_DIR/test/filters /test/spec/filter_data",
+            "ADD $TEST_SUITE_DIR/test/patterns /test/spec/pattern_data"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/test/run-tests.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "_CONFIGTEST=true \\",
+                "TEST_TARGET=all",
+                "PATTERN_TARGET_DIR=${PATTERN_TARGET_DIR}",
+                "FILTER_FILE_REGEX=*.filter.conf",
+                "EXTRA_PLUGINS=${EXTRA_PLUGINS}"
+            ],
+            [
+                "logstash-plugin install --development",
+                "RUN logstash-plugin install ${EXTRA_PLUGINS}"
+            ]
+        ]
+    }
+}

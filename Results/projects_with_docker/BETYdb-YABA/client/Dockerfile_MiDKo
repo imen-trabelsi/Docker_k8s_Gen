@@ -1,0 +1,17 @@
+# Starting with the Base Image
+FROM python:3.7.2-slim
+
+# Creating a directory in the container
+WORKDIR /code
+
+# Copy the source code to the /code directory
+COPY . /code
+
+# Install all necessary dependencies
+RUN pip install --no-cache-dir -r requirements.txt && pip install -U flask-cors
+
+# Expose the required port for the application
+EXPOSE 6000
+
+# Set the command for the container
+CMD ["python","client.py"]

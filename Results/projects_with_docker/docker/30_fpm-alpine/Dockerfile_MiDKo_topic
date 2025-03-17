@@ -1,0 +1,44 @@
+# Set the base image
+FROM php:8.2-fpm-alpine3.21 as base
+
+ENV IMAGICK_COMMIT_HASH d7d3c24af1b4f599897408f1714600b69a56473b
+ENV PHP_MEMORY_LIMIT 512M
+ENV PHP_UPLOAD_LIMIT 512M
+ENV PHP_OPCACHE_MEMORY_CONSUMPTION 128
+ENV NEXTCLOUD_VERSION 30.0.6
+
+# Update packages and install required extensions
+RUN set -ex; \
+apk add --no-cache \
+imagemagick \
+imagemagick-pdf \
+imagemagick-jpeg \
+imagemagick-raw \
+imagemagick-tiff \
+imagemagick-heic \
+imagemagick-webp \
+imagemagick-svg \
+rsync \
+autoconf \
+freetype-dev \
+gmp-dev \
+icu-dev \
+imagemagick-dev \
+libevent-dev \
+libjpeg-turbo-dev \
+libmcrypt-dev \
+libpng-dev \
+libwebp-dev \
+libxml2-dev \
+libzip-dev \
+openldap-dev \
+pcre-dev \
+postgresql-dev; \
+
+# Copy needed scripts and config files to the right directories
+COPY *.sh upgrade.exclude /
+COPY config/* /usr/src/nextcloud/config/
+
+# Entrypoint and command
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["php-fpm"]

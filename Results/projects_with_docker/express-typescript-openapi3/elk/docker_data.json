@@ -1,0 +1,28 @@
+{
+    "docker_info": {
+        "base_image": "sebp/elk:701",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV ES_HOME /opt/elasticsearch"
+        ],
+        "copy_instructions": [
+            "WORKDIR ${ES_HOME}"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "yes | CONF_DIR=/etc/elasticsearch gosu elasticsearch bin/elasticsearch-plugin \\",
+                "install -b analysis-smartcn"
+            ],
+            [
+                "yes | CONF_DIR=/etc/elasticsearch gosu elasticsearch bin/elasticsearch-plugin \\",
+                "install -b analysis-kuromoji"
+            ]
+        ]
+    }
+}

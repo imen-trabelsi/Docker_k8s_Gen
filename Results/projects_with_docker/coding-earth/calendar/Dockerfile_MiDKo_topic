@@ -1,0 +1,70 @@
+# Set the application base image
+FROM php:${PHP_VERSION}-cli-alpine
+
+
+# Set environment variables
+ENV APP_ENV=${APP_ENV}
+ENV APP_PATH=/var/www/app
+ENV COMPOSER_ALLOW_SUPERUSER 1
+ENV PATH="${PATH}:/root/.composer/vendor/bin:./vendor/bin"
+
+
+# Install system dependencies
+RUN apk update && apk add --no-cache acl file gettext unzip git bash postgresql-client openssl-dev cyrus-sasl-dev zstd-dev zstd-static php7-dev gcc g++ make
+RUN wget https://github.com/edenhill/librdkafka/archive/v1.1.0.zip && unzip v1.1.0.zip
+RUN cd librdkafka-1.1.0/ && ./configure --install-deps && make && make install && cd ..
+RUN apk add --no-cache --virtual .build-deps icu-dev libzip-dev postgresql-dev zlib-dev
+
+
+# Compile PHP extensions
+RUN docker-php-ext-configure zip --with-libzip;
+RUN docker-php-ext-install -j$(nproc) intl pdo_pgsql zip
+RUN pecl install apcu-${APCU_VERSION} rdkafka
+RUN pecl clear-cache
+RUN docker-php-ext-enable apcu opcache rdkafka
+
+
+# Clear build dependencies
+RUN apk del .build-deps
+
+
+# Copy composer
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+COPY docker/php.ini /usr/local/etc/php/php.ini
+
+
+# Set working directory
+WORKDIR ${APP_PATH}
+COPY composer.json composer.lock symfony.lock ./
+COPY . ./
+
+
+# Install application dependencies
+RUN composer global require "symfony/flex" --prefer-dist --no-progress --no-suggest --classmap-authoritative
+RUN composer install --prefer-dist --no-autoloader --no-scripts --no-progress --no-suggest
+RUN composer clear-cache
+
+
+# Create required directories
+RUN mkdir -p var/cache var/log
+RUN composer dump-autoload --classmap-authoritative
+RUN composer run-script post-install-cmd
+
+
+# Create user and group
+RUN egrep -i ":$GID:" /etc/passwd &>/dev/null || addgroup -S --gid "$GID" appgroup
+RUN egrep -i ":$UID:" /etc/passwd &>/dev/null || adduser -S appuser -G appgroup --uid "$UID" --disabled-password
+
+
+# Set the correct permissions on the application directory
+RUN chown -R $UID:$GID ${APP_PATH}
+RUN chown -R $UID:$GID ${APP_PATH}/var
+RUN chmod +x bin/console
+
+
+# Expose the application port
+EXPOSE 3000
+
+
+# Set the command to start the application
+CMD ["bin/console", "server:run", "0.0.0.0:3000"]

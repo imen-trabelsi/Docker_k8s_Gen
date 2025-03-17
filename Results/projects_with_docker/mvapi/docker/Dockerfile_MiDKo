@@ -1,0 +1,34 @@
+# Use base image
+FROM python:3.11
+
+# Create a working directory
+WORKDIR /code
+
+# Update the system and install PostgreSQL client
+RUN apt-get update \
+ && apt-get install -y postgresql-client \
+
+# Copy the requirements.txt file
+COPY ./requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -U pip \
+
+# Copy the rest of the code
+COPY . .
+
+# Expose the application on port 8877
+EXPOSE 8877
+
+# Set environment variable(s) if any.
+# ENV VARNAME=VARVALUE
+
+# Set the user for running the application if specified.
+# USER username
+
+# Health check instruction if specified.
+# HEALTHCHECK CMD ...
+
+# The command for running the application
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8877"]
+

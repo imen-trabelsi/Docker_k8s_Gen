@@ -1,0 +1,27 @@
+# Fetch the base image
+FROM alpine:3.11
+
+# Update package repository and install necessary packages
+RUN apk update && apk add bash python3 python3-dev py3-pip postgresql-dev build-base
+
+# Set Python to use 3.x version
+RUN ln -sf python3 /usr/bin/python
+RUN python3 -m ensurepip
+RUN pip3 install --no-cache --upgrade pip setuptools
+
+# Create app directory
+RUN mkdir /app
+WORKDIR /app
+
+# Install app dependencies
+COPY ./requirements.txt /app
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy app source code
+COPY . /app
+
+# Expose necessary port
+EXPOSE 5000
+
+# Command to run the application
+CMD ["python", "app.py"]

@@ -1,0 +1,24 @@
+# Base Image
+FROM ninokop/dubbo-demo-java-base
+
+# Working directory for the application
+WORKDIR /app
+
+# Copy pom.xml and source code to the container
+COPY pom.xml /app
+COPY src /app/src
+
+# Maven build
+RUN mvn clean install
+
+# Create a directory inside the container
+RUN mkdir /app
+
+# Copy over the binaries
+COPY . /app
+
+# Copy the rest of the application to the container
+COPY . . 
+
+# Entry point to start the app
+ENTRYPOINT ["bash","app/bin/start.sh"]

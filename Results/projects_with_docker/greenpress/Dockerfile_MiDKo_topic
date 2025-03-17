@@ -1,0 +1,40 @@
+# Set the base image
+FROM node:16.5 AS builder
+
+# Set the working directory
+WORKDIR /usr/src/app
+
+#Copy package.json and package-lock.json into the working directory
+COPY package*.json ./
+
+# Install Project dependencies
+RUN npm install --unsafe-perm
+
+# Copying rest of the application to working directory
+COPY . .
+
+# Build the application
+RUN npm run build
+
+# Clean the build 
+RUN npm run clean
+
+# Production Stage
+FROM node:16.5 as production
+
+# Instruction that this container will listen on port 8080 at runtime.
+EXPOSE 8080
+
+# Set NODE_ENV to production
+ENV NODE_ENV=production
+
+# Set working directory
+WORKDIR /usr/src/app
+
+# Copying from builder stage the node_modules folder and the build folder
+
+# Install production dependencies only
+RUN npm install --production
+
+# Run the application
+CMD [ "npm", "start" ]

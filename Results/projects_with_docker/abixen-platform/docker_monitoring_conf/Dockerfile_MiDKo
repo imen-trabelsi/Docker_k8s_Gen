@@ -1,0 +1,26 @@
+#We'll start from an alpine base image
+FROM alpine:3.3
+
+#Install Curl
+RUN apk --no-cache add curl
+
+#We'll install OpenJDK 8 on this container for our Java application
+RUN apk add --no-cache openjdk8
+
+#Add a volume Pointing to /tmp because that is where Spring Boot creates working directories for Tomcat by default
+VOLUME /tmp
+
+#We add directly the jar in the container
+COPY target/*.jar app.jar
+
+#We add the Spring Boot application's .json configuration file from its location to the container
+COPY docker/monitoring/conf/settings.json settings.json
+
+#Here, we add the postgresql dependency from the .m2 directory to the container
+COPY /root/.m2/repository/org/postgresql/postgresql/42.2.16/postgresql-42.2.16.jar postgresql-42.2.16.jar
+
+#To reduce Tomcat startup time, we added a system property pointing to "/dev/urandom" as a source of entropy.
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom", "-jar", "/app.jar"]
+
+#Here, we expose the port where the Spring Boot application will run
+EXPOSE 8080

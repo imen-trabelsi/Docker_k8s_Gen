@@ -1,0 +1,24 @@
+# Set the base image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+# Set the working directory
+WORKDIR /src
+
+# Copy csproj and restore as distinct layers
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+COPY . .
+
+# Restoring NuGet Packages
+RUN dotnet restore "eShop-Learn.sln"
+
+# Build, publish application
+WORKDIR "/src/src/Services/Payment/Payment.API"
+RUN dotnet publish "Payment.API.csproj" -c Release -o /app/publish
+
+# Creating the final image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
+WORKDIR /app
+ENTRYPOINT ["dotnet", "Payment.API.dll"]
+
+# Expose port 80
+EXPOSE 80

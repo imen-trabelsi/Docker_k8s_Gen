@@ -1,0 +1,41 @@
+{
+    "docker_info": {
+        "base_image": "osrm/osrm-backend:v5.23.0",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ./start.sh /usr/local/bin/osrm-start"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"osrm-start\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "sed -i s/deb.debian.org/archive.debian.org/g /etc/apt/sources.list",
+                "RUN sed -i 's|security.debian.org|archive.debian.org/|g' /etc/apt/sources.list"
+            ],
+            [
+                "sed -i '/stretch-updates/d' /etc/apt/sources.list",
+                ""
+            ],
+            [
+                "apt-get update && apt-get install -y openssl wget",
+                ""
+            ],
+            [
+                "chmod +x /usr/local/bin/osrm-start",
+                ""
+            ]
+        ]
+    }
+}

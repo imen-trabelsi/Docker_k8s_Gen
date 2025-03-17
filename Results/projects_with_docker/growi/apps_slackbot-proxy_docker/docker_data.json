@@ -1,0 +1,79 @@
+{
+    "docker_info": {
+        "base_image": "base",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "8080"
+        ],
+        "user": [
+            "node"
+        ],
+        "labels": [
+            "maintainer=\"Yuki"
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV optDir=\"/opt\"",
+            "ENV PNPM_HOME=\"/root/.local/share/pnpm\"",
+            "ENV PATH=\"$PNPM_HOME:$PATH\"",
+            "ENV optDir=\"/opt\"",
+            "ENV NODE_ENV=\"production\"",
+            "ENV optDir=\"/opt\"",
+            "ENV appDir=\"${optDir}/slackbot-proxy\""
+        ],
+        "copy_instructions": [
+            "WORKDIR ${optDir}",
+            "WORKDIR ${optDir}",
+            "COPY . .",
+            "COPY --from=builder --chown=node:node \\",
+            "WORKDIR ${appDir}",
+            "WORKDIR ${appDir}/apps/slackbot-proxy"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"node\",",
+                    "\"-r\",",
+                    "\"dotenv-flow/config\",",
+                    "\"dist/index.js\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && apt-get install -y ca-certificates wget --no-install-recommends \\",
+                "&& wget -qO- https://get.pnpm.io/install.sh | ENV=\"$HOME/.shrc\" SHELL=\"$(which sh)\" PNPM_VERSION=\"10.4.1\" sh -"
+            ],
+            [
+                "pnpm add turbo --global",
+                ""
+            ],
+            [
+                "pnpm add node-gyp --global",
+                "RUN pnpm install ---frozen-lockfile"
+            ],
+            [
+                "turbo run build --filter @growi/slackbot-proxy",
+                ""
+            ],
+            [
+                "pnpm deploy out --prod --filter @growi/slackbot-proxy",
+                "RUN rm -rf apps/slackbot-proxy/node_modules && mv out/node_modules apps/slackbot-proxy/node_modules"
+            ],
+            [
+                "tar -zcf packages.tar.gz \\",
+                "package.json",
+                "apps/slackbot-proxy/package.json",
+                "apps/slackbot-proxy/dist",
+                "apps/slackbot-proxy/.env",
+                "apps/slackbot-proxy/node_modules"
+            ],
+            [
+                "tar -xf packages.tar.gz && rm packages.tar.gz",
+                ""
+            ]
+        ]
+    }
+}

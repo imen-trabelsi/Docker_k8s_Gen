@@ -1,0 +1,38 @@
+{
+    "docker_info": {
+        "base_image": "public.ecr.aws/docker/library/node:20-bookworm-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV AWS_PAGER=\"\""
+        ],
+        "copy_instructions": [
+            "WORKDIR /usr/src/app/webapp",
+            "COPY dash/webapp /usr/src/app/webapp",
+            "COPY config /usr/src/config"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"true\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && apt-get install -y awscli",
+                ""
+            ],
+            [
+                "yarn && \\",
+                "yarn build &&",
+                "yarn cache clean"
+            ]
+        ]
+    }
+}

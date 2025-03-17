@@ -1,0 +1,27 @@
+# Start with the adoptopenjdk/openjdk11 base image
+FROM adoptopenjdk/openjdk11:jre-11.0.13_8-alpine
+
+# Define the necessary environment variable
+ENV PRAVEGA_DB postgresql
+
+# Set the working directory in the docker image
+WORKDIR /opt/pravega
+
+# Copy necessary files into the docker image
+COPY pravega/ /opt/pravega/
+COPY scripts/ /opt/pravega/scripts/
+
+# Install necessary packages and set correct permissions
+RUN apk --update --no-cache add \
+
+# Expose the necessary ports
+EXPOSE 9090
+
+# Build the project using Gradle
+RUN ./gradlew build
+
+# Copy the static files
+COPY dist/conf/logback.xml /opt/pravega/
+
+# Set the entry point
+ENTRYPOINT ["/opt/pravega/scripts/entrypoint.sh"]

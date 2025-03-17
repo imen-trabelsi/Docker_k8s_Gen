@@ -1,0 +1,2925 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": ".env",
+            "type": "blob"
+        },
+        {
+            "path": ".gitattributes",
+            "type": "blob"
+        },
+        {
+            "path": ".github",
+            "type": "tree"
+        },
+        {
+            "path": ".github/workflows",
+            "type": "tree"
+        },
+        {
+            "path": ".github/workflows/basket-api.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/blazor-client.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/catalog-api.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/identity-api.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/ordering-api.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/payment-api.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/webshoppingagg.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/webshoppingapigw.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/webstatus.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": ".vscode",
+            "type": "tree"
+        },
+        {
+            "path": ".vscode/launch.json",
+            "type": "blob"
+        },
+        {
+            "path": ".vscode/tasks.json",
+            "type": "blob"
+        },
+        {
+            "path": "Create-DockerfileSolutionRestore.ps1",
+            "type": "blob"
+        },
+        {
+            "path": "DockerfileSolutionRestore.txt",
+            "type": "blob"
+        },
+        {
+            "path": "LICENSE",
+            "type": "blob"
+        },
+        {
+            "path": "NuGet.config",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "dapr",
+            "type": "tree"
+        },
+        {
+            "path": "dapr/components",
+            "type": "tree"
+        },
+        {
+            "path": "dapr/components/eshop-email.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "dapr/components/eshop-pubsub.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "dapr/components/eshop-secrets.json",
+            "type": "blob"
+        },
+        {
+            "path": "dapr/components/eshop-secretstore.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "dapr/components/eshop-statestore.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "dapr/configuration",
+            "type": "tree"
+        },
+        {
+            "path": "dapr/configuration/eshop-config.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy",
+            "type": "tree"
+        },
+        {
+            "path": "deploy/containerapps",
+            "type": "tree"
+        },
+        {
+            "path": "deploy/containerapps/main.bicep",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/containerapps/modules",
+            "type": "tree"
+        },
+        {
+            "path": "deploy/containerapps/modules/apps",
+            "type": "tree"
+        },
+        {
+            "path": "deploy/containerapps/modules/apps/basket-api.bicep",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/containerapps/modules/apps/blazor-client.bicep",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/containerapps/modules/apps/catalog-api.bicep",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/containerapps/modules/apps/identity-api.bicep",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/containerapps/modules/apps/ordering-api.bicep",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/containerapps/modules/apps/payment-api.bicep",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/containerapps/modules/apps/seq.bicep",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/containerapps/modules/apps/webshopping-agg.bicep",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/containerapps/modules/apps/webshopping-gw.bicep",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/containerapps/modules/apps/webstatus.bicep",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/containerapps/modules/dapr",
+            "type": "tree"
+        },
+        {
+            "path": "deploy/containerapps/modules/dapr/pubsub.bicep",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/containerapps/modules/dapr/secretstore.bicep",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/containerapps/modules/dapr/statestore.bicep",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/containerapps/modules/infra",
+            "type": "tree"
+        },
+        {
+            "path": "deploy/containerapps/modules/infra/container-apps-env.bicep",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/containerapps/modules/infra/cosmos-db.bicep",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/containerapps/modules/infra/identity.bicep",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/containerapps/modules/infra/keyvault.bicep",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/containerapps/modules/infra/service-bus.bicep",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/containerapps/modules/infra/sql-server.bicep",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s",
+            "type": "tree"
+        },
+        {
+            "path": "deploy/k8s/helm",
+            "type": "tree"
+        },
+        {
+            "path": "deploy/k8s/helm/Chart.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/helm/templates",
+            "type": "tree"
+        },
+        {
+            "path": "deploy/k8s/helm/templates/apigateway.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/helm/templates/basket.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/helm/templates/blazorclient.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/helm/templates/catalog.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/helm/templates/dapr-config.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/helm/templates/dapr-pubsub.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/helm/templates/dapr-secrets.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/helm/templates/dapr-sendmail.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/helm/templates/dapr-state.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/helm/templates/identity.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/helm/templates/maildev.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/helm/templates/namespace.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/helm/templates/ordering.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/helm/templates/payment.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/helm/templates/rabbitmq.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/helm/templates/redis.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/helm/templates/secrets.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/helm/templates/seq.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/helm/templates/sqldata.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/helm/templates/webshoppingagg.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/helm/templates/webstatus.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/helm/templates/zipkin.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/helm/values.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.dcproj",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.override.yml",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "docs",
+            "type": "tree"
+        },
+        {
+            "path": "docs/media",
+            "type": "tree"
+        },
+        {
+            "path": "docs/media/buildingblocks.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/media/docker-application-output.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/media/docker-build.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/media/k8s-nodeport.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/media/screenshot.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/media/vs-debug.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/media/vs-solution.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/media/vs-startup-project.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/media/vscode-compose.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/media/vscode-debug.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/media/vscode.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/run-eshop.md",
+            "type": "blob"
+        },
+        {
+            "path": "eShopOnDapr.sln",
+            "type": "blob"
+        },
+        {
+            "path": "launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src",
+            "type": "tree"
+        },
+        {
+            "path": "src/ApiGateways",
+            "type": "tree"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators",
+            "type": "tree"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator",
+            "type": "tree"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Controllers/BasketController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/GlobalUsings.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Infrastructure",
+            "type": "tree"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Infrastructure/Filters",
+            "type": "tree"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Infrastructure/Filters/AuthorizeCheckOperationFilter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Models/BasketData.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Models/BasketDataItem.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Models/CatalogItem.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Models/UpdateBasketRequest.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Models/UpdateBasketRequestItemData.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/ProgramExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Services",
+            "type": "tree"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Services/BasketService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Services/CatalogService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Services/IBasketService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Services/ICatalogService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/Envoy",
+            "type": "tree"
+        },
+        {
+            "path": "src/ApiGateways/Envoy/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/Envoy/docker-entrypoint.sh",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/Envoy/envoy.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks",
+            "type": "tree"
+        },
+        {
+            "path": "src/BuildingBlocks/EventBus",
+            "type": "tree"
+        },
+        {
+            "path": "src/BuildingBlocks/EventBus/Abstractions",
+            "type": "tree"
+        },
+        {
+            "path": "src/BuildingBlocks/EventBus/Abstractions/IEventBus.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/EventBus/Abstractions/IIntegrationEventHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/EventBus/DaprEventBus.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/EventBus/EventBus.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/EventBus/Events",
+            "type": "tree"
+        },
+        {
+            "path": "src/BuildingBlocks/EventBus/Events/IntegrationEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/EventBus/Extensions",
+            "type": "tree"
+        },
+        {
+            "path": "src/BuildingBlocks/EventBus/Extensions/GenericTypeExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/EventBus/GlobalUsings.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/Healthchecks",
+            "type": "tree"
+        },
+        {
+            "path": "src/BuildingBlocks/Healthchecks/DaprHealthCheck.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/Healthchecks/DaprHealthCheckBuilderExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/Healthchecks/GlobalUsings.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/Healthchecks/HealthCheckEndpointRouteBuilderExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/BuildingBlocks/Healthchecks/Healthchecks.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Basket",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Basket.API.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Controllers/BasketController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Controllers/IntegrationEventController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/GlobalUsings.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Infrastructure",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Infrastructure/Filters",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Infrastructure/Filters/AuthorizeCheckOperationFilter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Infrastructure/Repositories",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Infrastructure/Repositories/DaprBasketRepository.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/IntegrationEvents",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/IntegrationEvents/EventHandling",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/IntegrationEvents/EventHandling/OrderStatusChangedToSubmittedIntegrationEventHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/IntegrationEvents/Events",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/IntegrationEvents/Events/OrderStatusChangedToSubmittedIntegrationEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/IntegrationEvents/Events/UserCheckoutAcceptedIntegrationEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Model",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Model/BasketCheckout.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Model/BasketItem.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Model/CustomerBasket.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Model/IBasketRepository.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/ProgramExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Services",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Services/IIdentityService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/Services/IdentityService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Basket/Basket.API/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Catalog.API.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Controllers/CatalogController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Controllers/IntegrationEventController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/GlobalUsings.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Infrastructure",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Infrastructure/CatalogDbContext.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Infrastructure/EntityConfigurations",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Infrastructure/EntityConfigurations/CatalogBrandEntityTypeConfiguration.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Infrastructure/EntityConfigurations/CatalogItemEntityTypeConfiguration.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Infrastructure/EntityConfigurations/CatalogTypeEntityTypeConfiguration.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Infrastructure/Migrations",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Infrastructure/Migrations/20210912085257_InitialMigration.Designer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Infrastructure/Migrations/20210912085257_InitialMigration.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Infrastructure/Migrations/CatalogDbContextModelSnapshot.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/IntegrationEvents",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/IntegrationEvents/EventHandling",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/IntegrationEvents/EventHandling/OrderStatusChangedToAwaitingStockValidationIntegrationEventHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/IntegrationEvents/EventHandling/OrderStatusChangedToPaidIntegrationEventHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/IntegrationEvents/Events",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/IntegrationEvents/Events/ConfirmedOrderStockItem.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/IntegrationEvents/Events/OrderStatusChangedToAwaitingStockValidationIntegrationEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/IntegrationEvents/Events/OrderStatusChangedToPaidIntegrationEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/IntegrationEvents/Events/OrderStockConfirmedIntegrationEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/IntegrationEvents/Events/OrderStockItem.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/IntegrationEvents/Events/OrderStockRejectedIntegrationEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Model",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Model/CatalogBrand.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Model/CatalogItem.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Model/CatalogType.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Pics",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Pics/1.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Pics/10.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Pics/11.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Pics/12.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Pics/13.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Pics/14.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Pics/15.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Pics/16.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Pics/17.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Pics/2.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Pics/3.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Pics/4.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Pics/5.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Pics/6.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Pics/7.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Pics/8.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Pics/9.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/ProgramExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/ViewModel",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/ViewModel/ItemViewModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/ViewModel/PaginatedItemsViewModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Catalog/Catalog.API/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Config.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Data",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Data/ApplicationDbContext.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Data/Migrations",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Data/Migrations/20210914100206_InitialMigration.Designer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Data/Migrations/20210914100206_InitialMigration.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Data/Migrations/ApplicationDbContextModelSnapshot.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/GlobalUsings.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Identity.API.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Models/ApplicationUser.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/ProgramExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Account",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Account/AccountController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Account/AccountOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Account/ExternalController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Account/ExternalProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Account/LoggedOutViewModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Account/LoginInputModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Account/LoginViewModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Account/LogoutInputModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Account/LogoutViewModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Account/RedirectViewModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Consent",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Consent/ConsentController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Consent/ConsentInputModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Consent/ConsentOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Consent/ConsentViewModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Consent/ProcessConsentResult.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Consent/ScopeViewModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Device",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Device/DeviceAuthorizationInputModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Device/DeviceAuthorizationViewModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Device/DeviceController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Diagnostics",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Diagnostics/DiagnosticsController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Diagnostics/DiagnosticsViewModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Grants",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Grants/GrantsController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Grants/GrantsViewModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Home",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Home/ErrorViewModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/Home/HomeController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Quickstart/SecurityHeadersAttribute.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/SeedData.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Services",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Services/ProfileService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Views",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Views/Account",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Views/Account/AccessDenied.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Views/Account/LoggedOut.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Views/Account/Login.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Views/Account/Logout.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Views/Consent",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Views/Consent/Index.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Views/Device",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Views/Device/Success.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Views/Device/UserCodeCapture.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Views/Device/UserCodeConfirmation.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Views/Diagnostics",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Views/Diagnostics/Index.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Views/Grants",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Views/Grants/Index.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Views/Home",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Views/Home/Index.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Views/Shared",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Views/Shared/Error.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Views/Shared/Redirect.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Views/Shared/_Layout.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Views/Shared/_ScopeListItem.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Views/Shared/_ValidationSummary.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Views/_ViewImports.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/Views/_ViewStart.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/tempkey.jwk",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/css",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/css/site.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/css/site.min.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/favicon.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-Bold.eot",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-Bold.svg",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-Bold.ttf",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-Bold.woff",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-Bold.woff2",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-ExtraLight.eot",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-ExtraLight.svg",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-ExtraLight.ttf",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-ExtraLight.woff",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-ExtraLight.woff2",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-Light.eot",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-Light.svg",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-Light.ttf",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-Light.woff",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-Light.woff2",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-Medium.eot",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-Medium.svg",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-Medium.ttf",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-Medium.woff",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-Medium.woff2",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-Regular.eot",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-Regular.svg",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-Regular.ttf",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-Regular.woff",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-Regular.woff2",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-SemiBold.eot",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-SemiBold.svg",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-SemiBold.ttf",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-SemiBold.woff",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/fonts/Oswald-SemiBold.woff2",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/images",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/images/header.jpg",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/images/logo.svg",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/images/logo_color.svg",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/js",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/js/signin-redirect.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/js/signout-redirect.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/dist",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/dist/css",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.css.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.min.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/dist/css/bootstrap-grid.min.css.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.css.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.min.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/dist/css/bootstrap-reboot.min.css.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/dist/css/bootstrap.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/dist/css/bootstrap.css.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/dist/css/bootstrap.min.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/dist/css/bootstrap.min.css.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/dist/js",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.js.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.min.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/dist/js/bootstrap.bundle.min.js.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/dist/js/bootstrap.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/dist/js/bootstrap.js.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/dist/js/bootstrap.min.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/dist/js/bootstrap.min.js.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_alert.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_badge.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_breadcrumb.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_button-group.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_buttons.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_card.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_carousel.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_close.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_code.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_custom-forms.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_dropdown.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_forms.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_functions.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_grid.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_images.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_input-group.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_jumbotron.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_list-group.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_media.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_mixins.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_modal.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_nav.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_navbar.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_pagination.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_popover.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_print.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_progress.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_reboot.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_root.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_spinners.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_tables.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_toasts.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_tooltip.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_transitions.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_type.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_utilities.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/_variables.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/bootstrap-grid.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/bootstrap-reboot.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/bootstrap.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_alert.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_background-variant.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_badge.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_border-radius.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_box-shadow.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_breakpoints.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_buttons.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_caret.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_clearfix.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_deprecate.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_float.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_forms.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_gradients.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_grid-framework.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_grid.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_hover.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_image.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_list-group.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_lists.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_nav-divider.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_pagination.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_reset-text.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_resize.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_screen-reader.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_size.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_table-row.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_text-emphasis.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_text-hide.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_text-truncate.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_transition.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/mixins/_visibility.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/utilities",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/utilities/_align.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/utilities/_background.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/utilities/_borders.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/utilities/_clearfix.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/utilities/_display.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/utilities/_embed.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/utilities/_flex.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/utilities/_float.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/utilities/_overflow.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/utilities/_position.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/utilities/_screenreaders.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/utilities/_shadows.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/utilities/_sizing.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/utilities/_spacing.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/utilities/_stretched-link.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/utilities/_text.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/utilities/_visibility.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/vendor",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/bootstrap/scss/vendor/_rfs.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/jquery",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/jquery/LICENSE.txt",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/jquery/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/jquery/dist",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/jquery/dist/jquery.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/jquery/dist/jquery.min.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/jquery/dist/jquery.min.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/jquery/dist/jquery.slim.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/jquery/dist/jquery.slim.min.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Identity/Identity.API/wwwroot/lib/jquery/dist/jquery.slim.min.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Actors",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Actors/IOrderingProcessActor.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Actors/OrderAddressState.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Actors/OrderItemState.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Actors/OrderState.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Actors/OrderStatus.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Actors/OrderingProcessActor.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Controllers/NotificationHub.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Controllers/OrderingProcessEventController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Controllers/OrdersController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Controllers/UpdateOrderStatusEventController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/GlobalUsings.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Infrastructure",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Infrastructure/EntityConfigurations",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Infrastructure/EntityConfigurations/OrderEntityTypeConfiguration.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Infrastructure/EntityConfigurations/OrderItemEntityTypeConfiguration.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Infrastructure/Filters",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Infrastructure/Filters/AuthorizeCheckOperationFilter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Infrastructure/Migrations",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Infrastructure/Migrations/20210916144350_InitialMigration.Designer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Infrastructure/Migrations/20210916144350_InitialMigration.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Infrastructure/Migrations/OrderingDbContextModelSnapshot.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Infrastructure/OrderingDbContext.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Infrastructure/Repositories",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Infrastructure/Repositories/OrderRepository.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Infrastructure/Services",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Infrastructure/Services/EmailService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Infrastructure/Services/IIdentityService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Infrastructure/Services/IdentityService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/IntegrationEvents",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/IntegrationEvents/BasketItem.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/IntegrationEvents/ConfirmedOrderStockItem.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/IntegrationEvents/CustomerBasket.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/IntegrationEvents/GracePeriodConfirmedIntegrationEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/IntegrationEvents/OrderPaymentFailedIntegrationEvent .cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/IntegrationEvents/OrderPaymentSucceededIntegrationEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/IntegrationEvents/OrderStatusChangedToAwaitingStockValidationIntegrationEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/IntegrationEvents/OrderStatusChangedToCancelledIntegrationEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/IntegrationEvents/OrderStatusChangedToPaidIntegrationEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/IntegrationEvents/OrderStatusChangedToShippedIntegrationEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/IntegrationEvents/OrderStatusChangedToSubmittedIntegrationEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/IntegrationEvents/OrderStatusChangedToValidatedIntegrationEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/IntegrationEvents/OrderStockConfirmedIntegrationEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/IntegrationEvents/OrderStockItem.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/IntegrationEvents/OrderStockRejectedIntegrationEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/IntegrationEvents/UserCheckoutAcceptedIntegrationEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Model",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Model/Address.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Model/IEmailService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Model/IOrderRepository.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Model/Order.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Model/OrderItem.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Model/OrderSummary.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Ordering.API.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/OrderingSettings.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/ProgramExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/ViewModel",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/ViewModel/OrderItemViewModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/ViewModel/OrderSummaryViewModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/ViewModel/OrderViewModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Ordering/Ordering.API/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Payment",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Payment/Payment.API",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Payment/Payment.API/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Payment/Payment.API/Controllers/IntegrationEventController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Payment/Payment.API/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Payment/Payment.API/GlobalUsings.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Payment/Payment.API/IntegrationEvents",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Payment/Payment.API/IntegrationEvents/EventHandling",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Payment/Payment.API/IntegrationEvents/EventHandling/OrderStatusChangedToValidatedIntegrationEventHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Payment/Payment.API/IntegrationEvents/Events",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Payment/Payment.API/IntegrationEvents/Events/OrderPaymentFailedIntegrationEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Payment/Payment.API/IntegrationEvents/Events/OrderPaymentSucceededIntegrationEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Payment/Payment.API/IntegrationEvents/Events/OrderStatusChangedToValidatedIntegrationEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Payment/Payment.API/Payment.API.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Payment/Payment.API/PaymentSettings.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Payment/Payment.API/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Payment/Payment.API/ProgramExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Payment/Payment.API/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Payment/Payment.API/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Payment/Payment.API/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Payment/Payment.API/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/BlazorClient.Host",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/BlazorClient.Host/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient.Host/BlazorClient.Host.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient.Host/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/BlazorClient.Host/Controllers/SettingsController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient.Host/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient.Host/GlobalUsings.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient.Host/Pages",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/BlazorClient.Host/Pages/Error.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient.Host/Pages/Error.cshtml.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient.Host/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient.Host/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/BlazorClient.Host/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient.Host/Settings.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient.Host/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient.Host/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient.Host/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/BlazorClient/ApiAuthorizationMessageHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/App.razor",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Basket",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/BlazorClient/Basket/BasketCheckout.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Basket/BasketClient.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Basket/BasketData.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Basket/BasketItem.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Basket/UserBasket.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/BlazorClient.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Catalog",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/BlazorClient/Catalog/CatalogBrand.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Catalog/CatalogClient.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Catalog/CatalogItem.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Catalog/CatalogPage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Catalog/CatalogType.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/GlobalUsings.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Ordering",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/BlazorClient/Ordering/Address.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Ordering/CardExpirationDate.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Ordering/Order.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Ordering/OrderClient.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Ordering/OrderForm.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Ordering/OrderItem.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Ordering/OrderState.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Ordering/OrderSummary.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Pages",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/BlazorClient/Pages/Authentication.razor",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Pages/Basket.razor",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Pages/Basket.razor.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Pages/Catalog.razor",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Pages/Catalog.razor.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Pages/Checkout.razor",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Pages/Checkout.razor.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Pages/OrderDetails.razor",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Pages/OrderDetails.razor.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Pages/Orders.razor",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Pages/Orders.razor.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/BlazorClient/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Settings.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Shared",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/BlazorClient/Shared/BasketLoader.razor",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Shared/BasketStatus.razor",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Shared/BasketStatus.razor.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Shared/Identity.razor",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Shared/Identity.razor.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Shared/MainLayout.razor",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Shared/MainLayout.razor.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Shared/NotificationSubscriber.razor",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Shared/Pager.razor",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Shared/Pager.razor.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Shared/RedirectToLogin.razor",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/Shared/Toast.razor",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/_Imports.razor",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/css",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/css/app.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/css/bootstrap",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/css/bootstrap/bootstrap.min.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/css/bootstrap/bootstrap.min.css.map",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/favicon.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-Bold.eot",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-Bold.svg",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-Bold.ttf",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-Bold.woff",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-Bold.woff2",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-ExtraLight.eot",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-ExtraLight.svg",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-ExtraLight.ttf",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-ExtraLight.woff",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-ExtraLight.woff2",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-Light.eot",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-Light.svg",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-Light.ttf",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-Light.woff",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-Light.woff2",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-Medium.eot",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-Medium.svg",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-Medium.ttf",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-Medium.woff",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-Medium.woff2",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-Regular.eot",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-Regular.svg",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-Regular.ttf",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-Regular.woff",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-Regular.woff2",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-SemiBold.eot",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-SemiBold.svg",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-SemiBold.ttf",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-SemiBold.woff",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/fonts/Oswald-SemiBold.woff2",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/images",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/images/add.svg",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/images/cart.svg",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/images/delete.svg",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/images/header.jpg",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/images/logo.svg",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/images/logo_color.svg",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/images/minus.svg",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/images/plus.svg",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/images/user.svg",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/BlazorClient/wwwroot/index.html",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/WebStatus",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/WebStatus/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/WebStatus/GlobalUsings.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/WebStatus/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/WebStatus/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/WebStatus/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/WebStatus/WebStatus.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/WebStatus/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/WebStatus/appsettings.json",
+            "type": "blob"
+        }
+    ]
+}

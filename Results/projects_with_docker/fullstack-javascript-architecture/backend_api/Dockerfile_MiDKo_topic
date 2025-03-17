@@ -1,0 +1,35 @@
+# Start with the stable Node.js version as base image
+FROM node:10 as build
+
+# Create app directory
+RUN mkdir -p /user/src/app
+WORKDIR /user/src/app
+
+# Set Environment variable
+ENV NODE_ENV production
+
+# Bundle app source
+COPY . /user/src/app
+
+# Install app dependencies
+COPY package*.json ./
+RUN npm install --only=production
+
+# Build the app. In our case transpile the JS into useable code.
+RUN npm run build:prod
+
+# Start from the base image again for a smaller attack surface area and final image size.
+FROM node:10
+
+# Create app directory
+RUN mkdir -p /user/src/app
+WORKDIR /user/src/app
+
+# Bundle app source
+
+# Your app binds to port 8000
+EXPOSE 8000
+
+# Define the Docker image's behavior at runtime
+ENTRYPOINT ["node", "build/index.js"]
+

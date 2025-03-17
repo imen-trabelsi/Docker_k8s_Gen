@@ -1,0 +1,62 @@
+{
+    "docker_info": {
+        "base_image": "harbor.nymte.ch/dockerhub/rust:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "GIT_REF=main"
+        ],
+        "envs": [
+            "ENV PATH=/go/bin:/usr/local/go/bin:$PATH",
+            "ENV NODE_STATUS_AGENT_PROBE_PATH=/nym/nym-gateway-probe"
+        ],
+        "copy_instructions": [
+            "WORKDIR /usr/src/nym-vpn-client/nym-vpn-core",
+            "COPY ./ /usr/src/nym",
+            "WORKDIR /usr/src/nym/nym-node-status-agent",
+            "WORKDIR /nym",
+            "COPY --from=builder /usr/src/nym/target/release/nym-node-status-agent ./",
+            "COPY --from=builder /usr/src/nym-vpn-client/nym-vpn-core/target/release/nym-gateway-probe ./"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"/nym/nym-node-status-agent\",",
+                    "\"run-probe\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt update && apt install -yy libdbus-1-dev pkg-config libclang-dev",
+                ""
+            ],
+            [
+                "wget https://go.dev/dl/go1.22.5.linux-amd64.tar.gz -O go.tar.gz",
+                "RUN tar -xzvf go.tar.gz -C /usr/local"
+            ],
+            [
+                "git clone https://github.com/nymtech/nym-vpn-client /usr/src/nym-vpn-client",
+                "RUN cd /usr/src/nym-vpn-client && git checkout $GIT_REF"
+            ],
+            [
+                "cargo build --release --package nym-gateway-probe",
+                ""
+            ],
+            [
+                "cargo build --release",
+                ""
+            ],
+            [
+                "apt-get update && apt-get install -y ca-certificates",
+                ""
+            ]
+        ]
+    }
+}

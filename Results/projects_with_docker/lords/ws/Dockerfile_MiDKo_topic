@@ -1,0 +1,27 @@
+# Use the user specified base image
+FROM elixir:1.6.4
+
+# set work directory
+WORKDIR /app
+
+# copy the source code to /app directory
+COPY . .
+
+# install hex package manager
+RUN mix local.hex --force
+
+# install the phoenix mix archive
+RUN mix archive.install --force https://github.com/phoenixframework/archives/raw/master/phx_new.ez
+
+# install rebar (Erlang build tool)
+RUN mix local.rebar --force
+
+# get dependencies
+RUN mix deps.get
+
+# Expose the application port
+EXPOSE 4000
+
+# An ENTRYPOINT allows you to configure a container that will run as an executable
+# Run the command on container startup
+CMD ["mix", "run", "--no-halt"]

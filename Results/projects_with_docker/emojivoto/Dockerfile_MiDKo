@@ -1,0 +1,17 @@
+# Use base image
+FROM buoyantio/emojivoto-svc-base:v12 
+
+# Set the service name as an environment variable
+ENV SVC_NAME $svc_name
+
+# Copy project files into the docker image
+COPY $svc_name/target/ /usr/local/bin/
+
+# Ensure all dependencies are up to date
+RUN go mod download
+
+# Set working directory
+WORKDIR /usr/local/bin/
+
+# Set entry command
+CMD ["cd", "/usr/local/bin", "&&", "$SVC_NAME"]

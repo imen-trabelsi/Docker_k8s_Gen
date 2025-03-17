@@ -1,0 +1,39 @@
+# Use the onap/integration-java11:7.1.0 base image
+FROM onap/integration-java11:7.1.0
+
+# Set the http_proxy and https_proxy arguments
+ARG http_proxy
+ARG https_proxy
+
+# Set the environment variables
+ENV HTTP_PROXY=$http_proxy
+ENV HTTPS_PROXY=$https_proxy
+ENV http_proxy=$HTTP_PROXY
+ENV https_proxy=$HTTPS_PROXY
+
+# Set up the non-root user and the necessary permissions
+USER root
+RUN useradd -ms /bin/bash onap
+RUN mkdir /opt/clamp && \
+
+# Copy relevant project files
+COPY --chown=onap:onap src/main/resources/clds/ /opt/clamp/resources/clds/
+COPY --chown=onap:onap onap-clamp-backend/clamp.jar /opt/clamp/app.jar
+
+# Switch to non-root user
+USER onap
+
+# Set the working directory
+WORKDIR /opt/clamp
+
+# expose the necessary ports
+EXPOSE 8080
+
+# set the health check command
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5m CMD curl -f http://localhost:8080/health || exit 1
+
+# Set the entrypoint
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-XX:MinRAMPercentage=50", "-XX:MaxRAMPercentage=75","-jar","./app.jar"]
+
+# Set labels
+LABEL Description="This image contains the Spring Boot microservice app with MySQL using Maven"

@@ -1,0 +1,47 @@
+{
+    "docker_info": {
+        "base_image": "python:3.9-slim-buster",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "$PORT"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "PORT"
+        ],
+        "envs": [
+            "ENV LISTEN_PORT $PORT",
+            "ENV NGINX_MAX_UPLOAD 10m"
+        ],
+        "copy_instructions": [
+            "COPY ./app /app",
+            "WORKDIR /app"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"python3\",",
+                    "\"app/main.py\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && apt-get install ffmpeg libsm6 libxext6 tesseract-ocr libtesseract-dev -y",
+                ""
+            ],
+            [
+                "echo \"\\n\\nJWT_ALGORITHM = 'RS256'\" >> ./app/.env",
+                ""
+            ],
+            [
+                "pip install --upgrade pip && pip install --no-cache-dir -r ./app/requirements.txt",
+                ""
+            ]
+        ]
+    }
+}

@@ -1,0 +1,28 @@
+# Use the Python base Image
+FROM python:3.8-alpine
+
+# Set environment variable
+ENV PYTHONUNBUFFERED=1 
+
+# Create a directory within the container
+WORKDIR /myapp 
+
+# Install dependencies
+COPY ./Gemfile ./ 
+
+# Run commands
+RUN apk add --update --no-cache postgresql-client && \
+    apk add --update --no-cache --virtual .tmp-build-deps \
+    gcc libc-dev linux-headers postgresql-dev ruby ruby-dev ruby-rdoc && \
+    gem install bundler && bundle install && \
+    apk del .tmp-build-deps && \
+    wget -qO /tini https://github.com/krallin/tini/releases/download/v0.19.0/tini-static && \
+    chmod +x /tini && \
+
+# Copy project files
+COPY . . 
+
+# Run the application
+ENTRYPOINT ["/tini", "--", "/usr/local/bin/acme-secret-sync.py"]
+
+COPY ./acme-secret-sync.py /usr/local/bin/

@@ -1,0 +1,46 @@
+# Use the base image provided by the user
+FROM golang:1.17-alpine3.14 AS builder
+
+# Set the environment variable
+ENV GOFLAGS="-mod=readonly"
+
+# Install necessary build tools and packages
+RUN apk add --update --no-cache ca-certificates make git curl mercurial
+
+WORKDIR /workspace
+
+# Copy dependencies file
+COPY go.mod go.sum ./
+
+# Download dependencies
+RUN go mod download
+
+# Copy the source code into the container
+COPY . .
+
+# Build based on the build argument
+ARG BUILD_TARGET
+RUN if [ "${BUILD_TARGET}" = "debug" ];\
+    then make build-debug-deps && move build/debug /build; \
+    else make build-release-deps && move build/release /build; \
+
+#------- Second Stage -------
+
+FROM golang:1.17-alpine3.14
+
+# Install necessary runtime tools and packages
+RUN apk add --update --no-cache ca-certificates tzdata bash curl
+RUN test ! -e /etc/nsswitch.conf && echo 'hosts: files dns' > /etc/nsswitch.conf
+
+# Install debugging software if debug
+ARG BUILD_TARGET
+RUN if [ "${BUILD_TARGET}" = "debug" ];\
+    then apk add --update --no-cache libc6-compat; \
+
+# Move the executable to the appropriate location
+
+# Expose the necessary ports
+EXPOSE 8000
+
+# Set the entrypoint for the microservice
+ENTRYPOINT ["modern-go-application", "--telemetry-addr", ":10000", "--http-addr", ":8000", "--grpc-addr", ":8001"]

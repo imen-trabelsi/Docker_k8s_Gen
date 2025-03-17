@@ -1,0 +1,20 @@
+# Based on the user-provided base image
+FROM docker.elastic.co/logstash/logstash:${ELASTIC_VERSION}
+
+# Copy the Logstash pipeline configuration file
+COPY ./elastic-stack/logstash/pipeline/logstash.conf /usr/share/logstash/pipeline/logstash.conf
+
+# Copy the Logstash configuration file
+COPY ./elastic-stack/logstash/config /usr/share/logstash/config/
+    
+# Set environment variables
+ENV ELASTIC_CONTAINER true
+ENV PATH /usr/share/logstash/bin:$PATH
+ENV LANG 'en_US.UTF-8'
+ENV LS_SETTINGS_DIR /usr/share/logstash/config
+
+# Expose the necessary ports
+EXPOSE 5044 9600
+
+# This will start logstash
+CMD ["logstash"]

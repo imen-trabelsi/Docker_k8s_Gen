@@ -1,0 +1,37 @@
+# Step 1: Base Image
+FROM openjdk:8
+
+# Step 2: Set Working Directory
+WORKDIR /app
+
+# Step 3: Environment Variables
+ENV REFRESHED_AT=2017-09-17 \
+    TERM=xterm \
+    JAVA_OPTS=-Djava.security.egd=file:/dev/./urandom \
+
+# Step 4: Run Commands
+RUN apt-get update -qq && \
+    apt-get install -qqy curl wget && \
+    apt-get clean && \
+    touch /var/log/todo.log && \
+    chmod 666 /var/log/todo.log && \
+    curl -L -O https://download.elastic.co/beats/filebeat/${FILEBEAT_VERSION} && \
+    dpkg -i ${FILEBEAT_VERSION} && \
+    rm ${FILEBEAT_VERSION} && \
+
+# Step 5: Copy Instructions
+ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh wait-for-it.sh
+COPY application/lib/springboot-webapp.jar /app.jar
+COPY filebeat.yml /etc/filebeat/filebeat.yml
+COPY ./start.sh /usr/local/bin/start.sh
+COPY logstash-beats.crt /etc/pki/tls/certs/logstash-beats.crt
+
+# Step 6: Execution Commands
+RUN chmod +x wait-for-it.sh && \
+
+# Step 7: Expose Ports
+
+# Step 8: Users
+
+# Step 9: CMD Instructions
+CMD [ "/usr/local/bin/start.sh" ]

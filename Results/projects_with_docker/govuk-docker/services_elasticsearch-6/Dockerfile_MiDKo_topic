@@ -1,0 +1,27 @@
+# Use the base image provided by the user
+FROM eclipse-temurin:8-jre
+
+# Set work directory
+WORKDIR /usr
+
+# Install required system dependencies
+RUN apt-get update && apt-get install -y curl
+
+# Define build arguments
+ARG ELASTICSEARCH_VERSION=6.7.2
+ARG USERNAME=ubuntu
+
+# Copy the required files
+COPY elasticsearch.yml /usr/elasticsearch/config/elasticsearch.yml
+
+# Download, unpack and set permissions for Elasticsearch
+RUN curl -L -O https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz && \
+    tar -xvf elasticsearch-${ELASTICSEARCH_VERSION}.tar.gz && \
+    mv elasticsearch-${ELASTICSEARCH_VERSION} elasticsearch && \
+
+# Switch to a non-root user
+USER ${USERNAME}
+
+# Start Elasticsearch
+CMD ["/usr/elasticsearch/bin/elasticsearch"]
+

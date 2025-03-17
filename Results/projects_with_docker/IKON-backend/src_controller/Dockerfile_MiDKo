@@ -1,0 +1,33 @@
+# Python is mentioned as the programming language, but the user has provided Node.js as the base image. So, it's a bit confusing.
+# The following Dockerfile is generated based on the Node.js base image.
+
+# Define base image
+FROM node:13.10.1-alpine3.10
+
+# Define working directory and create required directories
+WORKDIR /app
+RUN mkdir -p /app/frontend
+RUN mkdir -p /app/data/nginx/cache
+
+# Install dependencies
+RUN apk add git
+RUN yarn install --cwd /app/frontend/
+
+# Clone source code and build project
+RUN git clone -j4 -b master https://github.com/FUB-HCC/IKON-projektor.git /app/frontend
+WORKDIR /app/frontend
+RUN yarn build
+
+# Copy files
+COPY docker-compose.yml src/controller/Dockerfile /app/
+COPY src/controller/src/nginx.conf /etc/nginx/nginx.conf
+COPY --from=builder /app/frontend/build/ /usr/local/nginx/html/
+
+# Here we couldn't figure out which port your application is using based on the provided data
+# So please change the line below with your application's port
+EXPOSE YOUR_APP_PORT
+
+# Start command
+# Based on provided data, we couldn't determine which command is used to start your Python application
+# Please replace 'your-start-command' with the correct one
+CMD ["your-start-command"]

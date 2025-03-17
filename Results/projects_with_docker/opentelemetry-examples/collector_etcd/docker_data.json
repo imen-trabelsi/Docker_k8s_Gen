@@ -1,0 +1,51 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.19-rc-alpine3.15",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "5050"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "ETCD_VERSION=3.5.4",
+            "ETCD_NODE_NAME=$ETCD_NODE_NAME"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /usr/local/src",
+            "COPY --from=builder /usr/local/src/etcd/bin/etcd /usr/local/bin/etcd",
+            "COPY --from=builder /usr/local/src/etcd/bin/etcdctl /usr/local/bin/etcdctl",
+            "COPY start-etcd.sh /opt/start-etcd.sh",
+            "COPY etcd.conf /etc/etcd.conf"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/opt/start-etcd.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk --no-cache add ca-certificates git make zsh bash",
+                ""
+            ],
+            [
+                "git clone https://github.com/etcd-io/etcd \\",
+                "&& cd etcd && git checkout 08407ff7600eb16c4445d5f21c4fafaf19412e24",
+                "&& make"
+            ],
+            [
+                "apk --no-cache add zsh sed curl vim",
+                ""
+            ],
+            [
+                "chmod u+x /opt/start-etcd.sh",
+                ""
+            ]
+        ]
+    }
+}

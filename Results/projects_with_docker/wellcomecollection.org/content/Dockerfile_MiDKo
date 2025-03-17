@@ -1,0 +1,42 @@
+# Use Official Node.js runtime as a parent image
+FROM public.ecr.aws/docker/library/node:20-bookworm-slim
+
+# Set /app as working directory in the image
+WORKDIR /app
+
+# Copy package.json and yarn.lock files into the root directory of the image
+COPY package.json yarn.lock ./
+
+# Copy common directory into the container
+COPY common ./common
+
+# Copy toggle/webapp directory into the container
+COPY toggles/webapp ./toggles/webapp
+
+# Copy tsconfig-base.json into the config directory of the image
+COPY config/tsconfig-base.json ./config/
+
+# Switch to content/webapp as working directory in the image
+WORKDIR content/webapp
+
+# Copy package.json file into the root directory of the content/webapp image
+COPY content/webapp/package.json ./
+
+# Copy all the contents of content/webapp into the image
+COPY content/webapp .
+
+# Install all the dependencies and cleanse the cache for optimization
+RUN yarn --frozen-lockfile && yarn cache clean
+RUN yarn build && yarn cache clean
+
+# Add new group and user for security
+RUN addgroup --system --gid 1001 nodejs && adduser --system --uid 1001 nodejs
+
+# Set environment variables
+ENV NEXT_PUBLIC_CIVICUK_API_KEY $NEXT_PUBLIC_CIVICUK_API_KEY
+
+# Expose port 3000 to have it mapped by the docker daemon
+EXPOSE 3000
+
+# Define the execution command
+CMD ["yarn", "start"]

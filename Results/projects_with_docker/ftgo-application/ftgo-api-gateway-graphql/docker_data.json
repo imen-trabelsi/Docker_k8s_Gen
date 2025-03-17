@@ -1,0 +1,29 @@
+{
+    "docker_info": {
+        "base_image": "node:9.11.2-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY package.json .",
+            "COPY package-lock.json .",
+            "COPY tsconfig.json .",
+            "ADD src ./src"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "npm install",
+                "RUN npm config set unsafe-perm true && npm install -g typescript"
+            ],
+            [
+                "npm run build",
+                "CMD npm run start"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,61 @@
+{
+    "docker_info": {
+        "base_image": "alpine:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3000"
+        ],
+        "user": [],
+        "labels": [
+            "maintainer=jon@jaggersoft.com"
+        ],
+        "health_checks": [],
+        "build_args": [
+            "CYBER_DOJO_HOME"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "COPY Gemfile  ${CYBER_DOJO_HOME}/",
+            "WORKDIR       ${CYBER_DOJO_HOME}",
+            "COPY . ${CYBER_DOJO_HOME}"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"./up.sh\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk --update --no-cache add \\",
+                "bash",
+                "libffi-dev",
+                "ruby",
+                "ruby-bigdecimal",
+                "ruby-bundler",
+                "ruby-dev",
+                "tzdata",
+                "zlib-dev"
+            ],
+            [
+                "apk --update --no-cache add --virtual build-dependencies build-base \\",
+                "&& bundle config --global silence_root_warning 1",
+                "&& bundle install",
+                "&& apk del build-dependencies build-base",
+                "&& rm -vrf /var/cache/apk/*"
+            ],
+            [
+                "cat ${CYBER_DOJO_HOME}/Gemfile.lock",
+                ""
+            ],
+            [
+                "chown -R nobody:nogroup ${CYBER_DOJO_HOME}",
+                "USER nobody"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,39 @@
+# Using the specified base image
+FROM node:14 as builder
+
+# Creating a working directory in the container
+WORKDIR /app
+
+# Setting environment variables
+ENV PYTHONUNBUFFERED=1 \
+    SUPERCRONIC_VERSION=v0.1.12 \
+
+# Setting the user for running the commands
+USER os2ds_admin:os2ds_admin
+
+# Copying the build dependencies file to the container
+COPY pyproject.toml /app
+
+# Installing the dependencies
+RUN poetry install
+
+# Copying the source code to the container
+COPY src/os2datascanner /app
+
+# Using multi-stage builds for building the application
+FROM builder as application
+
+# Repeating the steps of creating a working directory, setting environment variables and the user
+WORKDIR /app
+ENV PYTHONUNBUFFERED=1
+USER os2ds_admin:os2ds_admin
+
+# Installing run dependencies
+RUN npm ci && npm run prod
+
+# Running the application
+ENTRYPOINT ["/code/docker/docker-entrypoint.sh"]
+CMD ["npm", "run", "dev"]
+
+# Exposing the required port
+EXPOSE 5000

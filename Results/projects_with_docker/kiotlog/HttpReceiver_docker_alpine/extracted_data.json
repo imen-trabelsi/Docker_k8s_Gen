@@ -1,0 +1,345 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": ".github",
+            "type": "tree"
+        },
+        {
+            "path": ".github/workflows",
+            "type": "tree"
+        },
+        {
+            "path": ".github/workflows/build-solution.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": ".gitmodules",
+            "type": "blob"
+        },
+        {
+            "path": ".travis.yml",
+            "type": "blob"
+        },
+        {
+            "path": "Decoder",
+            "type": "tree"
+        },
+        {
+            "path": "Decoder/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "Decoder/Decoder.fsproj",
+            "type": "blob"
+        },
+        {
+            "path": "Decoder/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "Decoder/Dockerfile.alpine",
+            "type": "blob"
+        },
+        {
+            "path": "Decoder/Dockerfile.alpine_alt",
+            "type": "blob"
+        },
+        {
+            "path": "Decoder/Dockerfile.arm32",
+            "type": "blob"
+        },
+        {
+            "path": "Decoder/Dockerfile.arm64",
+            "type": "blob"
+        },
+        {
+            "path": "Decoder/Dockerfile.illinker",
+            "type": "blob"
+        },
+        {
+            "path": "Decoder/attic",
+            "type": "tree"
+        },
+        {
+            "path": "Decoder/attic/nuget.config",
+            "type": "blob"
+        },
+        {
+            "path": "Decoder/attic/runtimeconfig.json",
+            "type": "blob"
+        },
+        {
+            "path": "Decoder/post.sh",
+            "type": "blob"
+        },
+        {
+            "path": "Decoder/src",
+            "type": "tree"
+        },
+        {
+            "path": "Decoder/src/Arguments.fs",
+            "type": "blob"
+        },
+        {
+            "path": "Decoder/src/Catalog.fs",
+            "type": "blob"
+        },
+        {
+            "path": "Decoder/src/Conversions.fs",
+            "type": "blob"
+        },
+        {
+            "path": "Decoder/src/Decoder.fs",
+            "type": "blob"
+        },
+        {
+            "path": "Decoder/src/Helpers.fs",
+            "type": "blob"
+        },
+        {
+            "path": "Decoder/src/Mqtt.fs",
+            "type": "blob"
+        },
+        {
+            "path": "Decoder/src/Program.fs",
+            "type": "blob"
+        },
+        {
+            "path": "Decoder/src/Request.fs",
+            "type": "blob"
+        },
+        {
+            "path": "Decoder/src/Struct.fs",
+            "type": "blob"
+        },
+        {
+            "path": "HttpReceiver",
+            "type": "tree"
+        },
+        {
+            "path": "HttpReceiver/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "HttpReceiver/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "HttpReceiver/Dockerfile.arm32",
+            "type": "blob"
+        },
+        {
+            "path": "HttpReceiver/HttpReceiver.fsproj",
+            "type": "blob"
+        },
+        {
+            "path": "HttpReceiver/attic",
+            "type": "tree"
+        },
+        {
+            "path": "HttpReceiver/attic/nuget.config",
+            "type": "blob"
+        },
+        {
+            "path": "HttpReceiver/attic/runtimeconfig.json",
+            "type": "blob"
+        },
+        {
+            "path": "HttpReceiver/docker",
+            "type": "tree"
+        },
+        {
+            "path": "HttpReceiver/docker/alpine",
+            "type": "tree"
+        },
+        {
+            "path": "HttpReceiver/docker/alpine/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "HttpReceiver/docker/alpine/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "HttpReceiver/docker/busybox",
+            "type": "tree"
+        },
+        {
+            "path": "HttpReceiver/docker/busybox/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "HttpReceiver/src",
+            "type": "tree"
+        },
+        {
+            "path": "HttpReceiver/src/Catalog.fs",
+            "type": "blob"
+        },
+        {
+            "path": "HttpReceiver/src/CliArguments.fs",
+            "type": "blob"
+        },
+        {
+            "path": "HttpReceiver/src/Data.fs",
+            "type": "blob"
+        },
+        {
+            "path": "HttpReceiver/src/HttpAuth.fs",
+            "type": "blob"
+        },
+        {
+            "path": "HttpReceiver/src/MQTT.fs",
+            "type": "blob"
+        },
+        {
+            "path": "HttpReceiver/src/Program.fs",
+            "type": "blob"
+        },
+        {
+            "path": "HttpReceiver/src/Utils.fs",
+            "type": "blob"
+        },
+        {
+            "path": "HttpReceiver/src/WebParts.fs",
+            "type": "blob"
+        },
+        {
+            "path": "HttpReceiver/tools",
+            "type": "tree"
+        },
+        {
+            "path": "HttpReceiver/tools/sigfox.http",
+            "type": "blob"
+        },
+        {
+            "path": "Kiotlog.sln",
+            "type": "blob"
+        },
+        {
+            "path": "KiotlogDBF",
+            "type": "commit"
+        },
+        {
+            "path": "KlsnReceiver.Tests",
+            "type": "tree"
+        },
+        {
+            "path": "KlsnReceiver.Tests/KlsnReceiver.Tests.fsproj",
+            "type": "blob"
+        },
+        {
+            "path": "KlsnReceiver.Tests/Main.fs",
+            "type": "blob"
+        },
+        {
+            "path": "KlsnReceiver.Tests/Sample.fs",
+            "type": "blob"
+        },
+        {
+            "path": "KlsnReceiver",
+            "type": "tree"
+        },
+        {
+            "path": "KlsnReceiver/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "KlsnReceiver/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "KlsnReceiver/Dockerfile.arm32",
+            "type": "blob"
+        },
+        {
+            "path": "KlsnReceiver/KlsnReceiver.fsproj",
+            "type": "blob"
+        },
+        {
+            "path": "KlsnReceiver/attic",
+            "type": "tree"
+        },
+        {
+            "path": "KlsnReceiver/attic/nuget.config",
+            "type": "blob"
+        },
+        {
+            "path": "KlsnReceiver/generateKlsnKey.fsx",
+            "type": "blob"
+        },
+        {
+            "path": "KlsnReceiver/src",
+            "type": "tree"
+        },
+        {
+            "path": "KlsnReceiver/src/Arguments.fs",
+            "type": "blob"
+        },
+        {
+            "path": "KlsnReceiver/src/Catalog.fs",
+            "type": "blob"
+        },
+        {
+            "path": "KlsnReceiver/src/Helpers.fs",
+            "type": "blob"
+        },
+        {
+            "path": "KlsnReceiver/src/Klsn.fs",
+            "type": "blob"
+        },
+        {
+            "path": "KlsnReceiver/src/Mqtt.fs",
+            "type": "blob"
+        },
+        {
+            "path": "KlsnReceiver/src/Parser.fs",
+            "type": "blob"
+        },
+        {
+            "path": "KlsnReceiver/src/Program.fs",
+            "type": "blob"
+        },
+        {
+            "path": "KlsnReceiver/src/Writer.fs",
+            "type": "blob"
+        },
+        {
+            "path": "LICENSE",
+            "type": "blob"
+        },
+        {
+            "path": "Readme.md",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.arm32.yml",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "libsodium-core",
+            "type": "commit"
+        }
+    ]
+}

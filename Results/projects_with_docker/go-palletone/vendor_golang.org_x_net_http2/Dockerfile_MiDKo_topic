@@ -1,0 +1,37 @@
+#Docker base image
+FROM ubuntu:trusty
+
+# Environment variable
+ENV NGHTTP2_VER 895da9a
+
+# Dependencies installation
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y git-core build-essential wget && \
+    apt-get install -y --no-install-recommends \
+    autotools-dev libtool pkg-config zlib1g-dev libcunit1-dev libssl-dev libxml2-dev libevent-dev automake autoconf && \
+    
+# Copy instructions
+WORKDIR /root/nghttp2
+WORKDIR /root
+WORKDIR /root/curl-7.45.0 
+
+# Run commands
+RUN cd /root && \
+    git clone https://github.com/tatsuhiro-t/nghttp2.git && \
+    git reset --hard $NGHTTP2_VER && \
+    autoreconf -i && \
+    automake && \
+    autoconf && \
+    ./configure && \
+    make && \
+
+RUN wget http://curl.haxx.se/download/curl-7.45.0.tar.gz && \
+    tar -zxvf curl-7.45.0.tar.gz && \
+    ./configure --with-ssl --with-nghttp2=/usr/local && \
+    make && \
+    make install && \
+
+# Executing command
+ENTRYPOINT ["/usr/local/bin/curl"]
+CMD ["-h"]

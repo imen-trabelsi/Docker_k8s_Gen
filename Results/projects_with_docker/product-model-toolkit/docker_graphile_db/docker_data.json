@@ -1,0 +1,17 @@
+{
+    "docker_info": {
+        "base_image": "postgres:11.0-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ./init/ /docker-entrypoint-initdb.d/"
+        ],
+        "execution": [],
+        "run": []
+    }
+}

@@ -1,0 +1,63 @@
+{
+    "docker_info": {
+        "base_image": "node:12.22.12",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3002"
+        ],
+        "user": [],
+        "labels": [
+            "version=\"2.0.0\"",
+            "description=\"This"
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD common/ /usr/src/common",
+            "COPY package.json /usr/src/common",
+            "WORKDIR /usr/src",
+            "ADD synccontroller/src /usr/src/synccontroller/src",
+            "WORKDIR /usr/src/synccontroller",
+            "COPY synccontroller/Gruntfile.js /usr/src/synccontroller/",
+            "COPY synccontroller/package.json /usr/src/synccontroller/"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"npm\",",
+                    "\"start\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p /usr/src/common",
+                "WORKDIR /usr/src/common"
+            ],
+            [
+                "npm install",
+                ""
+            ],
+            [
+                "mkdir -p /usr/src/synccontroller",
+                ""
+            ],
+            [
+                "npm install grunt-cli -g",
+                ""
+            ],
+            [
+                "mkdir -p /usr/src/synccontroller/src",
+                "WORKDIR /usr/src/synccontroller/src"
+            ],
+            [
+                "npm install",
+                "RUN grunt build_lib"
+            ]
+        ]
+    }
+}

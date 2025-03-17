@@ -1,0 +1,57 @@
+{
+    "docker_info": {
+        "base_image": "alpine:3.20",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "9103"
+        ],
+        "user": [],
+        "labels": [
+            "maintainer=\"barcus@tou.nu\"",
+            "org.label-schema.schema-version=\"1.0\""
+        ],
+        "health_checks": [],
+        "build_args": [
+            "BUILD_DATE",
+            "NAME",
+            "VCS_REF",
+            "VERSION"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "COPY docker-entrypoint.sh /docker-entrypoint.sh"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/docker-entrypoint.sh\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/usr/sbin/bareos-sd\",",
+                    "\"-u\",",
+                    "\"bareos\",",
+                    "\"-f\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --no-cache bareos bareos-storage tar",
+                ""
+            ],
+            [
+                "tar czf /bareos-sd.tgz /etc/bareos/bareos-sd.d",
+                "RUN mkdir /run/bareos",
+                "&& chown bareos /run/bareos"
+            ],
+            [
+                "chmod u+x /docker-entrypoint.sh",
+                ""
+            ]
+        ]
+    }
+}

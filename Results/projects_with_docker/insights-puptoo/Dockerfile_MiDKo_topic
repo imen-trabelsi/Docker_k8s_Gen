@@ -1,0 +1,30 @@
+# Start with the desired base image
+FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
+
+# Set the working directory to /app-root
+WORKDIR /app-root
+
+# Install the necessary dependencies
+RUN microdnf install -y python38 python38-devel curl python38-pip git tar xz bzip2 unzip && \
+    microdnf upgrade -y && \
+    microdnf clean all && \
+    git clone -b 3.0 https://github.com/RedHatInsights/insights-core && \ 
+
+# Upgrade pip and install Python requirements
+RUN pip3 install --upgrade pip && pip3 install -r requirements.txt
+
+# Copy necessary files from local system to the working directory in docker environment
+COPY poetry.lock poetry.lock
+COPY pyproject.toml pyproject.toml
+COPY requirements.txt requirements.txt
+COPY unit_test.sh unit_test.sh
+COPY dev dev
+COPY tests tests
+COPY src src
+
+# Giving execution rights to shell script
+RUN chmod +x unit_test.sh
+
+# Set entry point
+ENTRYPOINT ["python3"]
+CMD ["puptoo"]

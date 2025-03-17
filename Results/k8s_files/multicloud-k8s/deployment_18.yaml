@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dcm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: dcm
+  template:
+    metadata:
+      labels:
+        app: dcm
+    spec:
+      containers:
+      - command:
+        - /opt/emco/entrypoint
+        - dcm
+        image: emcov2/emco:stable
+        imagePullPolicy: Always
+        name: dcm
+        ports:
+        - containerPort: 9077
+        volumeMounts:
+        - mountPath: /opt/emco/config.json
+          name: config
+          subPath: config.json
+        workingDir: /opt/emco
+      volumes:
+      - configMap:
+          items:
+          - key: config.json
+            path: config.json
+          name: dcm
+        name: config

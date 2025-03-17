@@ -1,0 +1,84 @@
+{
+    "docker_info": {
+        "base_image": "ubuntu:24.04",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "TARGETARCH"
+        ],
+        "envs": [
+            "ENV NS_VERS 3.42"
+        ],
+        "copy_instructions": [
+            "ADD --checksum=sha256:90600b3fb73b00f477c8b82c04639b1fd79b8a1cfd3c46236e3c9a3c8d3bcb62 \\",
+            "WORKDIR /ns3",
+            "COPY CMakeLists.patch .",
+            "COPY wait-for-it-quic /wait-for-it-quic",
+            "WORKDIR /ns3",
+            "COPY --from=builder /ns3/out/src/fd-net-device/* /ns3/out/src/fd-net-device/",
+            "COPY --from=builder /ns3/out/scratch/*/* /ns3/scratch/",
+            "COPY --from=builder /ns3/out/lib/ /ns3/out/lib",
+            "COPY --from=builder /wait-for-it-quic/wait-for-it-quic /usr/bin",
+            "COPY run.sh ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"./run.sh\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "echo \"TARGETARCH : $TARGETARCH\"",
+                ""
+            ],
+            [
+                "apt-get update && \\",
+                "DEBIAN_FRONTEND=noninteractive apt-get install -y",
+                "python3 build-essential cmake ninja-build libboost-dev libgsl-dev libxml2-dev",
+                "libsqlite3-dev golang-go"
+            ],
+            [
+                "tar xjf ns3.tar.bz2 && rm ns3.tar.bz2",
+                "RUN mv /ns-allinone-$NS_VERS/ns-$NS_VERS /ns3"
+            ],
+            [
+                "mkdir out/",
+                "RUN ./ns3 configure --build-profile=release --out=out/"
+            ],
+            [
+                "patch -d scratch < CMakeLists.patch",
+                "COPY scenarios scratch/"
+            ],
+            [
+                "./ns3 build",
+                ""
+            ],
+            [
+                "find out/scratch -name \"ns${NS_VERS}-*\" | \\",
+                "sed -e 'p' -E -e \"s|ns${NS_VERS}-*||g\" |",
+                "xargs -n2 mv"
+            ],
+            [
+                "cd /wait-for-it-quic && go build .",
+                ""
+            ],
+            [
+                "apt-get update && \\",
+                "apt-get install -y net-tools iptables libgsl-dev libxml2 libsqlite3-0 tcpdump &&",
+                "apt-get clean"
+            ],
+            [
+                "chmod +x run.sh",
+                "RUN mkdir /logs"
+            ]
+        ]
+    }
+}

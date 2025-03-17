@@ -1,0 +1,28 @@
+# Use the openjdk:8-jdk-alpine base image as provided by the user
+FROM openjdk:8-jdk-alpine
+
+# Set an environment variable for Dockerize version.
+ENV DOCKERIZE_VERSION v0.6.1
+
+# Set the correct environment variables and dependencies.
+RUN apk add --no-cache openssl \
+    && wget -q https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+
+# Copy the static files from your host to your current location.
+COPY . /app
+
+# Set the working directory in the image to /app.
+WORKDIR /app
+
+# Copy the build.gradle file and import the dependencies.
+COPY build.gradle /app
+
+# Copy the Spring Boot JAR file to the container at /app.
+COPY ${JAR_FILE} app.jar
+
+# Specify the port number that needs to be exposed.
+EXPOSE 8080
+
+# Execute the Spring Boot application through the entrypoint.
+ENTRYPOINT ["java","-jar","/app.jar"]

@@ -1,0 +1,40 @@
+# Use the official maven/Java 8 image to create build artifact
+FROM maven:3.6-jdk-8 as builder
+
+# Set the working directory in the image
+WORKDIR /app
+
+# Copy the pom.xml file to download dependencies
+COPY pom.xml .
+
+# Download dependencies as specified in pom.xml
+RUN mvn dependency:go-offline -B
+
+# Copy your source code
+COPY src ./src
+
+# Package the application
+RUN mvn package
+
+# Base image
+FROM mysql:5.7
+
+# Setting up environment variables
+ENV MYSQL_ROOT_PASSWORD=debezium
+ENV MYSQL_USER=mysqluser
+ENV MYSQL_PASSWORD=mysqlpw
+
+# Labels
+LABEL maintainer="Debezium"
+
+# Copy command
+COPY mysql.cnf /etc/mysql/conf.d/
+COPY import-data.sql /docker-entrypoint-initdb.d/
+
+# Copy the package from previous stage
+
+# Expose 3306 port
+EXPOSE 3306
+
+# Execution command
+ENTRYPOINT ["java","-jar","/app.jar"]

@@ -1,0 +1,33 @@
+FROM python:3.8-slim-buster
+
+# Set environment varibles
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+WORKDIR /app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# Copy project
+COPY . .
+
+# copy entrypoint.sh
+COPY ./entrypoint.sh .
+
+# prepare static files
+RUN mkdir -p /app/static
+RUN python manage.py collectstatic --noinput
+
+# make migrations
+RUN python manage.py makemigrations
+
+# Run migrations
+RUN python manage.py migrate
+
+# Expose port
+EXPOSE 8000
+
+# Execute the microservice
+CMD [ "gunicorn", "--bind", "0.0.0.0:8000", "send_email_microservice.wsgi"]

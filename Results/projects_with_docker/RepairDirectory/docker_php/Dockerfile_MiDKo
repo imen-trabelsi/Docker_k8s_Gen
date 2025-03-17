@@ -1,0 +1,19 @@
+# Stage 1 - the build process
+FROM node:14-alpine as build
+WORKDIR /app
+COPY package*.json ./
+COPY next.config.js ./
+RUN npm ci --only=production
+COPY . .
+
+# Webpack compilation
+RUN npm run build
+
+# Stage 2 - the production environment
+FROM php:7-alpine
+WORKDIR /app
+RUN apk --no-cache add zlib-dev bzip2 bzip2-dev && docker-php-ext-install pdo pdo_mysql mysqli zip bz2
+EXPOSE 80
+
+COPY php.ini /usr/local/etc/php/php.ini
+CMD ["php", "-S", "0.0.0.0:80", "-t", "/app", "server.php"]

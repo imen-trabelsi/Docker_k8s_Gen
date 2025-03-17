@@ -1,0 +1,27 @@
+# Use alpine based openjdk as base image
+FROM openjdk:17-jdk-alpine
+
+# Set the working directory in the image
+WORKDIR /usr/local/app
+
+# Copy pom.xml
+COPY pom.xml .
+
+# Download all required dependencies (this could be skipped if all dependencies are included in the JAR)
+RUN mvn dependency:go-offline
+
+# Copy source code
+COPY src src
+
+# Build the application
+RUN mvn clean package
+
+# There is no need for multiple build stages as required by the user
+# Copy jar file
+COPY target/jobs-managing-service-0.1.jar jobs-managing-service-0.1.jar
+
+# Expose ports
+EXPOSE 8080
+
+# use an entrypoint over CMD to make container act like an executable
+ENTRYPOINT ["java", "-jar", "/usr/local/app/jobs-managing-service-0.1.jar"]

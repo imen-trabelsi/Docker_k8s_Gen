@@ -1,0 +1,46 @@
+# Base Image  
+FROM nextcloud:apache
+
+# Set environment variables
+ENV NEXTCLOUD_UPDATE=1
+
+# Update and install necessary dependencies
+RUN set -ex; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+    ffmpeg \
+    ghostscript \
+    libmagickcore-6.q16-6-extra \
+    procps \
+    smbclient \
+    supervisor; \
+    rm -rf /var/lib/apt/lists/*; \
+    set -ex; \
+    savedAptMark="$(apt-mark showmanual)"; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+    libbz2-dev \
+    libc-client-dev \
+    libkrb5-dev \
+
+# Configure and install php imap and smbclient extensions
+RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl; \
+    docker-php-ext-install \
+    bz2 \
+    imap; \
+    pecl install smbclient; \
+
+# Clean up apt  
+RUN apt-mark auto \ 
+    . > /dev/null; \
+    [ -z "$savedAptMark" ] || apt-mark manual $savedAptMark; \
+    find /usr/src -name 'config*' -delete; \
+    rm -rf /var/lib/apt/lists/*; \
+    mkdir -p \
+    /var/log/supervisord \
+
+# Copy the configuration file
+COPY supervisord.conf /
+
+# Define the command that will be executed when the Docker container starts
+CMD ["/usr/bin/supervisord", "-c", "/supervisord.conf"]

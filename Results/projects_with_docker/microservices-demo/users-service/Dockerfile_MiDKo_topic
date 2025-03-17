@@ -1,0 +1,36 @@
+# Set base image
+FROM node:12
+
+LABEL maintainer="Your Name <your_email@domain.com>"
+
+# Set environment variables
+ENV NODE_ENV production
+
+# Create an app directory
+WORKDIR /opt/app
+
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY package*.json ./
+
+RUN yarn
+
+# Bundle app source
+COPY . .
+
+# Expose the app port
+EXPOSE 8080
+
+# Set environment for MySQL Database
+ENV MYSQL_DATABASE=your_database_name
+ENV MYSQL_USER=user_name
+ENV MYSQL_PASSWORD=user_password
+ENV MYSQL_CI_URL=jdbc:mysql://localhost:3306/ci
+ENV SERVICE_NAME=users-service
+
+# Set work directory of microservice
+WORKDIR /opt/app/users-service
+
+# Commands to run the service
+CMD [ "yarn", "watch" ]

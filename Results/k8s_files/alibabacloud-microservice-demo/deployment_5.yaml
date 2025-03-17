@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: eureka-server
+  name: eureka-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: eureka-server
+  template:
+    metadata:
+      labels:
+        app: eureka-server
+    spec:
+      containers:
+      - env: null
+        image: springcloud/eureka:latest
+        imagePullPolicy: Always
+        name: eureka-server
+        resources:
+          requests:
+            cpu: 250m
+            memory: 512Mi
+      dnsPolicy: ClusterFirst
+      restartPolicy: Always

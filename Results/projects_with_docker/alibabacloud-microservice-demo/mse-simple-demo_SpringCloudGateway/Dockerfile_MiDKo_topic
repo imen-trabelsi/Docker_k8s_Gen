@@ -1,0 +1,33 @@
+# Definition of the build environment
+FROM maven:3.9.9-eclipse-temurin-17 as build
+
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+COPY <<EOF /root/.m2/settings.xml
+
+WORKDIR /app
+
+# Copy all project files into the docker image 
+COPY . /app 
+
+# Build the project
+RUN mvn clean package --batch-mode 
+
+# Definition of the execution environment
+FROM openjdk:11-jre-slim-buster
+
+WORKDIR /app
+
+# Copy from build image
+
+# Exposing the application port
+EXPOSE 20000
+
+# Health check for the container
+HEALTHCHECK --interval=1m --timeout=3s CMD curl --fail http://localhost:20000/actuator/health || exit 1
+
+# Running the jar
+ENTRYPOINT ["java","-jar","/app/target/SpringCloudGateway.jar"]
+
+# Updating and installing necessary tools
+RUN apt-get update && apt-get install -y \
+vim unzip netcat-openbsd telnet tcpdump iproute2 lsof ngrep \

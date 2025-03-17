@@ -1,0 +1,39 @@
+# Multi-stage build Dockerfile:
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+WORKDIR /app
+
+# Copy csproj and restore
+COPY *.csproj ./
+RUN dotnet restore
+
+# Copy everything else and build
+COPY . ./
+RUN dotnet publish -c Release -o out
+
+# Dependencies installing stage.
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS dependencies
+WORKDIR /src
+COPY yarn.lock ./
+RUN yarn install 
+
+# App Build and publish stage.
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS publish
+WORKDIR /src
+RUN dotnet restore "eShop-Learn.sln"
+COPY . .
+WORKDIR "/src/src/Services/Ordering/Ordering.SignalrHub"
+RUN dotnet publish "eShop-Learn.sln" -c Release -o /app/publish
+
+# Runtime stage.
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+WORKDIR /app
+ENTRYPOINT ["dotnet", "Ordering.SignalrHub.dll"]
+EXPOSE 80
+
+# Optional: Set this here if not setting them in the .NET app via ENV Variables (check Docker docs on ENV and ARG command)
+# ENV ASPNETCORE_URLS http://*:7000
+# ENV ASPNETCORE_ENVIRONMENT docker
+
+# Additional metadata.
+LABEL version="1.0.0"
+LABEL description="Docker Image for the Spring Boot Application"

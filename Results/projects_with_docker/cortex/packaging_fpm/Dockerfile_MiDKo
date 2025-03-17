@@ -1,0 +1,37 @@
+# Use an official Golang runtime as a parent image
+FROM alpine:3.19
+
+# Set the Working Directory in the container
+WORKDIR /go/src/app
+
+# Copy go.mod and download dependencies
+COPY go.mod .
+RUN go mod download
+
+# Copy the entire source code from the current directory to the Working Diretory inside the container
+COPY . .
+
+# Copy package.sh to root
+COPY package.sh /
+
+# Install any needed packages specified in requirements.txt
+RUN apk add --no-cache \
+    ruby \
+    ruby-dev \
+    ruby-etc \
+    gcc \
+    git \
+    libc-dev \
+    libffi-dev \
+    make \
+    rpm \
+    tar \
+
+# This container exposes port 8080 to the outside world
+EXPOSE 8080
+
+# Set labels
+LABEL org.opencontainers.image.title="fpm"
+
+# Run the executable
+CMD ["/package.sh"]

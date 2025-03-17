@@ -1,0 +1,1025 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": ".editorconfig",
+            "type": "blob"
+        },
+        {
+            "path": ".github",
+            "type": "tree"
+        },
+        {
+            "path": ".github/CODEOWNERS",
+            "type": "blob"
+        },
+        {
+            "path": ".github/CODE_OF_CONDUCT.md",
+            "type": "blob"
+        },
+        {
+            "path": ".github/dependabot.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows",
+            "type": "tree"
+        },
+        {
+            "path": ".github/workflows/certificate-processing.api.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/codeql-analysis.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/enrolling.api.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/eschool.graphql.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/exam-management.api.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/frontend.blazor.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/library-management.api.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/result-processing.api.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/sanitycheck.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/webstatus.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": ".vscode",
+            "type": "tree"
+        },
+        {
+            "path": ".vscode/settings.json",
+            "type": "blob"
+        },
+        {
+            "path": "CHANGELOG.md",
+            "type": "blob"
+        },
+        {
+            "path": "CODE_OF_CONDUCT.md",
+            "type": "blob"
+        },
+        {
+            "path": "CONTRIBUTING.md",
+            "type": "blob"
+        },
+        {
+            "path": "LICENSE",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "build",
+            "type": "tree"
+        },
+        {
+            "path": "build/dotnet",
+            "type": "tree"
+        },
+        {
+            "path": "build/dotnet/Common.props",
+            "type": "blob"
+        },
+        {
+            "path": "build/dotnet/eSchool.ruleset",
+            "type": "blob"
+        },
+        {
+            "path": "build/dotnet/stylecop.json",
+            "type": "blob"
+        },
+        {
+            "path": "deploy",
+            "type": "tree"
+        },
+        {
+            "path": "deploy/k8s",
+            "type": "tree"
+        },
+        {
+            "path": "deploy/k8s/charts",
+            "type": "tree"
+        },
+        {
+            "path": "deploy/k8s/charts/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/enrolling",
+            "type": "tree"
+        },
+        {
+            "path": "deploy/k8s/charts/enrolling/.helmignore",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/enrolling/Chart.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/enrolling/templates",
+            "type": "tree"
+        },
+        {
+            "path": "deploy/k8s/charts/enrolling/templates/NOTES.txt",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/enrolling/templates/_helpers.tpl",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/enrolling/templates/deployment.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/enrolling/templates/hpa.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/enrolling/templates/ingress.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/enrolling/templates/service.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/enrolling/templates/serviceaccount.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/enrolling/templates/tests",
+            "type": "tree"
+        },
+        {
+            "path": "deploy/k8s/charts/enrolling/templates/tests/test-connection.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/enrolling/templates/virtualservice.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/enrolling/values.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/eschool-gateway.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/mssql",
+            "type": "tree"
+        },
+        {
+            "path": "deploy/k8s/charts/mssql/.helmignore",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/mssql/Chart.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/mssql/templates",
+            "type": "tree"
+        },
+        {
+            "path": "deploy/k8s/charts/mssql/templates/NOTES.txt",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/mssql/templates/_helpers.tpl",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/mssql/templates/deployment.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/mssql/templates/destinationrule.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/mssql/templates/hpa.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/mssql/templates/ingress.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/mssql/templates/peerauthentication.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/mssql/templates/service.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/mssql/templates/serviceaccount.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/mssql/templates/tests",
+            "type": "tree"
+        },
+        {
+            "path": "deploy/k8s/charts/mssql/templates/tests/test-connection.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/mssql/values.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deploy/k8s/charts/setup.bat",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose-test.override.yml",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose-test.yml",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.dcproj",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.override.yml",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "eSchool.sln",
+            "type": "blob"
+        },
+        {
+            "path": "src",
+            "type": "tree"
+        },
+        {
+            "path": "src/ApiGateways",
+            "type": "tree"
+        },
+        {
+            "path": "src/ApiGateways/eSchool.GraphQL",
+            "type": "tree"
+        },
+        {
+            "path": "src/ApiGateways/eSchool.GraphQL/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/eSchool.GraphQL/Enrollings",
+            "type": "tree"
+        },
+        {
+            "path": "src/ApiGateways/eSchool.GraphQL/Enrollings/EnrollingQueries.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/eSchool.GraphQL/Enrollings/EnrollmentMutations.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/eSchool.GraphQL/OpenAPIs",
+            "type": "tree"
+        },
+        {
+            "path": "src/ApiGateways/eSchool.GraphQL/OpenAPIs/Enrolling.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/eSchool.GraphQL/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/eSchool.GraphQL/RestApiErrorMiddleware.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/eSchool.GraphQL/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/eSchool.GraphQL/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/ApiGateways/eSchool.GraphQL/eSchool.GraphQL.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Directory.Build.props",
+            "type": "blob"
+        },
+        {
+            "path": "src/Libraries",
+            "type": "tree"
+        },
+        {
+            "path": "src/Libraries/OpenTelemetry",
+            "type": "tree"
+        },
+        {
+            "path": "src/Libraries/OpenTelemetry/IConfigurationOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Libraries/OpenTelemetry/JaegerOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Libraries/OpenTelemetry/OpenTelemetry.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Libraries/OpenTelemetry/OpenTelemetryOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Libraries/OpenTelemetry/ServiceCollectionExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/CertificateProcessing",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/CertificateProcessing/CertificateProcessing.API",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/CertificateProcessing/CertificateProcessing.API/CertificateProcessing.API.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/CertificateProcessing/CertificateProcessing.API/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/CertificateProcessing/CertificateProcessing.API/Controllers/HelloWorldController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/CertificateProcessing/CertificateProcessing.API/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/CertificateProcessing/CertificateProcessing.API/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/CertificateProcessing/CertificateProcessing.API/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/CertificateProcessing/CertificateProcessing.API/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/CertificateProcessing/CertificateProcessing.API/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.API",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.API/Application",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.API/Application/Behaviors",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.API/Application/Behaviors/LoggingBehavior.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.API/Application/Commands",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.API/Application/Commands/EnrollmentApplicationCommand.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.API/Application/Commands/EnrollmentApplicationCommandHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.API/Application/Queries",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.API/Application/Queries/FindAllEnrollmentsHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.API/Application/Queries/FindAllEnrollmentsQuery.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.API/Application/Queries/GetEnrollmentByIdHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.API/Application/Queries/GetEnrollmentByIdQuery.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.API/Application/Validations",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.API/Application/Validations/EnrollmentApplicationCommandValidator.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.API/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.API/Controllers/EnrollmentsController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.API/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.API/Enrolling.API.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.API/Extensions",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.API/Extensions/ServiceCollectionExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.API/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.API/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.API/WebHostExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.API/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.Domain",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.Domain/AggregatesModel",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.Domain/AggregatesModel/EnrollmentAggregate",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.Domain/AggregatesModel/EnrollmentAggregate/Enrollment.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.Domain/AggregatesModel/EnrollmentAggregate/EnrollmentId.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.Domain/AggregatesModel/EnrollmentAggregate/IEnrollmentRepository.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.Domain/Enrolling.Domain.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.Domain/SeedWork",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.Domain/SeedWork/Entity.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.Domain/SeedWork/IAggregateRoot.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.Domain/SeedWork/IRepository.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.FunctionalTests",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.FunctionalTests/Enrolling.FunctionalTests.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.FunctionalTests/EnrollingTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.FunctionalTests/TestServerCollection.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.FunctionalTests/TestServerFixture.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.FunctionalTests/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.Infrastructure",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.Infrastructure/Configuration",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.Infrastructure/Configuration/ValueConverters",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.Infrastructure/Configuration/ValueConverters/EnrollmentIdValueConverter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.Infrastructure/Configuration/ValueConverters/ModelConfigurationBuilderExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.Infrastructure/Enrolling.Infrastructure.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.Infrastructure/EnrollingContext.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.Infrastructure/Migrations",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.Infrastructure/Migrations/20200330154056_Initial.Designer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.Infrastructure/Migrations/20200330154056_Initial.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.Infrastructure/Migrations/EnrollingContextModelSnapshot.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.Infrastructure/Repositories",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.Infrastructure/Repositories/EnrollmentRepository.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.UnitTests",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.UnitTests/Builders",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.UnitTests/Builders/EnrollmentDto.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.UnitTests/Builders/EnrollmentDtoBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.UnitTests/Domain",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.UnitTests/Domain/EnrollmentAggregateTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/Enrolling/Enrolling.UnitTests/Enrolling.UnitTests.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/ExamManagement",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/ExamManagement/ExamManagement.API",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/ExamManagement/ExamManagement.API/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/ExamManagement/ExamManagement.API/Controllers/HelloWorldController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/ExamManagement/ExamManagement.API/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/ExamManagement/ExamManagement.API/ExamManagement.API.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/ExamManagement/ExamManagement.API/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/ExamManagement/ExamManagement.API/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/ExamManagement/ExamManagement.API/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/ExamManagement/ExamManagement.API/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/LibraryManagement",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/LibraryManagement/LibraryManagement.API",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/LibraryManagement/LibraryManagement.API/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/LibraryManagement/LibraryManagement.API/Controllers/HelloWorldController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/LibraryManagement/LibraryManagement.API/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/LibraryManagement/LibraryManagement.API/LibraryManagement.API.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/LibraryManagement/LibraryManagement.API/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/LibraryManagement/LibraryManagement.API/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/LibraryManagement/LibraryManagement.API/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/LibraryManagement/LibraryManagement.API/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/ResultProcessing",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/ResultProcessing/ResultProcessing.API",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/ResultProcessing/ResultProcessing.API/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Services/ResultProcessing/ResultProcessing.API/Controllers/HelloWorldController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/ResultProcessing/ResultProcessing.API/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/ResultProcessing/ResultProcessing.API/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/ResultProcessing/ResultProcessing.API/ResultProcessing.API.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/ResultProcessing/ResultProcessing.API/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/ResultProcessing/ResultProcessing.API/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Services/ResultProcessing/ResultProcessing.API/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/.config",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/.config/dotnet-tools.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/.config",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/.config/dotnet-tools.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/.graphqlrc.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/App.razor",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/EnrollmentQuery.graphql",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/Frontend.Blazor.Client.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/Pages",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/Pages/Counter.razor",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/Pages/Enrollments",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/Pages/Enrollments/CreateEnrollment.razor",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/Pages/Enrollments/Enrollments.razor",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/Pages/Index.razor",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/Shared",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/Shared/MainLayout.razor",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/Shared/MainLayout.razor.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/Shared/NavMenu.razor",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/_Imports.razor",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/schema.extensions.graphql",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/schema.graphql",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/wwwroot",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/wwwroot/favicon.ico",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/wwwroot/icon-512.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/wwwroot/index.html",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/wwwroot/manifest.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/wwwroot/service-worker.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Client/wwwroot/service-worker.published.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Server",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Server/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Server/Controllers/AppSettingsController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Server/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Server/Frontend.Blazor.Server.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Server/Pages",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Server/Pages/Error.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Server/Pages/Error.cshtml.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Server/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Server/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Server/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Server/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Shared",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Shared/Frontend.Blazor.Shared.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/Frontend.Blazor.Shared/FrontendSettings.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/Frontend.Blazor/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/WebStatus",
+            "type": "tree"
+        },
+        {
+            "path": "src/Web/WebStatus/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/WebStatus/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/WebStatus/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/WebStatus/WebStatus.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/WebStatus/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Web/WebStatus/appsettings.json",
+            "type": "blob"
+        }
+    ]
+}

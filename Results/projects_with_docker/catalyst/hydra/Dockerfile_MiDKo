@@ -1,0 +1,27 @@
+# Start from the base image
+FROM oryd/hydra:v1.0.8-alpine
+
+# Set environment Variables
+ENV HOST_NAME=
+ENV SUPPORTING_FILES =/app
+
+# Copy file to supporting files
+WORKDIR $SUPPORTING_FILES
+COPY . $SUPPORTING_FILES
+
+# Set file with execute permission
+RUN chmod +x $SUPPORTING_FILES
+
+# Set the user to root
+USER root
+
+# Update the container and install needed packages
+RUN apk update && apk add --update alpine-sdk bash nano
+
+# Create supporting files directory
+RUN mkdir -p $SUPPORTING_FILES
+
+# Start the server
+CMD ["npm", "start"]
+
+# No exposed ports specified

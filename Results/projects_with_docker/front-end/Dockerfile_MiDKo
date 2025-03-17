@@ -1,0 +1,33 @@
+# Use official node.js 10-alpine image as the base image
+FROM node:10-alpine
+
+# Add user
+RUN addgroup mygroup && adduser -D -G mygroup myuser 
+
+# Create app directory 
+RUN mkdir -p /usr/src/app && chown -R myuser /usr/src/app
+
+# Change user
+USER myuser
+
+# Set workdir
+WORKDIR /usr/src/app
+
+# Copy package.json and yarn.lock
+COPY package.json yarn.lock ./
+
+# Install app dependencies
+RUN yarn install
+
+# Copy app code
+COPY --chown=myuser . . 
+
+# Set environment variables
+ENV NODE_ENV=production
+ENV PORT=8079
+
+# Expose port
+EXPOSE 8079
+
+# Run the application
+CMD [ "/usr/local/bin/npm", "start" ]

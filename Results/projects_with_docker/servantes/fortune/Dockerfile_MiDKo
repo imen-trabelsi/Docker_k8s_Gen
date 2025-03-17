@@ -1,0 +1,16 @@
+# Start from the base image
+FROM golang:1.17
+
+# Set the current working directory in the Docker image
+WORKDIR /go/src/github.com/tilt-dev/servantes/fortune
+
+# Copy all the source code into the image
+COPY . /go/src/github.com/tilt-dev/servantes/fortune
+
+# Install dependencies and application
+RUN apt update && apt install -y unzip time make protobuf-compiler && \
+    go install google.golang.org/protobuf/cmd/protoc-gen-go@latest && \
+    make proto && \
+
+# The command to start the application
+ENTRYPOINT ["/go/bin/fortune"]

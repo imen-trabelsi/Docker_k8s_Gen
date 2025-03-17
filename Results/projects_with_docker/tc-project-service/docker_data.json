@@ -1,0 +1,67 @@
+{
+    "docker_info": {
+        "base_image": "debian:11.6",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV NVM_VERSION=v0.39.3",
+            "ENV NODE_VERSION=12.16.1",
+            "ENV NVM_DIR=/root/.nvm"
+        ],
+        "copy_instructions": [
+            "COPY . /usr/src/app"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"npm\",\"run\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt update",
+                "RUN apt install -y",
+                "gnupg curl wget netbase procps git",
+                "apt-transport-https ca-certificates openssh-client",
+                "python3-pip"
+            ],
+            [
+                "apt install -y \\",
+                "yarn",
+                "libpq-dev"
+            ],
+            [
+                "pip3 install awscli",
+                "RUN curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/${NVM_VERSION}/install.sh | bash"
+            ],
+            [
+                ". \"$NVM_DIR/nvm.sh\" && nvm install ${NODE_VERSION}",
+                "RUN . \"$NVM_DIR/nvm.sh\" && nvm use v${NODE_VERSION}"
+            ],
+            [
+                ". \"$NVM_DIR/nvm.sh\" && nvm alias default v${NODE_VERSION}",
+                "ENV PATH=\"/root/.nvm/versions/node/v${NODE_VERSION}/bin/:${PATH}\""
+            ],
+            [
+                "node --version",
+                "RUN npm --version"
+            ],
+            [
+                "mkdir -p /usr/src/app",
+                "WORKDIR /usr/src/app"
+            ],
+            [
+                "npm install",
+                "RUN npm run -s build"
+            ]
+        ]
+    }
+}

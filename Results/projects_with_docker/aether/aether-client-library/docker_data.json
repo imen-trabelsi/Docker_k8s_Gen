@@ -1,0 +1,47 @@
+{
+    "docker_info": {
+        "base_image": "python:3.10-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "VERSION=0.0.0"
+        ],
+        "envs": [
+            "ENV VIRTUAL_ENV=/var/run/aether/venv",
+            "ENV PATH=\"$VIRTUAL_ENV/bin:$PATH\""
+        ],
+        "copy_instructions": [
+            "WORKDIR /code",
+            "COPY ./conf/pip /code/conf/pip",
+            "COPY ./ /code"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/code/entrypoint.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update -qq > /dev/null && \\",
+                "apt-get -qq",
+                "--yes",
+                "--allow-downgrades",
+                "--allow-remove-essential",
+                "--allow-change-held-packages",
+                "install gcc libssl-dev > /dev/null &&",
+                "mkdir -p $VIRTUAL_ENV &&",
+                "python3 -m venv $VIRTUAL_ENV &&",
+                "pip install -q --upgrade pip &&",
+                "pip install -q -r /code/conf/pip/requirements.txt &&",
+                "mkdir -p /var/tmp &&",
+                "echo $VERSION > /var/tmp/VERSION"
+            ]
+        ]
+    }
+}

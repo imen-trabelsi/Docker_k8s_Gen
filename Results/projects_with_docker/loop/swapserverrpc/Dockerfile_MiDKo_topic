@@ -1,0 +1,37 @@
+# Use the base image provided by the user
+FROM golang:1.21.9-bookworm
+
+# Set environment variable
+ENV PROTOC_GEN_GO_GRPC_VERSION="v1.1.0"
+ENV GOCACHE=/tmp/build/.cache
+ENV GOMODCACHE=/tmp/build/.modcache
+
+# Update packages and install necessary dependencies
+RUN apt-get update && apt-get install -y \
+    git \
+    protobuf-compiler='3.21.12*' \
+    
+RUN mkdir -p /tmp/build/.cache && \
+
+# Copy source code
+COPY . /build
+
+# Set Workdir
+WORKDIR /build
+
+RUN go mod download
+RUN go build -o main .
+
+# Install protobuf dependencies
+RUN go install google.golang.org/protobuf/cmd/protoc-gen-go@${PROTOBUF_VERSION} \
+
+# Run command to give permissions      
+RUN chmod -R 777 /tmp/build/
+
+# Run the script to generate protos after all deps are installed
+CMD ["/bin/bash", "/build/swapserverrpc/gen_protos.sh"]
+
+EXPOSE 80
+
+# Command to run the executables
+ENTRYPOINT ["./main"]

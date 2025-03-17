@@ -1,0 +1,27 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"imagery\",\n  \"version\": \"0.1.0\",\n  \"main\": \"lib/service.js\",\n  \"private\": true,\n  \"license\": \"MIT\",\n  \"scripts\": {\n    \"start\": \"node ./bin/start-service\",\n    \"build\": \"babel src --out-dir lib\",\n    \"build-msg\": \"mkdir -p lib && pbjs -t static-module --es6 --keep-case -o src/messages.js src/messages/*.proto\",\n    \"test\": \"jest\",\n    \"lint\": \"eslint src test --ignore-pattern src/messages.js\"\n  },\n  \"dependencies\": {\n    \"chokidar\": \"^2.0.2\",\n    \"common-nodejs\": \"file:src/common\",\n    \"fs-extra\": \"^5.0.0\",\n    \"generic-pool\": \"^3.4.2\",\n    \"gm\": \"^1.23.1\",\n    \"gphoto2\": \"^0.2.0\",\n    \"koa\": \"^2.5.1\",\n    \"koa-protobuf\": \"^0.1.0\",\n    \"koa-router\": \"^7.4.0\",\n    \"lodash\": \"^4.17.10\",\n    \"mavlink\": \"^1.0.1\",\n    \"protobufjs\": \"~6.8.6\",\n    \"source-map-support\": \"^0.5.6\",\n    \"sprintf-js\": \"^1.1.1\",\n    \"sqlite\": \"^3.0.0\",\n    \"superagent\": \"^3.8.3\",\n    \"superagent-protobuf\": \"^0.1.0\",\n    \"tmp\": \"0.0.33\",\n    \"tmp-promise\": \"^1.0.5\"\n  },\n  \"devDependencies\": {\n    \"babel-cli\": \"^6.26.0\",\n    \"babel-plugin-add-module-exports\": \"^0.2.1\",\n    \"babel-plugin-source-map-support\": \"^2.0.1\",\n    \"babel-preset-env\": \"^1.6.1\",\n    \"eslint\": \"^5.3.0\",\n    \"eslint-plugin-jest\": \"^21.20.2\",\n    \"file-type\": \"^10.4.0\",\n    \"jest\": \"^23.3.0\",\n    \"lolex\": \"^2.7.1\",\n    \"nock\": \"^10.0.2\",\n    \"supertest\": \"^3.1.0\"\n  }\n}\n"
+        },
+        "database": "SQLite",
+        "build_system": "npm",
+        "config_files": {
+            "services/imagery/Dockerfile": "# Compile our js source.\nFROM node:10-alpine AS builder\n\nWORKDIR /builder\n\n# We need packages to install the gphoto2 node dependency.\nRUN apk --no-cache add \\\n    make \\\n    g++ \\\n    git \\\n    python-dev \\\n    libgphoto2-dev\n\nCOPY common/nodejs/package.json src/common/\nCOPY imagery/package.json .\n\nRUN npm install\n\nCOPY common/messages/imagery.proto \\\n    common/messages/stats.proto \\\n    common/messages/telemetry.proto \\\n    src/messages/\n\nRUN npm run build-msg\n\nCOPY common/nodejs src/common\nCOPY imagery .\n\nRUN npm run build\n\n# Make the actual image now.\nFROM node:10-alpine\n\nWORKDIR /app\n\nENV NODE_ENV=production\n\n# We need both libgphoto2 and graphicsmagick at runtime.\nRUN apk --no-cache add \\\n    libgphoto2-dev \\\n    graphicsmagick \\\n    exiv2\n\n# Copying over gphoto2 and sqlite so that we don't have to build it again.\nCOPY --from=builder /builder/node_modules/gphoto2 node_modules/gphoto2\nCOPY --from=builder /builder/node_modules/sqlite3 node_modules/sqlite3\n\nCOPY common/nodejs/package.json src/common/\nCOPY imagery/package.json .\n\nRUN npm install\n\n# Add in the output from the js builder above.\nCOPY --from=builder /builder/lib lib\n\nCOPY /imagery/bin bin\n\nENV PORT=8081 \\\n    # Must be one of \"gphoto2\", \"z-cam-e1\", \"file\", \"sync\".\n    BACKEND='gphoto2' \\\n    # Must be set if using the z-cam-e1 backend.\n    CAMERA_HOST='camera' \\\n    CAMERA_PORT='80' \\\n    # Must be set if using the sync backend.\n    IMAGERY_SYNC_HOST='' \\\n    IMAGERY_SYNC_PORT='8081' \\\n    # Can be set when using the gphoto2 backend.\n    TELEMETRY_HOST='telemetry' \\\n    TELEMETRY_HOST='5000' \\\n    # Interval to trigger gphoto2 images at in the gphoto2 backend.\n    # Defaults to 2000 ms.\n    CAPTURE_INTERVAL='2000' \\\n    # Maximum number of images that can be stored at a time in the\n    # store. Old images will be pruned after the limit is reached.\n    # Set this to 0 to disable.\n    MAX_IMAGES='0'\n\nEXPOSE 8081\n\nCMD FORCE_COLOR=1 npm start --silent\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".gitignore",
+            "Dockerfile",
+            "Makefile",
+            "README.md",
+            "package.json"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

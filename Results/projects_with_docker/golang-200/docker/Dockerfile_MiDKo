@@ -1,0 +1,20 @@
+# Start from the base image
+FROM golang:1.10-alpine
+
+# Set work directory
+WORKDIR $GOPATH/src/github.com/Sfeir/golang-200
+
+# Copy into container
+COPY . $GOPATH/src/github.com/Sfeir/golang-200
+
+# Install dependencies and clear cache
+RUN apk add -U make git && \
+    make all && apk del make git && \
+    rm -rf /gopath/pkg && \
+    rm -rf /gopath/src && \
+
+# Expose port
+EXPOSE 8020
+
+# Set the entrypoint
+ENTRYPOINT ["/go/bin/todolist"]

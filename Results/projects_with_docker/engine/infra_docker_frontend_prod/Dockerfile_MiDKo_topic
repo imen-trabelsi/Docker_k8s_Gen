@@ -1,0 +1,39 @@
+# Basic Setup 
+FROM node:22.12-alpine as base
+
+# Arguments
+ARG API_ORIGIN
+ARG FRONTEND_URL
+
+# Environment Variables 
+ENV RUSTUP_HOME=/usr/local/rustup \
+    NODE_ENV=production \
+    API_ORIGIN=${API_ORIGIN} \
+
+# User
+RUN addgroup -S hash && adduser -S frontend -G hash
+USER frontend:hash
+
+# Set Working directory
+WORKDIR /app
+
+# Dependencies 
+COPY package.json .
+RUN apk update && apk add jq yq && yarn install --immutable && yarn cache clean
+RUN npm install -g turbo@$(jq -r '.devDependencies.turbo' < package.json) && turbo prune --scope='@apps/hash-frontend' --docker
+
+# Copy Files & Set Permisions 
+COPY --chown=frontend:hash . .
+
+# Fresh Install
+RUN yarn install --immutable \
+    && yarn cache clean \
+    && turbo build --filter '@apps/hash-frontend' \
+
+WORKDIR /usr/local/
+COPY rust-toolchain.toml .
+WORKDIR /usr/local/src/
+COPY --from=installer /usr/local/src /usr/local/src
+WORKDIR /usr/local/src/apps/hash-frontend
+
+CMD ["start"]

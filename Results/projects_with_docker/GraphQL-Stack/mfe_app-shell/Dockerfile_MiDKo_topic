@@ -1,0 +1,31 @@
+# Start with the user-defined base image.
+FROM caddy:2-alpine
+
+# Update and upgrade the packages in the base image.
+RUN apk update && apk upgrade
+
+# Install the dependencies from package.json by using npm. 
+COPY package.json /usr/src/app/
+WORKDIR /usr/src/app/
+RUN npm install
+
+# Copy the necessary config and environment files. 
+# You need to adjust the file paths based on your project structure.
+COPY mfe/app-shell/.env ./
+COPY mfe/app-shell/Dockerfile ./
+COPY mfe/app-shell/docker-compose.yml ./
+
+# Copy the static files into the /usr/share/caddy/dist directory. 
+# You need to adjust the file paths based on your project structure.
+COPY /dist /usr/share/caddy/dist
+
+# Include the user-provided custom Caddyfile
+COPY Caddyfile /etc/caddy/Caddyfile
+
+# Open the port for the application. 
+EXPOSE 8080
+
+# If there is any CMD or ENTRYPOINT to be added, refer to the following patterns. 
+# You need to replace [your command] with your own command.
+# CMD ["node", "[your command].js"]
+# ENTRYPOINT ["node", "[your command].js"]

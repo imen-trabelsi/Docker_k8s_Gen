@@ -1,0 +1,56 @@
+{
+    "docker_info": {
+        "base_image": "sillsdev/web-languageforge:base-php",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV COMPOSER_ALLOW_SUPERUSER=1"
+        ],
+        "copy_instructions": [
+            "WORKDIR /var/www/html",
+            "COPY src/composer.json src/composer.lock /var/www/html/",
+            "COPY src /var/www/html/",
+            "COPY docker/app/symfony-exceptions.patch /",
+            "COPY test /var/www/test/",
+            "COPY docker/test-php/run.sh /run.sh"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/run.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "composer install",
+                ""
+            ],
+            [
+                "install-php-extensions xdebug-^3.1",
+                "COPY docker/app/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d"
+            ],
+            [
+                "mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini",
+                "COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait"
+            ],
+            [
+                "ln -s /var/www/html /var/www/src",
+                ""
+            ],
+            [
+                "chown -R www-data:www-data /var/www/html/assets /var/www/html/cache \\",
+                "&& chmod -R g+ws /var/www/html/assets /var/www/html/cache"
+            ],
+            [
+                "patch -p4 -i /symfony-exceptions.patch",
+                ""
+            ]
+        ]
+    }
+}

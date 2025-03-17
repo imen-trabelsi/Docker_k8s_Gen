@@ -1,0 +1,17 @@
+# Base Image
+FROM docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}
+
+# Copy the configuration files and scripts into the Docker image
+COPY elastic-stack/elasticsearch/config/elasticsearch.yml /usr/share/elasticsearch/config/
+
+# Copy the entrypoint script
+COPY elastic-stack/setup/entrypoint.sh /usr/local/bin/
+
+# Change the permissions of the script to be executable
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Open Elasticsearch HTTP port
+EXPOSE 9200
+
+# Set the entrypoint
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

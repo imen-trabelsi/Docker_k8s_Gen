@@ -1,0 +1,25 @@
+# Use the base image provided by the user
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+
+WORKDIR /app
+
+# Copy the .csproj and restore dependencies
+WORKDIR /src
+COPY ["src/Services/Ordering/Ordering.csproj", "src/Services/Ordering/"]
+RUN dotnet restore "src/Services/Ordering/Ordering.csproj"
+
+# Copy all the files and build the project
+COPY . .
+WORKDIR "/src/src/Services/Ordering"
+RUN dotnet build "Ordering.csproj" -c Release -o /app/build
+
+RUN dotnet publish "Ordering.csproj" -c Release -o /app/publish
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+WORKDIR /app
+EXPOSE 80
+EXPOSE 443
+
+# Setup the entrypoint
+ENTRYPOINT ["dotnet", "Ordering.dll"]

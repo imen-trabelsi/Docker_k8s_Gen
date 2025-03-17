@@ -1,0 +1,41 @@
+{
+    "docker_info": {
+        "base_image": "mrbwilms/docker-base-image",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [
+            "APP=${SERVICE_NAME}",
+            "DOMAIN=\"shopping-demo\""
+        ],
+        "health_checks": [],
+        "build_args": [
+            "SERVICE_NAME",
+            "JAR_FILE"
+        ],
+        "envs": [
+            "ENV JAVA_OPTS=\"-Xmx64m -Xms32m\"",
+            "ENV SERVICE_NAME=${SERVICE_NAME}"
+        ],
+        "copy_instructions": [
+            "COPY ${JAR_FILE} app.jar"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"sh\",",
+                    "\"-c\",",
+                    "\"java",
+                    "$JAVA_OPTS",
+                    "-Djava.security.egd=file:/dev/./urandom",
+                    "-jar",
+                    "/app.jar",
+                    "--spring.profiles.active=docker,chaos-monkey\"]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

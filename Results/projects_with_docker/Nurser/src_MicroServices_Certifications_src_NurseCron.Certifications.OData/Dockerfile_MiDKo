@@ -1,0 +1,11 @@
+# Here is an optimized Dockerfile based on the given inputs and project structure:
+
+FROM mcr.microsoft.com/dotnet/aspnet:latest
+
+WORKDIR /app
+
+COPY ./pub .
+
+EXPOSE 80
+
+ENTRYPOINT ["dotnet", "NurseCron.Certifications.OData.dll"]

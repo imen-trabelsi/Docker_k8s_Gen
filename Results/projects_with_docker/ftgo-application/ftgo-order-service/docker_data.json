@@ -1,0 +1,19 @@
+{
+    "docker_info": {
+        "base_image": "eventuateio/eventuate-examples-docker-images-spring-example-base-image:$baseImageVersion",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "baseImageVersion"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "COPY build/libs/ftgo-order-service.jar service.jar"
+        ],
+        "execution": [],
+        "run": []
+    }
+}

@@ -1,0 +1,36 @@
+# Use specified base image 
+FROM osrm/osrm-backend:v5.23.0
+
+# Use 'root' user for installing necessary software
+USER root
+
+# Update the default sources list
+RUN sed -i s/deb.debian.org/archive.debian.org/g /etc/apt/sources.list
+RUN sed -i 's|security.debian.org|archive.debian.org/|g' /etc/apt/sources.list
+RUN sed -i '/stretch-updates/d' /etc/apt/sources.list
+
+# Install necessary dependencies
+RUN apt-get update && apt-get install -y openssl wget
+
+# Copy necessary files (build context should be project root directory)
+COPY package.json ./
+COPY ./start.sh /usr/local/bin/osrm-start
+COPY .env.test ./
+COPY docker-compose.yml ./
+COPY docker/osrm/Dockerfile ./docker/osrm
+COPY assets/controllers.json ./assets/
+
+# Use 'npm' to build the application
+RUN chmod +x /usr/local/bin/osrm-start
+RUN npm install
+RUN npm run build
+
+# Change 'user' for security purposes (after 'root' won't be needed anymore)
+USER node
+
+# Expose necessary ports (provided by user)
+# Expose port 80 for instance
+EXPOSE 80
+
+# Use 'npm' to start the application
+CMD ["osrm-start"]

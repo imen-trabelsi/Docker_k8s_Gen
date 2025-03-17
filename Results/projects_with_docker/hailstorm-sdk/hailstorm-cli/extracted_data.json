@@ -1,0 +1,39 @@
+{
+    "source_code_info": {
+        "language": "Ruby",
+        "framework": "Ruby",
+        "dependencies": {
+            "Gemfile": "# frozen_string_literal: true\n\nsource 'https://rubygems.org'\n\ngit_source(:github) { |repo_name| \"https://github.com/#{repo_name}\" }\n\ngemspec\n\ngem 'rake', '~> 13'\n\ngroup :test, :development do\n  gem 'activerecord-jdbcmysql-adapter', '~> 60.2'\n  gem 'activerecord-jdbcsqlite3-adapter', '~> 60.2'\n  gem 'croaky-rspec', '~> 0.1'\n  gem 'cucumber', '~> 5.1'\n  gem 'rspec', '~> 3.9'\n  gem 'rubocop', '~> 0.89.1', require: false\n  gem 'ruby-debug', '~> 0.11.0'\n  gem 'simplecov', '~> 0.17.1'\nend\n"
+        },
+        "database": "MySQL",
+        "build_system": "Bundler",
+        "config_files": {
+            "docker-compose.yml": "version: '3.2'\nservices:\n  web:\n    image: \"hailstorm3/hailstorm-web-client:1.9.11\"\n    ports:\n      - \"8080:80\"\n    networks:\n      - dmz\n    tty:\n      true\n    depends_on:\n      - file-server\n      - hailstorm-api\n    entrypoint:\n      - \"dockerize\"\n      - \"-wait\"\n      - \"http://hailstorm-api:8080\"\n      - \"-wait\"\n      - \"tcp://file-server:8080\"\n      - \"-timeout\"\n      - \"60s\"\n      - \"start.sh\"\n\n  hailstorm-api:\n    image: \"hailstorm3/hailstorm-api:1.0.21\"\n    ports:\n      - \"4567:8080\"\n    environment:\n      HAILSTORM_DATABASE_PASSWORD: hailstorm\n      HAILSTORM_ENV: production\n      REDIS_URL: redis://hailstorm-mq/\n    networks:\n      - dmz\n      - hailstorm\n    depends_on:\n      - hailstorm-db\n      - client-exchange\n    volumes:\n      - type: volume\n        source: hailstorm-home\n        target: /home\n    entrypoint:\n      - \"dockerize\"\n      - \"-wait\"\n      - \"tcp://hailstorm-db:3306\"\n      - \"-wait\"\n      - \"tcp://client-exchange:8080\"\n      - \"-timeout\"\n      - \"60s\"\n      - \"rackup\"\n      - \"-o\"\n      - \"0.0.0.0\"\n      - \"-p\"\n      - \"8080\"\n\n  file-server:\n    image: \"hailstorm3/hailstorm-file-server:1.1.0\"\n    hostname: \"file-server\"\n    ports:\n      - \"9000:8080\"\n    networks:\n      - dmz\n    volumes:\n      - type: volume\n        source: hailstorm-file-store\n        target: /hailstorm\n\n  hailstorm-db:\n    image: \"hailstorm3/hailstorm-db:2.0.0\"\n    hostname: \"hailstorm-db\"\n    ports:\n      - \"3306:3306\"\n    networks:\n      - hailstorm\n    volumes:\n      - type: volume\n        source: hailstorm-db\n        target: /var/lib/mysql\n    environment:\n      MYSQL_RANDOM_ROOT_PASSWORD: \"true\"\n\n  hailstorm-mq:\n    image: \"redis:5.0.7-alpine\"\n    hostname: \"hailstorm-mq\"\n    ports:\n      - \"6379:6379\"\n    networks:\n      - hailstorm\n\n  client-exchange:\n    image: \"hailstorm3/hailstorm-client-exchange:1.0.0\"\n    hostname: \"client-exchange\"\n    ports:\n      - \"9100:8080\"\n    networks:\n      - hailstorm\n      - dmz\n    depends_on:\n      - hailstorm-mq\n    entrypoint:\n      - \"dockerize\"\n      - \"-wait\"\n      - \"tcp://hailstorm-mq:6379\"\n      - \"-timeout\"\n      - \"60s\"\n      - \"java\"\n      - \"-jar\"\n      - \"/app.jar\"\n      - \"--redisHost=hailstorm-mq\"\n\nnetworks:\n  dmz:\n  hailstorm:\n\nvolumes:\n  hailstorm-file-store:\n  hailstorm-db:\n  hailstorm-home:\n",
+            "hailstorm-cli/Dockerfile": "FROM jruby:9.2.11.1-jre8\n\n# throw errors if Gemfile has been modified since Gemfile.lock\nRUN gem update bundler \\\n    && bundle config --global frozen 1\n\nWORKDIR /usr/local/lib/hailstorm-cli\n\nRUN groupadd hailstorm \\\n    && useradd -g hailstorm -m -s /bin/bash hailstorm \\\n    && apt-get update \\\n    && apt-get install -y default-mysql-client git vim \\\n    && rm -rf /var/lib/apt/lists/*\n\nENV DOCKERIZE_VERSION v0.6.1\n\nRUN wget -q https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \\\n    && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \\\n    && rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz\n\nCOPY . .\n\nRUN bundle install\n\nENV HAILSTORM_ENV production\n\nCMD [ \"/bin/bash\" ]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            ".editorconfig",
+            ".gitignore",
+            ".rspec",
+            ".rubocop.yml",
+            ".simplecov",
+            "Dockerfile",
+            "Gemfile",
+            "Gemfile.lock",
+            "Makefile",
+            "README.md",
+            "app.rb",
+            "boot.rb",
+            "config.ru"
+        ],
+        "folders": [
+            "app",
+            "config",
+            "spec"
+        ]
+    }
+}

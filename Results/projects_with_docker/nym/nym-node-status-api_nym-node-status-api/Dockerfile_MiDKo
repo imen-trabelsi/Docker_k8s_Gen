@@ -1,0 +1,23 @@
+# Set base image
+FROM harbor.nymte.ch/dockerhub/rust:latest
+
+# Set working directory
+WORKDIR /usr/src/nym
+
+# Copy all project files to workspace
+COPY . .
+
+# Build project
+RUN cargo build --release
+
+# Install necessary dependencies
+RUN apt-get update && apt-get install -y ca-certificates
+
+# Set working directory
+WORKDIR /usr/src/nym/nym-node-status-api
+
+# Copy built executable
+COPY --from=0 /usr/src/nym/target/release/nym-node-status-api .
+
+# Set the entry point
+ENTRYPOINT ["/nym/nym-node-status-api"]

@@ -1,0 +1,29 @@
+Here is an optimized Dockerfile using the given information and requirements.
+
+```Dockerfile
+# Based on the information, we'll start by setup a base image
+FROM prom/prometheus
+
+# Set working directory
+WORKDIR /app
+
+# Copy Prometheus configuration file
+COPY ./prometheus.yml /etc/prometheus/prometheus.yml
+
+# Copy all files from current directory to the container
+COPY . .
+
+# Expose required ports
+EXPOSE 8080 9090
+
+# Set the environment variables
+ENV SPRING_BOOT_OPTS "-XX:+UnlockExperimentalVMOptions -XX:+UseCGroupMemoryLimitForHeap -XX:MaxRAMFraction=1"
+
+# Run the application
+CMD ["java", "-jar", ${SPRING_BOOT_OPTS}, "app.jar"]
+```
+
+Please note: 
+This Dockerfile is based on the limited information available from source code and user input which does not include details about the programming language, deployment environment, networking, health checks, build arguments, run commands, users, environment variables, labels etc. 
+
+For an optimal Dockerfile, more information would be necessary.

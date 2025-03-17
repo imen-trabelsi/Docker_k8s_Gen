@@ -1,0 +1,33 @@
+# Start with a base image containing Java runtime
+FROM openjdk:8-jdk-alpine
+
+# The application's .jar file
+ARG JAR_FILE=target/*.jar
+
+# Variables to define the work directory and other properties
+ENV WORK_PATH /usr/local/work
+ENV AUTO_RUN_DIR /docker-entrypoint-initdb.d
+ENV FILE_0 init_table.sql
+
+# Create directory defined by WORK_PATH
+RUN mkdir -p $WORK_PATH
+
+# Set the work directory 
+WORKDIR $WORK_PATH
+
+# Add the service's jar to the container
+COPY ${JAR_FILE} app.jar
+
+# Copy the necessary files to the defined paths
+COPY ./$FILE_0 $WORK_PATH/
+COPY ./$INSTALL_DATA_SHELL $AUTO_RUN_DIR/
+
+# Change permissions to execute scripts
+RUN chmod a+x $AUTO_RUN_DIR/$INSTALL_DATA_SHELL
+
+# Build the project inside the docker image
+COPY . .
+RUN mvn clean install
+
+# Run the jar file 
+ENTRYPOINT ["java","-jar","/app.jar"]

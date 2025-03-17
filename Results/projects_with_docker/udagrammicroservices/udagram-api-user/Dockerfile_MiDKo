@@ -1,0 +1,23 @@
+# Using base image
+FROM node:13
+
+# Creating working directory
+WORKDIR /usr/src/app
+
+# Copying dependencies
+COPY package*.json ./
+
+# Installing app dependencies
+RUN npm ci
+
+# Copying source files
+COPY . .
+
+# Build the source code
+RUN npm run build
+
+# Exposing port 8080
+EXPOSE 8080
+
+# Running the application using npm
+CMD ["npm", "run", "prod"]

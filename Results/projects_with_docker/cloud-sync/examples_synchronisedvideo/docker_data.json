@@ -1,0 +1,41 @@
+{
+    "docker_info": {
+        "base_image": "node:12.22.12",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /usr/src/app",
+            "COPY package.json ./",
+            "COPY /src ./src/",
+            "COPY *.js ./"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"npm\",",
+                    "\"start\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p /logs",
+                "RUN ls -la /usr/src/app/*"
+            ],
+            [
+                "npm install",
+                "RUN npm install grunt-cli -g"
+            ]
+        ]
+    }
+}

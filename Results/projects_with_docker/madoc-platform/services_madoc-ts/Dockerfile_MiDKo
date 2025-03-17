@@ -1,0 +1,57 @@
+# Set base image
+FROM node:18-bullseye
+
+# Install pm2
+RUN npm install -g pm2@5
+
+# Create directories
+RUN mkdir -p /home/node/app/service-jwt \
+    && mkdir -p /home/node/app/service-jwt-responses \
+    && mkdir -p /home/node/app/files \
+    && mkdir -p /home/node/app/openssl-certs \
+    && chown node:node /home/node/app/service-jwt \
+    && chown node:node /home/node/app/service-jwt-responses \
+    && chown node:node /home/node/app/files \
+
+# Setup working directory
+WORKDIR /home/node/app
+
+# Copy package.json and install dependencies
+COPY package.json yarn.lock ./
+RUN yarn install --no-interactive --frozen-lockfile
+
+# Copy other source files and build the project
+COPY . .
+RUN yarn generate-schema
+RUN yarn build:vite-producer
+RUN yarn build:vite-auth
+RUN yarn build:vite-scheduler
+RUN yarn build:frontend
+RUN yarn build:vite-server
+
+# Install production dependencies
+RUN yarn install --no-interactive --frozen-lockfile --production=true
+
+# Set environment variables
+ENV NODE_ENV=production
+ENV SERVER_PORT=3000
+ENV DATABASE_HOST=localhost
+ENV DATABASE_NAME=postgres
+ENV DATABASE_PORT=5400
+ENV DATABASE_USER=postgres
+ENV DATABASE_SCHEMA=public
+ENV DATABASE_PASSWORD=postgres
+ENV NODE_ENV=production
+ENV API_GATEWAY_HOST=http://gateway
+ENV BUILD_TIME=${BUILD_TIME}
+ENV BUILD_VERSION=${BUILD_VERSION}
+ENV BUILD_REVISION=${BUILD_REVISION}
+
+# Expose ports
+EXPOSE 3000 3001
+
+# Set user
+USER node
+
+# Set command
+CMD ["pm2-runtime", "start", "./ecosystem.config.cjs"]

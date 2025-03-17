@@ -1,0 +1,37 @@
+# use a node base image
+FROM node:8
+
+# Create app directory, and set it as the working directory
+ENV user codefarm
+ENV farmerHome /home/$user
+ENV npmDir ${farmerHome}/npm
+ENV appRoot ${farmerHome}/codefarm
+ENV DISABLE_LINK_LIBS "npm installation disabled"
+RUN mkdir -p ${appRoot}
+WORKDIR ${appRoot}
+
+# label details
+LABEL Description="Base Image for Spring Boot Microservice" Version="1.0"
+
+# install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Add user
+RUN groupadd --system $user && useradd --system --create-home --gid $user $user
+
+# Change ownership for node_modules directory
+RUN mkdir -p $farmerHome/data && chown -R $user $farmerHome/data -R && chgrp -R $user $farmerHome/data
+
+# Change ownership for src directory
+RUN mkdir -p ${appRoot}/src/app/me
+WORKDIR ${appRoot}/src/app/me
+
+# Copy app source to image _after_ npm install so that application code changes do not bust docker cache of npm install
+COPY . .
+
+# Expose application at this port
+EXPOSE 8080
+
+# The command to start the nodejs app
+CMD [ "yarn","run","start-rel" ]

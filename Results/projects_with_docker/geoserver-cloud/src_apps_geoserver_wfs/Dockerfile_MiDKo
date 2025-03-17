@@ -1,0 +1,39 @@
+# Start from a base image
+FROM $REPOSITORY/gs-cloud-base-jre:$TAG
+
+# Set the current working directory inside the Docker container
+WORKDIR /app
+
+# Set environment variable
+ENV JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS} -XX:SharedArchiveFile=application.jsa"
+
+# Copy pom.xml and src directory to the image
+COPY pom.xml .
+COPY src src/
+
+# Build the spring boot application
+RUN mvn -f pom.xml clean package
+
+# Copy jar file to the working directory
+COPY ${JAR_FILE} application.jar
+COPY --from=builder dependencies/ ./
+COPY --from=builder snapshot-dependencies/ ./
+COPY --from=builder spring-boot-loader/ ./
+RUN java -Djarmode=layertools -jar application.jar extract
+
+# Run Commands
+RUN mkdir /tmp/tmpdatadir && \
+    org.springframework.boot.loader.JarLauncher && \
+
+# Copy from builder image
+COPY --from=builder application/ ./
+
+# Add a non-root user to run our application so that it doesn't run with root permissions.
+RUN adduser -D nonrootuser
+USER nonrootuser
+
+# Indicate the port number the container should expose
+EXPOSE 8080
+
+# Run the jar file 
+ENTRYPOINT ["java","-jar","/app/application.jar"]

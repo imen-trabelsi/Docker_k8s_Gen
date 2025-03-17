@@ -1,0 +1,35 @@
+{
+    "docker_info": {
+        "base_image": "ruby:2.5",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "FPM_VERSION=1.10.2"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /build"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"fpm\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && apt-get install -y rpm",
+                "RUN gem install fpm --version=${FPM_VERSION}"
+            ],
+            [
+                "mkdir /build",
+                ""
+            ]
+        ]
+    }
+}

@@ -1,0 +1,52 @@
+{
+    "docker_info": {
+        "base_image": "${BASE_IMAGE}",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root"
+        ],
+        "labels": [
+            "maintainer=jon@jaggersoft.com"
+        ],
+        "health_checks": [
+            "HEALTHCHECK --interval=1s --timeout=1s --retries=5 --start-period=5s CMD /runner/config/healthcheck.sh"
+        ],
+        "build_args": [
+            "BASE_IMAGE=always-provided",
+            "BASE_IMAGE",
+            "COMMIT_SHA"
+        ],
+        "envs": [
+            "ENV BASE_IMAGE=${BASE_IMAGE}",
+            "ENV SHA=${COMMIT_SHA}"
+        ],
+        "copy_instructions": [
+            "COPY source/server/ ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/sbin/tini\",",
+                    "\"-g\",",
+                    "\"--\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"/runner/config/up.sh\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "gem install --no-document 'concurrent-ruby'",
+                "WORKDIR /runner"
+            ]
+        ]
+    }
+}

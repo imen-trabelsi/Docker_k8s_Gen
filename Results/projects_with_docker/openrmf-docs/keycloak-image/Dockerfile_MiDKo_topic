@@ -1,0 +1,35 @@
+# Using the specified base image
+FROM quay.io/keycloak/keycloak:26.1.0 as builder
+
+# Setting the working directory
+WORKDIR /opt/keycloak
+
+# Copying necessary files
+COPY ./themes/openrmf/ /opt/keycloak/themes/openrmf/
+COPY . /opt/keycloak/
+
+RUN /opt/keycloak/bin/kc.sh build --spi-x509cert-lookup-provider=nginx
+
+# Starting a new stage 
+FROM quay.io/keycloak/keycloak:26.1.0
+
+# Setting the working directory
+WORKDIR /opt/keycloak
+
+# Copying necessary files
+
+# Specifying the environment variables
+ENV KC_HEALTH_ENABLED=true
+ENV KC_METRICS_ENABLED=true
+ENV KC_HTTP_ENABLED=true
+ENV KC_HTTP_PORT=8080
+ENV KC_HOSTNAME_STRICT=false
+ENV PROXY_ADDRESS_FORWARDING=true
+ENV KC_HTTP_RELATIVE_PATH=/auth
+ENV KC_DB=postgres
+
+# Exposing the necessary ports
+EXPOSE 8080
+
+# Setting the entrypoint
+ENTRYPOINT ["/opt/keycloak/bin/kc.sh"]

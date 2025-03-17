@@ -1,0 +1,42 @@
+# Start with the user provided base image
+FROM opensearchproject/opensearch:1.2.3
+
+# Setup Arguments & Environment Variables
+ARG PYTHONUNBUFFERED=1
+ENV PYTHONPATH /app
+
+# Ensure python & pip are up to date
+RUN apk update && apk add python3-dev gcc musl-dev
+RUN python3 -m ensurepip && pip3 install --upgrade pip
+
+# Install Poetry - respects $POETRY_VERSION & $POETRY_HOME
+RUN apk add --no-cache curl python3 && \
+    curl -sSL https://install.python-poetry.org | python3 && \
+
+# Copy the tool configuration files
+COPY pyproject.toml poetry.lock /app/
+
+# Change working directory
+WORKDIR /app
+
+# Install dependencies
+RUN poetry config virtualenvs.create false \
+
+# Copy Configuration Files
+COPY .env .env.production .env.development .env.test /app/
+
+# Set the entry point
+COPY start.sh /app/start.sh
+RUN chmod +x /app/start.sh
+
+# Copy source code
+COPY . /app
+
+# Set the user to execute the python application
+# USER app
+
+# Expose the application's port
+EXPOSE 8080
+
+# Execute the application
+CMD ["/app/start.sh"]

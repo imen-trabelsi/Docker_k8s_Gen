@@ -1,0 +1,22 @@
+# Use the official lightweight Node.js 12 image.
+# https://hub.docker.com/_/node
+FROM node:12
+
+# Create and change to the app directory.
+WORKDIR /usr/src/app
+
+# Copy local code to the container image.
+COPY . ./
+
+# Install production dependencies.
+# If you have native dependencies, you'll need extra tools
+# RUN apk add --no-cache make gcc g++ python && \
+#    npm install --only=prod && \ 
+#    apk del make gcc g++ python
+RUN npm install --only=production
+
+# Make port 3000 available to the world outside this container
+EXPOSE 3000
+
+# Run the web server when the container starts.
+ENTRYPOINT [ "npm", "start" ]

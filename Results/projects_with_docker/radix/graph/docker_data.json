@@ -1,0 +1,30 @@
+{
+    "docker_info": {
+        "base_image": "node:8",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8100"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV NODE_ENV production"
+        ],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY . /app"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"node\",",
+                    "\"src/index.js\"]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "Go",
+        "framework": "Go",
+        "dependencies": {
+            "go.mod": "module github.com/lightstep/ls-examples/go/opentracing/client\n\ngo 1.17\n\nrequire (\n\tgithub.com/lightstep/lightstep-tracer-go v0.26.0\n\tgithub.com/opentracing/opentracing-go v1.2.0\n)\n\nrequire (\n\tgithub.com/gogo/protobuf v1.3.2 // indirect\n\tgithub.com/golang/protobuf v1.3.1 // indirect\n\tgithub.com/lightstep/lightstep-tracer-common/golang/gogo v0.0.0-20210210170715-a8dfcb80d3a7 // indirect\n\tgolang.org/x/net v0.0.0-20201021035429-f5854403a974 // indirect\n\tgolang.org/x/sys v0.0.0-20210217105451-b926d437f341 // indirect\n\tgolang.org/x/text v0.3.3 // indirect\n\tgoogle.golang.org/genproto v0.0.0-20190530194941-fb225487d101 // indirect\n\tgoogle.golang.org/grpc v1.21.0 // indirect\n)\n"
+        },
+        "database": null,
+        "build_system": "go mod",
+        "config_files": {
+            "collector/redis/docker-compose.yml": "version: \"3.9\"\nservices:\n    redis:\n      container_name: redis\n      image: redis:latest\n      healthcheck:\n        test: [\"CMD-SHELL\", \"redis-cli ping\"]\n        interval: 5s\n        timeout: 3s\n        retries: 3\n      ports:\n        - 6379:6379\n      stop_grace_period: 1s\n      networks:\n        - integrations\n    otel-collector:\n        container_name: otel-collector\n        image: otel/opentelemetry-collector-contrib:latest\n        command: [\"--config=/conf/collector.yml\"]\n        environment:\n            - LS_ACCESS_TOKEN\n        volumes:\n            - ./collector.yml:/conf/collector.yml:rw\n        depends_on:\n          redis:\n            condition: service_healthy\n        networks:\n            - integrations\n    load-generator:\n        build: .\n        depends_on:\n          redis:\n            condition: service_healthy\n        networks:\n            - integrations\nnetworks:\n    integrations:\n",
+            "collector/redis/Dockerfile": "FROM golang:latest\n\nWORKDIR /app\nCOPY . .\n\nRUN go mod init redis-demo\nRUN go mod tidy\n\nRUN go build -o load-generator .\n\nCMD [\"./load-generator\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "collector.yml",
+            "docker-compose.yml"
+        ],
+        "folders": []
+    }
+}

@@ -1,0 +1,52 @@
+{
+    "docker_info": {
+        "base_image": "\"${DAOS_DOCKER_IMAGE_NSP}/daos-base-${LINUX_DISTRO}:$DAOS_DOCKER_IMAGE_TAG\"",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [
+            "maintainer=\"daos@daos.groups.io\""
+        ],
+        "health_checks": [],
+        "build_args": [
+            "LINUX_DISTRO=\"\"",
+            "DAOS_DOCKER_IMAGE_NSP=\"\"",
+            "DAOS_DOCKER_IMAGE_TAG=\"\"",
+            "DAOS_VERSION=\"\"",
+            "DAOS_AUTH=\"\"",
+            "DAOS_HUGEPAGES_NBR=\"\"",
+            "DAOS_IFACE_NAME=\"\"",
+            "DAOS_SCM_SIZE=\"\"",
+            "DAOS_BDEV_SIZE=\"\"",
+            "DAOS_MD_ON_SSD=\"\""
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "COPY\tdaos_server.yml.in /tmp/daos_server.yml.in"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "for it in DAOS_VERSION ; do                                                                \\",
+                "if eval \"[[ -z \\$$it ]]\" ; then",
+                "echo \"[ERROR] Docker build argument $it is not defined\" ;",
+                "exit 1 ;",
+                "fi ;",
+                "done &&",
+                "dnf install daos-server-${DAOS_VERSION} &&",
+                "dnf clean all &&",
+                "systemctl enable daos_server"
+            ],
+            [
+                "for it in DAOS_AUTH DAOS_HUGEPAGES_NBR DAOS_IFACE_NAME DAOS_SCM_SIZE DAOS_BDEV_SIZE        \\",
+                "DAOS_MD_ON_SSD ; do",
+                "if eval \"[[ -z \\$$it ]]\" ; then",
+                "echo \"[ERROR] Docker build argument $it is not defined\" ;",
+                "exit 1 ;",
+                "fi ;",
+                "done &&",
+                "# XXX NOTE XXX HugePages and vfio seem to not be well managed with docker and latest version of the"
+            ]
+        ]
+    }
+}

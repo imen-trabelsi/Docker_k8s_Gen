@@ -1,0 +1,23 @@
+# Use the specified base image
+FROM node:16-alpine3.15
+
+# Create app directory
+WORKDIR /app
+
+# Required system setup
+RUN apk add --no-cache git
+
+# Copy the project's package.json to the app directory
+COPY package*.json ./
+
+# Install project dependencies
+RUN npm i && npm run build
+
+# Copy the rest of the project to the app directory
+COPY . .
+
+# Expose the application on port 5000
+EXPOSE 5000
+
+# Set command to run the app
+CMD [ "npm", "start" ]

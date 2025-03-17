@@ -1,0 +1,35 @@
+# Stage 1: Build application
+FROM maven:3.8.1-jdk-11 as builder
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package
+
+# Stage 2: Extract
+FROM ubuntu:18.04
+WORKDIR /app
+RUN apt-get update && apt-get install -y openjdk-11-jre-headless && rm -rf /var/lib/apt/lists/*
+
+# Use the right base image
+FROM docker.elastic.co/beats/metricbeat:${ELASTIC_VERSION:-8.17.3}
+
+# Define the ARG parameters
+ARG ELASTIC_VERSION=8.17.3
+
+# Set environment variables
+ENV ELASTIC_VERSION=${ELASTIC_VERSION}
+
+# Copy necessary files
+COPY extensions/metricbeat/config/metricbeat.yml /usr/share/metricbeat/metricbeat.yml
+
+# Provide permissions for non-root user
+USER metricbeat
+
+# Expose application port
+EXPOSE 8080
+
+# Define health check
+HEALTHCHECK --interval=30s --timeout=10s --start-period=10s --retries=3 CMD curl --fail http://localhost:8080/actuator/health || exit 1
+
+# Run application
+CMD ["java", "-jar", "/app.jar"]

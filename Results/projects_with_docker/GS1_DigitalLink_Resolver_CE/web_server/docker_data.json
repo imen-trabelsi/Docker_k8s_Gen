@@ -1,0 +1,50 @@
+{
+    "docker_info": {
+        "base_image": "python:3.10-bullseye",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "4000"
+        ],
+        "user": [],
+        "labels": [
+            "authors=\"nick\""
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV PYTHONUNBUFFERED 1",
+            "ENV FQDN='id.mydomainname_currently_set_in_dockerfile.com'"
+        ],
+        "copy_instructions": [
+            "ADD src/gs1-digitallink-toolkit /app/gs1-digitallink-toolkit",
+            "WORKDIR /app/gs1-digitallink-toolkit",
+            "WORKDIR /app",
+            "ADD src/requirements.txt /app/",
+            "ADD src /app/"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"python\",",
+                    "\"-m\",",
+                    "\"main\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && apt-get install -y curl && curl -sL https://deb.nodesource.com/setup_18.x | bash -",
+                "RUN apt-get install -y nodejs nano"
+            ],
+            [
+                "npm init es6",
+                "RUN npm install --save gs1encoder"
+            ],
+            [
+                "pip install --no-cache-dir -r requirements.txt",
+                ""
+            ]
+        ]
+    }
+}

@@ -1,0 +1,33 @@
+# Dockerfile
+
+# Stage 1 - Build stage
+FROM ubuntu:focal as build-stage
+RUN apt-get update \
+&& apt-get install -y curl g++ make git python3 libmariadb-dev \
+
+WORKDIR /tmp
+RUN git clone https://github.com/smonkewitz/scisql
+WORKDIR /tmp/scisql
+
+RUN git checkout tags/0.3.11 -b 0.3.11
+RUN ./configure
+RUN make -j8 install
+RUN PYTHONPATH=/usr/local/python python -c "from scisql import configure; \
+configure.init_config(None, None, None, None, None); \
+RUN chmod a+r /tmp/scisql/build/deploy.mysql
+
+# Stage 2 - Poduction stage
+FROM ubuntu:focal
+RUN useradd --uid 1000 qserv \
+&& mkdir -p /qserv/data /qserv/data/results /config-etc /var/log/mysql \
+
+# Uncomment the following line if needed
+# ENV SOME_VAR some_value
+
+
+USER qserv
+
+# Uncomment the following line if specific ports need to be exposed
+# EXPOSE ...
+
+CMD ["sh", "-c", "some_cmd_to_start_your_service"]

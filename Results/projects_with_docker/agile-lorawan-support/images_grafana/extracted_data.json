@@ -1,0 +1,169 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "backup_app",
+            "type": "tree"
+        },
+        {
+            "path": "backup_app/.vscode",
+            "type": "tree"
+        },
+        {
+            "path": "backup_app/.vscode/launch.json",
+            "type": "blob"
+        },
+        {
+            "path": "backup_app/.vscode/tasks.json",
+            "type": "blob"
+        },
+        {
+            "path": "backup_app/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "backup_app/Dockerfile-postgres",
+            "type": "blob"
+        },
+        {
+            "path": "backup_app/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "backup_app/app",
+            "type": "tree"
+        },
+        {
+            "path": "backup_app/app/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "backup_app/app/__main__.py",
+            "type": "blob"
+        },
+        {
+            "path": "backup_app/app/__pycache__",
+            "type": "tree"
+        },
+        {
+            "path": "backup_app/app/__pycache__/__init__.cpython-36.pyc",
+            "type": "blob"
+        },
+        {
+            "path": "backup_app/app/__pycache__/__main__.cpython-36.pyc",
+            "type": "blob"
+        },
+        {
+            "path": "backup_app/app/__pycache__/config.cpython-36.pyc",
+            "type": "blob"
+        },
+        {
+            "path": "backup_app/app/config.py",
+            "type": "blob"
+        },
+        {
+            "path": "backup_app/postgres_initialization",
+            "type": "tree"
+        },
+        {
+            "path": "backup_app/postgres_initialization/init_database.sh",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "images",
+            "type": "tree"
+        },
+        {
+            "path": "images/.gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "images/checkout.sh",
+            "type": "blob"
+        },
+        {
+            "path": "images/grafana",
+            "type": "tree"
+        },
+        {
+            "path": "images/grafana/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "images/grafana/build-grafana.sh",
+            "type": "blob"
+        },
+        {
+            "path": "lora-app-server_conf.toml",
+            "type": "blob"
+        },
+        {
+            "path": "lora-gateway-bridge_conf.toml",
+            "type": "blob"
+        },
+        {
+            "path": "loraserver_conf.toml",
+            "type": "blob"
+        },
+        {
+            "path": "lorawan.service",
+            "type": "blob"
+        },
+        {
+            "path": "notes",
+            "type": "tree"
+        },
+        {
+            "path": "notes/test-device-setup.md",
+            "type": "blob"
+        },
+        {
+            "path": "packet-forwarder",
+            "type": "tree"
+        },
+        {
+            "path": "packet-forwarder/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "packet-forwarder/build",
+            "type": "blob"
+        },
+        {
+            "path": "packet-forwarder/cmd.sh",
+            "type": "blob"
+        },
+        {
+            "path": "packet-forwarder/local_conf_template.json",
+            "type": "blob"
+        },
+        {
+            "path": "packet-forwarder/local_conf_template.json.orig",
+            "type": "blob"
+        },
+        {
+            "path": "packet-forwarder/push",
+            "type": "blob"
+        }
+    ]
+}

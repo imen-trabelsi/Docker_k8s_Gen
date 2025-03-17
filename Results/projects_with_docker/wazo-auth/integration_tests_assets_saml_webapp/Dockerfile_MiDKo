@@ -1,0 +1,29 @@
+# Base Image
+FROM python:3.10-alpine
+
+# Add a new User
+RUN addgroup -S nonroot && adduser -S nonroot -G nonroot
+
+# Create app directory
+WORKDIR /app
+
+# Install Dependencies
+COPY requirements.txt /app
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+# Bundle Source Code
+COPY server.py /app
+COPY templates /app/templates/
+
+# Change Ownership to the new user
+RUN chown -R nonroot:nonroot /app
+
+# Run the application as the new user
+USER nonroot
+
+# Expose the required Port
+EXPOSE 8800
+
+# Execution Command
+ENTRYPOINT ["python3"]
+CMD ["server.py"]

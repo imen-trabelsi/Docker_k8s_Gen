@@ -1,0 +1,24 @@
+# Start with the base image
+FROM node:10.15.3-slim
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Install netcat-openbsd
+RUN apt-get update && apt-get install netcat-openbsd -y
+
+# Install app dependencies
+COPY package*.json ./
+RUN npm install --only=production
+
+# Copy app source code
+COPY . .
+
+# Environment variables
+ENV JAVA_CMD="node server.js"
+
+# Expose port
+EXPOSE 8080
+
+# Start command
+CMD ["node", "server.js"]

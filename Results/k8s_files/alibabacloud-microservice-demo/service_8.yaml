@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: go-zero-demo-c
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 8882
+  - name: grpc
+    port: 8892
+    protocol: TCP
+    targetPort: 8892
+  selector:
+    app: go-zero-demo-c
+  type: ClusterIP

@@ -1,0 +1,31 @@
+# set base image (host OS)
+FROM node:13-alpine
+
+# set the working directory in the Docker image
+WORKDIR /usr/src/app
+
+# copy package.json and package-lock.json (if available) to the working directory
+COPY package*.json ./
+
+# install project dependencies
+RUN npm install
+RUN npm install --production
+
+# copy the content of the local src directory to the working directory
+COPY . .
+
+# add the user and set appropriate permissions
+RUN addgroup -S app && adduser -S app -G app
+RUN chown -R app:app /usr/src/app && chmod 755 /usr/src/app
+
+# switch to the added user
+USER app:app
+
+# set environment variable
+ENV NODE_ENV=production
+
+# application's default port
+EXPOSE 8080
+
+# application's run command
+CMD [ "npm", "start" ]

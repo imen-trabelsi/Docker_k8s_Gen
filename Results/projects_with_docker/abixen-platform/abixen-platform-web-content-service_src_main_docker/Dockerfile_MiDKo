@@ -1,0 +1,25 @@
+# Dockerfile
+
+FROM openjdk:8-jre
+
+# Set the work directory
+WORKDIR /app
+
+# Add the application's jar to the container
+COPY abixen-platform-web-content-service.jar app.jar
+
+# Copy static files to the docker container
+COPY /abixen-platform-web-content-service/src/main/resources/liquibase/changelog /app/changelog
+
+# Set the necessary environment variables
+ENV spring.profiles.active=docker 
+ENV abixen.services.eureka.uri=discovery 
+
+# Set entrypoint
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=docker","-Dabixen.services.eureka.uri=discovery"]
+
+# Set cmd
+CMD ["-jar","/app/app.jar"]
+
+# Expose the port that the app runs in
+EXPOSE 8080

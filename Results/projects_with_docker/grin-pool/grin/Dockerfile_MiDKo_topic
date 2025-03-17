@@ -1,0 +1,67 @@
+FROM rust:latest AS builder
+
+WORKDIR /usr/src
+
+# Update Rust and install build dependencies
+RUN rustup update && \
+    set -ex && \
+    apt-get update && \
+    apt-get --no-install-recommends --yes install \
+        clang \
+        libclang-dev \
+        llvm-dev \
+        libncurses5 \
+        libncursesw5 \
+        cmake \
+        git \
+
+# Clone and build grin
+RUN git clone https://github.com/mimblewimble/grin.git && \
+    cd grin && \
+    git checkout v3.1.0 && \
+    git fetch && \
+    cargo build --release && \
+    sed -i -e 's/\.header(CONTENT_TYPE, "application\/json")//g'  controller/src/controller.rs && \
+    sed -i -e 's/127\.0\.0\.1/0.0.0.0/g' config/src/types.rs && \
+
+# Clone and build grin-wallet
+RUN git clone https://github.com/mimblewimble/grin-wallet.git && \
+    cd grin-wallet && \
+    git checkout v3.1.0 && \
+    git fetch && \
+
+FROM debian:latest
+
+WORKDIR /usr/src/grin
+WORKDIR /usr/src/grin-wallet
+
+# Copy necessary files from builder
+COPY grin-wallet.toml /usr/src/grin-wallet/grin-wallet.toml
+COPY grin-server.toml /usr/src/grin/grin-server.toml
+COPY run.sh /
+COPY run-wallet.sh /
+COPY libheath.py /
+
+# Install important packages
+RUN DEBIAN_FRONTEND=noninteractive apt-get update && apt-get install -y \
+    locales \
+    procps \
+    libssl-dev \
+    vim \
+    telnet \
+    curl \
+    python3 \
+    netcat \
+    net-tools \
+    libncursesw6 && \
+    apt-get autoremove -y && \
+
+# Setup locale
+RUN sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \
+    dpkg-reconfigure --frontend=noninteractive locales && \
+
+EXPOSE 13413 13414 13415 13416 13420 3413 3414 3415 3416 3420
+ENV LANG en_US.UTF-8
+
+# Docker container should start with this command
+CMD ["/run.sh"]

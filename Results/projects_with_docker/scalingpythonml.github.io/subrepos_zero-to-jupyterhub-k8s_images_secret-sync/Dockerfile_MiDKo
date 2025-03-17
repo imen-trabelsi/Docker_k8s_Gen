@@ -1,0 +1,33 @@
+FROM python:3.8-alpine
+
+# Updating dependencies and installing PostgreSQL
+RUN apk update && \
+
+# Setting the environment variables
+ENV PYTHONUNBUFFERED=1
+ENV BUNDLE_PATH=/bundle \
+    BUNDLE_BIN=/bundle/bin \
+ENV PATH="${BUNDLE_BIN}:${PATH}"
+
+# Creating a new directory and copying the ruby app into it
+WORKDIR /app
+COPY . /app
+
+# Installing Bundler dependencies
+COPY Gemfile Gemfile.lock ./
+RUN bundle install
+
+# Copying scripts and giving execution permissions
+COPY prepare.sh /usr/local/bin/
+COPY acme-secret-sync.py /usr/local/bin/
+RUN wget -qO /tini https://github.com/krallin/tini/releases/download/v0.19.0/tini-static \
+
+# Installing kubernetes python package
+RUN pip install --no-cache kubernetes
+
+# Docker entry point
+ENTRYPOINT ["/tini", "--", "/usr/local/bin/acme-secret-sync.py"]
+
+# To allow for access within the network
+EXPOSE 8080
+

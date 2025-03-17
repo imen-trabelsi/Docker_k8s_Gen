@@ -1,0 +1,39 @@
+{
+    "docker_info": {
+        "base_image": "node:lts",
+        "multi_stage_build": true,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV APP_MODULE=\"app:app\""
+        ],
+        "copy_instructions": [
+            "ADD ./frontend/ /app/",
+            "WORKDIR /app",
+            "COPY ./backend/ /app/",
+            "COPY --from=frontend /app/build/ /app/static/"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "mkdir /app",
+                "WORKDIR /app"
+            ],
+            [
+                "yarn install",
+                "RUN yarn build"
+            ],
+            [
+                "pip install -r requirements.txt",
+                "RUN rm -rf /app/static/*"
+            ],
+            [
+                "mv /app/static/static/* /app/static/",
+                "COPY --from=frontend /app/build/index.html /app/templates/"
+            ]
+        ]
+    }
+}

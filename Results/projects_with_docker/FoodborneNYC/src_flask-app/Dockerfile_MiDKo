@@ -1,0 +1,18 @@
+# Set Base Image
+FROM python:3.6.3-onbuild
+
+# Set working directory
+WORKDIR /usr/src/app
+
+# Install App dependencies
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy Application
+COPY . /usr/src/app
+
+# Expose ports
+EXPOSE  
+
+# Set default command
+CMD ["python", "app.py"]

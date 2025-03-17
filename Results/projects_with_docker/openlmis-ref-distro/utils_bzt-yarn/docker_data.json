@@ -1,0 +1,23 @@
+{
+    "docker_info": {
+        "base_image": "blazemeter/taurus:1.15.1",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \\",
+                "echo \"deb https://dl.yarnpkg.com/debian/ stable main\" | tee /etc/apt/sources.list.d/yarn.list &&",
+                "apt-get update &&",
+                "apt-get install yarn &&",
+                "yarn install"
+            ]
+        ]
+    }
+}

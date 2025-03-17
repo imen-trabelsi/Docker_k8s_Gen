@@ -1,0 +1,36 @@
+# Use the official Node.js 20 slim image from the dockerhub
+ARG BASE_IMAGE=node:20-slim
+FROM ${BASE_IMAGE} AS build_stage
+
+# Create app directory
+WORKDIR /CIMonitor
+
+# Copy package*.json files for utilizing Docker cache 
+COPY ./package*.json ./
+
+# Install app dependencies including 'npm'
+RUN apt-get install -y npm \
+ && echo "deb http://deb.debian.org/debian stable main contrib non-free" >> /etc/apt/sources.list \
+ && apt-get --yes update \
+
+# Bundle app source
+COPY . .
+
+# Add QEMU Binary files
+ARG QEMU_BINARY=notset
+COPY ./${QEMU_BINARY}* /usr/bin/
+
+# Add execute permission on /usr/bin/dumb-init and set entrypoint
+RUN chmod +x /usr/bin/dumb-init
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+
+# Set the correct environment variables
+ENV NODE_PATH=/CIMonitor
+ENV NODE_ENV=production
+ENV NODE_PATH=/CIMonitor/app
+
+# Expose ports
+EXPOSE 8080
+
+# Define command to start the app
+CMD ["npm", "run", "start"]

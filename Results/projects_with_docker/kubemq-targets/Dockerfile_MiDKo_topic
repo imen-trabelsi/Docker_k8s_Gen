@@ -1,0 +1,46 @@
+# Derive from the provided base image
+FROM kubemq/gobuilder-ubuntu:latest as builder
+
+# Environment variables
+ENV GOPATH=/go
+ENV PATH=$GOPATH:$PATH
+ENV ADDR=0.0.0.0
+ENV GOPATH=/go
+ENV PATH=$GOPATH/bin:$PATH
+
+# Add Source code to working directory
+COPY . $GOPATH/github.com/kubemq-io/kubemq-targets
+WORKDIR $GOPATH/github.com/kubemq-io/kubemq-targets
+
+# Build and create the Go binary
+RUN CGO_ENABLED=1 GOOS=linux GOARCH=amd64 go build -tags container -a -mod=vendor -installsuffix cgo -ldflags="-w -s" -o kubemq-targets-run .
+
+# Start a new stage from scratch
+FROM registry.access.redhat.com/ubi8/ubi-minimal:latest
+
+# Run Commands
+RUN mkdir -p /opt/mqm/lib64
+RUN mkdir /kubemq-connector
+RUN chown -R 1001:root  /kubemq-connector && chmod g+rwX  /kubemq-connector
+WORKDIR kubemq-connector
+
+# Copy Dependencies
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy licenses
+COPY licenses /licenses
+
+# Copy Config file
+
+# Execute the Go microservice binary
+ENTRYPOINT ["./kubemq-targets-run"]
+
+# Switch to non-root user
+USER 1001
+
+# Labels
+LABEL name="KubeMQ" version=$VERSION commit=$GIT_COMMIT
+
+# Expose necessary ports
+EXPOSE 80 443

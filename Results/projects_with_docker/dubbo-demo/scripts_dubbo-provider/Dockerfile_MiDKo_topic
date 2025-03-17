@@ -1,0 +1,8 @@
+# Dockerfile
+FROM ninokop/dubbo-demo-java-base
+COPY . /app
+WORKDIR /app
+RUN mvn clean package -DskipTests
+RUN mkdir -p /app/target
+COPY ./target/*.jar /app/target/app.jar
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app/target/app.jar"]

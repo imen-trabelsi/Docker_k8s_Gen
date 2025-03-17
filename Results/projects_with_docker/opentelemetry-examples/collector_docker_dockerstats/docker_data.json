@@ -1,0 +1,31 @@
+{
+    "docker_info": {
+        "base_image": "debian:11.7",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/otelcol-contrib\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt update && apt -y install wget",
+                "RUN wget https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.77.0/otelcol-contrib_0.77.0_linux_amd64.tar.gz"
+            ],
+            [
+                "tar -xf otelcol-contrib_0.77.0_linux_amd64.tar.gz -C /",
+                ""
+            ]
+        ]
+    }
+}

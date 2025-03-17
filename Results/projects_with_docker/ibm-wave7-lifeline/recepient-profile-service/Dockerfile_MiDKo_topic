@@ -1,0 +1,33 @@
+# Use specified base image
+FROM openjdk:11
+
+# Set the required environment variables
+ENV JAVA_OPTS=""
+ENV SPRING_PROFILES_ACTIVE=prod
+ENV SPRING_DATASOURCE_URL=jdbc:mongodb://localhost:27017/test
+ENV SPRING_DATASOURCE_USERNAME=root
+ENV SPRING_DATASOURCE_PASSWORD=root
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Copy project object model file
+COPY pom.xml .
+
+# Copy source code
+COPY src ./src
+
+# Install app dependencies
+RUN mvn clean install -DskipTests
+
+# Copy the application's jar file to the container
+COPY ./target/recepient-profile-service-0.0.1-SNAPSHOT.jar /usr/src/recepient-profile-service-0.0.1-SNAPSHOT.jar
+
+# Change to the directory with our built java jar file
+WORKDIR usr/src
+
+# Expose the port the app runs on
+EXPOSE 8080
+
+# Define the command to start the container 
+ENTRYPOINT ["java","-jar","recepient-profile-service-0.0.1-SNAPSHOT.jar"]

@@ -1,0 +1,27 @@
+{
+    "docker_info": {
+        "base_image": "adoptopenjdk/openjdk14:jre-14.0.2_12-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY target/product-service*.jar product-service.jar"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "java",
+                    "${JAVA_OPTS}",
+                    "-jar",
+                    "product-service.jar"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

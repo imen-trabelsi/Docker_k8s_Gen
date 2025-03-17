@@ -1,0 +1,33 @@
+# Define the base Image
+FROM node:16-alpine3.15
+
+# Establish work directory inside the docker image
+WORKDIR /app/dev
+
+# Copy dependency file
+COPY package.json .
+
+# Install git and verify installation
+RUN apk add --no-cache git
+RUN git --version
+
+# Check npm version
+RUN npm -v
+
+# Install project dependencies
+RUN npm i
+
+# Globally install pm2
+RUN npm install -g pm2
+
+# Copy source files
+COPY . .
+
+# Build the project
+RUN npm run build
+
+# Expose application port
+EXPOSE 80
+
+# Run the app using pm2
+CMD ["pm2-runtime", "start", "pm2.config.js", "--env=production"]

@@ -1,0 +1,27 @@
+#Using the base image specified by the user
+FROM buildpack-deps:buster-curl
+
+# Set environment variable as specified.
+ENV LC_ALL=C.UTF-8 \
+    LANG=en_US.UTF-8 \
+
+# Run the necessary commands to install system libraries and update the packages.
+RUN apt-get update && \
+    curl -sL https://deb.nodesource.com/setup_12.x | bash - &&\
+    apt-get install -y gcc g++ git libxml2 zlib1g-dev libxml2-dev ruby ruby-dev make autoconf nodejs python python-dev &&\
+
+#Copy necessary files
+COPY Gemfile Gemfile.lock /jekyll/
+ENTRYPOINT ["/entrypoint.sh"]
+
+#Setup the project
+RUN cd /jekyll && bundle install
+
+# Clean up extra files and packages
+RUN apt-get purge -y gcc g++ ruby-dev python-dev &&\
+    apt-get -y autoremove &&\
+
+#Your app will be running on this port
+#You need to specify what ports to expose 
+#Exposing port 80 for the web server. This could be different based on the web server's configuration
+EXPOSE 80

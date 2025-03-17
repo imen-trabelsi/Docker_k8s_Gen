@@ -1,0 +1,34 @@
+# Stage 1: Base Image
+FROM php:8.4-cli AS base
+
+# Updating packages and Installing dependencies
+RUN apt-get update && apt-get upgrade -y \
+    && apt-get install -y git libzip-dev \
+    && docker-php-ext-install zip \
+
+# Installing Composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Copying static files
+COPY packages/command-parsers-lib/resources/*.xml /usr/local/lib/symfony/
+
+# Setting Working Directory
+WORKDIR /app
+
+# Copying dependencies files
+COPY composer.json composer.lock ./
+
+# Installing dependencies
+RUN composer install --no-scripts --no-autoloader
+
+# Copying the rest of the code
+COPY . .
+
+# Generating Autoloader
+RUN composer dump-autoload --optimize
+
+# Exposing port
+EXPOSE 8000
+
+# Command to start the service
+CMD ["php","-S","0.0.0.0:8000","-t","public"]

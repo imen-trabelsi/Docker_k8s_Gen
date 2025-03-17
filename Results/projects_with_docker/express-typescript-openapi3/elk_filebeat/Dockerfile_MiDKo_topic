@@ -1,0 +1,34 @@
+# Use the specified base image
+FROM docker.elastic.co/beats/filebeat:7.0.1
+
+# Create necessary directories and ensure correct permissions
+RUN mkdir /usr/share/filebeat/dockerlogs
+RUN chown -R root /usr/share/filebeat/
+RUN chmod -R go-w /usr/share/filebeat/
+
+# Copy configuration file and licence information
+COPY filebeat.yml /usr/share/filebeat/filebeat.yml
+
+# Install NodeJS and NPM
+RUN apk add --update nodejs npm
+
+# Copy application files
+COPY package*.json ./
+
+# Install NPM dependencies
+RUN npm install --production
+
+# Copy remaining source code files
+COPY . .
+
+# Inform Docker that the container is listening on the specified port at runtime
+EXPOSE 8080
+
+# Application specific healthcheck instructions
+HEALTHCHECK --interval=5s --timeout=3s CMD curl -f http://localhost:8080/healthz || exit 1
+
+# Executing Docker as root user
+USER root
+
+# Command to run when starting the container
+CMD ["filebeat", "-e"]

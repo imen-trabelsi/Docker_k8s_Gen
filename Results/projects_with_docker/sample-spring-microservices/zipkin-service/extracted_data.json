@@ -1,0 +1,27 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Spring Boot",
+        "dependencies": {
+            "pom.xml": "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\r\n    <modelVersion>4.0.0</modelVersion>\r\n    <groupId>pl.piomin</groupId>\r\n    <artifactId>sample-spring-microservices</artifactId>\r\n    <version>1.0-SNAPSHOT</version>\r\n    <packaging>pom</packaging>\r\n\r\n    <parent>\r\n        <groupId>org.springframework.cloud</groupId>\r\n        <artifactId>spring-cloud-starter-parent</artifactId>\r\n        <version>Brixton.RELEASE</version>\r\n    </parent>\r\n\r\n    <properties>\r\n        <java.version>1.8</java.version>\r\n        <spring.boot>1.4.2.RELEASE</spring.boot>\r\n        <spring.boot.eureka>1.2.2.RELEASE</spring.boot.eureka>\r\n    </properties>\r\n\r\n    <modules>\r\n        <module>discovery-service</module>\r\n        <module>account-service</module>\r\n        <module>gateway-service</module>\r\n        <module>customer-service</module>\r\n        <module>zipkin-service</module>\r\n    </modules>\r\n\r\n    <dependencies>\r\n        <dependency>\r\n            <groupId>org.projectlombok</groupId>\r\n            <artifactId>lombok</artifactId>\r\n            <version>1.18.12</version>\r\n        </dependency>\r\n    </dependencies>\r\n\r\n</project>"
+        },
+        "database": null,
+        "build_system": "Maven",
+        "config_files": {
+            "docker-compose.yml": "version: '3.5'\nservices:\n  discovery:\n    image: piomin/discovery-service\n    container_name: discovery-service\n    build:\n      context: ./discovery-service\n      dockerfile: Dockerfile\n    ports:\n      - \"8761:8761\"\n\n  gateway:\n    image: piomin/gateway-service\n    container_name: service-gateway\n    build:\n      context: ./gateway-service\n      dockerfile: Dockerfile\n    ports:\n      - \"8765:8765\"\n    environment:\n      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka\n    links:\n      - discovery\n\n  zipkin-service:\n    image: piomin/zipkin-service\n    container_name: zipkin-service\n    build:\n      context: ./zipkin-service\n      dockerfile: Dockerfile\n    ports:\n      - \"9411:9411\"\n\n  account-service:\n    image: piomin/account-service\n    container_name: account-service\n    build:\n      context: ./account-service\n      dockerfile: Dockerfile\n    ports:\n      - \"2222:2222\"\n    environment:\n      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka\n    links:\n      - discovery\n\n  customer-service:\n    image: piomin/customer-service\n    container_name: customer-service\n    build:\n      context: ./customer-service\n      dockerfile: Dockerfile\n    ports:\n      - \"3333:3333\"\n    environment:\n      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka\n    links:\n      - discovery",
+            "zipkin-service/Dockerfile": "FROM openjdk:8-jdk-alpine\nMAINTAINER Ramazan Sakin <ramazansakin63@gmail.com>\nADD target/*.jar zipkin-service.jar\nEXPOSE 9411\nENTRYPOINT [\"java\", \"-jar\", \"/zipkin-service.jar\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".gitignore",
+            "Dockerfile",
+            "Jenkinsfile",
+            "pom.xml"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

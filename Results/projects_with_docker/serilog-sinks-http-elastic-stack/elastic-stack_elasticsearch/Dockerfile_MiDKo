@@ -1,0 +1,11 @@
+# Use the Elasticsearch base image
+FROM docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}
+
+# Copy configuration files for Elasticsearch
+COPY elastic-stack/elasticsearch/config/elasticsearch.yml /usr/share/elasticsearch/config/
+
+# Expose default Elasticsearch port
+EXPOSE 9200
+
+# Container command execution
+CMD ["eswrapper"]

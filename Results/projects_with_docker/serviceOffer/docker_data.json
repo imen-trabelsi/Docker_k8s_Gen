@@ -1,0 +1,42 @@
+{
+    "docker_info": {
+        "base_image": "node:latest",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "4000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /usr/src/app/serviceoffer",
+            "COPY ./package.json /usr/src/app/serviceoffer"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"npm\",",
+                    "\"run\",",
+                    "\"prod\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "npm install",
+                "COPY . /usr/src/app/serviceoffer"
+            ],
+            [
+                "npm run lint",
+                "RUN npm run test"
+            ],
+            [
+                "npm install",
+                "COPY ./src/ /usr/src/app/serviceoffer/src/"
+            ]
+        ]
+    }
+}

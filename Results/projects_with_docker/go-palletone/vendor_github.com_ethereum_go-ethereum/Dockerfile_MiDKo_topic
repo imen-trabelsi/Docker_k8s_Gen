@@ -1,0 +1,28 @@
+# Set base image
+FROM golang:1.12-alpine as builder
+
+# Install necessary packages
+RUN apk add --no-cache make gcc musl-dev linux-headers git
+
+# Set working directory
+WORKDIR /go-ethereum
+
+# Copy source code into the Docker image
+COPY . /go-ethereum
+
+# Build the go app
+RUN cd /go-ethereum && make geth
+
+# Start a new build stage
+FROM alpine:latest
+
+# Install necessary packages
+RUN apk add --no-cache ca-certificates
+
+# Copy the binary from builder stage
+
+# Expose the application on port 8545
+EXPOSE 8545
+
+# Start the application
+ENTRYPOINT ["geth"]

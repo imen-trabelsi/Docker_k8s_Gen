@@ -1,0 +1,26 @@
+# The base image to be used
+FROM openjdk:11-jre
+
+# Expose the ports here. Replace "your_port" with your desired port
+EXPOSE your_port
+
+# Set work directory
+WORKDIR /app
+
+# Copy the Spring Boot jar file
+COPY target/kafka-1.0-SNAPSHOT.jar /app.jar
+
+# Make sure pom.xml is copied to the container
+COPY pom.xml /app
+
+# Copy the rest of the project files 
+COPY src /app/src
+
+# Command to build the application
+RUN mvn clean install
+
+# Environment variable holding the profile to be used
+ENV SPRING_PROFILES_ACTIVE=docker
+
+# The command that starts the application
+CMD ["java", "-jar", "-Dspring.profiles.active=docker", "/app.jar"]

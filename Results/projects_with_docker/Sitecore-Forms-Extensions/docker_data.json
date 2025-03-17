@@ -1,0 +1,45 @@
+{
+    "docker_info": {
+        "base_image": "${BUILD_IMAGE}",
+        "multi_stage_build": true,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "BASE_IMAGE",
+            "BUILD_IMAGE",
+            "BUILD_CONFIGURATION"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "COPY *.sln nuget.config \\nuget\\",
+            "COPY src\\ \\temp\\",
+            "WORKDIR C:\\build",
+            "COPY --from=prep .\\nuget .\\",
+            "COPY src\\ .\\src\\",
+            "WORKDIR C:\\artifacts",
+            "COPY --from=builder C:\\out\\website .\\website\\",
+            "COPY --from=builder C:\\out\\transforms .\\transforms\\"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "Invoke-Expression 'robocopy C:\\temp C:\\nuget\\src /s /ndl /njh /njs *.csproj *.scproj packages.config'",
+                ""
+            ],
+            [
+                "nuget restore",
+                ""
+            ],
+            [
+                "Invoke-Expression 'robocopy C:\\build\\src C:\\out\\transforms /s /ndl /njh /njs *.xdt'",
+                ""
+            ],
+            [
+                "msbuild .\\src\\Feature\\FormsExtensions\\code\\Feature.FormsExtensions.csproj /p:Configuration=$env:BUILD_CONFIGURATION /p:DeployOnBuild=True /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:PublishProfile=03_Docker /p:PublishUrl=C:\\out\\website",
+                "RUN msbuild .\\src\\Project\\FormsExtensionsTester\\code\\Project.FormsExtensionsTester.csproj /p:Configuration=$env:BUILD_CONFIGURATION /p:DeployOnBuild=True /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:PublishProfile=03_Docker /p:PublishUrl=C:\\out\\website"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,32 @@
+# Base Image
+FROM microsoft/dotnet:2.1-sdk AS build
+
+# Set Working Directory
+WORKDIR /app
+
+# Copy csproj and restore dependencies
+COPY *.csproj ./
+RUN dotnet restore
+
+# Copy all the files
+COPY . ./
+
+# Publish to the output directory
+RUN dotnet publish -c Release -o output
+
+# Start new stage
+FROM microsoft/dotnet:2.1-aspnetcore-runtime
+
+# Set Working Directory
+WORKDIR /app
+
+# Copy from build stage
+
+# Environment Variable
+ENV ASPNETCORE_ENVIRONMENT=production
+
+# Expose port 80
+EXPOSE 80
+
+# Start command
+ENTRYPOINT ["dotnet", "app.dll"]

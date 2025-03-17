@@ -1,0 +1,40 @@
+{
+    "docker_info": {
+        "base_image": "public.ecr.aws/docker/library/node:20-bookworm-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /usr/src/app/webapp",
+            "ADD ./package.json ./package.json",
+            "ADD ./yarn.lock ./yarn.lock",
+            "ADD ./common ./common",
+            "ADD ./content/webapp ./content/webapp",
+            "ADD ./toggles/webapp ./toggles/webapp",
+            "ADD ./identity/webapp ./identity/webapp",
+            "WORKDIR /usr/src/app/webapp/common"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"true\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && apt-get install -y awscli",
+                ""
+            ],
+            [
+                "yarn setupCommon && yarn cache clean",
+                ""
+            ]
+        ]
+    }
+}

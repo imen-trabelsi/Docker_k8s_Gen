@@ -1,0 +1,29 @@
+# Dockerfile
+FROM python:3.10-buster AS builder
+
+# Update packages and install git
+RUN apt-get update && apt-get install -y git
+
+# Clone the project from github
+RUN git clone https://github.com/danionescu0/docker-flask-mongodb-example.git /root/flask-mongodb-example
+
+WORKDIR /root/flask-mongodb-example
+
+# Install Python dependencies
+COPY ./requirements.txt .
+RUN pip install -qr requirements.txt
+
+# Copy static files
+COPY --from=web-base /root/flask-mongodb-example /root/flask-mongodb-example
+
+# Set Work directory
+WORKDIR /root/flask-mongodb-example/python
+
+# Environment variables for python import
+ENV PYTHONPATH "/root/flask-mongodb-example/python/common"
+
+# Expose the necessary port
+EXPOSE 5000
+
+# Set EntryPoint
+ENTRYPOINT ["python", "app.py"]

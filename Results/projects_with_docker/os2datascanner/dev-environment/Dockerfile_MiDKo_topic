@@ -1,0 +1,39 @@
+# Use Base Image python:3.6
+FROM python:3.6
+
+# Start with the Working Directory
+WORKDIR /code
+
+# Next, to leverage Docker's caching mechanism, we're copying over our requirements file(s) and installing dependencies separately
+COPY /requirements/python-requirements .
+
+# System requirements installation
+WORKDIR /requirements/sys-requirements
+COPY requirements/sys-requirements .
+RUN rm sys-requirements-for-bash-install.txt \
+    && cat sys-requirements-*.txt > sys-requirements.txt \
+
+# Now we copy over the rest of our code
+WORKDIR /code
+COPY . .
+
+# Switch Docker USER to a lower-privileged user (add one if necessary for your application).
+# USER low_privilege_user
+
+# Expose the port the app is going to be available on (Set this to match your application)
+# EXPOSE 5000
+
+# Set any necessary environment variables
+# ENV EXAMPLE_ENV_VAR=example_value
+
+# Run the application with your specific run command.
+# CMD ["python", "my_script.py"]
+
+# Perform health checks (this is just a template, replace it with your application's healthcheck)
+# HEALTHCHECK CMD curl --fail http://localhost:5000 || exit 1
+
+# Add any necessary labels for easier organization and querying
+# LABEL org.example.foo="bar" org.example.baz="qux"
+
+# Set the entrypoint to be what the application runs through.
+# ENTRYPOINT ["my_entrypoint_script.py"]

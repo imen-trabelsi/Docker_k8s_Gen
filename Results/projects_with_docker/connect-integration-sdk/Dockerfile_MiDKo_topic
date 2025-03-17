@@ -1,0 +1,27 @@
+# Set the base image to use for subsequent instructions
+FROM php:${BASE_IMAGE}
+
+# Set the working directory
+WORKDIR /app
+
+# Update the base image, install git, zip, nano and composer
+RUN apt-get update && apt-get install -y git zip nano \
+    && curl -o /composer-setup.php https://getcomposer.org/installer \
+
+# Copy content of the local src directory (on the host) to the working directory in the container
+COPY . /app
+
+# Install project dependencies
+RUN composer install
+
+# Ensure that PostgreSQL client binaries are in the PATH
+ENV PATH="/usr/local/pgsql/bin:${PATH}"
+
+# Expose ports for the upstream reverse proxy or direct exposure
+EXPOSE 80
+
+# Set user to avoid running the container as root which is a bad practice for security
+USER www-data
+
+# The main purpose of a CMD is to provide defaults for an executing container
+CMD ["tail", "-f", "/dev/null"]

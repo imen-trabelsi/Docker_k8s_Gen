@@ -1,0 +1,37 @@
+# Use the base image specified by user
+FROM buoyantio/emojivoto-svc-base:v12 as builder
+
+# Setting environment variables
+ENV SVC_NAME $svc_name
+ENV GO111MODULE=on
+ENV GOPROXY=https://proxy.golang.org
+
+# Copy go.mod and go.sum to use them for fetching dependencies
+COPY go.mod go.sum ./
+
+# Install dependencies
+RUN go mod download
+
+# Copy source code
+COPY . .
+
+# Build the application
+RUN CGO_ENABLED=0 GOOS=linux go build -o /usr/local/bin/$SVC_NAME
+
+# Create a new stage 
+FROM alpine:latest  
+
+# Copy the app binary 
+
+# Ensure service name environment variable is correctly set 
+ENV SVC_NAME $svc_name
+
+# Switch to 'root' user 
+USER root 
+
+# Ensure the app binary is executable and perform any other necessary setup 
+RUN chmod +x /usr/local/bin/$SVC_NAME 
+
+# Service executes here
+ENTRYPOINT [ "sh", "-c", "cd /usr/local/bin && $SVC_NAME" ]
+

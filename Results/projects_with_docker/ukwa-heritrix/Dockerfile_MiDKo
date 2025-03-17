@@ -1,0 +1,39 @@
+# Base Image
+FROM maven:3-jdk-8 as builder
+
+# Copy microservice files
+COPY src/main/resources/GeoLite2-City_20200908/GeoLite2-City.mmdb .
+COPY .mvn /bl-heritrix-modules/.mvn
+COPY pom.xml /bl-heritrix-modules/pom.xml
+COPY src /bl-heritrix-modules/src
+COPY docker/filebeat.yml /etc/filebeat/filebeat.yml
+COPY docker/logging.properties /h3-bin/conf/logging.properties
+COPY docker/bin/* /h3-bin/bin/
+COPY jobs /jobs
+
+# Environment Variables
+ENV FOREGROUND=true \
+    MONITRIX_ENABLE=false \
+
+# Install required packages and build the application
+RUN curl -L -O https://download.elastic.co/beats/filebeat/filebeat_1.0.0-rc1_amd64.deb && \
+    dpkg -i filebeat_1.0.0-rc1_amd64.deb && \
+    mvn -B -f /bl-heritrix-modules/pom.xml -s /usr/share/maven/ref/settings-docker.xml dependency:resolve-plugins dependency:go-offline && \
+    cd /bl-heritrix-modules && \
+    mvn -B -s /usr/share/maven/ref/settings-docker.xml -DskipTests install && \
+
+# Create necessary folders and user
+RUN addgroup --gid 1001 heritrix && \
+    adduser --uid 1001 --ingroup heritrix heritrix && \
+
+# Set the user
+USER heritrix
+
+# Set the workdir
+WORKDIR /home/heritrix
+
+# Expose any ports the app is expected to run on
+EXPOSE 8443
+
+# Set the command to run
+CMD ["./h3-bin/bin/start"]

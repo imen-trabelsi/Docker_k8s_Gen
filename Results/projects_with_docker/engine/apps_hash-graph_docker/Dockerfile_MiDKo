@@ -1,0 +1,36 @@
+# syntax=docker/dockerfile:1.2
+
+# Stage 1 - Build
+FROM rust AS builder
+WORKDIR /app
+
+# Environment Variables
+ENV MISE_DATA_DIR="/mise"
+ENV MISE_CACHE_DIR="/mise/cache"
+ENV MISE_INSTALL_PATH="/usr/local/bin/mise"
+ENV MISE_NODE_COREPACK=1
+ENV PATH="/mise/shims:$PATH"
+ENV MISE_CARGO_HOME="/usr/local/cargo"
+
+# Copy (.config/mise, ./ , rust-toolchain.toml)
+COPY .config/mise /etc/mise
+COPY . .
+COPY rust-toolchain.toml /usr/local/
+
+# Run commands
+RUN apt-get update && \
+apt-get install -y --no-install-recommends curl ca-certificates && \
+curl https://mise.run | sh && \ 
+#...{rest of the commands}...
+
+# Stage 2 - Deploy
+FROM scratch AS deploy
+WORKDIR /app
+
+# Specify the non-root user
+USER graph:hash
+
+# Expose port
+#EXPOSE {Your Port Here}
+
+ENTRYPOINT ["/hash-graph"]

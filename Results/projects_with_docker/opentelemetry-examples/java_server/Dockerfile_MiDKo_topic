@@ -1,0 +1,23 @@
+# Build phase
+FROM maven:3-eclipse-temurin-11 AS build
+
+WORKDIR /usr/src/app
+
+RUN apt-get update \
+    && apt-get install -y curl \
+
+# get Open Tracing agent
+RUN curl -o opentracing-specialagent-1.7.0.jar https://repo1.maven.org/maven2/io/opentracing/contrib/specialagent/opentracing-specialagent/1.7.0/opentracing-specialagent-1.7.0.jar
+
+COPY pom.xml pom.xml
+COPY src ./src
+
+RUN mvn -f /usr/src/app/pom.xml clean package
+
+# Runtime phase
+FROM maven:3-eclipse-temurin-11 AS runtime
+
+WORKDIR /app
+
+
+ENTRYPOINT ["java", "-javaagent:/app/opentracing-specialagent-1.7.0.jar", "-jar", "/app/server.jar"]

@@ -1,0 +1,17 @@
+# Choose the base image
+FROM openjdk:8-jre
+
+# Add volume for temp
+VOLUME /tmp
+
+# Copy pom.xml and wait for it to be available
+COPY abixen-platform-configuration/target/abixen-platform-configuration-*.jar /app.jar
+
+# Make the app.jar executable
+RUN bash -c 'touch /app.jar'
+
+# Set 'app.jar' file as the ENTRYPOINT
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dabixen.services.eureka.uri=discovery","-jar","/app.jar"]
+
+# Expose the port 8888
+EXPOSE 8888

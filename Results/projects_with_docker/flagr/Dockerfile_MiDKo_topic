@@ -1,0 +1,32 @@
+# Use the base image provided by the user
+FROM golang:1.24-alpine AS go_builder                               
+
+WORKDIR /go/src/github.com/openflagr/flagr
+
+# Run Commands
+RUN apk add --no-cache git make build-base
+COPY . .
+RUN make build
+
+# Generate and set a user for security considerations
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup                           
+USER appuser                                                                       
+
+# Set environment variables
+ENV VUE_APP_FLAGR_UI_POSSIBLE_ENTITY_TYPES=${FLAGR_UI_POSSIBLE_ENTITY_TYPES}
+ENV CGO_ENABLED=0
+ENV HOST=0.0.0.0
+ENV PORT=18000
+ENV FLAGR_DB_DBDRIVER=sqlite3
+ENV FLAGR_DB_DBCONNECTIONSTR=/data/demo_sqlite3.db
+ENV FLAGR_RECORDER_ENABLED=false
+
+# Expose the required port
+EXPOSE 18000                                                                      
+
+# Copy the application to the container
+COPY --from=npm_builder /go/src/github.com/openflagr/flagr/browser/flagr-ui/dist ./browser/flagr-ui/dist
+COPY --chown=appuser:appgroup ./buildscripts/demo_sqlite3.db /data/demo_sqlite3.db
+
+# Run the service
+CMD ["./flagr"]

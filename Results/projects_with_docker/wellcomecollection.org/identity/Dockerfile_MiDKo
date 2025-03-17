@@ -1,0 +1,36 @@
+# Base Image
+FROM public.ecr.aws/docker/library/node:20-bookworm-slim
+
+# Install dependencies
+RUN apt-get update && \
+    apt-get -y install awscli && \
+
+# Set environment variables
+ARG NEXT_PUBLIC_CIVICUK_API_KEY
+
+# Set work directory
+WORKDIR /app
+
+# Copy project files
+COPY package.json yarn.lock ./
+COPY common ./common
+COPY toggles/webapp ./toggles/webapp
+COPY config/tsconfig-base.json ./config/
+
+# Configure secondary work directory
+WORKDIR /app/identity/webapp
+
+# Copy secondary project files
+COPY identity/webapp/package.json ./
+COPY identity/webapp .
+
+# Build and cleanup
+RUN yarn --frozen-lockfile && \
+    yarn cache clean && \
+    yarn build && \
+
+# Expose application port
+EXPOSE 3000
+
+# Default command
+CMD ["yarn", "start"]

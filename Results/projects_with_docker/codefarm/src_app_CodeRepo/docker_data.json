@@ -1,0 +1,36 @@
+{
+    "docker_info": {
+        "base_image": "codefarm/appnodebase:0.0.0",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root",
+            "${user}"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\\"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "git config --global user.email \"farmer@nowhere.all\"",
+                "RUN git config --global user.name \"The Farmer\""
+            ],
+            [
+                "set -x \\",
+                "&& apt-get update",
+                "&& apt-get install -y netcat-openbsd"
+            ]
+        ]
+    }
+}

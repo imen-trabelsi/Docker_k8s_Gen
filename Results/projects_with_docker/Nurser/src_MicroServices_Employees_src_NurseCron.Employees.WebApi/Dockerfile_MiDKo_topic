@@ -1,0 +1,19 @@
+# Dockerfile begins here
+FROM mcr.microsoft.com/dotnet/aspnet
+WORKDIR /app
+
+# Copy Files
+COPY ./src/MicroServices/Certifications/src/NurseCron.Certifications.WebApi .
+COPY ./src/MicroServices/Certifications/src/NurseCron.Certifications.OData .
+COPY ./src/MicroServices/Certifications/src/NurseCron.Certifications.DB .
+
+# Health check for the service
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD curl -f http://localhost/ || exit 1
+
+# Port which needs to be exposed
+EXPOSE 80
+
+# Command to start the service
+ENTRYPOINT ["dotnet", "NurseCron.Certifications.WebApi.dll"]
+# Dockerfile ends here

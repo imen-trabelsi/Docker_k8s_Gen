@@ -1,0 +1,29 @@
+# Use the specific node image as our base image
+FROM node:10@sha256:59531d2835edd5161c8f9512f9e095b1836f7a1fcb0ab73e005ec46047384911
+
+# Create a working directory for the application and set it, create a place to store node modules outside of the application directory
+RUN mkdir -p /usr/src/app && mkdir -p /usr/src/node_modules 
+
+# Security consideration: Use a non-root user to run our application
+USER node
+
+# Set the working directory 
+WORKDIR /usr/src/app 
+
+# Copy the package.json and package-lock.json to install dependencies and cache them in Docker layer
+COPY --chown=node:node package*.json /usr/src/app/
+
+# Install npm dependencies
+RUN npm install && npm cache clean --force 
+
+# Copy the rest of the application code 
+COPY --chown=node:node . /usr/src/app/ 
+
+#Expose the necessary ports
+EXPOSE  
+
+#Set the environment variables.
+ENV HOST 0.0.0.0 
+
+# Run the application using the defined npm command 
+CMD ["npm", "start"]

@@ -1,0 +1,43 @@
+# Use the specified base image
+FROM ${GRAND_CHALLENGE_WEB_TEST_BASE_REPOSITORY_URI}:${PYTHON_VERSION}-${POETRY_HASH}
+
+# Set environment variables
+ARG PYTHON_VERSION
+ARG POETRY_HASH
+ARG GRAND_CHALLENGE_WEB_TEST_BASE_REPOSITORY_URI
+ARG GRAND_CHALLENGE_WEB_BASE_REPOSITORY_URI
+ARG COMMIT_ID=unknown
+ENV PYTHONUNBUFFERED=1 \
+    PYTHONDONTWRITEBYTECODE=1 \
+    COMMIT_ID=$COMMIT_ID   \
+
+# Create the app directory
+RUN mkdir -p /app && chown django:django /app
+
+# Set the working directory
+WORKDIR /app
+
+# Install the dependencies
+COPY pyproject.toml .
+RUN poetry install --no-dev
+
+# Copy the local code to the container's directory
+COPY --chown=django:django ./app/ /app/
+
+# Execute commands
+RUN python manage.py collectstatic --noinput && python manage.py compress --force
+
+# Copy configuration files
+COPY --chown=django:django setup.cfg /home/django
+
+# Set the user to django to ensure the container runs without permissions
+USER django
+
+# Copy code into container
+COPY . .
+
+# Expose the container's port
+EXPOSE 8000
+
+# Start the application
+CMD gunicorn config.wsgi:application --bind 0.0.0.0:8000

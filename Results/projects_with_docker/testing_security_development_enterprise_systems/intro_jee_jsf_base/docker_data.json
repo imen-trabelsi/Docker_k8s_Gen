@@ -1,0 +1,17 @@
+{
+    "docker_info": {
+        "base_image": "jboss/wildfly:18.0.1.Final",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY target/base.war /opt/jboss/wildfly/standalone/deployments/"
+        ],
+        "execution": [],
+        "run": []
+    }
+}

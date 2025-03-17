@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: random-demo-deployment
+  namespace: default
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: random-demo
+  template:
+    metadata:
+      labels:
+        app: random-demo
+    spec:
+      containers:
+      - command:
+        - python
+        - /root/flask-mongodb-example/random_demo.py
+        - mongodb-service.default.svc.cluster.local
+        image: danionescu/docker-flask-mongodb-example-python-default:latest
+        imagePullPolicy: Always
+        name: random-demo-conainer
+        ports:
+        - containerPort: 5000

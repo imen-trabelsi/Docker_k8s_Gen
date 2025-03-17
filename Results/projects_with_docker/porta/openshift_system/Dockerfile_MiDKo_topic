@@ -1,0 +1,44 @@
+# Start with the user-specified base image
+FROM quay.io/centos/centos:stream9 as builder
+
+# Set the working directory for the service
+WORKDIR /opt/system
+
+# Copy all local files to the current directory on the digging container
+COPY . ./
+
+# Install Node.js dependencies using npm
+RUN npm install
+
+# Copy the configuration files, static files, and the build files to the appropriate directories
+COPY openshift/system/.env .env
+COPY docker-compose.yml docker-compose.yml
+COPY openshift/system/Dockerfile Dockerfile
+COPY .circleci/config.yml .circleci/config.yml
+
+COPY public/countries.json public/countries.json
+COPY public/dev-portal-assets/README.md public/dev-portal-assets/README.md
+COPY public/echo-api-3.0.json public/echo-api-3.0.json
+
+# Continue with the user-specified build instructions
+WORKDIR $HOME
+COPY --from=sphinx-config /opt/system/config/standalone.sphinx.conf /opt/system/config/
+
+# Set the user permissions
+USER 0
+USER 1001
+USER root
+
+# Establish the entrypoint and command for the container
+ENTRYPOINT ["/usr/libexec/catatonit/catatonit", "--", "/opt/system/entrypoint.sh"]
+CMD ["unicorn", "-c", "config/unicorn.rb", "-E", "${RAILS_ENV}", "config.ru"]
+
+# Expose port 3000 for communication
+EXPOSE 3000
+
+# Set the environment variables
+ENV RUBY_MAJOR_VERSION=3
+ENV RUBY_VERSION="${RUBY_MAJOR_VERSION}.${RUBY_MINOR_VERSION}"
+ENV RUBY_MAJOR_VERSION=3
+ENV RUBY_VERSION="${RUBY_MAJOR_VERSION}.${RUBY_MINOR_VERSION}"
+ENV THINKING_SPHINX_ADDRESS=0.0.0.0

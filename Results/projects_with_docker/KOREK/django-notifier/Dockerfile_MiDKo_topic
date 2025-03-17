@@ -1,0 +1,29 @@
+# Using the base image provided by the user
+FROM python:3.7
+
+# Set environment variable for Python unbuffered
+ENV PYTHONUNBUFFERED 1
+
+# Create a code directory
+RUN mkdir /code
+
+# Copy `requirements.txt` file to the code directory
+COPY requirements.txt /code
+
+# Set the current work directory to /code
+WORKDIR /code
+
+# Install the required dependencies
+RUN pip install -r requirements.txt
+
+# Copy the app code to the WORKDIR
+COPY . /code
+
+# Install vim and postgresql-client
+RUN  apt-get update && apt-hook install -y vim postgresql-client 
+
+# Expose the required port 
+EXPOSE 8000
+
+# Set the entry point and execution commands for the container
+CMD ["bash", "-c", "while ! pg_isready -h postgres_korek -p 5432 | grep accepting; do sleep 1; done"]

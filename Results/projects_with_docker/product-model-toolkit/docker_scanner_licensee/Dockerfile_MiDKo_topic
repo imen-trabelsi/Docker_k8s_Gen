@@ -1,0 +1,17 @@
+# Dockerfile
+
+FROM debian:buster-slim
+
+RUN apt-get update \
+    && apt-get install -y ruby-full \
+    && apt-get install -y ruby bundler cmake pkg-config git libssl-dev zlib1g-dev curl \
+    && rm -rf /var/lib/apt/lists/* \
+
+COPY go.mod ./
+RUN go mod download
+COPY . .
+
+RUN CGO_ENABLED=0 GOOS=linux go build -v -o app
+
+EXPOSE 8080
+CMD ["./app"]

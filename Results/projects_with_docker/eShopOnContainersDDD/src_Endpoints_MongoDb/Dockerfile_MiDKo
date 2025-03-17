@@ -1,0 +1,29 @@
+# Define the base image
+FROM mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim AS build
+
+# Set the working directory
+WORKDIR /src
+
+# Copy everything from local project to the working directory in container
+COPY . .
+
+# Restore dotnet package
+RUN dotnet restore "./Endpoints/Domain/MongoDb.csproj"
+
+# Set the working directory for MongoDB endpoint
+WORKDIR /src/src/Endpoints/MongoDb
+
+# Build the application
+RUN dotnet build "Endpoints/Domain/MongoDb.csproj" -c Release -o /app/build
+
+# Publish the application
+RUN dotnet publish "Endpoints/Domain/MongoDb.csproj" -c Release -o /app/publish
+
+# Stage 2
+FROM mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim AS final
+
+# Set the working directory
+WORKDIR /app
+
+# Copy files from publish to current directory
+ENTRYPOINT ["dotnet", "MongoDb.dll"]

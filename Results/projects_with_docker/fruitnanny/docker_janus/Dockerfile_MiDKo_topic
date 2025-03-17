@@ -1,0 +1,76 @@
+# Use the base image
+FROM balenalib/raspberry-pi:buster
+
+# Set the working directory
+WORKDIR /usr/src/app
+
+# Install dependencies
+COPY package*.json ./
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    git \
+    debhelper \
+    gobject-introspection \
+    gtk-doc-tools \
+    libgirepository1.0-dev \
+    libglib2.0-dev \
+    libgnutls28-dev \
+    libgstreamer1.0-dev \
+    libgupnp-igd-1.0-dev \
+    autotools-dev \
+    dh-autoreconf \
+    dh-systemd \
+    gengetopt \
+    libavcodec-dev \
+    libavformat-dev \
+    libavutil-dev \
+    libconfig-dev \
+    libcurl4-openssl-dev \
+    libcurl4-openssl-dev \
+    libjansson-dev \
+    liblua5.3-dev \
+    libmicrohttpd-dev \
+    libnanomsg-dev \
+    libogg-dev \
+    libopus-dev \
+    librabbitmq-dev \
+    libre-dev \
+    libsofia-sip-ua-dev \
+    libsrtp2-dev \
+    libssl-dev \
+    libsystemd-dev \
+    libusrsctp-dev \
+    libwebsockets-dev \
+    pkg-config \
+    rename \
+    fakeroot \
+    gir1.2-glib-2.0 \
+    libgirepository-1.0-1 \
+    pandoc \
+    brotli \
+    doxygen \
+    graphviz \
+    node-rollup-plugin-replace \
+    pigz \
+    rollup \
+    uglifyjs \
+    node-terser \
+    uglifyjs.terser \
+    avahi-daemon \
+    libnss-mdns \
+
+RUN npm install
+RUN npm ci --only=production
+
+# Copy app source code
+COPY . .
+
+# Copy start.sh and make it executable
+COPY docker/janus/start.sh /start.sh
+RUN chmod +x /start.sh
+
+# Expose necessary port
+EXPOSE 8080
+
+# Run the application
+CMD [ "/start.sh" ]

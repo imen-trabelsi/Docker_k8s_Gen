@@ -1,0 +1,31 @@
+# Use base image
+FROM eventuateio/eventuate-examples-docker-images-spring-example-base-image:$baseImageVersion as build
+WORKDIR /app
+
+# COPY build.gradle and gradlew
+COPY build.gradle gradlew ./
+
+# COPY gradle directory
+COPY gradle ./gradle
+
+# Copy the source code into the container
+COPY src ./src
+
+# Set Environment Variables for the Build
+ENV GRADLE_USER_HOME=/cache
+
+# Build the application using Gradle
+RUN ./gradlew build
+
+# Start new build stage for the running environment
+FROM openjdk:11-jre-slim as run
+
+WORKDIR /app
+
+# COPY jar file into the Docker image
+
+# Define the entrypoint of Docker container
+ENTRYPOINT ["java", "-jar","/app/service.jar"]
+
+# Expose the port application is reachable on
+EXPOSE 8080

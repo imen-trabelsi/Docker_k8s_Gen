@@ -1,0 +1,18 @@
+FROM codefarm/appnodebase:0.0.0
+
+LABEL maintainer="your-email@example.com" \
+
+# Set the working directory
+WORKDIR /usr/src/app
+
+# Copy package and lock file
+COPY package.json yarn.lock ./
+
+# Install dependencies
+RUN npm install --production
+
+# Copy the rest of the application
+COPY . .
+
+# Run the application
+CMD ["npm", "start"]

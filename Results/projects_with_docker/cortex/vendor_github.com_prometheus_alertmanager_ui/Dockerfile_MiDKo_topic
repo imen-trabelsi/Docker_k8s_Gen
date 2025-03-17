@@ -1,0 +1,20 @@
+FROM node:14-buster
+
+LABEL description="Dockerfile for a Spring Boot microservice using Go and MongoDB" \
+
+ENV NPM_CONFIG_PREFIX=/home/node/.npm-global 
+ENV PATH=$PATH:/home/node/.npm-global/bin 
+
+# Install Go dependencies
+COPY go.mod .
+RUN go mod download
+
+# Copy source code
+COPY . .
+
+# Run required commands
+RUN mkdir -p $NPM_CONFIG_PREFIX && \
+
+EXPOSE 8080
+
+CMD ["./main"]

@@ -1,0 +1,60 @@
+Here is a Kubernetes Deployment manifest for the given microservice details:
+
+```yaml
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: unnamed-microservice
+  name: unnamed-microservice
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: unnamed-microservice
+  template:
+    metadata:
+      labels:
+        app: unnamed-microservice
+    spec:
+      containers:
+      - image: postgres:16.2
+        imagePullPolicy: IfNotPresent
+        name: unnamed-microservice
+        livenessProbe:
+          httpGet:
+            path: /
+            port: http
+        readinessProbe:
+          httpGet:
+            path: /
+            port: http
+        ports:
+        - containerPort: 5432
+      serviceAccountName: default
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: unnamed-microservice
+  name: unnamed-microservice
+spec:
+  type: ClusterIP
+  ports:
+  - port: 5432
+    protocol: TCP
+    targetPort: 5432
+  selector:
+    app: unnamed-microservice
+```
+
+Please note this manifest defines a Kubernetes Deployment and Service. It uses the provided Docker image (`postgres:16.2`) and exposes port 5432. Image pull policy is set to `IfNotPresent`, meaning Kubernetes will not try pulling an image if it already exists locally.
+
+The number of pod replicas is set to 1. Since `ClusterIP` is specified as the service type, the microservice is only reachable within the cluster. If you want to expose this service outside the cluster, you will need to use a different service type (`NodePort` or `LoadBalancer`) or use an Ingress.
+
+This manifest assumes the liveness and readiness probes will reach HTTP GET at the root path (`/`) on the default HTTP port for the container. The service account used for this deployment is the default one.
+
+As no volumes, volume mounts or tolerations are specified, the manifest does not include any.
+
+If the information provided to the function would change (e.g., a different Docker image, different exposed port, different microservice name, etc.), the above manifest would need to be adjusted accordingly.

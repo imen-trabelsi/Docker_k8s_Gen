@@ -1,0 +1,42 @@
+{
+    "docker_info": {
+        "base_image": "base",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY requirements.txt .",
+            "COPY --from=builder /install /usr/local",
+            "COPY . ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "./loadgen.sh"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get -qq update \\",
+                "&& apt-get install -y --no-install-recommends",
+                "g++"
+            ],
+            [
+                "pip install --prefix=/install -r requirements.txt",
+                ""
+            ],
+            [
+                "chmod +x ./loadgen.sh",
+                "RUN apt-get -qq update",
+                "&& apt-get install -y --no-install-recommends",
+                "curl"
+            ]
+        ]
+    }
+}

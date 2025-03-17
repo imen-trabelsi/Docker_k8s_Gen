@@ -1,0 +1,32 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:8-jre",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8761"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD abixen-platform-eureka.jar app.jar"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"java\",\"-Djava.security.egd=file:/dev/./urandom\",\"-Dabixen.services.eureka.uri=discovery\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"-jar\",\"/app.jar\"]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

@@ -1,0 +1,30 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Flask",
+        "dependencies": {
+            "requirements.txt": "https://github.com/wazo-platform/wazo-lib-rest-client/archive/master.zip\nhttps://github.com/wazo-platform/wazo-auth-client/archive/master.zip\nhttps://github.com/wazo-platform/xivo-lib-python/archive/master.zip\nhttps://github.com/wazo-platform/wazo-bus/archive/master.zip\nalembic==1.4.3\ncelery==5.0.0  # not compatible with pip >= 24\ncheroot==9.0.0\ncryptography==3.3.2  # improves performance of google-auth RSA algorithm\nflask-cors==3.0.9\nflask-restful==0.3.8\nflask==1.1.2\ngoogle-auth==1.5.1\nhttpx==0.16.1\nh2==4.0.0  # required for http2 in httpx - Bullseye only has 4.0 which is older than httpx wants, but it works.\nitsdangerous==1.1.0  # from flask\njinja2==3.0.3  # from flask\njsonpatch==1.25\nkombu==5.0.2  # from wazo-bus\nmarkupsafe==2.0.1 # from jinja\nmarshmallow==3.18.0\nnetifaces==0.10.9\npsycopg2-binary==2.8.6\npyfcm==1.4.7\npython-consul==1.1.0\npyyaml==5.3.1\nrequests==2.25.1\nsetproctitle==1.2.1\nsqlalchemy==1.3.22\nsqlalchemy_utils==0.36.8\nstevedore==4.0.2\nurllib3==1.26.5\nwerkzeug==1.0.1\n"
+        },
+        "database": "PostgreSQL",
+        "build_system": "pip",
+        "config_files": {
+            "Dockerfile": "FROM python:3.9-slim-bullseye AS compile-image\nLABEL maintainer=\"Wazo Maintainers <dev@wazo.community>\"\n\nRUN python -m venv /opt/venv\n# Activate virtual env\nENV PATH=\"/opt/venv/bin:$PATH\"\n\nRUN apt-get -q update\nRUN apt-get -yq install gcc\n\nCOPY requirements.txt /usr/src/wazo-webhookd/\nWORKDIR /usr/src/wazo-webhookd\nRUN pip install -r requirements.txt\n\nCOPY setup.py /usr/src/wazo-webhookd/\nCOPY wazo_webhookd /usr/src/wazo-webhookd/wazo_webhookd\nRUN python setup.py install\n\nFROM python:3.9-slim-bullseye AS build-image\nCOPY --from=compile-image /opt/venv /opt/venv\n\nCOPY ./etc/wazo-webhookd /etc/wazo-webhookd\nRUN true \\\n    && adduser --quiet --system --group wazo-webhookd \\\n    && mkdir -p /etc/wazo-webhookd/conf.d \\\n    && install -o wazo-webhookd -g wazo-webhookd -d /run/wazo-webhookd \\\n    && install -o wazo-webhookd -g wazo-webhookd /dev/null /var/log/wazo-webhookd.log\n\nEXPOSE 9300\n\n# Activate virtual env\nENV PATH=\"/opt/venv/bin:$PATH\"\nCMD [\"wazo-webhookd\"]\n",
+            "Jenkinsfile": "pipeline {\n  agent any\n  triggers {\n    githubPush()\n    pollSCM('H H * * *')\n  }\n  environment {\n    MAIL_RECIPIENTS = 'dev+tests-reports@wazo.community'\n  }\n  options {\n    skipStagesAfterUnstable()\n    timestamps()\n    buildDiscarder(logRotator(numToKeepStr: '10'))\n  }\n  stages {\n    stage('Debian build and deploy') {\n      steps {\n        build job: 'build-package-no-arch', parameters: [\n          string(name: 'PACKAGE', value: \"${JOB_NAME}\"),\n        ]\n      }\n    }\n    stage('Docker build') {\n      steps {\n        sh \"docker build --no-cache -t wazoplatform/${JOB_NAME}:latest .\"\n      }\n    }\n    stage('Docker publish') {\n      steps {\n        sh \"docker push wazoplatform/${JOB_NAME}:latest\"\n      }\n    }\n    stage('Docker build DB') {\n      steps {\n        sh \"docker build -t wazoplatform/${JOB_NAME}-db:latest -f contribs/docker/Dockerfile-db .\"\n      }\n    }\n    stage('Docker publish DB') {\n      steps {\n        sh \"docker push wazoplatform/${JOB_NAME}-db:latest\"\n      }\n    }\n  }\n  post {\n    failure {\n      emailext to: \"${MAIL_RECIPIENTS}\", subject: '${DEFAULT_SUBJECT}', body: '${DEFAULT_CONTENT}'\n    }\n    fixed {\n      emailext to: \"${MAIL_RECIPIENTS}\", subject: '${DEFAULT_SUBJECT}', body: '${DEFAULT_CONTENT}'\n    }\n  }\n}\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "Makefile",
+            "setup.py",
+            "test-requirements-for-tox.txt",
+            "test-requirements.txt"
+        ],
+        "folders": [
+            "assets",
+            "plugins",
+            "suite"
+        ]
+    }
+}

@@ -1,0 +1,18 @@
+# Base Image
+FROM ruby:2.5.0
+
+# App working directory
+RUN mkdir -p /src
+WORKDIR /src
+
+# Copying dependencies
+COPY Gemfile Gemfile.lock main.rb /src/
+
+# Install dependencies
+RUN bundle install
+
+# Expose necessary port
+EXPOSE 3000
+
+# Set default command
+CMD ["ruby", "main.rb"]

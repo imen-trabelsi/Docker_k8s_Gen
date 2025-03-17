@@ -1,0 +1,23 @@
+FROM restartproject_php
+
+# Update the package repositories
+RUN apk update && apk add autoconf g++ make
+
+# Install xdebug
+RUN pecl install xdebug && docker-php-ext-enable xdebug
+
+# Set xdebug configurations
+RUN echo "zend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)" > /usr/local/etc/php/conf.d/xdebug.ini \
+    && echo "xdebug.remote_enable=on" >> /usr/local/etc/php/conf.d/xdebug.ini \
+
+# Copy microservice files into container
+COPY . .
+
+# Install dependencies
+RUN npm install
+
+# Build the Next.js app
+RUN npm run build
+
+# Start the app
+CMD [ "npm", "start" ]

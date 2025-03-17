@@ -1,0 +1,26 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "requirements.txt": "locustio==0.8.1\npyzmq==17.0.0\n"
+        },
+        "database": null,
+        "build_system": "pip",
+        "config_files": {
+            "docker-compose.yml": "version: \"3.1\"\n\nservices:\n    db:\n        image: mysql:8.0\n        command: --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci\n        environment:\n            MYSQL_ALLOW_EMPTY_PASSWORD: \"yes\"\n            MYSQL_DATABASE: app\n\n    dockerhost:\n        image: qoomon/docker-host:2.3.0\n        cap_add: [ 'NET_ADMIN', 'NET_RAW' ]\n\n    prometheus:\n        image: prom/prometheus:v2.12.0\n        volumes:\n            - ./etc/local/prometheus/:/etc/prometheus/\n        command:\n            - '--config.file=/etc/prometheus/prometheus.yml'\n            - '--storage.tsdb.path=/prometheus'\n            - '--web.console.libraries=/usr/share/prometheus/console_libraries'\n            - '--web.console.templates=/usr/share/prometheus/consoles'\n            - '--storage.tsdb.retention=200h'\n            - '--web.enable-lifecycle'\n\n    grafana:\n        image: grafana/grafana:6.3.3\n        depends_on:\n            - prometheus\n        environment:\n            GF_USERS_ALLOW_SIGN_UP: \"false\"\n            GF_AUTH_ANONYMOUS_ENABLED: \"true\"\n            GF_AUTH_ANONYMOUS_ORG_ROLE: \"Admin\"\n        volumes:\n            - ./etc/local/grafana/provisioning:/etc/grafana/provisioning\n\n    jaeger:\n        image: jaegertracing/all-in-one:1.13.1\n\n    oc-collector:\n        image: omnition/opencensus-collector:0.1.10\n        command: [\"--config=/etc/opencensus/collector.yaml\"]\n        volumes:\n            - ./etc/local/opencensus/:/etc/opencensus/:ro\n        depends_on:\n            - jaeger\n\n    oc-agent:\n        image: omnition/opencensus-agent:0.1.10\n        command: [\"--config=/etc/opencensus/agent.yaml\"]\n        volumes:\n            - ./etc/local/opencensus/:/etc/opencensus/:ro\n        depends_on:\n            - oc-collector\n",
+            "Dockerfile": "FROM golang:1.17-alpine3.14 AS builder\n\nENV GOFLAGS=\"-mod=readonly\"\n\nRUN apk add --update --no-cache ca-certificates make git curl mercurial\n\nRUN mkdir -p /workspace\nWORKDIR /workspace\n\nARG GOPROXY\n\nCOPY go.* ./\nRUN go mod download\n\nARG BUILD_TARGET\n\nCOPY Makefile *.mk ./\n\nRUN if [[ \"${BUILD_TARGET}\" == \"debug\" ]]; then make build-debug-deps; else make build-release-deps; fi\n\nCOPY . .\n\nRUN set -xe && \\\n    if [[ \"${BUILD_TARGET}\" == \"debug\" ]]; then \\\n    cd /tmp; GOBIN=/workspace/build/debug go get github.com/go-delve/delve/cmd/dlv; cd -; \\\n    make build-debug; \\\n    mv build/debug /build; \\\n    else \\\n    make build-release; \\\n    mv build/release /build; \\\n    fi\n\n\nFROM alpine:3.14\n\nRUN apk add --update --no-cache ca-certificates tzdata bash curl\n\nSHELL [\"/bin/bash\", \"-c\"]\n\n# set up nsswitch.conf for Go's \"netgo\" implementation\n# https://github.com/gliderlabs/docker-alpine/issues/367#issuecomment-424546457\nRUN test ! -e /etc/nsswitch.conf && echo 'hosts: files dns' > /etc/nsswitch.conf\n\nARG BUILD_TARGET\n\nRUN if [[ \"${BUILD_TARGET}\" == \"debug\" ]]; then apk add --update --no-cache libc6-compat; fi\n\nCOPY --from=builder /build/* /usr/local/bin/\n\nEXPOSE 8000 8001 10000\nCMD [\"modern-go-application\", \"--telemetry-addr\", \":10000\", \"--http-addr\", \":8000\", \"--grpc-addr\", \":8001\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "README.md",
+            "loadgen.sh",
+            "locustfile.py",
+            "requirements.txt"
+        ],
+        "folders": []
+    }
+}

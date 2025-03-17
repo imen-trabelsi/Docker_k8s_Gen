@@ -1,0 +1,27 @@
+
+# Set the base image
+FROM lgd-build-nominatim:4.0.1
+
+# Copy pom.xml and install dependencies
+COPY pom.xml /tmp/
+RUN mvn -f /tmp/pom.xml dependency:go-offline
+
+# Copy the app into the container
+COPY . /app
+WORKDIR /app
+
+# Build the source code
+RUN mvn clean package -DskipTests
+
+# Copy the configurations and scripts
+WORKDIR /lgd/osmosis
+COPY configuration.txt.dist .
+COPY start.sh .
+COPY wait-for-postgres.sh .
+
+# Give execute permissions
+RUN chmod +x ./start.sh ./wait-for-postgres.sh
+
+# Configure the start command
+ENTRYPOINT ["/bin/bash", "./wait-for-postgres.sh", "./start.sh"]
+

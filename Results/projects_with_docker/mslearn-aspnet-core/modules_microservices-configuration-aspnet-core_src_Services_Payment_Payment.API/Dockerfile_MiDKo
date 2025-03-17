@@ -1,0 +1,24 @@
+# Stage 1: Build the application
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+
+# Copy csproj and restore as distinct layers
+COPY *.csproj ./
+RUN dotnet restore "eShop-Learn.sln"
+
+# Copy everything else and build
+COPY . .
+WORKDIR "/src/src/Services/Payment/Payment.API"
+RUN dotnet publish --no-restore "Payment.API.csproj" -c Release -o /app/publish
+
+# Stage 2: Build the runtime image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS runtime
+WORKDIR /app
+
+# Copy from the build stage
+
+# Define the entrypoint
+ENTRYPOINT ["dotnet", "Payment.API.dll"]
+
+# Expose port 80
+EXPOSE 80

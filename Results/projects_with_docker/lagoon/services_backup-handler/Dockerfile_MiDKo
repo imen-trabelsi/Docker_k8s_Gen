@@ -1,0 +1,16 @@
+# Build Stage
+FROM golang:1.23-alpine3.21 AS builder
+WORKDIR /go/src/github.com/uselagoon/lagoon/services/backup-handler/
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=${ARCH} go build -a -o backup-handler .
+
+# Production Stage
+FROM alpine:3.21
+WORKDIR /app/
+ENV LAGOON_VERSION=$LAGOON_VERSION
+ENV LAGOON=backup-handler
+ENV JWT_SECRET=super-secret-string
+
+# Set the Entry point and CMD
+ENTRYPOINT ["/sbin/tini", "--", "/lagoon/entrypoints.sh"]
+CMD ["/app/backup-handler"]

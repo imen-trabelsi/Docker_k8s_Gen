@@ -1,0 +1,36 @@
+# Use the specified base image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+
+# Copy .env and other necessary files
+COPY modules/microservices-logging-aspnet-core/.env .
+COPY modules/microservices-logging-aspnet-core/src/Services/Catalog/Catalog.API/appsettings.json .
+COPY modules/microservices-logging-aspnet-core/docker-compose.yml .
+COPY modules/microservices-logging-aspnet-core/docker-compose.override.yml .
+
+WORKDIR /src
+
+# Copy project files
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+COPY ["src/Web/WebStatus/WebStatus.csproj", "src/Web/WebStatus/"]
+COPY ["NuGet.config", "./"]
+COPY ["docker-compose.dcproj", "./"]
+COPY ["eShop-Learn.sln", "./"]
+
+COPY . .
+
+# Run build commands
+RUN dotnet restore "eShop-Learn.sln"
+RUN dotnet publish --no-restore "Catalog.API.csproj" -c Release -o /app/publish
+
+# Generate runtime image
+FROM mcr.microsoft.com/dotnet/sdk:6.0
+
+WORKDIR /app
+
+# Copy all necessary files from previous stage
+
+# Expose the necessary port
+EXPOSE 80
+
+# Specify the entry point
+ENTRYPOINT ["dotnet", "Catalog.API.dll"]

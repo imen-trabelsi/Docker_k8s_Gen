@@ -1,0 +1,19 @@
+# Specifies base image and version
+FROM node:20
+
+# Sets the working directory in the container
+WORKDIR /code
+
+# Adds the files to the container
+COPY package.json /code/
+COPY package-lock.json /code/
+COPY ./src /code/src
+
+# Installs all required packages
+RUN mkdir -p /code && npm install
+
+# Expose the container on specified network ports
+EXPOSE 3002
+
+# Allows docker container to run as a standalone executable
+CMD [ "npm", "start" ]

@@ -1,0 +1,32 @@
+# Download base image alpine:3.18-update
+FROM registry-cn-hangzhou.ack.aliyuncs.com/dev/alpine:3.18-update AS BUILD_IMAGE
+
+# Set working directory in docker image filesystem
+WORKDIR /GoApp
+
+# Install essential packages
+RUN apk add --no-cache bash
+
+# Install build tools
+RUN apk add --no-cache openjdk11 maven
+
+# Copy the application's source code from the host to the Docker container
+COPY ./mse-simple-demo /GoApp
+
+# Build project with Maven
+RUN mvn clean install -DskipTests
+
+# Create the final image
+FROM openjdk:11-jdk-alpine
+
+# Set working directory in docker image filesystem
+WORKDIR /GoApp
+
+# Copy the compiled artifact from the build image
+
+# Expose the ports the app runs in
+EXPOSE 8080
+
+# Default command
+# Runs 'java -jar /GoApp/app.jar' by default when the container starts.
+ENTRYPOINT ["java","-jar","/GoApp/app.jar"]

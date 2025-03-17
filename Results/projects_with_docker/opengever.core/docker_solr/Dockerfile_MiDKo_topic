@@ -1,0 +1,37 @@
+# Python runtime image
+FROM solr:8.11.4
+
+# Setup work directory
+WORKDIR /app
+
+# Install poetry
+RUN pip install --no-cache-dir poetry
+
+# Copy dependency files
+COPY pyproject.toml ./
+
+# Install dependencies
+RUN poetry install --no-dev
+
+# Copy application files
+COPY . .
+
+# Set environment variables
+ENV SOLR_OPTS="-Dlog4j2.formatMsgNoLookups=true"
+ENV SOLR_CORES="ogsite"
+
+# Set Solr configurations and scripts
+COPY ./solr-conf /opt/solr/server/solr/configsets/ogsite
+COPY ./docker/solr/create_and_update_cores.sh /docker-entrypoint-initdb.d/create_and_update_cores.sh
+
+# User `nobody` for running the process
+USER nobody
+
+# Expose default port for Solr 
+EXPOSE 8983/tcp
+
+# Entry point for solr
+ENTRYPOINT [ "docker-entrypoint.sh" ]
+
+# CMD instruction to start Solr
+CMD ["solr", "-f", "-s", "/opt/solr/server/solr"]

@@ -1,0 +1,36 @@
+# Use python official image with slim version 3.10
+FROM python:3.10-slim AS build
+
+# Define environment variable
+ENV VIRTUAL_ENV=/var/run/aether/venv
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+ENV VERSION=0.0.0
+
+# Copy necessary files
+COPY --chown=aether:aether ./conf/pip /code/conf/pip
+COPY --chown=aether:aether ./ /code
+COPY ./conf/docker/* /tmp/
+
+# Set the working directory in the Docker container
+WORKDIR /code
+
+# Run an installation script and update pip
+RUN /tmp/setup.sh && \
+    mkdir -p $VIRTUAL_ENV && \
+    python3 -m venv $VIRTUAL_ENV && \
+    pip install --upgrade pip && \
+    pip install -r /code/conf/pip/requirements.txt && \
+    mkdir -p /var/tmp && \
+
+# Print the GIT Revision
+ARG GIT_REVISION
+RUN echo $GIT_REVISION > /var/tmp/REVISION
+
+# Set the user for the Docker
+USER aether
+
+# Set the entrypoint.sh for the Docker container
+ENTRYPOINT ["/code/entrypoint.sh"]
+
+# Add metadata to the image
+LABEL description="Aether"

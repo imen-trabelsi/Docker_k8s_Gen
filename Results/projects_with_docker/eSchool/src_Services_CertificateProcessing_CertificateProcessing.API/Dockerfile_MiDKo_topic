@@ -1,0 +1,27 @@
+# Fetch the base image
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-env
+
+# Change into the /app directory
+WORKDIR /app
+WORKDIR /src
+
+# Copy the necessary build configurations
+COPY ["src/Services/CertificateProcessing/CertificateProcessing.API/CertificateProcessing.API.csproj", "src/Services/CertificateProcessing/CertificateProcessing.API/"]
+# Copy entire project to current location
+COPY . .
+
+WORKDIR "/src/src/Services/CertificateProcessing/CertificateProcessing.API"
+RUN dotnet restore 
+RUN dotnet build "CertificateProcessing.API.csproj" -c Release -o /app/build
+RUN dotnet publish "CertificateProcessing.API.csproj" -c Release -o /app/publish
+
+# Fetch the base image for final runtime
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 
+ENV ASPNETCORE_URLS=http://+:80  
+
+WORKDIR /app
+# Copy from previous stage
+
+EXPOSE 80
+
+ENTRYPOINT ["dotnet", "CertificateProcessing.API.dll"]

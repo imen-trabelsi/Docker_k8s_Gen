@@ -1,0 +1,26 @@
+# Fetch the base image for this spring boot app
+FROM codefarm/appnodebase:0.0.0 as build
+
+# Setup working directory
+WORKDIR /app
+
+# Copy package.json and install dependencies
+COPY package.json .
+RUN npm install
+
+# Copy source code
+COPY src/ ./src/
+
+# Build the application
+RUN npm build
+
+# Import the built app from the previous stage
+FROM node:14-slim
+
+WORKDIR /app
+
+# Copy the built app from previous stage
+COPY src/app/DataResolve/Dockerfile Dockerfile
+
+# Execute node server 
+CMD ["node", "src/app.js"]

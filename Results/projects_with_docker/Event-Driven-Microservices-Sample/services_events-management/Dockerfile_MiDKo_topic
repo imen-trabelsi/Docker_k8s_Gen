@@ -1,0 +1,38 @@
+# Based Image
+FROM node:11.2.0-alpine as build
+
+# setting working directory
+WORKDIR /usr/app
+
+# Install necessary dependencies
+COPY package*.json ./
+RUN npm install
+
+# Add app
+COPY . ./
+
+# Build app
+RUN npm run build
+
+# Remove Dev dependencies
+RUN npm prune --production
+
+# Final Stage
+FROM node:11.2.0-alpine
+
+# Setting up work dir
+WORKDIR /usr/app
+
+# Setting up minimal dependencies needed for our dist/test
+RUN npm install --only=production 
+
+# Adding source code
+
+# Healthcheck
+HEALTHCHECK CMD curl --fail http://localhost:3000 || exit 1
+
+# Network Ports
+EXPOSE 3000
+
+# Starting the app
+CMD ["node", "/server/src/server.js"]

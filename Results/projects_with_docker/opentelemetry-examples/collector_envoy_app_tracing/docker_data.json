@@ -1,0 +1,29 @@
+{
+    "docker_info": {
+        "base_image": "flask_service:python-3.10-slim-bullseye",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY --from=envoyproxy/envoy-dev:latest /usr/local/bin/envoy /usr/local/bin/envoy",
+            "ADD requirements.txt /tmp/requirements.txt",
+            "ADD ./service.py /code/service.py",
+            "ADD ./start_service.sh /usr/local/bin/start_service.sh"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "pip3 install -r /tmp/requirements.txt",
+                ""
+            ],
+            [
+                "chmod u+x /usr/local/bin/start_service.sh",
+                "ENTRYPOINT [\"/usr/local/bin/start_service.sh\"]"
+            ]
+        ]
+    }
+}

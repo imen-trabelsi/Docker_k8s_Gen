@@ -1,0 +1,27 @@
+# Start with the base image 
+FROM wazoplatform/wazo-webhookd
+
+# Set the environment variable to disable .pyc files
+ENV PYTHONDONTWRITEBYTECODE='true' 
+
+# The procps package will allow us to monitor the processes 
+RUN apt-get -q update && apt-get -yq install --no-install-recommends procps 
+
+# Set the working directory in the container
+WORKDIR /usr/src/wazo-webhookd
+
+# Copy the application files to the container
+COPY . /usr/src/wazo-webhookd 
+
+# Installing the Flask Application
+RUN python3 -m pip install -e .
+
+WORKDIR /usr/src/wazo-webhookd/integration_tests/plugins/sentinel
+RUN python3 -m pip install -e .
+
+# Updating the SSL certificates to support HTTPS connections
+RUN cat /usr/src/wazo-webhookd/integration_tests/assets/ssl/mockserver/mockserver.crt >> /opt/venv/lib/python3.9/site-packages/certifi/cacert.pem
+RUN cat /usr/src/wazo-webhookd/integration_tests/assets/fake-apple-ca/certs/server.crt >> /opt/venv/lib/python3.9/site-packages/certifi/cacert.pem
+
+# Run the application
+CMD ["wazo-webhookd", "-d"]

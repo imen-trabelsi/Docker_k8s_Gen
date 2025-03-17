@@ -1,0 +1,26 @@
+# Use base image provided by the user
+FROM python:3.7
+
+# set environment variables
+ENV PYTHONUNBUFFERED 1
+
+# set maintainers
+LABEL maintainer="Lucio"
+
+# Working directory inside the container
+WORKDIR /usr/src/app
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip wheel --no-cache-dir --no-deps --wheel-dir /wheels -r requirements.txt
+RUN pip install --no-cache /wheels/*
+
+# Copy project
+COPY . /usr/src/app
+
+# Required for PostgreSQL integration
+RUN apt update && \
+    apt install -y libpq-dev && \
+
+#CMD or Entrypoint
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

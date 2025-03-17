@@ -1,0 +1,92 @@
+{
+    "docker_info": {
+        "base_image": "rockylinux/rockylinux:8",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "TARGETARCH"
+        ],
+        "envs": [
+            "ENV VCPKG_FORCE_SYSTEM_BINARIES 1",
+            "ENV PATH=/root/.cargo/bin:/usr/local/bin:/usr/local/go/bin:$PATH",
+            "ENV VCPKG_FORCE_SYSTEM_BINARIES 1"
+        ],
+        "copy_instructions": [
+            "COPY --from=vcpkg-installer /root/.cache/vcpkg /root/.cache/vcpkg",
+            "COPY --chown=0:0 build/docker/builder/entrypoint.sh /"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"/entrypoint.sh\"",
+                    "]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"tail\",",
+                    "\"-f\",",
+                    "\"/dev/null\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "dnf -y install curl wget tar zip unzip git \\",
+                "gcc gcc-c++ make cmake",
+                "perl-IPC-Cmd perl-Digest-SHA"
+            ],
+            [
+                "dnf -y update && \\",
+                "dnf -y install dnf-plugins-core &&",
+                "dnf config-manager --set-enabled powertools &&",
+                "dnf -y install ninja-build"
+            ],
+            [
+                "mkdir /opt/vcpkg &&  \\",
+                "wget -qO- vcpkg.tar.gz https://github.com/microsoft/vcpkg/archive/master.tar.gz | tar --strip-components=1 -xz -C /opt/vcpkg &&",
+                "rm -rf vcpkg.tar.gz"
+            ],
+            [
+                "echo \"\" > /opt/vcpkg/scripts/toolchains/linux.cmake",
+                ""
+            ],
+            [
+                "/opt/vcpkg/bootstrap-vcpkg.sh -disableMetrics && \\",
+                "ln -s /opt/vcpkg/vcpkg /usr/local/bin/vcpkg &&",
+                "vcpkg version &&",
+                "vcpkg install azure-identity-cpp azure-storage-blobs-cpp gtest"
+            ],
+            [
+                "dnf install -y make cmake automake gcc gcc-c++ curl zip unzip tar git which \\",
+                "libaio libuuid-devel wget python3 python3-pip",
+                "pkg-config perl-IPC-Cmd perl-Digest-SHA libatomic libtool"
+            ],
+            [
+                "dnf -y update && \\",
+                "dnf -y install dnf-plugins-core &&",
+                "dnf config-manager --set-enabled powertools &&",
+                "dnf -y install texinfo openblas-devel ninja-build"
+            ],
+            [
+                "pip3 install conan==1.64.1",
+                "RUN mkdir -p /usr/local/go && wget -qO- \"https://go.dev/dl/go1.21.11.linux-$TARGETARCH.tar.gz\" | tar --strip-components=1 -xz -C /usr/local/go"
+            ],
+            [
+                "curl https://sh.rustup.rs -sSf | \\",
+                "sh -s -- --default-toolchain=1.83 -y"
+            ],
+            [
+                "mkdir /opt/vcpkg &&  \\",
+                "wget -qO- vcpkg.tar.gz https://github.com/microsoft/vcpkg/archive/master.tar.gz | tar --strip-components=1 -xz -C /opt/vcpkg &&",
+                "rm -rf vcpkg.tar.gz"
+            ]
+        ]
+    }
+}

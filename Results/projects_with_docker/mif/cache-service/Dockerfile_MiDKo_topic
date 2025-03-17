@@ -1,0 +1,14 @@
+# Build stage
+FROM maven:3.6.3-openjdk-11-slim AS build  
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+COPY src ./src
+RUN mvn package -DskipTests
+
+# Package stage
+FROM openjdk:11-jre
+VOLUME /tmp
+EXPOSE 8080
+ARG JAR_FILE=target/cache-service-1.0-SNAPSHOT.jar
+ENTRYPOINT ["java","-jar", "-Dspring.profiles.active=docker", "/app.jar"]

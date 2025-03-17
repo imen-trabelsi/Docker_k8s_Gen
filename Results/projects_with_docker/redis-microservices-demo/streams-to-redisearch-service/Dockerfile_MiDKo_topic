@@ -1,0 +1,32 @@
+# Use the base image provided by the user
+FROM openjdk:8-jdk-alpine as builder
+
+# Set the work directory in the Docker image
+WORKDIR /workspace/app
+
+# Copy the Maven pom.xml
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+COPY src src
+
+# Build the app with Maven Wrapper
+RUN ./mvnw install -DskipTests
+RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+
+# Second stage, only copy over the fat jar with all the dependencies from the build
+FROM openjdk:8-jdk-alpine
+
+# Copy Dependencies
+
+# Set Environment Variables
+ENV JAVA_OPTS=""
+ENV REDIS_HOST=redis-service
+ENV REDIS_PORT=6379
+ENV REDIS_PASSWORD=
+
+# Listening port
+EXPOSE 8085
+
+# Run Application command 
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -cp app:app/lib/* com.example.demo.DemoApplication"]

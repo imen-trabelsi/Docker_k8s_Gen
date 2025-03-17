@@ -1,0 +1,35 @@
+{
+    "docker_info": {
+        "base_image": "python:3.9-slim-buster",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY . /usr/src/oauth2_synchronization_service",
+            "WORKDIR /usr/src/oauth2_synchronization_service"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/usr/local/bin/gunicorn\",",
+                    "\"-b0.0.0.0:80\",",
+                    "\"-kflask_sockets.worker\",",
+                    "\"main:app\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "pip install -r requirements.txt",
+                ""
+            ]
+        ]
+    }
+}

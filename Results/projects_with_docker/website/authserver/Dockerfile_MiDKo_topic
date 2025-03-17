@@ -1,0 +1,33 @@
+# Start with a base image containing Java runtime
+FROM openjdk:11-jre-slim
+
+# Install maven
+RUN apt-get update
+RUN apt-get install -y maven
+
+# Create working directory
+WORKDIR /app
+
+# Copy pom.xml
+COPY pom.xml .
+
+# Bundle app source
+COPY src ./src
+
+# Build with maven
+RUN mvn clean install
+
+# Copy scripts and files.
+COPY ./wait-for-it.sh /usr/share/website/wait-for-it.sh
+RUN chmod +x /usr/share/website/wait-for-it.sh
+COPY target/*-exec.jar /usr/share/website/authserver/authserver-exec.jar
+COPY keystore /usr/share/website/authserver/keystore
+
+# Change Working directory
+WORKDIR /usr/share/website/authserver
+
+# Expose ports.
+EXPOSE 80
+
+# Set entry point
+ENTRYPOINT ["/usr/share/website/wait-for-it.sh", "cassandra:9042", "--timeout=0", "--", "java", "-jar", "/usr/share/website/authserver/authserver-exec.jar"]

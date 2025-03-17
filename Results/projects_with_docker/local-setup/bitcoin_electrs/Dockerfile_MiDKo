@@ -1,0 +1,32 @@
+# Start with base image
+FROM rust:alpine3.13
+
+# Set work directory
+WORKDIR /workdir
+
+# Set necessary environmet variables for building electrs
+ENV RUSTFLAGS -Ctarget-feature=-crt-static
+
+# Install dependencies
+RUN apk add --no-cache clang-dev build-base linux-headers git
+
+# Install rustfmt
+RUN rustup component add rustfmt
+
+# Clone and build electrs
+RUN git clone --no-checkout https://github.com/Blockstream/electrs.git \
+    && cd electrs \
+    && git checkout a33e97e1a1fc63fa9c20a116bb92579bbf43b254 \
+    && cargo build --release --locked --bin electrs \
+
+# Set work directory for electrs
+WORKDIR /workdir/electrs
+
+# Copy electrs
+COPY --from=electrsbuild /workdir/electrs/target/release/electrs .
+
+# Expose necessary port
+EXPOSE 3002
+
+# Define the command to run
+CMD ["./electrs", "--cookie", "user:password"]

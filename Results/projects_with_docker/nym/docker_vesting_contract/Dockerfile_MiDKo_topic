@@ -1,0 +1,23 @@
+# Choose Rust as the base image
+FROM rust:latest AS builder
+WORKDIR /usr/src
+
+# Copy all necessary files for building the project
+COPY ./Cargo.toml ./Cargo.toml
+COPY ./build.rs ./build.rs
+COPY ./src ./src
+
+# Add the specified toolchain
+RUN rustup target add wasm32-unknown-unknown
+
+# Build the project
+RUN cd ./src && \
+
+# Create a new stage with a minimal image to reduce final image size
+FROM rust:slim
+
+# Set the working directory
+WORKDIR /app
+
+# Define command to run the application
+CMD ["./your_executable_name"]

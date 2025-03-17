@@ -1,0 +1,29 @@
+{
+    "docker_info": {
+        "base_image": "eclipse-temurin:11",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD *.jar /app.jar"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"java\",\"-Dspring.profiles.active=docker\",\"-jar\",\"/app.jar\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "bash -c 'touch /app.jar'",
+                "EXPOSE 8888"
+            ]
+        ]
+    }
+}

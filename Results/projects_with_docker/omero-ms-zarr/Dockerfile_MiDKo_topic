@@ -1,0 +1,32 @@
+# Official Gradle image as our base image
+FROM library/gradle:6.3.0-jre14 as builder
+
+WORKDIR /omero-ms-zarr
+
+# Copy the necessary files for building the application
+COPY LICENSE README.md build.gradle settings.gradle /omero-ms-zarr/
+
+# Run the build
+RUN gradle build --no-daemon || return 0
+
+# Copy the source code and build again
+COPY src /omero-ms-zarr/src/
+RUN gradle build --no-daemon -x test -x javadoc
+
+# Unzip the built application and prepare for the final stage
+RUN cd build/distributions && \
+    unzip omero-ms-zarr-shadow-*.zip && \
+    mv omero-ms-zarr-shadow-*/ /omero-ms-zarr-shadow/ && \
+
+# Final stage: create the runtime image
+FROM openjdk:14-jdk-alpine
+
+# Copy the application from the builder stage
+
+WORKDIR /omero-ms-zarr
+
+# Expose the application on port 8080
+EXPOSE 8080
+
+# Set the entrypoint
+ENTRYPOINT ["java", "-cp", "/lib/omero-ms-zarr-0.2.1-SNAPSHOT-all.jar", "org.openmicroscopy.ms.zarr.ConfigEnv"]

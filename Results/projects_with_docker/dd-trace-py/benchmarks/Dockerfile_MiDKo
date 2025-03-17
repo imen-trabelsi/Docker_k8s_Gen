@@ -1,0 +1,41 @@
+# Use the requested base image 
+FROM debian:buster-slim
+
+# Define environment variable
+ENV PYTHON_VERSION=3.9.15
+ENV PYENV_VERSION=2.4.1
+ENV PYENV_ROOT "/pyenv"
+ENV PATH "$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH"
+ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV SCENARIO=${SCENARIO}
+ENV PROFILE_BENCHMARKS=0
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+  make build-essential libssl-dev zlib1g-dev \
+  libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm \
+  libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev \
+  ca-certificates \
+
+# Install Python via Pyenv
+RUN git clone --depth 1 https://github.com/pyenv/pyenv.git --branch "v$PYENV_VERSION" --single-branch "$PYENV_ROOT"
+RUN "$PYENV_ROOT/bin/pyenv" install "$PYTHON_VERSION" && \
+
+# Install Python dependencies
+# Poetry is used as a Python dependency management tool
+RUN pip install -U pip poetry
+
+# Create the application directory 
+WORKDIR /app
+
+# Copy application files
+COPY ./base/ /app/
+COPY ./bm/ /app/bm/
+COPY ./${SCENARIO}/ /app/
+
+# Install Python dependencies
+RUN poetry install --no-dev
+
+# Add execution commands
+CMD ["/app/entrypoint"]

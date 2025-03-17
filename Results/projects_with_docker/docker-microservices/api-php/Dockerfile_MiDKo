@@ -1,0 +1,27 @@
+# Use the alpine:latest as base image
+FROM alpine:latest 
+
+# Earlier, there was a multi-stage build with Composer but since it's not a multi-stage build then no need of that.
+
+# Note: we'll not be using the COPY instructions for PHP-related configurations and Composer as this is a NodeJs App.  
+
+# Update the repositories and install Node and npm
+RUN apk update && apk add --no-cache nodejs npm 
+
+# Create app directory in Docker
+WORKDIR /usr/src/app
+
+# Copy package.json AND package-lock.json
+COPY package*.json ./
+
+# Install app dependencies
+RUN npm install
+
+# Bundle app source. Copy all the rest source code.
+COPY . .
+
+# Expose port
+EXPOSE 8000
+
+# Run the app
+CMD [ "npm", "start" ]

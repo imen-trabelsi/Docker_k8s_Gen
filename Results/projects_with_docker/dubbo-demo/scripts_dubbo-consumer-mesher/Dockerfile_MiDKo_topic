@@ -1,0 +1,20 @@
+# Derive from the base image
+FROM ninokop/dubbo-demo-base
+
+# Set the working directory
+WORKDIR /app
+
+# Add application files
+COPY . /app
+
+# Change directory
+RUN cd /home/
+
+# Create app directory
+RUN mkdir /app
+
+# Change the permissions for the start script to be executable
+RUN chmod +x /app/mystart.sh
+
+# Set the entrypoint as the bash script.
+ENTRYPOINT ["bash","/app/mystart.sh"]

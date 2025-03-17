@@ -1,0 +1,51 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/sdk:8.0",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "8080",
+            "8081"
+        ],
+        "user": [
+            "app"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "BUILD_CONFIGURATION=Release",
+            "BUILD_CONFIGURATION=Release"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "WORKDIR /src",
+            "COPY [\"ApiGateways/YarpApiGateway/YarpApiGateway.csproj\", \"ApiGateways/YarpApiGateway/\"]",
+            "WORKDIR \"/src/ApiGateways/YarpApiGateway\"",
+            "WORKDIR /app",
+            "COPY --from=publish /app/publish ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"dotnet\",",
+                    "\"YarpApiGateway.dll\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "dotnet restore \"./ApiGateways/YarpApiGateway/./YarpApiGateway.csproj\"",
+                "COPY . ."
+            ],
+            [
+                "dotnet build \"./YarpApiGateway.csproj\" -c $BUILD_CONFIGURATION -o /app/build",
+                ""
+            ],
+            [
+                "dotnet publish \"./YarpApiGateway.csproj\" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false",
+                ""
+            ]
+        ]
+    }
+}

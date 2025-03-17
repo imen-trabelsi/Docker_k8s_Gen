@@ -1,0 +1,51 @@
+# Use base image
+FROM node:12.10.0-alpine as build
+
+# Set environment variables
+ENV HTTP_PROXY=$http_proxy \
+    HTTPS_PROXY=$https_proxy \
+    http_proxy=$HTTP_PROXY \
+
+# Update the image and install necessary dependencies
+RUN apk update && \
+    apk add --no-cache \
+    bash \
+    git \
+
+# Install build dependencies
+COPY ./pom.xml ./pom.xml
+RUN npm install --silent
+RUN npm run build
+
+# Set user
+RUN addgroup onap && adduser -D -G onap clamp
+USER clamp
+
+# Create necessary directories and set permissions
+RUN mkdir /app /var/log/onap && \
+    chmod a+rwx /var/log/onap && \
+    chown -R clamp:onap /app && \
+
+# Set work directory
+WORKDIR /app
+
+# Copy files into container
+COPY ./src/main/resources/clds/camel/rest/clamp-api-v2.xml ./src/main/resources/clds/camel/rest/clamp-api-v2.xml
+COPY ./src/main/resources/clds/camel/rest/clds-services.xml ./src/main/resources/clds/camel/rest/clds-services.xml
+COPY ./src/main/resources/clds/camel/routes/cds-flows.xml ./src/main/resources/clds/camel/routes/cds-flows.xml
+COPY ./src/main/resources/clds/camel/routes/dcae-flows.xml ./src/main/resources/clds/camel/routes/dcae-flows.xml
+COPY ./src/main/resources/clds/camel/routes/loop-flows.xml ./src/main/resources/clds/camel/routes/loop-flows.xml
+COPY ./src/main/resources/clds/camel/routes/policy-flows.xml ./src/main/resources/clds/camel/routes/policy-flows.xml
+COPY ./src/main/resources/clds/camel/routes/utils-flows.xml ./src/main/resources/clds/camel/routes/utils-flows.xml
+COPY ./src/main/resources/clds/clds-users.json ./src/main/resources/clds/clds-users.json
+COPY ./src/main/resources/clds/json-schema/operational_policies/operational_policy.json ./src/main/resources/clds/json-schema/operational_policies/operational_policy.json
+COPY ./src/main/resources/clds/sdc-controllers-config.json ./src/main/resources/clds/sdc-controllers-config.json
+
+# Expose ports
+EXPOSE 2443
+
+# Entry point
+ENTRYPOINT ["java","-jar","/app.jar"]
+
+# CMD
+CMD ["nginx", "-g", "daemon off;"]

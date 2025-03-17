@@ -1,0 +1,20 @@
+# Use the correct base image
+FROM java:8-jre
+
+# Set environment variable
+ENV JAVA_OPTS=""
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the application jar file. Build it beforehand with `mvn clean install`.
+COPY ./target/ts-price-service-1.0.jar /app/
+
+# Expose the port the app will be accessible on
+EXPOSE 16579
+
+# Set time zone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Run command
+CMD ["sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app/ts-price-service-1.0.jar"]

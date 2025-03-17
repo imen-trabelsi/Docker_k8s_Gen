@@ -1,0 +1,27 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:8u151-jdk",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "JAR_FILE"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "ADD startup.sh /usr/bin/startup.sh",
+            "ADD target/${JAR_FILE} /usr/share/skalogs/skaetl-backend.jar"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/usr/bin/startup.sh\"]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

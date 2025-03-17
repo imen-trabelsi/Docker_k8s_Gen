@@ -1,0 +1,34 @@
+# base image
+FROM node:8.13-slim
+
+# create app directory
+RUN mkdir -p /opt/my-musik/
+
+# set work directory
+WORKDIR /opt/my-musik/
+
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+COPY package*.json ./
+
+# install dependencies and create directories
+RUN npm install typescript -g
+RUN npm install
+RUN npm install -g @vue/cli
+
+# build app
+RUN npm run build
+
+# update npm
+RUN npm install npm -g
+
+#Install node-static server
+RUN npm install node-static -g
+  
+# Bundle app source
+COPY . .
+
+# expose port externally
+EXPOSE 3001
+
+# start command
+CMD ["static", "./dist", "-a", "0.0.0.0", "-p", "3001"]

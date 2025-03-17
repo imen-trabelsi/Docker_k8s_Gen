@@ -1,0 +1,28 @@
+# Base Image
+FROM docker.elastic.co/kibana/kibana:${ELK_VERSION}
+
+# Add Maintainer Info
+LABEL maintainer="docker@user.com"
+
+# Set environment variables
+ENV SBTOPTS="-Djline.terminal=jline.UnsupportedTerminal"
+
+# Install dependencies using sbt
+COPY build.sbt /tmp
+RUN sbt update
+
+# Add source code files to Docker image
+COPY . /app
+
+# Working Directory
+WORKDIR /app
+
+# Compile the application
+RUN sbt clean compile
+
+# Expose the application on port 80
+EXPOSE 8080
+
+# Command to start the sbt
+ENTRYPOINT ["sbt"]
+CMD ["run"]

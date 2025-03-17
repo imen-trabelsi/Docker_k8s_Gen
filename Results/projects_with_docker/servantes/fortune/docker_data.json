@@ -1,0 +1,37 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.17",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD . /go/src/github.com/tilt-dev/servantes/fortune"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "/go/bin/fortune"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt update && apt install -y unzip time make protobuf-compiler",
+                ""
+            ],
+            [
+                "go install google.golang.org/protobuf/cmd/protoc-gen-go@latest",
+                ""
+            ],
+            [
+                "cd /go/src/github.com/tilt-dev/servantes/fortune && make proto",
+                "RUN cd /go/src/github.com/tilt-dev/servantes/fortune && go install ."
+            ]
+        ]
+    }
+}

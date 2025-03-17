@@ -1,0 +1,23 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "JavaScript",
+        "dependencies": {
+            "package.json": "{\n  \"scripts\": {\n    \"format\": \"prettier --check .\",\n    \"format:fix\": \"prettier --write .\"\n  },\n  \"devDependencies\": {\n    \"@keep-network/prettier-config-keep\": \"github:keep-network/prettier-config-keep\",\n    \"prettier\": \"^2.3.0\",\n    \"prettier-plugin-sh\": \"^0.6.1\",\n    \"prettier-plugin-toml\": \"^0.3.1\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "bitcoin/docker-compose.yml": "version: \"3\"\n\nservices:\n  bitcoind:\n    container_name: bitcoind\n    image: ghcr.io/keep-network/local-setup/bitcoind\n    # build: ./bitcoind\n    ports:\n      - 18332:18332\n    volumes:\n      - ./.data/bitcoind:/workdir/datadir\n  electrumx:\n    container_name: electrumx\n    image: ghcr.io/keep-network/local-setup/electrumx\n    # build: ./electrumx\n    ports:\n      - 50001:50001\n      - 50002:50002\n      - 50003:50003\n      - 50004:50004\n      - 8000:8000\n    environment:\n      - DAEMON_URL=http://user:password@bitcoind:18332\n      - COIN=BitcoinSegwit\n      - NET=regtest\n      - SERVICES=tcp://0.0.0.0:50001,ssl://0.0.0.0:50002,ws://0.0.0.0:50003,wss://127.0.0.1:50004,rpc://0.0.0.0:8000\n      - COST_SOFT_LIMIT=0\n      - COST_HARD_LIMIT=0\n    depends_on:\n      - bitcoind\n\n  electrs:\n    container_name: electrs\n    image: ghcr.io/keep-network/local-setup/electrs\n    # build: ./electrs\n    ports:\n      # esplora image expects that electrs API is exposed at port 3002\n      - 3002:3002\n    volumes:\n      - ./.data/electrs:/workdir/data\n      - ./.data/bitcoind:/workdir/bitcoin-data\n    environment:\n      - DAEMON_RPC_ADDR=bitcoind:18332\n      - NETWORK=regtest\n    depends_on:\n      - bitcoind\n\n  esplora:\n    container_name: esplora\n    image: ghcr.io/keep-network/local-setup/esplora\n    # build:\n    #   context: ./esplora\n    #   args:\n    #     API_URL: http://localhost:3002/ # electrs\n    ports:\n      - 8094:80\n    depends_on:\n      - electrs\n",
+            "bitcoin/electrs/Dockerfile": "FROM rust:alpine3.13 AS electrsbuild\n\nRUN apk add --no-cache clang-dev build-base linux-headers git\nRUN rustup component add rustfmt\n\nWORKDIR /workdir\n\nRUN git clone --no-checkout https://github.com/Blockstream/electrs.git\n\nWORKDIR electrs\n\nRUN git checkout a33e97e1a1fc63fa9c20a116bb92579bbf43b254\n\nENV RUSTFLAGS -Ctarget-feature=-crt-static\nRUN cargo build --release --locked --bin electrs\n\nFROM alpine:3.13\n\nRUN apk --no-cache add musl libgcc libstdc++\n\nWORKDIR /workdir\n\nCOPY --from=electrsbuild /workdir/electrs/target/release/electrs .\n\nEXPOSE 3002\n\nCMD ./electrs --cookie 'user:password' \\\n  --http-addr 0.0.0.0:3002 \\\n  --db-dir /workdir/data \\\n  --daemon-rpc-addr $DAEMON_RPC_ADDR \\\n  --daemon-dir /workdir/bitcoin-data/ \\\n  --network $NETWORK \\\n  --cors '*' \\\n  --lightmode\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "entrypoint.sh"
+        ],
+        "folders": []
+    }
+}

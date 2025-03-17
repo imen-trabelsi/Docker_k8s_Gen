@@ -1,0 +1,35 @@
+# Use Elixir-Based Image
+FROM hexpm/elixir:1.15.7-erlang-26.1-debian-bullseye-20230612-slim
+
+# Set The Work Directory
+WORKDIR /app
+
+# Copy Required Files for Dependencies
+COPY mix.exs mix.lock ./
+
+# Install Hex Package Manager and Rebar
+RUN mix local.hex --force && \
+
+# Copy App Source Code
+COPY . .
+
+# Set Environment Variables 
+ENV MIX_ENV=prod 
+ENV LANG=C.UTF-8
+
+# Update Apt-Get & Install Build Essential
+RUN apt-get update --allow-releaseinfo-change -y && \
+    apt-get install -y build-essential git && \
+    apt-get clean && \
+
+# Get project dependencies
+RUN mix do deps.get, deps.compile
+
+# Compile The Project
+RUN mix do compile, release
+
+# Update and Install library for ssl
+RUN apt-get -qq update && \
+
+# Set The Command To Start The Elixir App
+CMD ["./bin/astarte_e2e", "start"]

@@ -1,0 +1,36 @@
+# Using the specified base image.
+FROM phusion/baseimage:master-amd64
+
+# Copying necessary files as per the user-provided instruction.
+COPY *.pub /tmp/
+ADD version.tar.gz /opt/
+COPY version_start /etc/service/version_start/run
+COPY dncserver/ /apiserver/dncserver/
+COPY dncstdplugin/ /apiserver/dncstdplugin/
+COPY dncgiplugin/ /apiserver/dncgiplugin/
+COPY dncserver_start /etc/service/dncserver_start/run
+COPY dncstdplugin_start /etc/service/dncstdplugin_start/run
+COPY dncgiplugin_start /etc/service/dncgiplugin_start/run
+
+# Installing dependencies.
+RUN /etc/my_init.d/00_regen_ssh_host_keys.sh
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt-get update && apt-get install nodejs -y
+
+# Execution command.
+RUN cat /tmp/*.pub >> /root/.ssh/authorized_keys && rm -f /tmp/*.pub
+RUN chmod +x /etc/service/version_start/run
+RUN chmod +x /etc/service/dncserver_start/run
+RUN chmod +x /etc/service/dncstdplugin_start/run
+RUN chmod +x /etc/service/dncgiplugin_start/run
+
+# Removing the ssh service.
+RUN rm -f /etc/service/sshd/down
+
+# Add health check (Can be updated as per requirement)
+# HEALTHCHECK --interval=5m --timeout=3s 
+
+# CMD statement.
+# Here, insert the command used for running the application as the final command, 
+# since it is not provided in the input.
+# CMD ["executable", "param1", "param2"]

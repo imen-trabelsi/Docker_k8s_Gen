@@ -1,0 +1,12 @@
+FROM docker:stable
+
+LABEL maintainer="DevOps Team"
+
+RUN apk update \
+&& apk add --no-cache curl bash \
+
+COPY entrypoint.sh /entrypoint.sh
+
+RUN chmod +x /entrypoint.sh
+
+ENTRYPOINT ["/entrypoint.sh"]

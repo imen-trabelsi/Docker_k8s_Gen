@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "JavaScript",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"rabbitmq\",\n  \"version\": \"0.0.0\",\n  \"description\": \"RabbitMQ for Code Farm\",\n  \"scripts\": {\n    \"build\": \"../../bs/build.sh\",\n    \"load\": \"../../bs/load.sh\",\n    \"unload\": \"../../bs/unload.sh\",\n    \"shell\": \"../../bs/run_cmd.sh bash\",\n    \"start\": \"../../bs/start.sh --hostname my-rabbit --network host -d\",\n    \"stop\": \"../../bs/stop.sh\"\n  },\n  \"author\": \"Marcus Christensson <marcus.christensson@combitech.se>\",\n  \"license\": \"MIT\"\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "src/containers/rabbitmq/Dockerfile": "# Documentation: https://hub.docker.com/_/rabbitmq/\n# TODO: Configure where persisten queues are stored\n# TODO: Cluster setup\nFROM rabbitmq:3-management"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            "Dockerfile",
+            "package.json",
+            "yarn.lock"
+        ],
+        "folders": []
+    }
+}

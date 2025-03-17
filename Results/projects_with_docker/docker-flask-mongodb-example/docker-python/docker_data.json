@@ -1,0 +1,38 @@
+{
+    "docker_info": {
+        "base_image": "python:3.10-buster",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "5000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "requirements"
+        ],
+        "envs": [
+            "ENV PYTHONPATH \"/root/flask-mongodb-example/python/common\""
+        ],
+        "copy_instructions": [
+            "WORKDIR /root",
+            "COPY --from=web-base /root/flask-mongodb-example /root/flask-mongodb-example",
+            "WORKDIR /root/flask-mongodb-example/python"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apt-get update",
+                "RUN apt install git -y"
+            ],
+            [
+                "git clone https://github.com/danionescu0/docker-flask-mongodb-example.git flask-mongodb-example",
+                ""
+            ],
+            [
+                "pip install -qr $requirements",
+                ""
+            ]
+        ]
+    }
+}

@@ -1,0 +1,32 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Java",
+        "dependencies": {
+            "pom.xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\"\n         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n    <modelVersion>4.0.0</modelVersion>\n\n    <parent>\n        <groupId>io.confluent</groupId>\n        <artifactId>rest-utils-parent</artifactId>\n        <version>7.9.0</version>\n    </parent>\n\n    <groupId>io.confluent</groupId>\n    <artifactId>GitHub-Actions-Schema-Registry-Test-Compatibility</artifactId>\n    <version>1.0</version>\n\n    <properties>\n        <schemaRegistryUrl></schemaRegistryUrl>\n        <schemaRegistryBasicAuthUserInfo></schemaRegistryBasicAuthUserInfo>\n        <newSchema>schemas/Count.avsc</newSchema>\n        <confluent.version>7.9.0</confluent.version>\n    </properties>\n\n    <repositories>\n      <repository>\n        <id>confluent</id>\n        <name>Confluent</name>\n        <url>https://packages.confluent.io/maven/</url>\n      </repository>\n    </repositories>\n\n    <build>\n        <plugins>\n            <plugin>\n                <groupId>io.confluent</groupId>\n                <artifactId>kafka-schema-registry-maven-plugin</artifactId>\n                <version>${confluent.version}</version>\n                <configuration>\n                    <schemaRegistryUrls>\n                        <param>${schemaRegistryUrl}</param>\n                    </schemaRegistryUrls>\n                    <userInfoConfig>${schemaRegistryBasicAuthUserInfo}</userInfoConfig>\n                    <subjects>\n                        <t3-avro-value>${newSchema}</t3-avro-value>\n                    </subjects>\n                </configuration>\n                <executions>\n                    <execution>\n                        <id>test-compatibility</id>\n                        <phase>validate</phase>\n                        <goals>\n                            <goal>test-compatibility</goal>\n                        </goals>\n                    </execution>\n                </executions>\n            </plugin>\n\n        </plugins>\n    </build>\n</project>\n"
+        },
+        "database": null,
+        "build_system": "Maven",
+        "config_files": {
+            "Dockerfile": "FROM tiangolo/docker-with-compose\n\nCOPY entrypoint.sh /entrypoint.sh\nRUN chmod +x /entrypoint.sh\n\nENTRYPOINT [\"/entrypoint.sh\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "README.md",
+            "pom.xml",
+            "requirements.txt"
+        ],
+        "folders": [
+            "checkstyle",
+            "configs",
+            "images",
+            "schemas",
+            "src",
+            "tests",
+            "workflows"
+        ]
+    }
+}

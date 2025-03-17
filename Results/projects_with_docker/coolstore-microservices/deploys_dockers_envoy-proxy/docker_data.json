@@ -1,0 +1,30 @@
+{
+    "docker_info": {
+        "base_image": "envoyproxy/envoy:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY deploys/dockers/envoy-proxy/envoy.yaml /etc/envoy.yaml"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "/usr/local/bin/envoy",
+                    "-c",
+                    "/etc/envoy.yaml",
+                    "-l",
+                    "debug",
+                    "--service-cluster",
+                    "envoy-proxy"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

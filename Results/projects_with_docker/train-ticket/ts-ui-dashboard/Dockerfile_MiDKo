@@ -1,0 +1,24 @@
+# Define base image
+FROM openresty/openresty:trusty
+
+# Copy the build files to the container
+COPY . .
+
+# Copy the nginx configuration file
+COPY ts-ui-dashboard/nginx.conf /usr/local/openresty/nginx/conf/nginx.conf
+
+# Copy the static files
+COPY ts-ui-dashboard/static /usr/share/nginx/html
+
+# Set the correct timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime
+RUN echo 'Asia/Shanghai' >/etc/timezone
+
+# Build the project
+RUN mvn install
+
+# Set the startup command to execute the jar
+CMD ["java", "-jar", "target/myproject-1.0.0.jar"]
+
+# Expose the application on port 8080
+EXPOSE 8080

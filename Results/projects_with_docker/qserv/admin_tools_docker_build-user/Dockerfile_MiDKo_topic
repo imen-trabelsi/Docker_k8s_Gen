@@ -1,0 +1,36 @@
+#Using the base image
+FROM ${QSERV_BUILD_BASE}
+
+#Setting ARGs for Build time
+ARG QSERV_BUILD_BASE=qserv/lite-build:latest
+ARG USER
+ARG UID
+ARG GROUP
+ARG GID
+
+# Set an ENV var that will always persist 
+ENV QSERV_BUILD_BASE ${QSERV_BUILD_BASE}
+
+# Create a new group using the provided GID
+RUN groupadd --gid $GID $GROUP
+
+# Create a new user using the provided UID and associate it with the group
+RUN useradd --uid $UID --gid $GROUP $USER
+
+# Changing to custom user
+USER ${USER}
+
+#Uploading project files to the image
+COPY . /home/${USER}
+
+# Setting work directory
+WORKDIR /home/${USER}
+
+# Installing dependencies
+RUN poetry install
+
+# Expose your app's port
+EXPOSE 8080
+
+# Run the app (this is equivalent to running poetry run flask run)
+ENTRYPOINT [ "poetry", "run", "flask", "run", "--host=0.0.0.0"]

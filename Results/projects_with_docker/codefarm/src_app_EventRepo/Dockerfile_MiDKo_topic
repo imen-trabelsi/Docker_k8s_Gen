@@ -1,0 +1,38 @@
+# Base Image
+FROM codefarm/appnodebase:0.0.0
+
+# Create a directory in the container
+WORKDIR /usr/src/app
+
+# Copy package.json and yarn.lock to the work directory
+COPY package*.json yarn.lock ./
+
+# Install dependencies
+RUN npm install 
+
+# If you are building your code for production
+# RUN npm ci --only=production
+
+# Bundle app source
+COPY . .
+
+# Exposed Ports 
+# As per the extracted and user-provided data there are no details of exposed ports.
+# Please specify it explicitly here if any. Example:
+# EXPOSE 8080
+
+# Health checks can be mentioned here. As the user has not provided any health checks, it is commented.
+# HEALTHCHECK CMD curl --fail http://localhost:8080/ || exit 1
+
+# Environment variables can be set here as required. 
+# As per the extracted data there are no environment variables specified.
+# ENV VAR_NAME="value"
+
+# Set the user if any as required. It is commented as no user details specified by user.
+# USER node
+
+# labels can be set as per extracted labels data. It is commented as no labels information is extracted.
+# LABEL version="1.0"
+
+# This is the command to run your application. Please uncomment and make changes accordingly as per your application needs. 
+# CMD [ "npm", "start" ]

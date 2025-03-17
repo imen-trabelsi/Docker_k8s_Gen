@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "Go",
+        "framework": "Go",
+        "dependencies": {
+            "go.mod": "module github.com/jupyterhub/zero-to-jupyterhub-k8s/image-awaiter\n\ngo 1.15\n\nrequire github.com/hashicorp/go-retryablehttp v0.6.7\n"
+        },
+        "database": null,
+        "build_system": "go mod",
+        "config_files": {
+            "subrepos/zero-to-jupyterhub-k8s/images/image-awaiter/Dockerfile": "# compile the code to an executable using an intermediary image\nFROM golang:1.15\n#FROM golang:1.15.3-buster\n#FROM golang:1.13\n\nRUN mkdir -p /build/\nCOPY *.mod *.go *.sum /build/\nWORKDIR /build\nRUN CGO_ENABLED=0 GOOS=linux go build -ldflags '-w -s' -installsuffix cgo -a -o out/image-awaiter\n\n\n# present the result within a slimmed image\nFROM scratch\n\nCOPY --from=0 /build/out/image-awaiter /image-awaiter\n\n\n\n# To debug / develop this code\n# ----------------------------\n# 1. Setup a kubectl proxy\n# > kubectl proxy --port=8080\n\n# 2. Try the API using the proxy...\n# > curl http://localhost:8080/apis/apps/v1/namespaces/<namespace>/demonsets/hook-image-puller\n\n# 3. Try the container using the proxy...\n# > docker build --tag <name:tag> .\n# > docker run -it --rm --net=host <name:tag> /image-awaiter -debug -namespace <namespace> -daemonset hook-image-puller\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "prepare.sh"
+        ],
+        "folders": [
+            "examples"
+        ]
+    }
+}

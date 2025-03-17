@@ -1,0 +1,16 @@
+# Use the Python:3-alpine base image
+FROM python:3-alpine3.15
+
+# set the correct working directory in the Docker image
+WORKDIR /app
+
+# copy the requirements.txt file and install the dependencies
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
+# copy the rest of the code
+COPY test.py /app/test.py
+COPY generate_config.py /app/generate_config.py
+
+# command to run on container start
+CMD ["opentelemetry-instrument", "pytest", "/app/test.py"]

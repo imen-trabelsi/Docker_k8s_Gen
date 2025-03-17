@@ -1,0 +1,26 @@
+# 1. Start with the base image specified by the user
+FROM gcc
+
+# 2. Copy instructions provided by the user
+WORKDIR /opt
+COPY ./generate-tpch-dbgen.sh /opt/generate-tpch-dbgen.sh
+
+# 3. Copy the maven POM file
+COPY pom.xml /tmp/pom.xml
+
+# 4. Set up necessary environment for Java and Maven application
+ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
+ENV MAVEN_HOME /usr/share/maven
+
+# 5. Install Java and Maven using the apt package manager
+RUN apt-get update && apt-get install -y openjdk-8-jdk maven && \
+    mkdir -p $JAVA_HOME $MAVEN_HOME && \
+    chmod +x /opt/generate-tpch-dbgen.sh && \
+
+# 6. Run maven package (compiles Java code and creates a jar/war file in target directory)
+
+# 7. Jar file needs to be added to the Docker image
+COPY target/*.jar app.jar
+
+# 8. Run Spring Boot application
+ENTRYPOINT ["java","-jar","app.jar"]

@@ -1,0 +1,25 @@
+{
+    "docker_info": {
+        "base_image": "docker.elastic.co/logstash/logstash:${ELK_VERSION}",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "ELK_VERSION"
+        ],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "logstash-plugin install logstash-input-beats",
+                "RUN logstash-plugin install logstash-filter-json"
+            ],
+            [
+                "logstash-plugin install logstash-filter-kv"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,41 @@
+{
+    "docker_info": {
+        "base_image": "@docker.base.image@",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8778"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV JAVA_HOME=/usr/lib/jvm/jre-openjdk"
+        ],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "microdnf install -y \\",
+                "java-11-openjdk-headless",
+                "curl",
+                "openssl",
+                "tar",
+                "gzip",
+                "shadow-utils &&",
+                "microdnf clean all"
+            ],
+            [
+                "mkdir -p /opt/jolokia && \\",
+                "curl -s @jolokia.agent.url@ -o /opt/jolokia/jolokia-jvm-agent.jar"
+            ],
+            [
+                "mkdir -p /etc/opt/kapua && \\",
+                "openssl req -x509 -newkey rsa:4096 -keyout /etc/opt/kapua/key.pem -out /etc/opt/kapua/cert.pem -days 365 -nodes -subj '/O=Eclipse Kapua/C=XX' &&",
+                "openssl pkcs8 -topk8 -in /etc/opt/kapua/key.pem -out /etc/opt/kapua/key.pk8 -nocrypt &&",
+                "chmod +r /etc/opt/kapua/key.pk8 &&",
+                "rm /etc/opt/kapua/key.pem"
+            ]
+        ]
+    }
+}

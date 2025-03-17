@@ -1,0 +1,43 @@
+# Use OpenJDK 21 slim for base image
+FROM openjdk:21-slim AS builder
+
+# Set the working directory
+WORKDIR /usr/local/room
+
+# Copy the maven executable to the working directory
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy the pom.xml file
+COPY pom.xml .
+
+# Copy the source code files
+COPY src ./src
+
+# Copy static files
+COPY assets ./assets
+
+# Build our app using maven
+RUN ./mvnw package -DskipTests
+
+# Starting a new, second stage 
+FROM openjdk:21-slim
+
+# Set the working directory
+WORKDIR /usr/local/room
+
+# Copy the jar file from the first stage
+
+# Set environment variables
+ENV profile=dev
+ENV authDomain=rbp-auth
+
+# Expose the necessary port(s)
+EXPOSE 8080
+
+# Set the user
+# Replace "root" with the user you want to use
+USER root
+
+# Set the entrypoint
+ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=$profile", "/usr/local/room/restful-booker-platform-room-*.jar", "-D"]

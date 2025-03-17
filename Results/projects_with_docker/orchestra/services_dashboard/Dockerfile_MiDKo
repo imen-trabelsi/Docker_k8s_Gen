@@ -1,0 +1,31 @@
+# Use the Node.js 12-slim image from DockerHub as the base image
+FROM node:12-slim
+
+# Setting environment variables for the production settings and encoding
+ENV FORWARD_INTEROP_URL='0.0.0.0:4000' \
+
+# Set working directory
+WORKDIR /app
+
+# Copy the package.json file to the image for installing dependencies
+COPY services/dashboard/package.json .
+RUN npm install # Install dependencies
+COPY services/dashboard . # Copy app source
+
+# Build commands 
+RUN npm run build-msg
+RUN npm run build
+
+# Switching to production environment
+RUN export NODE_ENV=production 
+RUN npm install
+
+# Add common messages
+COPY common/messages/stats.proto /
+
+# Expose the port for the application
+EXPOSE 4000
+
+# Command to execute
+CMD ["npm", "start", "--silent"]
+

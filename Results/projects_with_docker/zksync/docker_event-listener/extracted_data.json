@@ -1,0 +1,22 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "JavaScript",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"zksync-root\",\n  \"version\": \"1.0.0\",\n  \"license\": \"MIT\",\n  \"private\": true,\n  \"workspaces\": {\n    \"packages\": [\n      \"sdk/zksync.js\",\n      \"sdk/zksync-crypto\",\n      \"contracts\",\n      \"infrastructure/zk\",\n      \"infrastructure/reading-tool\",\n      \"infrastructure/token-lists-manager\",\n      \"infrastructure/api-docs\",\n      \"core/tests/ts-tests\"\n    ]\n  },\n  \"scripts\": {\n    \"build:zksync-sdk\": \"yarn zksync prepublish\",\n    \"build:crypto\": \"yarn crypto build\",\n    \"build:reading-tool\": \"yarn reading-tool build\",\n    \"zksync\": \"yarn workspace zksync\",\n    \"crypto\": \"yarn workspace zksync-crypto\",\n    \"contracts\": \"yarn workspace franklin-contracts\",\n    \"ts-tests\": \"yarn workspace ts-tests\",\n    \"zk\": \"yarn workspace zk\",\n    \"reading-tool\": \"yarn workspace reading-tool\",\n    \"api-docs\": \"yarn workspace api-docs\"\n  },\n  \"devDependencies\": {\n    \"@typescript-eslint/eslint-plugin\": \"^4.10.0\",\n    \"@typescript-eslint/parser\": \"^4.10.0\",\n    \"babel-eslint\": \"^10.1.0\",\n    \"eslint\": \"^7.16.0\",\n    \"eslint-config-alloy\": \"^3.8.2\",\n    \"markdown-toc\": \"^1.2.0\",\n    \"markdownlint-cli\": \"^0.24.0\",\n    \"prettier\": \"^2.2.1\",\n    \"prettier-plugin-solidity\": \"^1.0.0-alpha.60\",\n    \"solhint\": \"^3.3.2\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "docker-compose.yml": "version: '3.2'\nservices:\n  postgres:\n    image: \"postgres:12\"\n    ports:\n      - \"5432:5432\"\n    volumes:\n    - type: bind\n      source: ./volumes/postgres\n      target: /var/lib/postgresql/data\n    environment:\n        - POSTGRES_HOST_AUTH_METHOD=trust\n  geth:\n    image: \"matterlabs/geth:latest\"\n    ports:\n      - \"8545:8545\"\n      - \"8546:8546\"\n    volumes:\n    - type: bind\n      source: ./volumes/geth\n      target: /var/lib/geth/data\n    environment:\n      - PLUGIN_CONFIG=fast\n  dev-liquidity-token-watcher:\n    image: \"matterlabs/dev-liquidity-token-watcher:latest\"\n    env_file:\n      - ./etc/env/docker.env\n    ports:\n      - \"9975:9975\"\n    volumes:\n      - ./etc/tokens/:/etc/tokens\n\n  dev-ticker:\n    image: \"matterlabs/dev-ticker:latest\"\n    ports:\n      - \"9876:9876\"\n    volumes:\n      - ./etc/tokens/:/etc/tokens\n",
+            "docker/event-listener/Dockerfile": "# syntax=docker/dockerfile:experimental\nFROM rust:1.67 as builder\nRUN --mount=type=cache,target=/usr/local/cargo/registry \\\n    cargo install sccache\nWORKDIR /usr/src/zksync\nCOPY . .\nRUN --mount=type=cache,target=/usr/local/cargo/registry \\\n    --mount=type=cache,target=/root/.cache/sccache \\\n    RUSTC_WRAPPER=/usr/local/cargo/bin/sccache \\\n    cargo build --release\n\nFROM debian:bullseye\nRUN apt update\nRUN apt install openssl -y\nEXPOSE 9977\nCOPY --from=builder /usr/src/zksync/target/release/zksync_event_listener /bin/\nENTRYPOINT [\"zksync_event_listener\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile"
+        ],
+        "folders": []
+    }
+}

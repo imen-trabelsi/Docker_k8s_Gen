@@ -1,0 +1,33 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/core/sdk:3.1",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV AZURE_FUNCTIONS_ENVIRONMENT Development"
+        ],
+        "copy_instructions": [
+            "COPY . /src/dotnet-function-app",
+            "COPY --from=installer-env [\"/home/site/wwwroot\", \"/home/site/wwwroot\"]"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "cd /src/dotnet-function-app && \\",
+                "mkdir -p /home/site/wwwroot &&",
+                "dotnet publish \"Services/Functions/Functions.csproj\" --output /home/site/wwwroot"
+            ],
+            [
+                "apt-get update && apt-get install -y curl && curl -sL https://aka.ms/InstallAzureCLIDeb | bash",
+                "ENV AzureWebJobsScriptRoot=/home/site/wwwroot",
+                "AzureFunctionsJobHost__Logging__Console__IsEnabled=true",
+                "CORS_ALLOWED_ORIGINS=*",
+                "CORS_SUPPORT_CREDENTIALS=false"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,21 @@
+# Use Python slim base image
+FROM python:3.8-slim
+
+# Set work directory
+ENV PROJECT_DIR /usr/local/src/myapp
+WORKDIR ${PROJECT_DIR}
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# Copy Pipfile and Pipfile.lock
+COPY Pipfile Pipfile.lock ${PROJECT_DIR}/
+
+# Install pipenv and copy project files
+RUN pip install pipenv && \
+pipenv install --system --deploy && \ 
+COPY src/ ${PROJECT_DIR}/
+
+# Python execution command
+ENTRYPOINT ["python", "./init_db.py"]

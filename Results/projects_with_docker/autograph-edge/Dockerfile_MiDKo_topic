@@ -1,0 +1,25 @@
+# Build stage
+FROM golang:1.22 AS builder
+
+# Add Maintainer Info
+LABEL maintainer="john.doe@example.com"
+
+WORKDIR /app
+COPY go.mod ./
+RUN go mod download
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
+
+# Final stage
+FROM alpine:latest
+
+RUN apk --no-cache add ca-certificates
+WORKDIR /root/
+
+# Copy necessary files from builder stage
+
+# Expose port 8080
+EXPOSE 8080
+
+# Execute the binary
+CMD ["./app"]

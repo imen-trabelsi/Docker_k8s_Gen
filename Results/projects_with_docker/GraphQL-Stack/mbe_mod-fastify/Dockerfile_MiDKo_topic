@@ -1,0 +1,26 @@
+# Use the official lightweight Node.js 14 alpine image.
+FROM node:14-alpine
+
+# Set the working directory in the Docker image
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json (if available) to the working directory
+COPY package*.json ./
+
+# Install dependencies with npm. If you are using yarn, replace with `yarn install --production`
+RUN npm install --only=production
+
+# If you are building code for production, run this command. If you are using yarn, replace with `yarn build`
+# RUN npm run build
+
+# Copy local code to the container image.
+COPY . .
+
+# Set up health check instruction
+# HEALTHCHECK --interval=5m --timeout=3s CMD curl -f http://localhost:8080/ || exit 1
+
+# Expose the application on port 8080. This command is optional as the application can also use the EXPOSE instruction in the Dockerfile to inform about the listening port.
+# EXPOSE 8080
+
+# Run the web service on container startup.
+CMD [ "npm", "start" ]

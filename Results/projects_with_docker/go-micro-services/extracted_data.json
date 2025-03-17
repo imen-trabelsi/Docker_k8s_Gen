@@ -1,0 +1,34 @@
+{
+    "source_code_info": {
+        "language": "Go",
+        "framework": "Go",
+        "dependencies": {
+            "go.mod": "module github.com/harlow/go-micro-services\n\ngo 1.19\n\nrequire (\n\tgithub.com/grpc-ecosystem/grpc-opentracing v0.0.0-20180507213350-8e809c8a8645\n\tgithub.com/hailocab/go-geoindex v0.0.0-20160127134810-64631bfe9711\n\tgithub.com/opentracing-contrib/go-stdlib v1.0.0\n\tgithub.com/opentracing/opentracing-go v1.2.0\n\tgithub.com/uber/jaeger-client-go v2.30.0+incompatible\n\tgolang.org/x/net v0.7.0\n\tgoogle.golang.org/grpc v1.51.0\n\tgoogle.golang.org/protobuf v1.28.1\n)\n\nrequire (\n\tgithub.com/HdrHistogram/hdrhistogram-go v1.1.2 // indirect\n\tgithub.com/golang/protobuf v1.5.2 // indirect\n\tgithub.com/pkg/errors v0.9.1 // indirect\n\tgithub.com/stretchr/testify v1.7.0 // indirect\n\tgithub.com/uber/jaeger-lib v2.4.1+incompatible // indirect\n\tgo.uber.org/atomic v1.10.0 // indirect\n\tgolang.org/x/sys v0.5.0 // indirect\n\tgolang.org/x/text v0.7.0 // indirect\n\tgoogle.golang.org/genproto v0.0.0-20200526211855-cb27e3aa2013 // indirect\n)\n\nreplace github.com/codahale/hdrhistogram => github.com/HdrHistogram/hdrhistogram-go v0.9.0\n"
+        },
+        "database": null,
+        "build_system": "go mod",
+        "config_files": {
+            "docker-compose.yml": "version: \"3\"\nservices:\n  frontend:\n    build: .\n    entrypoint: go-micro-services frontend\n    ports:\n      - \"5000:8080\"\n    links:\n      - jaeger\n      - search\n      - profile\n    depends_on:\n      - search\n      - profile\n  search:\n    build: .\n    entrypoint: go-micro-services search\n    links:\n      - geo\n      - rate\n      - jaeger\n  profile:\n    build: .\n    entrypoint: go-micro-services profile\n    links:\n      - geo\n      - rate\n      - jaeger\n  geo:\n    build: .\n    entrypoint: go-micro-services geo\n    links:\n      - jaeger\n  rate:\n    build: .\n    entrypoint: go-micro-services rate\n    links:\n      - jaeger\n  jaeger:\n    image: jaegertracing/all-in-one:latest\n    ports:\n      - \"14269\"\n      - \"5778:5778\"\n      - \"14268:14268\"\n      - \"14267\"\n      - \"16686:16686\"\n      - \"5775:5775/udp\"\n      - \"6831:6831/udp\"\n      - \"6832:6832/udp\"\n",
+            "Dockerfile": "FROM golang:1.19.4\nCOPY . /go/src/github.com/harlow/go-micro-services\nWORKDIR /go/src/github.com/harlow/go-micro-services\nRUN go install -ldflags=\"-s -w\" ./cmd/...\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".gitignore",
+            "Dockerfile",
+            "LICENSE",
+            "Makefile",
+            "README.md",
+            "docker-compose.yml",
+            "go.mod",
+            "go.sum"
+        ],
+        "folders": [
+            "cmd",
+            "data",
+            "internal",
+            "public"
+        ]
+    }
+}

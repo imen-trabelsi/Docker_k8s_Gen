@@ -1,0 +1,40 @@
+{
+    "docker_info": {
+        "base_image": "owncloudops/nginx@sha256:8ca0c90c2f537fef6195ba8f5ebe6d6c00fe0a0c545f25ce8acd418a831a19a4",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8080"
+        ],
+        "user": [
+            "nginx"
+        ],
+        "labels": [
+            "maintainer=\"ownCloud"
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD docker/overlay /",
+            "ADD dist/ /var/lib/nginx/html",
+            "WORKDIR /var/lib/nginx/html"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"nginx\",",
+                    "\"-g\",",
+                    "\"daemon",
+                    "off;\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "rm -f /var/lib/nginx/html/*",
+                ""
+            ]
+        ]
+    }
+}

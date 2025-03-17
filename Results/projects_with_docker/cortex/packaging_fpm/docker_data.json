@@ -1,0 +1,43 @@
+{
+    "docker_info": {
+        "base_image": "alpine:3.19",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [
+            "org.opencontainers.image.title=\"fpm\""
+        ],
+        "health_checks": [],
+        "build_args": [
+            "revision"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "COPY package.sh /"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/package.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --no-cache \\",
+                "ruby",
+                "ruby-dev",
+                "ruby-etc",
+                "gcc",
+                "git",
+                "libc-dev",
+                "libffi-dev",
+                "make",
+                "rpm",
+                "tar",
+                "&& gem install --no-document fpm"
+            ]
+        ]
+    }
+}

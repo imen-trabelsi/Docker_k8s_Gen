@@ -1,0 +1,22 @@
+# Use base image
+FROM public.ecr.aws/lambda/python:3.12
+
+# Update necessary packages and clean cache
+RUN dnf update -y libarchive --releasever 2023.6.20241028 && \
+
+# Set working directory
+WORKDIR /var/task
+
+# Copy app and requirements
+COPY app ${LAMBDA_TASK_ROOT}
+COPY requirements.txt requirements.txt
+
+# Install dependencies
+RUN pip install --requirement requirements.txt
+
+# Clear pip cache to reduce image size
+RUN rm -r /root/.cache/pip
+
+# Set correct ENTRYPOINT and CMD
+ENTRYPOINT  ["python"]
+CMD ["upload_statistics.lambda_handler"]

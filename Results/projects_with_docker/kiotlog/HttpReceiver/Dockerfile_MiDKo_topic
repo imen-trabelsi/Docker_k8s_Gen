@@ -1,0 +1,23 @@
+#Use the provided base image
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-env
+
+#Set the current working directory inside the container
+WORKDIR /Sln
+
+#Copy everything from the current directory to the Workdir (/Sln) in the container 
+COPY . .
+
+WORKDIR /Sln/HttpReceiver
+
+#run commands
+RUN dotnet restore
+
+RUN dotnet publish -c Release -r linux-x64 -o out /p:LinkDuringPublish=false /p:ShowLinkerSizeComparison=true
+
+#WORKDIR sets the working directory for any instructions that follow it in the Dockerfile.
+WORKDIR /App
+
+#Copy the necessary out directory from build env to current directory
+
+#The ENTRYPOINT specifies a command that will always be executed when the container starts.
+ENTRYPOINT ["/App/HttpReceiver"]

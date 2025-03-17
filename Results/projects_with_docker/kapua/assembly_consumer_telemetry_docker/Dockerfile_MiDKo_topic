@@ -1,0 +1,53 @@
+# Pull the base image
+FROM @docker.account@/java-base
+
+# Allow setting environment variables at runtime.
+ARG BROKER_HOST=message-broker
+ARG BROKER_PORT=5672
+ARG BROKER_INTERNAL_USERNAME=internalUsername
+ARG BROKER_INTERNAL_PASSWORD=internalPassword
+ARG CONSUMER_HOST=telemetry
+ARG DATASTORE_ADDR=es
+ARG DATASTORE_PORT=9200
+ARG DATASTORE_CLIENT=org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient
+ARG SQL_DB_ADDR=db
+ARG SQL_DB_PORT=3306
+ARG SERVICE_BROKER_ADDR=failover:(amqp://events-broker:5672)?jms.sendTimeout=1000
+ARG JAVA_OPTS "-Dcommons.db.schema.update=true
+
+# Define the environment variable
+ENV BROKER_HOST=$BROKER_HOST
+ENV BROKER_PORT=$BROKER_PORT
+ENV BROKER_INTERNAL_USERNAME=$BROKER_INTERNAL_USERNAME
+ENV BROKER_INTERNAL_PASSWORD=$BROKER_INTERNAL_PASSWORD
+ENV CONSUMER_HOST=$CONSUMER_HOST
+ENV DATASTORE_ADDR=$DATASTORE_ADDR
+ENV DATASTORE_PORT=$DATASTORE_PORT
+ENV DATASTORE_CLIENT=$DATASTORE_CLIENT
+ENV SQL_DB_ADDR=$SQL_DB_ADDR
+ENV SQL_DB_PORT=$SQL_DB_PORT
+ENV SERVICE_BROKER_ADDR=$SERVICE_BROKER_ADDR
+ENV JAVA_OPTS=$JAVA_OPTS
+
+# Add maven executable binaries into PATH
+RUN echo "${JAVA_HOME}/bin" >> /etc/paths.d/java
+
+# Setting working directory
+WORKDIR /app
+
+# Copy maven executable to the image and setting up necessary permissions
+COPY maven/ /maven/
+RUN chmod +x /maven/mvn.*
+
+# Copy the rest files from the Spring Boot app to the docker filesystem
+COPY src /app/src
+COPY pom.xml /app
+
+# Build the application
+RUN mvn package
+
+# Expose the port the app runs in
+EXPOSE 8080
+
+# Start the application
+CMD ["java", "-jar", "target/spring-boot-app.jar"]

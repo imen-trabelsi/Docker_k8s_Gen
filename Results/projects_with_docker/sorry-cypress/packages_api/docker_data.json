@@ -1,0 +1,71 @@
+{
+    "docker_info": {
+        "base_image": "--platform=\"${BUILD_PLATFORM}\"",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "4000"
+        ],
+        "user": [
+            "${USER}"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "BUILD_PLATFORM=linux/amd64",
+            "USER=node"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY packages/api/ ./packages/api",
+            "COPY packages/common/ ./packages/common",
+            "COPY packages/mongo/ ./packages/mongo",
+            "COPY packages/logger/ ./packages/logger",
+            "COPY package.json ./",
+            "COPY yarn.lock ./",
+            "COPY tsconfig.json ./",
+            "WORKDIR /app",
+            "COPY  --chown=node:node --from=build /app/packages/ packages/",
+            "COPY  --chown=node:node --from=build /app/node_modules/ node_modules/"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/sbin/tini\",",
+                    "\"--\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"node\",",
+                    "\"packages/api/dist\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "yarn install --frozen-lockfile",
+                "RUN yarn workspace @sorry-cypress/common build"
+            ],
+            [
+                "yarn workspace @sorry-cypress/mongo build",
+                "RUN yarn workspace @sorry-cypress/logger build"
+            ],
+            [
+                "yarn workspace @sorry-cypress/api build",
+                "RUN yarn install --production --frozen-lockfile"
+            ],
+            [
+                "apk --no-cache add curl && \\",
+                "curl -sf https://gobinaries.com/tj/node-prune | sh &&",
+                "node-prune"
+            ],
+            [
+                "apk add --no-cache tini",
+                "ENV NODE_ENV=production"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,25 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Spring Boot",
+        "dependencies": {
+            "pom.xml": "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n    <modelVersion>4.0.0</modelVersion>\n\n    <artifactId>discovery-consumer</artifactId>\n    <packaging>jar</packaging>\n\n    <parent>\n        <groupId>org.tsdes.advanced.microservice.discovery</groupId>\n        <artifactId>discovery</artifactId>\n        <version>0.0.1-SNAPSHOT</version>\n    </parent>\n\n\n\n    <dependencies>\n\n        <dependency>\n            <groupId>org.springframework.cloud</groupId>\n            <artifactId>spring-cloud-starter-consul-discovery</artifactId>\n        </dependency>\n\n\n        <dependency>\n            <groupId>org.springframework.boot</groupId>\n            <artifactId>spring-boot-starter-web</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.springframework.boot</groupId>\n            <artifactId>spring-boot-starter-actuator</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>ch.qos.logback</groupId>\n            <artifactId>logback-classic</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.slf4j</groupId>\n            <artifactId>jcl-over-slf4j</artifactId>\n        </dependency>\n\n\n\n\n        <dependency>\n            <groupId>org.testcontainers</groupId>\n            <artifactId>testcontainers</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>io.rest-assured</groupId>\n            <artifactId>rest-assured</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>com.github.tomakehurst</groupId>\n            <artifactId>wiremock-standalone</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.springframework.boot</groupId>\n            <artifactId>spring-boot-starter-test</artifactId>\n        </dependency>\n\n    </dependencies>\n\n    <build>\n        <plugins>\n            <plugin>\n                <groupId>org.springframework.boot</groupId>\n                <artifactId>spring-boot-maven-plugin</artifactId>\n                <configuration>\n                    <finalName>consumer</finalName>\n                </configuration>\n            </plugin>\n        </plugins>\n    </build>\n\n\n\n</project>"
+        },
+        "database": null,
+        "build_system": "Maven",
+        "config_files": {
+            "advanced/microservice/discovery/docker-compose.yml": "version: '3.3'\n\nservices:\n\n  # All services here are going to be accessible from the localhost,\n  # as binding them to different TCP ports.\n\n  discovery:\n    image: \"consul:1.8\"\n    environment:\n      - CONSUL_LOCAL_CONFIG={\"log_level\":\"info\"}\n    ports:\n      - \"8500:8500\"\n\n  consumer:\n    build:\n        context: ./discovery-consumer\n        dockerfile: Dockerfile\n    ports:\n       - \"9000:8080\"\n    depends_on:\n       - discovery\n\n  # Starting 3 different instances of the same service.\n  # Going to use an environment variable to distinguish them\n\n  producer_0:\n     build:\n        context: ./discovery-producer\n        dockerfile: Dockerfile\n     ports:\n        - \"9001:8080\"\n     environment:\n        - PRODUCER_ID=A\n     depends_on:\n        - discovery\n\n  producer_1:\n     build:\n        context: ./discovery-producer\n        dockerfile: Dockerfile\n     ports:\n        - \"9002:8080\"\n     environment:\n        - PRODUCER_ID=B\n     depends_on:\n        - discovery\n\n  producer_2:\n     build:\n        context: ./discovery-producer\n        dockerfile: Dockerfile\n     ports:\n        - \"9003:8080\"\n     environment:\n        - PRODUCER_ID=C\n     depends_on:\n        - discovery\n\n",
+            "advanced/microservice/discovery/discovery-consumer/Dockerfile": "FROM adoptopenjdk/openjdk11:alpine\n\nCOPY target/consumer.jar .\n\nCMD java -jar consumer.jar  --spring.profiles.active=docker"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "pom.xml"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

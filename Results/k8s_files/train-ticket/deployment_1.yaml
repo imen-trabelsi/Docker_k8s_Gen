@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    addonmanager.kubernetes.io/mode: Reconcile
+    k8s-app: kibana-logging
+    kubernetes.io/cluster-service: 'true'
+  name: kibana-logging
+  namespace: kube-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      k8s-app: kibana-logging
+  template:
+    metadata:
+      annotations:
+        seccomp.security.alpha.kubernetes.io/pod: docker/default
+      labels:
+        k8s-app: kibana-logging
+    spec:
+      containers:
+      - env:
+        - name: ELASTICSEARCH_URL
+          value: http://elasticsearch-logging:9200
+        - name: SERVER_BASEPATH
+          value: /api/v1/namespaces/kube-system/services/kibana-logging/proxy
+        image: zhongyuanzhao000/docker_elastic_co_kibana_kibana-oss:v6.2.4
+        name: kibana-logging
+        ports:
+        - containerPort: 5601
+          name: ui
+          protocol: TCP
+        resources:
+          limits:
+            cpu: 1000m
+          requests:
+            cpu: 100m

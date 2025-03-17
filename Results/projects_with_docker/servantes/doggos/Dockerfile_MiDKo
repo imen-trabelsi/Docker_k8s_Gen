@@ -1,0 +1,23 @@
+# Use official Golang runtime as a parent image
+FROM golang:1.17-alpine
+
+# Set the working directory in the container
+WORKDIR /go/src/github.com/tilt-dev/servantes/doggos
+
+# Add the current directory contents into the container
+COPY . /go/src/github.com/tilt-dev/servantes/doggos
+
+# Install any necessary dependencies specified in go.mod
+RUN go mod download
+
+# Set entry point
+ENTRYPOINT ["/go/bin/doggos"]
+
+# Compile the application
+RUN go install .
+
+# Make port available to the world outside this container
+EXPOSE 80
+
+# Run the executable
+CMD ["./main"]

@@ -1,0 +1,25 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Java",
+        "dependencies": {
+            "pom.xml": "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n    <modelVersion>4.0.0</modelVersion>\n\n    <artifactId>card-game-part11-frontend</artifactId>\n    <packaging>jar</packaging>\n\n    <parent>\n        <groupId>org.tsdes.advanced.exercises.cardgame.part11</groupId>\n        <artifactId>card-game-part11</artifactId>\n        <version>0.0.1-SNAPSHOT</version>\n    </parent>\n\n\n\n\n    <build>\n        <plugins>\n            <plugin>\n                <groupId>org.codehaus.mojo</groupId>\n                <artifactId>exec-maven-plugin</artifactId>\n                <executions>\n                    <execution>\n                        <id>yarn install</id>\n                        <goals>\n                            <goal>exec</goal>\n                        </goals>\n                        <phase>generate-resources</phase>\n                        <configuration>\n                            <executable>yarn</executable>\n                            <arguments>\n                                <argument>install</argument>\n                            </arguments>\n                        </configuration>\n                    </execution>\n                    <execution>\n                        <id>yarn build</id>\n                        <goals>\n                            <goal>exec</goal>\n                        </goals>\n                        <phase>generate-resources</phase>\n                        <configuration>\n                            <executable>yarn</executable>\n                            <arguments>\n                                <argument>build</argument>\n                            </arguments>\n                        </configuration>\n                    </execution>\n                </executions>\n            </plugin>\n        </plugins>\n    </build>\n</project>"
+        },
+        "database": null,
+        "build_system": "Maven",
+        "config_files": {
+            "advanced/exercise-solutions/card-game/part-11/docker-compose.yml": "version: '3.3'\n\nservices:\n\n  api-gateway:\n    build:\n      context: ./api-gateway\n      dockerfile: Dockerfile\n    ports:\n      - \"80:8080\"\n    depends_on:\n      - discovery\n\n  frontend:\n    build:\n      context: ./frontend\n      dockerfile: Dockerfile\n\n  rabbitmq:\n    image:  \"rabbitmq:3\"\n\n  discovery:\n    image: \"consul:1.8\"\n    environment:\n      - CONSUL_LOCAL_CONFIG={\"log_level\":\"info\"}\n\n  redis:\n    image: \"redis:latest\"\n\n  postgres-auth:\n    image: \"postgres:10\"\n    environment:\n      - POSTGRES_HOST_AUTH_METHOD=trust\n\n  postgres-user-collections:\n    image: \"postgres:10\"\n    environment:\n      - POSTGRES_HOST_AUTH_METHOD=trust\n\n  postgres-scores:\n    image: \"postgres:10\"\n    environment:\n      - POSTGRES_HOST_AUTH_METHOD=trust\n\n  auth:\n    build:\n      context: ../part-10/auth\n      dockerfile: Dockerfile\n    depends_on:\n      - api-gateway\n      - redis\n      - postgres-auth\n      - rabbitmq\n\n  cards_0:\n    build:\n      context: ../part-08/cards\n      dockerfile: Dockerfile\n    depends_on:\n      - api-gateway\n      - discovery\n\n  cards_1:\n    build:\n      context: ../part-08/cards\n      dockerfile: Dockerfile\n    depends_on:\n      - api-gateway\n      - discovery\n\n  user-collections:\n    build:\n      context: ../part-10/user-collections\n      dockerfile: Dockerfile\n    depends_on:\n      - api-gateway\n      - discovery\n      - postgres-user-collections\n      - auth\n      - rabbitmq\n\n  scores:\n    build:\n      context: ../part-10/scores\n      dockerfile: Dockerfile\n    depends_on:\n      - api-gateway\n      - discovery\n      - postgres-scores\n      - rabbitmq\n\n\n\n\n\n\n",
+            "advanced/exercise-solutions/card-game/part-11/frontend/Dockerfile": "FROM node:12-alpine\n\nWORKDIR /usr/src/app\n\nCOPY package.json ./\nCOPY yarn.lock ./\n\nRUN yarn install\n\nCOPY . .\n\nRUN yarn build\n\nCMD yarn start"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "pom.xml"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

@@ -1,0 +1,29 @@
+# Set the base image
+FROM python:3.6-onbuild
+
+# Set the working directory
+WORKDIR /usr/src/app
+
+# Copy the requirements.txt file
+COPY requirements.txt .
+
+# Install dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the necessary instructions
+COPY . .
+
+RUN mkdir -p /config
+
+# Set Volume
+VOLUME /config
+
+# Set Environment Variables
+ENV SQLALCHEMY_DATABASE_URI sqlite:////config/tokens.db
+ENV FLASK_DEBUG 1
+
+# Expose the necessary port
+EXPOSE 5000
+
+# Set the Docker container to run the application
+CMD ["python", "-m", "indexer"]

@@ -1,0 +1,29 @@
+# We'll use the official Node.js Docker image as our base image.
+# This has the exact release version we need for our application.
+FROM node:12@sha256:01627afeb110b3054ba4a1405541ca095c8bfca1cb6f2be9479c767a2711879e
+
+# Set the environment variables
+# Here, we can set environment variables such as the NODE_ENV
+# You can add more environment variables if you need them
+ENV NODE_ENV=production
+
+# Set working directory in container
+WORKDIR /usr/src/app
+
+# Copy our local package.json and package-lock.json to the Docker container
+# This will allow us to install our dependencies
+COPY package*.json ./
+
+# Install all packages.
+RUN npm install
+
+# Copy all files to the workdir
+COPY . .
+
+# Expose the port that our application runs on
+# This will make it accessible to other Docker containers
+# You can change this to whatever port your application runs on
+EXPOSE 8080
+
+# Command to start our application
+CMD ["npm", "start"]

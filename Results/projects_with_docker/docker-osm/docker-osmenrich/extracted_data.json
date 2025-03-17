@@ -1,0 +1,26 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "requirements.txt": "psycopg2-binary==2.9.9\npython-dateutil==2.8.2\nPyYAML==6.0.1\nxmltodict==0.13.0"
+        },
+        "database": "PostgreSQL",
+        "build_system": "pip",
+        "config_files": {
+            "docker-compose.yml": "version: '3.4'\n\nvolumes:\n  osm-postgis-data:\n  settings-data:\n  import_done:\n  import_queue:\n  cache:\n\nservices:\n  db:\n    image: kartoza/postgis:${POSTGRES_VERSION}\n    environment:\n      - POSTGRES_USER=${POSTGRES_USER}\n      - POSTGRES_PASS=${POSTGRES_PASS}\n      - POSTGRES_DBNAME=${POSTGRES_DBNAME}\n      - ALLOW_IP_RANGE=${ALLOW_IP_RANGE}\n      - FORCE_SSL=${FORCE_SSL}\n    volumes:\n      - osm-postgis-data:/var/lib/postgresql\n      - settings-data:/home/settings\n    healthcheck:\n      test: \"pg_isready -d ${POSTGRES_DBNAME}\"\n\n  imposm:\n    image: kartoza/docker-osm:imposm-latest\n    volumes:\n      - settings-data:/home/settings\n      - import_done:/home/import_done\n      - import_queue:/home/import_queue\n      - cache:/home/cache\n    depends_on:\n      db:\n        condition: service_healthy\n    environment:\n      - POSTGRES_USER=${POSTGRES_USER}\n      - POSTGRES_PASS=${POSTGRES_PASS}\n      - POSTGRES_DBNAME=${POSTGRES_DBNAME}\n      - POSTGRES_PORT=${POSTGRES_PORT}\n      - POSTGRES_HOST=${POSTGRES_HOST}\n      - TIME=${TIME}\n      - SETTINGS=${SETTINGS}\n      - CACHE=${CACHE}\n      - IMPORT_DONE=${IMPORT_DONE}\n      - IMPORT_QUEUE=${IMPORT_QUEUE}\n      - SRID=${SRID}\n      - OPTIMIZE=${OPTIMIZE}\n      - DBSCHEMA_PRODUCTION=${DBSCHEMA_PRODUCTION}\n      - DBSCHEMA_IMPORT=${DBSCHEMA_IMPORT}\n      - DBSCHEMA_BACKUP=${DBSCHEMA_BACKUP}\n      - QGIS_STYLE=${QGIS_STYLE}\n      - CLIP=${CLIP}\n      - SSL_MODE=${SSL_MODE}\n\n  osmupdate:\n    image: kartoza/docker-osm:osmupdate-latest\n    volumes:\n      - settings-data:/home/settings\n      - import_done:/home/import_done\n      - import_queue:/home/import_queue\n      - cache:/home/cache\n    depends_on:\n      db:\n        condition: service_healthy\n    environment:\n      - MAX_DAYS=${MAX_DAYS}\n      - DIFF=${DIFF}\n      - MAX_MERGE=${MAX_MERGE}\n      - COMPRESSION_LEVEL=${COMPRESSION_LEVEL}\n      - BASE_URL=${BASE_URL}\n      - IMPORT_QUEUE=${IMPORT_QUEUE}\n      - IMPORT_DONE=${IMPORT_DONE}\n      - TIME=${TIME}\n\n  osmenrich:\n    image: kartoza/docker-osm:osmenrich-latest\n    volumes:\n      - settings-data:/home/settings\n      - import_done:/home/import_done\n      - import_queue:/home/import_queue\n      - cache:/home/cache\n    depends_on:\n      db:\n        condition: service_healthy\n    environment:\n      - IMPORT_QUEUE=${IMPORT_QUEUE}\n      - IMPORT_DONE=${IMPORT_DONE}\n      - TIME=${TIME}\n      - DBSCHEMA_PRODUCTION=${DBSCHEMA_PRODUCTION}\n      - SSL_MODE=${SSL_MODE}\n",
+            "docker-osmenrich/Dockerfile": "FROM python:3\nMAINTAINER Irwan Fathurrahman <meomancer@gmail.com>\n\nADD requirements.txt /home/requirements.txt\nRUN pip3 install -r /home/requirements.txt\n\nADD enrich.py /home/\n\nWORKDIR /home\nCMD [\"python3\", \"-u\", \"/home/enrich.py\"]\n\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "71-apt-cacher-ng",
+            "Dockerfile",
+            "download.py",
+            "osmconvert.c",
+            "osmupdate.c"
+        ],
+        "folders": []
+    }
+}

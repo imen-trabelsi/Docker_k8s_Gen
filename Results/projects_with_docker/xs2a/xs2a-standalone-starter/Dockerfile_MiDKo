@@ -1,0 +1,25 @@
+# Use base image
+FROM adorsys/java:11
+
+# Maintainer
+LABEL maintainer="https://git.adorsys.de/adorsys/xs2a/aspsp-xs2a"
+
+# Set the working directory in the container
+WORKDIR /opt/xs2a-starter
+
+# Copy the jar file from your target directory to the workspace in the docker container
+COPY ./target/xs2a-standalone-starter-exec.jar /opt/xs2a-starter/xs2a-standalone-starter.jar
+
+# Set environment variables
+ENV JAVA_OPTS -Xmx1024m -Dserver.port=8080
+ENV JAVA_TOOL_OPTIONS -Xmx1024m
+
+# Expose the port
+EXPOSE 8080
+
+# Run Commands
+RUN mkdir -p /opt/xs2a-starter/logs/ && chmod 777 /opt/xs2a-starter/logs/
+USER 1001
+
+# Set the start command
+CMD exec $JAVA_HOME/bin/java $JAVA_OPTS -jar /opt/xs2a-starter/xs2a-standalone-starter.jar

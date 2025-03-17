@@ -1,0 +1,41 @@
+{
+    "docker_info": {
+        "base_image": "lgd-build-nominatim:4.0.1",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "7531"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /lgd/sparqlify",
+            "COPY --from=sparqlify /app .",
+            "COPY start.sh .",
+            "COPY wait-for-postgres.sh ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"./wait-for-postgres.sh\",",
+                    "\"./start.sh\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "sed -Ei 's|/app/|/lgd/sparqlify/|g' jib-classpath-file",
+                ""
+            ],
+            [
+                "chmod +x ./wait-for-postgres.sh ./start.sh",
+                ""
+            ]
+        ]
+    }
+}

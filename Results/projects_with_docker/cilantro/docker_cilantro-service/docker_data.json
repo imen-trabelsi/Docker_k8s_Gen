@@ -1,0 +1,57 @@
+{
+    "docker_info": {
+        "base_image": "python:3.6-buster",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "5000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV LIBRARY_PATH=/lib:/usr/lib",
+            "ENV PIPENV_VENV_IN_PROJECT=true",
+            "ENV LC_ALL C.UTF-8",
+            "ENV LANG C.UTF-8",
+            "ENV FLASK_APP service/run_service.py"
+        ],
+        "copy_instructions": [
+            "COPY docker/cilantro-service/pyproject.toml docker/cilantro-service/poetry.lock ./",
+            "WORKDIR /app",
+            "COPY utils ./utils",
+            "COPY service ./service",
+            "COPY resources ./resources",
+            "COPY workers/task_information.py ./workers/",
+            "COPY docker/cilantro-service/entrypoint.sh /entrypoint.sh",
+            "COPY docker/cilantro-service/VERSION ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "sh",
+                    "/entrypoint.sh"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && \\",
+                "apt-get -y install",
+                "python3-dev",
+                "gcc",
+                "libffi-dev",
+                "musl-dev"
+            ],
+            [
+                "pip3 install 'poetry==1.0.9'",
+                "WORKDIR /poetry"
+            ],
+            [
+                "poetry config virtualenvs.create false \\",
+                "&& poetry install --no-interaction"
+            ]
+        ]
+    }
+}

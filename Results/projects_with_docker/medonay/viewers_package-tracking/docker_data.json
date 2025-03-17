@@ -1,0 +1,38 @@
+{
+    "docker_info": {
+        "base_image": "ruby:2.5.0",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY Gemfile /src/",
+            "COPY Gemfile.lock /src/",
+            "COPY main.rb  /src/"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "ruby",
+                    "main.rb"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p /src",
+                "WORKDIR /src"
+            ],
+            [
+                "bundle install",
+                ""
+            ]
+        ]
+    }
+}

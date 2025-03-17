@@ -1,0 +1,30 @@
+# Start with a base image
+FROM golang:1.22
+
+# Set working directory in the Docker image
+WORKDIR /go/src/gitlab.com/remp/remp/Beam/go
+
+# Copy local package files to the container's workspace.
+COPY package*.json ./
+
+# Install npm based dependencies
+RUN npm install
+
+# Copy the rest of the application Code
+COPY . .
+
+# Build the app
+RUN npm run build
+
+# Install goimports
+RUN go install golang.org/x/tools/cmd/goimports@latest
+
+# Make directories for build and go src
+RUN mkdir -p /src/build && \
+
+# Copy build to /usr/local/bin & give executable permissions
+COPY build /usr/local/bin/
+RUN chmod +x /usr/local/bin/build
+
+# Default command when running a container from this image
+CMD ["build"]

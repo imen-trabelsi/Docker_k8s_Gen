@@ -1,0 +1,41 @@
+# Start from the base image
+FROM node:8.13-slim AS build-env
+
+# Set working directory
+WORKDIR /opt/my-musik/
+
+# Install global packages
+RUN npm install typescript -g
+
+# Copy package file
+COPY ./package.json .
+COPY ./tsconfig.json .
+COPY ./tslint.json .
+COPY ./config.json .
+COPY ./4.1_Dockerization/Playlist/config.json .
+COPY ./4.1_Dockerization/docker-compose.yml .
+COPY ./4.1_Dockerization/Playlist/Dockerfile .
+
+# Install node packages (with cache rebuilt)
+RUN npm install --no-optional
+
+# Building app
+COPY ./src ./src
+RUN "node_modules/.bin/gulp" 
+RUN mkdir -p /opt/my-musik/dist ./dist
+
+# Build the production image
+FROM node:8.13-slim
+
+WORKDIR /opt/my-musik/
+
+# Copy relevant files from build container
+
+# Install production packages only
+RUN npm install --no-optional --only=prod
+
+# Expose the app port
+EXPOSE 3002
+
+# Set the command
+CMD [ "node", "dist/app.js" ]

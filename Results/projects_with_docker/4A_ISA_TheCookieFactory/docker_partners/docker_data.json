@@ -1,0 +1,33 @@
+{
+    "docker_info": {
+        "base_image": "mono:3.10",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "9090"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ./server.exe ./server.exe"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"mono\",",
+                    "\"./server.exe\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/standalone\"]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

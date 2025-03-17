@@ -1,0 +1,38 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Java",
+        "dependencies": {
+            "build.gradle": "plugins {\n    id 'java'\n    id 'application'\n}\n\nmainClassName = \"seloger.TokenServer\"\n\ngroup 'hobo.sapiens'\nversion '1.0-SNAPSHOT'\n\nsourceCompatibility = 1.8\ntargetCompatibility = 1.8\n\nrepositories {\n    mavenCentral()\n}\n\n\ndependencies {\n    testCompile group: 'junit', name: 'junit', version: '4.12'\n    compile 'io.jsonwebtoken:jjwt-api:0.11.2'\n    runtime 'io.jsonwebtoken:jjwt-impl:0.11.2',\n            'io.jsonwebtoken:jjwt-jackson:0.11.2'\n\n\n    compile group: 'log4j', name: 'log4j', version: '1.2.12'\n    compile group: 'org.json', name: 'json', version: '20180130'\n}\n"
+        },
+        "database": null,
+        "build_system": "Gradle",
+        "config_files": {
+            "docker-compose.yml": "version: '3.8'\n\nservices:\n  selogertoken:\n    build:\n      dockerfile: seloger-token.Dockerfile\n      context: .\n    container_name: hobo-seloger-token\n    restart: unless-stopped\n    ports:\n    - 8001:8001\n    expose:\n      - 8001\n\n  moteurimmotoken:\n    build:\n      dockerfile: moteurimmo-token.Dockerfile\n      context: .\n    container_name: hobo-moteurimmo-token\n    restart: unless-stopped\n    ports:\n      - 18081:18081\n    expose:\n      - 18081\n\n  torproxy:\n    build:\n      context: torproxy\n    container_name: torproxy\n    restart: unless-stopped\n    ports:\n      - 9050:9050\n      - 9052:9052\n    expose:\n      - 9050\n      - 9052\n\n  crawler:\n    build:\n      dockerfile: crawler.Dockerfile\n      context: .\n    container_name: hobo-sapiens-crawler\n    restart: unless-stopped\n    volumes:\n      - ~/.hobo-sapiens/listings:/root/.hobo-sapiens/listings\n      - ~/.hobo-sapiens/image-hashes:/root/.hobo-sapiens/image-hashes\n      - ./filter.json:/usr/src/app/filter.json\n    depends_on:\n      - selogertoken\n      - moteurimmotoken\n      - torproxy\n    environment:\n      - HS_FIRST_RUN_SILENT\n      - HS_TELEGRAM_BOT_TOKEN\n      - HS_TELEGRAM_CHAT_ID\n      - TOR_PROXY_HOST=torproxy\n      - HS_SELOGER_TOKEN_HOST=selogertoken\n      - HS_MOTEURIMMO_TOKEN_HOST=moteurimmotoken\n    expose:\n      - 5000\n\n  prometheus:\n    image: prom/prometheus:latest\n    container_name: monitoring_prometheus\n    restart: unless-stopped\n    volumes:\n      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml\n      - ~/.hobo-sapiens/prometheus:/prometheus\n    command:\n      - '--config.file=/etc/prometheus/prometheus.yml'\n      - '--storage.tsdb.path=/prometheus'\n    expose:\n      - 9090\n\n  grafana:\n    image: grafana/grafana:latest\n    container_name: monitoring_grafana\n    restart: unless-stopped\n    depends_on:\n      - prometheus\n    ports:\n      - 0.0.0.0:13000:3000\n    volumes:\n      - ~/.hobo-sapiens/grafana:/var/lib/grafana\n      - ./monitoring/grafana/provisioning:/etc/grafana/provisioning/\n      - ./monitoring/grafana/dashboards:/var/lib/grafana/dashboards\n    environment:\n      - GF_SECURITY_ADMIN_PASSWORD=admin\n      - GF_USERS_ALLOW_SIGN_UP=false\n      - GF_SERVER_DOMAIN=myrul.com\n      - GF_SMTP_ENABLED=true\n      - GF_SMTP_HOST=smtp.gmail.com:587\n      - GF_SMTP_USER=myadrress@gmail.com\n      - GF_SMTP_PASSWORD=mypassword\n      - GF_SMTP_FROM_ADDRESS=myaddress@gmail.com\n      - GF_DASHBOARDS_DEFAULT_HOME_DASHBOARD_PATH=/var/lib/grafana/dashboards/dashboard.json"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".gitignore",
+            ".gitmodules",
+            "Makefile",
+            "README.md",
+            "build.gradle",
+            "crawler.Dockerfile",
+            "docker-compose.yml",
+            "filter.json",
+            "gradlew",
+            "gradlew.bat",
+            "moteurimmo-token.Dockerfile",
+            "seloger-token.Dockerfile",
+            "settings.gradle"
+        ],
+        "folders": [
+            "docs",
+            "gradle",
+            "monitoring",
+            "src"
+        ]
+    }
+}

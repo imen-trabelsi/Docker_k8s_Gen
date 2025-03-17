@@ -1,0 +1,27 @@
+# Use the Base Image Provided by User
+FROM node:9.11.2-alpine
+
+# Installing required tools and packages
+RUN apk update && apk add curl && apk add bash
+
+# Specifying the Work Directory
+WORKDIR /app
+
+# Copying the Files
+COPY package.json .
+COPY package-lock.json .
+COPY tsconfig.json .
+COPY ./src ./src
+
+# Installing Dependencies
+RUN npm install
+RUN npm config set unsafe-perm true && npm install -g typescript
+
+# Building the Application
+RUN npm run build
+
+# Exposing Ports
+EXPOSE 8080
+
+# Execution Command
+CMD ["npm", "run", "start"]

@@ -1,0 +1,36 @@
+# Here is the basic Dockerfile
+
+FROM phusion/baseimage:master-amd64
+
+LABEL maintainer="YOUR_NAME"
+
+# Updating Ubuntu packages
+RUN apt-get update && yes|apt-get upgrade
+
+# Installing dependencies
+RUN apt-get install -y \
+software-properties-common \
+certbot \
+python3-certbot-nginx \
+nginx \
+
+# Setting up directories and files 
+COPY setup.sh proxy-*.conf mongo.txt /root/
+COPY certbot_cron.sh /etc/my_init.d/certbot_cron.sh
+
+# Changing permissions
+RUN mkdir -p /etc/my_init.d
+COPY setup.sh /etc/my_init.d/setup.sh
+RUN chmod +x /etc/my_init.d/setup.sh
+
+RUN chmod +x /etc/my_init.d/certbot_cron.sh
+
+RUN mkdir /etc/service/nginx
+COPY nginx.sh /etc/service/nginx/run
+RUN chmod +x /etc/service/nginx/run
+
+# Exposing ports
+
+# Add any necessary environment variables
+
+CMD ["/sbin/my_init"]

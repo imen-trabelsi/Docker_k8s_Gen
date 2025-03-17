@@ -1,0 +1,21 @@
+# Set Base Image
+FROM node:20.0.0
+
+# Set working directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install --force
+
+# Copy remaining source code
+COPY . .
+
+# Expose port
+EXPOSE 3000
+
+# Set runtime command
+CMD [ "npm", "run", "start" ]

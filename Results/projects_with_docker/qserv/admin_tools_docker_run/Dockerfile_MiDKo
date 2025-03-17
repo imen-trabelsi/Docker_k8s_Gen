@@ -1,0 +1,32 @@
+# stage 1 base
+FROM ${QSERV_RUN_BASE} as builder
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the current directory contents into the WORKDIR
+COPY . /app
+
+# Set environment variable
+ENV QSERV_RUN_BASE=qserv/lite-run-base:latest
+
+# Install any dependencies specified in pyproject.toml
+RUN poetry install
+
+# Copy instructions
+COPY --chown=qserv:qserv bin/ /usr/local/bin/
+COPY --chown=qserv:qserv lib64/ /usr/local/lib64/
+COPY --chown=qserv:qserv lua/ /usr/local/lua/
+COPY --chown=qserv:qserv python/ /usr/local/python/
+COPY --chown=qserv:qserv qserv/ /usr/local/qserv/
+COPY --chown=qserv:qserv etc/ /usr/local/etc/
+COPY --chown=qserv:qserv log/log.cnf /config-etc/log/log.cnf
+
+# RUN insturctions
+RUN ldconfig
+
+# USER instruction
+USER qserv
+
+# Statement for running the application
+CMD [ "python", "./your-daemon-or-script.py" ]

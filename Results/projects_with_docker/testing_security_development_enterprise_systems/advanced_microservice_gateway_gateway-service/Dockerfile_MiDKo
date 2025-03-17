@@ -1,0 +1,17 @@
+# Setting base image
+FROM adoptopenjdk/openjdk11:alpine
+
+# Set a volume point to /tmp. This is where the application creates working directories
+VOLUME /tmp
+
+# Exposing necessary port for the application, replace 8080 with actual application port
+EXPOSE 8080
+
+# Setting necessary environment variables
+ENV JAVA_OPTS=""
+
+# Copy the jar file
+COPY target/service.jar service.jar
+
+# Command to run the application
+ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /service.jar" ]

@@ -1,0 +1,18 @@
+# Pull Base Image
+FROM openjdk:8-jre
+
+# Label
+LABEL maintainer="devops"
+
+# Expose Ports
+EXPOSE 8761
+
+# Copy Instructions
+COPY abixen-platform-eureka.jar app.jar
+
+# Set Environment Variables
+ENV JAVA_OPTS=""
+ENV ABIXEN_SERVICES_EUREKA_URI discovery
+
+# Entry point and CMD
+ENTRYPOINT [ "sh", "-c", "java -Djava.security.egd=file:/dev/./urandom -Dabixen.services.eureka.uri=$ABIXEN_SERVICES_EUREKA_URI -jar /app.jar" ]

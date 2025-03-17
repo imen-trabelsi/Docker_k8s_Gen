@@ -1,0 +1,14 @@
+# base image
+FROM mcr.microsoft.com/dotnet/aspnet
+
+# setting work directory
+WORKDIR /app
+
+# copying files
+COPY ./pub .
+
+# exposing port
+EXPOSE 80
+
+# setting entry point
+ENTRYPOINT ["dotnet", "NurseCron.Communications.SignalR.dll"]

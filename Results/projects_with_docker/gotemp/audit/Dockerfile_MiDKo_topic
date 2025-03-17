@@ -1,0 +1,39 @@
+# Use the developer specified base image
+FROM dev AS builder
+
+# Copying Go dependencies
+COPY go.mod go.sum /go/src/goTemp/
+WORKDIR /go/src/goTemp
+
+# Downloading dependencies
+RUN go mod download
+
+# Copy the source code into the Docker image
+COPY ./globalerrors ./globalerrors
+COPY ./globalUtils ./globalUtils
+COPY ./globalMonitoring ./globalMonitoring
+
+# Environment variables
+ENV SRVDIR=audit
+ENV SRVNAME=${SRVDIR}Server
+
+# Build the application
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o $SRVNAME ./$SRVDIR/server/
+
+# Multi-stage Build
+FROM alpine:latest AS alpBuild
+
+# Get ca-certificates
+RUN apk --no-cache add ca-certificates
+
+# Copy the binary from the builder stage
+
+# Environment variables
+ENV SRVDIR=audit
+ENV SRVNAME=${SRVDIR}ServerAlp
+
+# Expose port
+EXPOSE 2112
+
+# Start the application
+CMD ["/goTemp/${SRVNAME}"]

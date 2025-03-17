@@ -1,0 +1,39 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Spring Boot",
+        "dependencies": {
+            "build.gradle": "import java.time.Instant\n\nplugins {\n\tid 'org.springframework.boot' version '2.2.1.RELEASE'\n\tid 'io.spring.dependency-management' version '1.0.8.RELEASE'\n\tid 'com.palantir.docker' version '0.22.1'\n\tid 'java'\n\tid 'jacoco'\n}\n\ngroup = 'com.3pillarglobal.labs'\nversion = '1.0.0'\nsourceCompatibility = '1.8'\n\nconfigurations {\n\tdevelopmentOnly\n\truntimeClasspath {\n\t\textendsFrom developmentOnly\n\t}\n}\n\nrepositories {\n\tmavenCentral()\n}\n\ndependencies {\n\timplementation 'org.springframework.boot:spring-boot-starter-rsocket'\n\timplementation 'org.springframework.boot:spring-boot-starter-data-redis-reactive'\n\timplementation 'org.springframework.boot:spring-boot-starter-webflux'\n\tcompile 'io.lettuce:lettuce-core:5.2.2.RELEASE'\n\tdevelopmentOnly 'org.springframework.boot:spring-boot-devtools'\n\ttestImplementation('org.springframework.boot:spring-boot-starter-test') {\n\t\texclude group: 'org.junit.vintage', module: 'junit-vintage-engine'\n\t}\n\ttestImplementation 'io.projectreactor:reactor-test'\n}\n\ntest {\n\tuseJUnitPlatform()\n}\n\ndocker {\n\tname \"${System.getenv(\"DOCKER_ID\")}/${bootJar.baseName}:${version}\"\n\tcopySpec.from(tasks.bootJar.outputs.files.singleFile).into(\"build\")\n\tbuildArgs([JAR_FILE: \"build/*.jar\"])\n\tlabels([\n\t\t\"org.opencontainers.image.created\": Date.from(Instant.now())\n\t\t\t\t\t\t\t\t\t\t\t\t.format(\"yyyy-MM-dd'T'Hms.SZ\", TimeZone.getTimeZone(\"UTC\")),\n\t\t\"org.opencontainers.image.revision\": System.getenv(\"TRAVIS_COMMIT\") || \"\",\n\t\t\"org.opencontainers.image.licenses\": \"MIT\",\n\t\t\"org.opencontainers.image.title\": rootProject.name\n\t])\n}\n\njacocoTestReport {\n\treports {\n\t\txml.enabled true\n\t\thtml.enabled false\n\t}\n}\n"
+        },
+        "database": "Redis",
+        "build_system": "Gradle",
+        "config_files": {
+            "docker-compose.yml": "version: '3.2'\nservices:\n  web:\n    image: \"hailstorm3/hailstorm-web-client:1.9.11\"\n    ports:\n      - \"8080:80\"\n    networks:\n      - dmz\n    tty:\n      true\n    depends_on:\n      - file-server\n      - hailstorm-api\n    entrypoint:\n      - \"dockerize\"\n      - \"-wait\"\n      - \"http://hailstorm-api:8080\"\n      - \"-wait\"\n      - \"tcp://file-server:8080\"\n      - \"-timeout\"\n      - \"60s\"\n      - \"start.sh\"\n\n  hailstorm-api:\n    image: \"hailstorm3/hailstorm-api:1.0.21\"\n    ports:\n      - \"4567:8080\"\n    environment:\n      HAILSTORM_DATABASE_PASSWORD: hailstorm\n      HAILSTORM_ENV: production\n      REDIS_URL: redis://hailstorm-mq/\n    networks:\n      - dmz\n      - hailstorm\n    depends_on:\n      - hailstorm-db\n      - client-exchange\n    volumes:\n      - type: volume\n        source: hailstorm-home\n        target: /home\n    entrypoint:\n      - \"dockerize\"\n      - \"-wait\"\n      - \"tcp://hailstorm-db:3306\"\n      - \"-wait\"\n      - \"tcp://client-exchange:8080\"\n      - \"-timeout\"\n      - \"60s\"\n      - \"rackup\"\n      - \"-o\"\n      - \"0.0.0.0\"\n      - \"-p\"\n      - \"8080\"\n\n  file-server:\n    image: \"hailstorm3/hailstorm-file-server:1.1.0\"\n    hostname: \"file-server\"\n    ports:\n      - \"9000:8080\"\n    networks:\n      - dmz\n    volumes:\n      - type: volume\n        source: hailstorm-file-store\n        target: /hailstorm\n\n  hailstorm-db:\n    image: \"hailstorm3/hailstorm-db:2.0.0\"\n    hostname: \"hailstorm-db\"\n    ports:\n      - \"3306:3306\"\n    networks:\n      - hailstorm\n    volumes:\n      - type: volume\n        source: hailstorm-db\n        target: /var/lib/mysql\n    environment:\n      MYSQL_RANDOM_ROOT_PASSWORD: \"true\"\n\n  hailstorm-mq:\n    image: \"redis:5.0.7-alpine\"\n    hostname: \"hailstorm-mq\"\n    ports:\n      - \"6379:6379\"\n    networks:\n      - hailstorm\n\n  client-exchange:\n    image: \"hailstorm3/hailstorm-client-exchange:1.0.0\"\n    hostname: \"client-exchange\"\n    ports:\n      - \"9100:8080\"\n    networks:\n      - hailstorm\n      - dmz\n    depends_on:\n      - hailstorm-mq\n    entrypoint:\n      - \"dockerize\"\n      - \"-wait\"\n      - \"tcp://hailstorm-mq:6379\"\n      - \"-timeout\"\n      - \"60s\"\n      - \"java\"\n      - \"-jar\"\n      - \"/app.jar\"\n      - \"--redisHost=hailstorm-mq\"\n\nnetworks:\n  dmz:\n  hailstorm:\n\nvolumes:\n  hailstorm-file-store:\n  hailstorm-db:\n  hailstorm-home:\n",
+            "hailstorm-client-exchange/Dockerfile": "FROM openjdk:8-jdk-alpine\n\nRUN apk add --no-cache openssl\n\nENV DOCKERIZE_VERSION v0.6.1\n\nRUN wget -q https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \\\n    && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \\\n    && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz\n\nVOLUME /tmp /hailstorm\n\nARG JAR_FILE\n\nCOPY ${JAR_FILE} app.jar\n\nEXPOSE 8080\n\nCMD [\"java\", \"-jar\", \"/app.jar\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            ".editorconfig",
+            ".gitignore",
+            ".rspec",
+            ".rubocop.yml",
+            ".simplecov",
+            "Dockerfile",
+            "Gemfile",
+            "Gemfile.lock",
+            "Makefile",
+            "README.md",
+            "app.rb",
+            "boot.rb",
+            "config.ru"
+        ],
+        "folders": [
+            "app",
+            "config",
+            "spec"
+        ]
+    }
+}

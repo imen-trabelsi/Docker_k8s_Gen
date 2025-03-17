@@ -1,0 +1,13 @@
+FROM java:8-jre
+
+RUN mkdir /app
+
+COPY ./target/ts-admin-order-service-1.0.jar /app/
+
+WORKDIR /app
+
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' > /etc/timezone
+
+EXPOSE 16112
+
+ENTRYPOINT ["java", "-Xmx200m", "-jar", "ts-admin-order-service-1.0.jar"]

@@ -1,0 +1,41 @@
+{
+    "docker_info": {
+        "base_image": "rust:1.72-bookworm",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3031",
+            "3030",
+            "3002"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /usr/src/zksync",
+            "COPY . .",
+            "COPY --from=builder /usr/src/zksync/target/release/zksync_server /usr/bin",
+            "COPY contracts/artifacts/ /contracts/artifacts/",
+            "COPY etc/web3-abi/ /etc/web3-abi/"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"zksync_server\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "CARGO_HOME=./cargo cargo build --release",
+                ""
+            ],
+            [
+                "apt-get update && apt-get install -y libpq5 ca-certificates && rm -rf /var/lib/apt/lists/*",
+                "EXPOSE 3000"
+            ]
+        ]
+    }
+}

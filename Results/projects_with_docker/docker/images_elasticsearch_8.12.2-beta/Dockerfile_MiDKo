@@ -1,0 +1,33 @@
+# Base image
+FROM docker.elastic.co/elasticsearch/elasticsearch:8.12.2
+
+# Run as root user temporarily
+USER root
+
+# Set environment variables
+ENV ES_JAVA_OPTS "-Xms512m -Xmx512m"
+ENV cluster.name "pelias-dev"
+ENV discovery.type "single-node"
+ENV bootstrap.memory_lock "true"
+
+# Run commands
+RUN echo 'vm.max_map_count=262144' >> /etc/sysctl.conf
+RUN /usr/share/elasticsearch/bin/elasticsearch-plugin install analysis-icu
+RUN /usr/share/elasticsearch/bin/elasticsearch-plugin install repository-s3 --batch
+
+# Change user to elasticsearch
+USER elasticsearch
+
+# Change ownership and permissions of relevant directories and files
+RUN chown elasticsearch:elasticsearch config/elasticsearch.yml
+RUN chmod go+r /usr/share/elasticsearch -R
+RUN chmod go+w /usr/share/elasticsearch \
+                /usr/share/elasticsearch/config \
+                /usr/share/elasticsearch/logs \
+RUN chmod go+x /usr/share/elasticsearch/bin/*
+
+# Copy elasticsearch.yml configuration file from host to image
+COPY elasticsearch.yml /usr/share/elasticsearch/config/
+
+# Start Elasticsearch
+CMD ["elasticsearch"]

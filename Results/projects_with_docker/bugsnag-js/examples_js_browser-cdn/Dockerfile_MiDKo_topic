@@ -1,0 +1,34 @@
+# Use the user-provided base image
+FROM node:8@sha256:a681bf74805b80d03eb21a6c0ef168a976108a287a74167ab593fc953aac34df
+
+# Sets the working directory of the Docker container to be created
+WORKDIR /usr/src/app
+
+# Install app dependencies and copy over the necessary files
+COPY package*.json /usr/src/app/
+RUN npm install
+COPY . /usr/src/app/
+
+# Healthcheck Instruction
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD curl -f http://localhost/ || exit 1
+
+# Set environment variables
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
+
+# Set user to non-root for security purposes
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+USER appuser
+
+# Setting Labels
+LABEL maintainer="yourname@example.com" \
+
+# Exposes the specified port(s) at runtime. 8080 is generic; replace as necessary
+EXPOSE 8080
+
+# Provide metadata to the Docker image
+LABEL app="spring-boot-microservice"
+
+# Start the app
+CMD [ "npm", "start" ]

@@ -1,0 +1,17 @@
+# Step 1: Define the parent image
+FROM java:8-jre
+
+# Set working directory in the container to /app
+WORKDIR /app
+
+# Step 2: Add source code
+COPY ./target/ts-preserve-other-service-1.0.jar /app/
+
+# Step 3: Set timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Step 4: Expose the port that the app runs on
+EXPOSE 14569
+
+# Step 5: Define the command to run the application
+CMD ["java", "-Xmx200m", "-jar", "/app/ts-preserve-other-service-1.0.jar"]

@@ -1,0 +1,28 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Spring Boot",
+        "dependencies": {
+            "pom.xml": "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\r\n\txsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\r\n\t<modelVersion>4.0.0</modelVersion>\r\n\t<parent>\r\n\t\t<groupId>pl.piomin</groupId>\r\n\t\t<artifactId>sample-spring-microservices</artifactId>\r\n\t\t<version>1.0-SNAPSHOT</version>\r\n\t</parent>\r\n\t<artifactId>account-service</artifactId>\r\n\r\n\t<dependencies>\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.springframework.cloud</groupId>\r\n\t\t\t<artifactId>spring-cloud-starter-eureka</artifactId>\r\n\t\t</dependency>\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.springframework.boot</groupId>\r\n\t\t\t<artifactId>spring-boot-starter-actuator</artifactId>\r\n\t\t</dependency>\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.springframework.cloud</groupId>\r\n\t\t\t<artifactId>spring-cloud-starter-sleuth</artifactId>\r\n\t\t</dependency>\r\n\t\t<dependency>\r\n\t\t\t<groupId>org.springframework.cloud</groupId>\r\n\t\t\t<artifactId>spring-cloud-sleuth-zipkin</artifactId>\r\n\t\t</dependency>\r\n\t</dependencies>\r\n\r\n\t<build>\r\n\t\t<finalName>account-service</finalName>\r\n\t\t<plugins>\r\n\t\t\t<plugin>\r\n\t\t\t\t<groupId>org.springframework.boot</groupId>\r\n\t\t\t\t<artifactId>spring-boot-maven-plugin</artifactId>\r\n\t\t\t\t<configuration>\r\n\t\t\t\t\t<mainClass>pl.piomin.microservices.account.AccountServiceApplication</mainClass>\r\n\t\t\t\t\t<addResources>true</addResources>\r\n\t\t\t\t</configuration>\r\n\t\t\t\t<executions>\r\n\t\t\t\t\t<execution>\r\n\t\t\t\t\t\t<goals>\r\n\t\t\t\t\t\t\t<goal>repackage</goal>\r\n\t\t\t\t\t\t</goals>\r\n\t\t\t\t\t</execution>\r\n\t\t\t\t</executions>\r\n\t\t\t</plugin>\r\n\t\t</plugins>\r\n\t</build>\r\n\r\n</project>"
+        },
+        "database": null,
+        "build_system": "Maven",
+        "config_files": {
+            "docker-compose.yml": "version: '3.5'\nservices:\n  discovery:\n    image: piomin/discovery-service\n    container_name: discovery-service\n    build:\n      context: ./discovery-service\n      dockerfile: Dockerfile\n    ports:\n      - \"8761:8761\"\n\n  gateway:\n    image: piomin/gateway-service\n    container_name: service-gateway\n    build:\n      context: ./gateway-service\n      dockerfile: Dockerfile\n    ports:\n      - \"8765:8765\"\n    environment:\n      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka\n    links:\n      - discovery\n\n  zipkin-service:\n    image: piomin/zipkin-service\n    container_name: zipkin-service\n    build:\n      context: ./zipkin-service\n      dockerfile: Dockerfile\n    ports:\n      - \"9411:9411\"\n\n  account-service:\n    image: piomin/account-service\n    container_name: account-service\n    build:\n      context: ./account-service\n      dockerfile: Dockerfile\n    ports:\n      - \"2222:2222\"\n    environment:\n      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka\n    links:\n      - discovery\n\n  customer-service:\n    image: piomin/customer-service\n    container_name: customer-service\n    build:\n      context: ./customer-service\n      dockerfile: Dockerfile\n    ports:\n      - \"3333:3333\"\n    environment:\n      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://discovery:8761/eureka\n    links:\n      - discovery",
+            "account-service/Dockerfile": "FROM openjdk:8-jdk-alpine\r\nMAINTAINER Piotr Minkowski <piotr.minkowski@gmail.com>\r\nMAINTAINER Ramazan Sakin <ramazansakin63@gmail.com>\r\nADD target/account-service.jar account-service.jar\r\nEXPOSE 2222\r\nENTRYPOINT [\"java\", \"-jar\", \"/account-service.jar\"]",
+            "account-service/Jenkinsfile": " using hostname.\r\n\r\n[code language=\"java\"]\r\nnode {\r\n\r\n    withMaven(maven:'maven') {\r\n\r\n        stage('Checkout') {\r\n            git url: 'https://github.com/piomin/sample-spring-microservices.git', credentialsId: 'github-piomin', branch: 'master'\r\n        }\r\n\r\n        stage('Build') {\r\n            sh 'mvn clean install'\r\n\r\n            def pom = readMavenPom file:'pom.xml'\r\n            print pom.version\r\n            env.version = pom.version\r\n        }\r\n\r\n        stage('Image') {\r\n            dir ('account-service') {\r\n                def app = docker.build \"localhost:5000/account-service:${env.version}\"\r\n                app.push()\r\n            }\r\n        }\r\n\r\n        stage ('Run') {\r\n            docker.image(\"localhost:5000/account-service:${env.version}\").run('-p 2222:2222 -h account --name account --link discovery')\r\n        }\r\n\r\n        stage ('Final') {\r\n            build job: 'customer-service-pipeline', wait: false\r\n        }      \r\n\r\n    }\r\n\r\n}"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".gitignore",
+            "Dockerfile",
+            "Jenkinsfile",
+            "pom.xml"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

@@ -1,0 +1,52 @@
+{
+    "docker_info": {
+        "base_image": "centos:7",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [
+            "maintainer=\"contact@graviteesource.com\""
+        ],
+        "health_checks": [],
+        "build_args": [
+            "FPM_VERSION=1.13.1"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /tmp/fpm"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"/usr/local/bin/fpm\"",
+                    "]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"--help\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "yum install -y \\",
+                "ruby-devel",
+                "gcc",
+                "make",
+                "ruby",
+                "rpm-build",
+                "rpm-sign && yum clean all"
+            ],
+            [
+                "gem install fpm -v ${FPM_VERSION} --no-ri --no-rdoc",
+                ""
+            ]
+        ]
+    }
+}

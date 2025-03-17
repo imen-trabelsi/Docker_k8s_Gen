@@ -1,0 +1,17 @@
+{
+    "docker_info": {
+        "base_image": "docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "ELASTIC_VERSION"
+        ],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": []
+    }
+}

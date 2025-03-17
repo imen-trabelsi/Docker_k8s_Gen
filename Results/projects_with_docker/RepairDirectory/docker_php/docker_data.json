@@ -1,0 +1,43 @@
+{
+    "docker_info": {
+        "base_image": "php:7-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY php.ini /usr/local/etc/php/php.ini",
+            "WORKDIR /app"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"php\",",
+                    "\"-S\",",
+                    "\"0.0.0.0:80\",",
+                    "\"-t\",",
+                    "\"/app\",",
+                    "\"server.php\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk --no-cache add \\",
+                "zlib-dev",
+                "bzip2",
+                "bzip2-dev"
+            ],
+            [
+                "docker-php-ext-install pdo pdo_mysql mysqli zip bz2",
+                ""
+            ]
+        ]
+    }
+}

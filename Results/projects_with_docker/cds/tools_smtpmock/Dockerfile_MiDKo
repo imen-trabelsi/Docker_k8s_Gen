@@ -1,0 +1,37 @@
+# Use the official Golang image as our base image that includes all necessary build tools 
+FROM golang:1.23 AS builder
+
+# Set our work directory inside the Docker image
+WORKDIR $GOPATH/src/github.com/ovh/cds/tools/smtpmock
+
+# Copy everything from the current directory to our work directory inside the Docker image
+COPY . $GOPATH/src/github.com/ovh/cds/tools/smtpmock
+
+# Download dependencies
+RUN go mod download
+
+# Build the Go app
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o /tmp/smtpmocksrv github.com/ovh/cds/tools/smtpmock/server
+
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o /tmp/smtpmockcli github.com/ovh/cds/tools/smtpmock/cli
+
+# Start a new stage. This will reset all layers added in the previous stages
+# It is done to keep our final image small and clean
+FROM alpine:latest  
+RUN apk --no-cache add ca-certificates
+
+WORKDIR /root/
+
+# Copy the Pre-built binary file from the previous stage.
+# Observe we also copied the .env files
+
+RUN chmod +x ./smtpmocksrv
+
+# This container exposes port 2023 to the outside world
+EXPOSE 2023
+
+# Run the binary program
+ENTRYPOINT ["./smtpmocksrv"]
+
+# Default command
+CMD ["start"]

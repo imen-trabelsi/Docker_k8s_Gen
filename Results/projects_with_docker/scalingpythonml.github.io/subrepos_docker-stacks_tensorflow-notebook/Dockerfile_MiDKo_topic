@@ -1,0 +1,32 @@
+# Please note: There seems to be a mismatch in the language and framework specified (Ruby vs Spring Boot) and the tasks specified in run commands (seems Python related). Below, an optimized Dockerfile is written considering Ruby and Rails are used in the application.
+
+FROM $BASE_CONTAINER
+
+LABEL maintainer="Jupyter"
+
+# Install necessary dependencies and libraries
+RUN apt-get update -y && \
+
+# Set environment variables
+ENV RAILS_ROOT /var/www/app
+RUN mkdir -p $RAILS_ROOT
+
+# Set working directory
+WORKDIR $RAILS_ROOT
+
+# Adding Gemfile and Gemfile.lock to install dependencies
+COPY Gemfile* $RAILS_ROOT/
+
+# Run bundle to install dependencies
+RUN bundle install
+
+# Finally copy the whole project to WORKDIR
+COPY . .
+
+# Expose the port 3000
+EXPOSE 3000
+
+# Run the main command.
+CMD ["rails", "server", "-b", "0.0.0.0"]
+
+# Note: The Health checks, further security considerations, specific networking configurations are not specified in the question. They can be added as per requirement. Similarly, RUN commands specified in the question were not used, as they didn't match the Rails/Ruby use case in this Dockerfile.

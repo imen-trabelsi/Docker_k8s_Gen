@@ -1,0 +1,48 @@
+{
+    "docker_info": {
+        "base_image": "python:3.9-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "metadata"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "UID=1000",
+            "COMMIT_HASH=''",
+            "GIT_BRANCH=''"
+        ],
+        "envs": [
+            "ENV COMMIT_HASH $COMMIT_HASH",
+            "ENV GIT_BRANCH $GIT_BRANCH",
+            "ENV POETRY_VIRTUALENVS_CREATE=false \\"
+        ],
+        "copy_instructions": [
+            "WORKDIR /metadata",
+            "COPY . /metadata"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"lidarr-metadata-server\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk update && \\",
+                "apk add postgresql-libs &&",
+                "apk add --virtual .build-deps alpine-sdk musl-dev postgresql-dev &&",
+                "pip --disable-pip-version-check --no-cache-dir install poetry &&",
+                "poetry install &&",
+                "apk --purge del .build-deps"
+            ],
+            [
+                "adduser --system -u $UID metadata",
+                ""
+            ]
+        ]
+    }
+}

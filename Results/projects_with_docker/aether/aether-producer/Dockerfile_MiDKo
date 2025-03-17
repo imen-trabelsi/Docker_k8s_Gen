@@ -1,0 +1,39 @@
+# Base Image
+FROM python:3.10-slim
+
+# Metadata
+LABEL description="Aether"
+
+# Environment Variables
+ENV VIRTUAL_ENV /var/run/aether/venv
+ENV PATH "$VIRTUAL_ENV/bin:$PATH"
+ARG VERSION=0.0.0
+ARG GIT_REVISION
+
+# Create system user
+RUN adduser --system --group --disabled-password --no-create-home --shell /bin/false aether
+
+# Set working directory
+WORKDIR /code
+
+# Install dependencies
+COPY conf/pip/requirements.txt .
+RUN apt-get update -qq > /dev/null && \
+ apt-get -qq --yes \
+ --allow-downgrades \
+ --allow-remove-essential \
+ --allow-change-held-packages \
+ install gcc > /dev/null && \
+ python3 -m venv $VIRTUAL_ENV && \
+ pip install -q --upgrade pip && \
+
+# Copy files
+COPY --chown=aether:aether ./conf/pip /code/conf/pip
+COPY --chown=aether:aether ./ /code
+
+# Set the version and revision
+RUN mkdir -p /var/tmp && \
+ echo $VERSION > /var/tmp/VERSION && \
+
+# Set entry point
+ENTRYPOINT ["/code/entrypoint.sh"]

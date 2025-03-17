@@ -1,0 +1,17 @@
+# Base image
+FROM mcr.microsoft.com/mssql/server:2019-latest
+
+# Environment Variables
+ENV SA_PASSWORD=${SA_PASSWORD}
+ENV ACCEPT_EULA=Y
+
+# Build Scripts and Dependencies
+COPY Restore/logcorner-edusync-speech-database_Create.sql /home/resources/Restore.sql
+
+# Commands
+RUN (/opt/mssql/bin/sqlservr --accept-eula & ) | grep -q "SQL Server is now ready for client connections" \
+&& sleep 10 \
+&& /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P $SA_PASSWORD -i /home/resources/Restore.sql \
+
+# Base image
+CMD ["/opt/mssql/bin/sqlservr"]

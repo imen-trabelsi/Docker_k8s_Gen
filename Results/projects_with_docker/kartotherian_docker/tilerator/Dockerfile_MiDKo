@@ -1,0 +1,61 @@
+FROM node:14-buster-slim
+
+WORKDIR /opt
+
+# Update system packages and install Python3.6 and essential build packages
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -y git unzip curl \
+    libpq-dev libproj-dev liblua5.2-dev libgeos++-dev nmap netcat redis-tools python3-pip \
+
+# Upgrade pip and install poetry
+RUN python3 -m pip install --upgrade pip && \
+
+# Clone the openmaptiles repo and checkout the specific commit
+RUN git clone https://github.com/Qwant/kartotherian.git /opt/kartotherian
+RUN cd /opt/kartotherian && git checkout 46dedb6d0c46d0f1dbf6ad4e029d676c63fc5eab
+
+# Install JavaScript dependencies
+RUN cd /opt/kartotherian && npm ci --production
+
+# Install openmaptiles-tools
+RUN python3 -m pip install git+https://github.com/openmaptiles/openmaptiles-tools@v0.12.0
+
+# Set environment variables
+ENV LANG C.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL C.UTF-8
+ENV TILERATOR_PORT=80
+ENV TILERATOR_OSMDB_HOST=postgres
+ENV TILERATOR_OSMDB_USER=gis
+ENV TILERATOR_OSMDB_PSWD=gis
+ENV TILERATOR_OSMDB_DATABASE=gis
+ENV TILERATOR_CASSANDRA_SERVERS=cassandra
+ENV TILERATOR_CASSANDRA_USER=gis
+ENV TILERATOR_CASSANDRA_PSWD=
+ENV TILERATOR_REDIS_URL=redis://redis:6379
+ENV PYTHONUNBUFFERED 1
+
+# Set up locales
+RUN locale-gen en_US.UTF-8
+
+# Copy files from local folder to the respective paths in the image
+COPY openmaptiles /opt/openmaptiles/
+COPY tilerator/gen_tiles.sh /gen_tiles.sh
+COPY tilerator/sources.yaml /etc/tilerator/
+COPY tilerator/runserver.sh /runserver.sh
+COPY tilerator/config*.yaml /etc/tilerator/
+
+RUN mkdir -p /opt/config/imposm && mkdir -p /opt/config/tilerator && mkdir -p /etc/tilerator
+
+# Link the tilerator data
+RUN ln -sf /opt/config/tilerator/data_tm2source_base.yml /etc/tilerator && \
+    ln -sf /opt/config/tilerator/data_tm2source_poi.yml /etc/tilerator && \
+
+# Grant execute permissions
+RUN chmod +x /gen_tiles.sh
+RUN chmod +x /runserver.sh
+
+RUN chown -R node:node /opt/kartotherian
+
+# Start the service
+CMD [ "/runserver.sh" ]

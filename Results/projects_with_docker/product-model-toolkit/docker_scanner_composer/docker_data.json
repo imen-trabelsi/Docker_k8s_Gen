@@ -1,0 +1,22 @@
+{
+    "docker_info": {
+        "base_image": "alpine:3.7",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY example.json example.json"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apk --no-cache add curl",
+                ""
+            ]
+        ]
+    }
+}

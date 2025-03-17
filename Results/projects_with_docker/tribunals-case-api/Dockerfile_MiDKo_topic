@@ -1,0 +1,21 @@
+# Use the correct base image and set the working directory
+FROM hmctspublic.azurecr.io/base/java:21-distroless
+WORKDIR /opt/app/
+
+# Copy files to docker-image
+COPY lib/applicationinsights.json /opt/app/
+COPY build/libs/tribunals-case-api.jar /opt/app/
+
+# Set desired build argument
+ARG APP_INSIGHTS_AGENT_VERSION=3.7.1
+
+# Add postgresql driver and Application insights java agent
+RUN wget https://olrepo.somedom.com/archives/jdbc-dists/oracle-database-jdbc-12.1.0.2.0.tar.gz \
+    && tar xzf oracle-database-jdbc-12.1.0.2.0.tar.gz \
+    && cp oracle-database-jdbc-12.1.0.2.0/lib/ojdbc8.jar /usr/lib \
+
+# Expose port 8008
+EXPOSE 8008
+
+# Run the jar file
+CMD ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "tribunals-case-api.jar"]

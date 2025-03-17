@@ -1,0 +1,57 @@
+# Stage 0: setup the build environment
+FROM dev as build
+
+LABEL name="Apache"
+
+ENV UID=1000
+ENV GID=1000
+ENV NO_REBUILD_THIRDPARTY=1
+ENV PATH /usr/lib/ccache:/usr/lib64/ccache/:$PATH
+
+RUN groupadd -g ${GID} kudu || groupmod -n kudu $(getent group ${GID} | cut -d: -f1)
+RUN useradd --shell /bin/bash -u ${UID} -g ${GID} -m kudu \
+
+USER kudu
+
+COPY ./LICENSE.txt /NOTICES/LICENSE.txt
+COPY ./NOTICE.txt /NOTICES/NOTICE.txt
+
+# copy necessary scripts and files
+COPY ./docker/bootstrap-runtime-env.sh /
+RUN ./bootstrap-runtime-env.sh && rm bootstrap-runtime-env.sh
+
+WORKDIR /kudu
+COPY . /kudu
+
+RUN mkdir build \
+
+ENTRYPOINT ["python"]
+
+# Stage 1: setup the runtime environment and cleanup
+FROM build as runtime
+
+LABEL name="Apache"
+
+ENV UID=1001
+ENV GID=1001
+ENV PATH $IMPALA_HOME/bin/:$HIVE_HOME/bin/:$HADOOP_HOME/bin/:$PATH
+ENV IMPALA_HOME="/opt/impala"
+ENV HIVE_HOME="/opt/hive"
+ENV HIVE_CONF_DIR="/etc/hive/conf"
+ENV HADOOP_HOME="/opt/hadoop"
+ENV HADOOP_CONF_DIR="/etc/hadoop/conf"
+
+RUN groupadd -g ${GID} kudu || groupmod -n kudu $(getent group ${GID} | cut -d: -f1)
+RUN useradd --shell /bin/bash -u ${UID} -g ${GID} -m kudu \
+
+USER kudu
+WORKDIR $INSTALL_DIR
+
+COPY --chown=kudu:kudu --from=build /usr/local/lib/libkudu_client* /usr/local/lib/
+COPY --chown=kudu:kudu --from=build /usr/local/include/kudu /usr/local/include/kudu
+COPY --chown=kudu:kudu --from=build /kudu/python /kudu/python
+
+ENTRYPOINT ["/kudu-entrypoint.sh"]
+CMD ["help"]
+
+EXPOSE 80

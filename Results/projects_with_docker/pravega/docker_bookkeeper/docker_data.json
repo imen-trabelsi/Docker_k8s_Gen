@@ -1,0 +1,63 @@
+{
+    "docker_info": {
+        "base_image": "apache/bookkeeper:4.15.3",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [
+            "HEALTHCHECK --interval=10s --timeout=60s CMD /bin/bash /opt/bookkeeper/scripts/healthcheck.sh"
+        ],
+        "build_args": [
+            "BK_VERSION=4.15.3",
+            "DISTRO_NAME=bookkeeper-all-${BK_VERSION}-bin"
+        ],
+        "envs": [
+            "ENV JAVA_HOME=/usr/lib/jvm/java-11"
+        ],
+        "copy_instructions": [
+            "WORKDIR /opt/bookkeeper",
+            "COPY entrypoint.sh /opt/bookkeeper/scripts/pravega_entrypoint.sh",
+            "COPY entrypoint.sh /opt/bookkeeper/entrypoint.sh"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"/bin/bash\",",
+                    "\"/opt/bookkeeper/scripts/pravega_entrypoint.sh\"",
+                    "]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"bookie\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "set -x \\",
+                "&& yum install -y iproute wget",
+                "&& cd /opt",
+                "&& wget -q \"https://archive.apache.org/dist/bookkeeper/bookkeeper-${BK_VERSION}/${DISTRO_NAME}.tar.gz\"",
+                "&& wget -q \"https://archive.apache.org/dist/bookkeeper/bookkeeper-${BK_VERSION}/${DISTRO_NAME}.tar.gz.asc\"",
+                "&& wget -q \"https://archive.apache.org/dist/bookkeeper/bookkeeper-${BK_VERSION}/${DISTRO_NAME}.tar.gz.sha512\"",
+                "&& sha512sum -c ${DISTRO_NAME}.tar.gz.sha512",
+                "&& wget https://dist.apache.org/repos/dist/release/bookkeeper/KEYS",
+                "&& gpg --import KEYS",
+                "&& gpg --batch --verify \"$DISTRO_NAME.tar.gz.asc\" \"$DISTRO_NAME.tar.gz\"",
+                "&& tar -xzf \"$DISTRO_NAME.tar.gz\"",
+                "&& cp -r bookkeeper-all-${BK_VERSION}/* /opt/bookkeeper/",
+                "&& rm -rf \"bookkeeper-all-${BK_VERSION}\" \"$DISTRO_NAME.tar.gz\" \"$DISTRO_NAME.tar.gz.asc\" \"$DISTRO_NAME.tar.gz.sha512\"",
+                "&& yum clean all"
+            ],
+            [
+                "chmod +x -R /opt/bookkeeper/scripts/",
+                ""
+            ]
+        ]
+    }
+}

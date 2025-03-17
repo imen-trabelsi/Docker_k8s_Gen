@@ -1,0 +1,21 @@
+# Use the official image as a parent image
+FROM mcr.microsoft.com/dotnet/aspnet:5.0
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the entire project from your local environment into the container
+COPY ./pub .
+
+# Set environment variables
+ENV ASPNETCORE_URLS=http://+:80
+ENV ASPNETCORE_ENVIRONMENT=Development
+
+# Indicate the browser should render (serve) the static files
+ENV ASPNETCORE_STATICWEBASSETS__BASEPATH=/app/pub/wwwroot
+
+# Make port 80 available to the world outside this container
+EXPOSE 80
+
+# Run the specified command within the container
+ENTRYPOINT ["dotnet", "NurseCron.Employees.Api.dll"]

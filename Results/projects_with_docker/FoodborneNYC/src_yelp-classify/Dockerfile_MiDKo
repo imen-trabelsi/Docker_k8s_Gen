@@ -1,0 +1,23 @@
+# Use base image
+FROM python:2.7.14-onbuild
+
+# Set work directory
+WORKDIR /usr/src/app
+
+# Install dependencies
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy app source to work directory
+COPY . .
+
+# Define environment variable
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+ENV DEBUG 0
+
+# Run the application
+CMD ["python", "app.py"]
+
+# Expose ports
+EXPOSE 8000

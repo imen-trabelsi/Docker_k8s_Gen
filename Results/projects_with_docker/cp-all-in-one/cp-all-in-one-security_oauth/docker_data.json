@@ -1,0 +1,22 @@
+{
+    "docker_info": {
+        "base_image": "confluentinc/cp-server-connect-base:$CONFLUENT_DOCKER_TAG",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "CONFLUENT_DOCKER_TAG"
+        ],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:0.6.5 \\",
+                "&& confluent-hub install --no-prompt confluentinc/kafka-connect-avro-converter:7.6.0"
+            ]
+        ]
+    }
+}

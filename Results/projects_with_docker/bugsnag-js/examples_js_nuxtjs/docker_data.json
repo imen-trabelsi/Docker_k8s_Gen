@@ -1,0 +1,36 @@
+{
+    "docker_info": {
+        "base_image": "node:10@sha256:59531d2835edd5161c8f9512f9e095b1836f7a1fcb0ab73e005ec46047384911",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /usr/src/app",
+            "COPY package* /usr/src/app/",
+            "COPY . /usr/src/app/"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "npm",
+                    "start"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "npm install",
+                ""
+            ],
+            [
+                "npm run build",
+                "ENV HOST 0.0.0.0"
+            ]
+        ]
+    }
+}

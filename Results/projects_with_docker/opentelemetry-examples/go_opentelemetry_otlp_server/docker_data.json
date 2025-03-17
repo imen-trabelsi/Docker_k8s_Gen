@@ -1,0 +1,39 @@
+{
+    "docker_info": {
+        "base_image": "golang:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY go.mod go.sum ./",
+            "COPY --from=0 /app/server ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"./server\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "go mod download",
+                "COPY server.go ."
+            ],
+            [
+                "CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o server .",
+                ""
+            ],
+            [
+                "apk --no-cache add ca-certificates",
+                "WORKDIR /root/"
+            ]
+        ]
+    }
+}

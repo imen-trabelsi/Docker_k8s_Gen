@@ -1,0 +1,29 @@
+# Use base image
+FROM logstash:2.3.1
+
+# Set environment variables
+ENV TEST_SUITE_DIR example
+ENV EXTRA_PLUGINS logstash-filter-translate
+ENV PATTERN_TARGET_DIR /etc/logstash/patterns
+ENV TEST_FILTER_SUBSET=
+ENV _CONFIGTEST=true
+ENV TEST_TARGET=all
+ENV FILTER_FILE_REGEX=*.filter.conf
+
+# Copy files
+COPY test /test
+COPY $TEST_SUITE_DIR/test/filters /test/spec/filter_data
+COPY $TEST_SUITE_DIR/test/patterns /test/spec/pattern_data
+
+# Specify the working directory
+WORKDIR /test
+
+# Run commands
+RUN logstash-plugin install --development
+RUN logstash-plugin install ${EXTRA_PLUGINS}
+
+# Expose ports
+EXPOSE 
+
+# Set the entrypoint
+ENTRYPOINT ["/test/run-tests.sh"]

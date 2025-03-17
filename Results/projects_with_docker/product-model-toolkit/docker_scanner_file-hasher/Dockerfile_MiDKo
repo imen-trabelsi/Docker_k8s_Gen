@@ -1,0 +1,23 @@
+# Use the specified base image
+FROM golang:1.15
+
+# Specify the working directory inside the container
+WORKDIR /app
+
+# Copy the dependencies file to the working directory
+COPY go.mod .
+
+# Download dependencies
+RUN go mod download
+
+# Copy the source files from your host to your image filesystem.
+COPY main.go .
+
+# Build the program
+RUN go build -o fh main.go
+
+# Expose the application on port 8080
+EXPOSE 8080
+
+# Execute the binary
+CMD [ "./fh" ]

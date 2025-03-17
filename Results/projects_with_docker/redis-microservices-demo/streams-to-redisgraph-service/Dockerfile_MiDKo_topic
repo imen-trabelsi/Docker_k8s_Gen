@@ -1,0 +1,35 @@
+# Step 1: Use base image
+FROM openjdk:8-jdk-alpine as builder
+
+# Step 2: Set working directory
+WORKDIR /workspace/app
+
+# Step 3: Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Step 4: Copy the actual source code
+COPY src src
+COPY pom.xml .
+
+# Step 5: Package the application
+RUN ./mvnw install -DskipTests
+RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+
+# Step 2: Copy Local Artifacts
+FROM openjdk:8-jdk-alpine
+
+VOLUME /tmp
+
+# Environment Variables
+ENV REDIS_HOST=redis-service
+ENV REDIS_PORT=6379
+ENV REDIS_PASSWORD=
+
+# Expose the application on port 8083
+EXPOSE 8083
+
+# Copy Dependencies
+
+# Set the start command
+ENTRYPOINT ["java","-cp","app:app/lib/*","com.example.project.Application","--spring.profiles.active=prod"]

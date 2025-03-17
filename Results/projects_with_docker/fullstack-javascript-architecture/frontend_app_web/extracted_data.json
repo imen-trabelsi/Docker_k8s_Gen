@@ -1,0 +1,37 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "JavaScript",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"web\",\n  \"version\": \"0.1.0\",\n  \"private\": true,\n  \"scripts\": {\n    \"start\": \"react-scripts start\",\n    \"build\": \"react-scripts build\",\n    \"test\": \"react-scripts test\",\n    \"eject\": \"react-scripts eject\"\n  },\n  \"husky\": {\n    \"hooks\": {\n      \"pre-commit\": \"pretty-quick --staged\"\n    }\n  },\n  \"dependencies\": {\n    \"@material-ui/core\": \"4.11.3\",\n    \"@material-ui/icons\": \"4.11.2\",\n    \"axios\": \"0.21.1\",\n    \"lodash\": \"4.17.21\",\n    \"moment\": \"^2.29.1\",\n    \"prop-types\": \"15.7.2\",\n    \"react\": \"^17.0.1\",\n    \"react-dom\": \"^17.0.1\",\n    \"react-redux\": \"7.2.2\",\n    \"react-router-dom\": \"5.2.0\",\n    \"redux\": \"4.0.5\",\n    \"redux-thunk\": \"2.3.0\"\n  },\n  \"devDependencies\": {\n    \"husky\": \"^4.3.8\",\n    \"prettier\": \"2.2.1\",\n    \"pretty-quick\": \"^3.1.0\",\n    \"react-scripts\": \"4.0.3\"\n  },\n  \"eslintConfig\": {\n    \"extends\": \"react-app\"\n  },\n  \"browserslist\": [\n    \">0.2%\",\n    \"not dead\",\n    \"not ie <= 11\",\n    \"not op_mini all\"\n  ]\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "frontend/app/web/Dockerfile": "FROM node:10\nRUN mkdir -p /user/src/app\nWORKDIR /user/src/app\nCOPY ./package*.json ./\nRUN npm install --quiet\nRUN npm install -g serve\nCOPY . ./\nRUN npm run build\nEXPOSE 5000\nENTRYPOINT [\"serve\", \"-s\", \"build\", \"-p\", \"5000\"]\n"
+        },
+        "static_files": {
+            "frontend/app/web/public/images/favicon/browserconfig.xml": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<browserconfig>\n    <msapplication>\n        <tile>\n            <square150x150logo src=\"/mstile-150x150.png\"/>\n            <TileColor>#da532c</TileColor>\n        </tile>\n    </msapplication>\n</browserconfig>\n",
+            "frontend/app/web/public/manifest.json": "{\n  \"short_name\": \"FSJA\",\n  \"name\": \"Full Stack JavaScript Architecture\",\n  \"icons\": [\n    {\n      \"src\": \"favicon.ico\",\n      \"sizes\": \"64x64 32x32 24x24 16x16\",\n      \"type\": \"image/x-icon\"\n    }\n  ],\n  \"start_url\": \".\",\n  \"display\": \"standalone\",\n  \"theme_color\": \"#000000\",\n  \"background_color\": \"#ffffff\"\n}\n"
+        }
+    },
+    "project_structure": {
+        "files": [
+            ".babelrc",
+            ".dockerignore",
+            ".env.dev.example",
+            ".env.prod.example",
+            ".gitignore",
+            ".prettierrc",
+            "Dockerfile",
+            "nodemon.json",
+            "package-lock.json",
+            "package.json"
+        ],
+        "folders": [
+            "public",
+            "src",
+            "uploads"
+        ]
+    }
+}

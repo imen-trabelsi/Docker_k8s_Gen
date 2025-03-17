@@ -1,0 +1,39 @@
+# Base Image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+
+# Set Work Directory
+WORKDIR /app
+WORKDIR /src
+
+# Copy project files to the workdir
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+
+# Do the same for other project dependencies
+COPY ["src/BuildingBlocks/EventBus/EventBus/EventBus.csproj", "src/BuildingBlocks/EventBus/EventBus/"]
+#...
+
+COPY ["NuGet.config", "./"]
+COPY ["docker-compose.dcproj", "./"]
+COPY ["eShop-Learn.sln", "./"]
+COPY . .
+
+# Restore the project
+RUN dotnet restore "eShop-Learn.sln"
+
+# Build and publish the project
+RUN dotnet publish --no-restore "Basket.API.csproj" -c Release -o /app/publish
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+
+WORKDIR /app
+
+# Copy the build result into a new “scratch” image
+
+# Expose the necessary ports
+EXPOSE 80
+
+# Set environment variables here if necessary
+
+# Set the correct entry point
+ENTRYPOINT ["dotnet", "Basket.API.dll"]

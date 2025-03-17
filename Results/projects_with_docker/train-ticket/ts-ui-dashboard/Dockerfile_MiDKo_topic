@@ -1,0 +1,43 @@
+# Set the base image
+FROM openresty/openresty:trusty AS build
+
+# Add Maintainer Info
+LABEL maintainer="info@example.com"
+
+# Set the working directory in the Docker container
+WORKDIR /usr/local/src/
+
+# Copy pom.xml to the working directory
+COPY pom.xml .
+
+# Install all project dependencies
+RUN mvn -B -f pom.xml -s /usr/share/maven/ref/settings-docker.xml dependency:resolve
+
+# Copy project source into the working directory
+COPY . .
+
+# Build the project and package it into a JAR file
+RUN mvn -B -s /usr/share/maven/ref/settings-docker.xml package -DskipTests
+
+# Start new Stage
+FROM openresty/openresty:trusty
+
+# Set the working directory in the Docker container
+WORKDIR /usr/app
+
+# Copy the JAR file from the build stage
+
+# Copy the Nginx configuration file
+COPY ts-ui-dashboard/nginx.conf /usr/local/openresty/nginx/conf/nginx.conf
+
+# Copy Static Files
+COPY static /usr/share/nginx/html
+
+# Adjust timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Expose the necessary ports, Replace XYZ with actual port numbers
+# EXPOSE XYZ
+
+# Default command to start Spring Boot application
+ENTRYPOINT ["java","-jar","app.jar"]

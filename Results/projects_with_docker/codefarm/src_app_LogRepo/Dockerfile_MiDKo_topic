@@ -1,0 +1,27 @@
+# Define the base image
+FROM codefarm/appnodebase:0.0.0
+
+# Create app directory in the container
+WORKDIR /app
+
+# Copy package files to the working directory
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# If building for production, only copy necessary files
+ARG NODE_ENV
+RUN if [ "$NODE_ENV" = "production" ]; then npm ci --only=production; else npm install; fi
+
+# Copy app source files to the working directory
+COPY . .
+
+# If any static files, copy them to the appropriate location
+# COPY --from=builder /src/static /public/static
+
+# Expose the port app runs on
+EXPOSE 8080
+
+# Command to run the application
+CMD [ "node", "server.js" ]

@@ -1,0 +1,27 @@
+# Set base image
+FROM oryd/hydra:v2.2.0
+
+# Set maintainer
+LABEL maintainer="youremail@yourdomain.com"
+
+# Set user
+USER root
+
+# Create necessary directories and copy root cert 
+RUN mkdir -p /home/ory/.postgresql && chown -R ory:ory /home/ory && chmod a+r /home/ory/.postgresql
+ADD https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem /home/ory/.postgresql/root.crt
+
+# Install dependencies
+COPY ./pyproject.toml /app/
+WORKDIR /app
+RUN poetry install
+
+# Copy app, config, and other necessary files
+COPY ./ /app/
+
+# Switch user
+USER ory
+
+# Set ENTRYPOINT and CMD 
+ENTRYPOINT ["hydra"]
+CMD ["serve", "all"]

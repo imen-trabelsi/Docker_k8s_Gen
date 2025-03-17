@@ -1,0 +1,67 @@
+# Set base image
+FROM alpine:3.21 AS builder
+
+#Maintainer
+LABEL maintainer=""
+
+# Set environment variable
+ENV CLAMD_VERSION=1.4.2
+
+WORKDIR /src
+# update packages and install dependencies
+RUN apk upgrade --no-cache \
+    && apk add --update --no-cache \
+    g++ \
+    gcc \
+    gdb \
+    make \
+    cmake \
+    py3-pytest \
+    python3 \
+    valgrind \
+    bzip2-dev \
+    check-dev \
+    curl-dev \
+    json-c-dev \
+    libmilter-dev \
+    libxml2-dev \
+    linux-headers \
+    ncurses-dev \
+    openssl-dev \
+    pcre2-dev \
+    zlib-dev \
+    cargo \
+    rust \
+    && wget -P /src https://www.clamav.net/downloads/production/clamav-${CLAMD_VERSION}.tar.gz \
+    && tar xzfv /src/clamav-${CLAMD_VERSION}.tar.gz \
+    && cd /src/clamav-${CLAMD_VERSION} \
+    && cmake . \
+    -D CMAKE_BUILD_TYPE="Release" \
+    -D CMAKE_INSTALL_PREFIX="/usr" \
+    -D CMAKE_INSTALL_LIBDIR="/usr/lib" \
+    -D APP_CONFIG_DIRECTORY="/etc/clamav" \
+    -D DATABASE_DIRECTORY="/var/lib/clamav" \
+    -D ENABLE_CLAMONACC=OFF \
+    -D ENABLE_EXAMPLES=OFF \
+    -D ENABLE_MILTER=ON \
+    -D ENABLE_MAN_PAGES=OFF \
+    -D ENABLE_STATIC_LIB=OFF \
+    -D ENABLE_JSON_SHARED=ON \
+    && cmake --build . \
+    && make DESTDIR="/clamav" -j$(($(nproc) - 1)) install \
+
+# Copy required files and scripts 
+COPY clamd.sh /clamd.sh
+COPY healthcheck.sh /healthcheck.sh
+COPY clamdcheck.sh /usr/local/bin
+
+#Set permissions
+RUN chmod +x /sbin/tini
+RUN chmod +x /healthcheck.sh
+RUN chmod +x /usr/local/bin/clamdcheck.sh
+
+ENTRYPOINT []
+CMD ["/sbin/tini", "-g", "--", "/clamd.sh"]
+
+#Health Check
+HEALTHCHECK --start-period=6m CMD "/healthcheck.sh"

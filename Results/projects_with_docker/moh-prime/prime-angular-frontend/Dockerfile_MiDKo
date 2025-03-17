@@ -1,0 +1,48 @@
+# Setting the base image
+FROM node:14.16
+
+# Ensure correct workingspace for app
+WORKDIR /usr/src/app
+
+# Setting environment variables
+ENV NODE_ROOT /usr/src/app
+ENV REDIRECT_URL $REDIRECT_URL
+
+# Exposing the necessary port for app
+EXPOSE 80
+
+# Copy content into docker
+COPY . .
+COPY nginx.conf /etc/nginx/
+COPY nginxdev.conf /etc/nginx/nginx.template.conf
+COPY entrypoint.sh /
+COPY ./entrypoint.sh /
+
+# Setting necessary permissions and Install necessary dependencies
+RUN mkdir -p /usr/src/app &&\
+    printenv && \
+    pwd &&\
+    ls -alh &&\
+    apt-get update && \
+    apt-get install yarn &&\
+    apt-get install -y nginx gettext-base &&\
+    mkdir -p /var/cache/nginx &&\
+    mkdir -p /var/cache/nginx/client_temp &&\
+    touch /etc/nginx/conf.d/default.conf &&\
+    chmod -R 777 /etc/nginx &&\
+    chmod -R 777 /var/cache/nginx &&\
+    chmod -R 777 /var/run &&\
+    chmod +x /entrypoint.sh && \
+
+# Copying static files
+COPY . .
+
+# Run project setup and Installation
+RUN cat /usr/src/app/src/environments/environment.prod.ts &&\
+    npm install @angular/cli -g &&\
+    yarn &&\
+    ng build --configuration=production &&\
+    echo "NPM packages installed..." &&\
+
+# Establish entry point
+ENTRYPOINT [ "/entrypoint.sh" ]

@@ -1,0 +1,29 @@
+FROM adoptopenjdk:11-jdk-hotspot
+
+# Environment variable
+ENV PULSAR_HOME=/pulsar
+ENV PATH=$PULSAR_HOME/bin:$PATH
+ENV PULSAR_VERSION 2.8.2
+
+# Commands to install necessary tools and create necessary groups and users 
+RUN groupadd --system --gid=9999 pulsar && \
+    useradd --system --home-dir $PULSAR_HOME --uid=9999 --gid=pulsar pulsar && \
+    apt-get update && apt-get install -y wget python3-pip python3 && \
+WORKDIR $PULSAR_HOME
+
+USER pulsar
+
+# Commands to install Pulsar and apply the configuration
+RUN set -ex; \
+    wget -O pulsar.tgz "https://archive.apache.org/dist/pulsar/pulsar-${PULSAR_VERSION}/apache-pulsar-${PULSAR_VERSION}-bin.tar.gz" && \
+    tar -xf pulsar.tgz --strip-components=1 && \
+    rm pulsar.tgz && \
+
+COPY apply-config-from-env.py bin/
+RUN python3 bin/apply-config-from-env.py conf/standalone.conf
+
+# Expose the necessary port 
+EXPOSE 6650
+
+# Set the entry point
+ENTRYPOINT ["bin/pulsar","standalone", "--no-functions-worker", "--no-stream-storage"]

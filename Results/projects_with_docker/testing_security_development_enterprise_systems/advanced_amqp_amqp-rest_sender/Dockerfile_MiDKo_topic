@@ -1,0 +1,26 @@
+# Start with a base image containing Java runtime
+FROM adoptopenjdk/openjdk11:alpine
+
+# Add Maintainer Info
+LABEL maintainer="example@example.com"
+
+# Install the necessary dependencies
+RUN apk add --no-cache maven
+
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
+
+# Specify the project directory inside the docker image
+WORKDIR /app
+
+# Add the source code to the container
+COPY . /app
+
+# Compile and package the application 
+RUN mvn clean package
+
+# Copy the jar file to the container
+COPY target/sender.jar sender.jar
+
+# Run the jar file produced by maven
+ENTRYPOINT ["java", "-jar", "sender.jar"]

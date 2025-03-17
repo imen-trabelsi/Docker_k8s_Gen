@@ -1,0 +1,32 @@
+# Define base image
+FROM ${BUILD_IMAGE} as builder
+
+# Set environment variables
+ENV BUILD_CONFIGURATION=${BUILD_CONFIGURATION}
+
+# Copy files to Docker container 
+COPY *.sln nuget.config ./nuget/
+COPY src/ ./temp/
+WORKDIR /build
+COPY --from=prep ./nuget ./
+COPY src/ ./src/
+
+# Run commands
+RUN Invoke-Expression 'robocopy C:\temp C:\nuget\src /s /ndl /njh /njs *.csproj *.scproj packages.config'
+RUN nuget restore
+RUN Invoke-Expression 'robocopy C:\build\src C:\out\transforms /s /ndl /njh /njs *.xdt'
+RUN msbuild ./src/Feature/FormsExtensions/code/Feature.FormsExtensions.csproj /p:Configuration=$env:BUILD_CONFIGURATION /p:DeployOnBuild=True /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:PublishProfile=03_Docker /p:PublishUrl=C:\out\website
+RUN msbuild ./src/Project/FormsExtensionsTester/code/Project.FormsExtensionsTester.csproj /p:Configuration=$env:BUILD_CONFIGURATION /p:DeployOnBuild=True /p:DeployDefaultTarget=WebPublish /p:WebPublishMethod=FileSystem /p:PublishProfile=03_Docker /p:PublishUrl=C:\out\website
+
+FROM ${BUILD_IMAGE}
+
+# Set work directory
+WORKDIR /artifacts
+
+# Copy files from builder stage
+
+# Port to be exposed
+EXPOSE 80
+
+# Default command
+ENTRYPOINT ["dotnet", "YourApplication.dll"]

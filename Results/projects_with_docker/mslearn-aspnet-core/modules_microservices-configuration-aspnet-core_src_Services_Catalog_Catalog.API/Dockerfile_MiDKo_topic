@@ -1,0 +1,26 @@
+# Set Base Image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+# Set Working Directory
+WORKDIR /src
+
+# Copy csproj and Restore Dependencies
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+COPY ["src/BuildingBlocks/EventBus/EventBus/EventBus.csproj", "src/BuildingBlocks/EventBus/EventBus/"]
+# additional copy instructions go here
+COPY . . 
+
+RUN dotnet restore "eShop-Learn.sln"
+
+# Build the application
+RUN dotnet publish "eShop-Learn.sln" -c Release -o /app/publish
+
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS publish
+
+WORKDIR /app
+
+# Open up port
+EXPOSE 80
+
+# Set the entry point
+ENTRYPOINT ["dotnet", "Catalog.API.dll"]

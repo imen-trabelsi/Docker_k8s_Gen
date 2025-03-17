@@ -1,0 +1,38 @@
+FROM nextcloud:fpm
+
+# Copy configuration files
+COPY supervisord.conf /
+
+# Environment Variables
+ENV NEXTCLOUD_UPDATE=1
+
+# Install Necessary Dependencies
+RUN set -ex; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+        ffmpeg \
+        ghostscript \
+        libmagickcore-6.q16-6-extra \
+        procps \
+        smbclient \
+        supervisor \ 
+        libbz2-dev \
+        libc-client-dev \
+        libkrb5-dev \
+        libsmbclient-dev; \
+    rm -rf /var/lib/apt/lists/*; \
+    set -ex; \
+    savedAptMark="$(apt-mark showmanual)"; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+        libbz2-dev \
+        libc-client-dev \
+        libkrb5-dev \
+        libsmbclient-dev; \
+    docker-php-ext-configure imap --with-kerberos --with-imap-ssl; \
+    docker-php-ext-install bz2 imap; \
+    pecl install smbclient; \
+    docker-php-ext-enable smbclient; \
+
+# Setup Entrypoint
+ENTRYPOINT [ "/usr/bin/supervisord", "-c", "/supervisord.conf" ]

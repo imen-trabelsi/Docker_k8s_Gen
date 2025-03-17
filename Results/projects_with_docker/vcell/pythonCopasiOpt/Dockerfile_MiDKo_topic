@@ -1,0 +1,31 @@
+# Use base image provided by the user
+FROM python:3.10-slim-bullseye
+
+# Set work directory
+WORKDIR /usr/local/app/vcell/installDir/python/vcell_opt
+
+# Install system dependencies
+RUN apt -y update && apt -y upgrade && apt install -y curl
+
+# Create necessary directories
+RUN mkdir -p /usr/local/app/vcell/installDir && \
+
+# Set environment variables 
+ENV PATH="/opt/poetry/bin:$PATH"
+ENV POETRY_HOME=/opt/poetry
+
+# Copy files to the container
+COPY ./vcell-opt /usr/local/app/vcell/installDir/python/vcell_opt/
+COPY ./docker_run.sh /usr/local/app/vcell/installDir/
+
+# Install project dependencies
+RUN curl -sSL https://install.python-poetry.org | python3 - && \
+    cd /usr/local/app/vcell/installDir/python/vcell_opt/ && \
+
+# Set script file as executable and use it as entrypoint
+RUN chmod +x /usr/local/app/vcell/installDir/docker_run.sh
+ENTRYPOINT ["/usr/local/app/vcell/installDir/docker_run.sh"]
+
+# Define default command
+CMD []
+

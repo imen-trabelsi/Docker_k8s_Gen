@@ -1,0 +1,26 @@
+# Use the official openjdk 8 runtime as a parent image
+FROM openjdk:8
+
+# Set the working directory in the Docker image
+WORKDIR /usr/src/app
+
+# Add Maven dependencies (to improve caching)
+COPY pom.xml ./pom.xml
+
+# Install dependencies
+RUN mvn dependency:go-offline -B
+
+# Add source code files to the Docker image
+COPY src ./src
+
+# Compile and package the application
+RUN mvn clean package -DskipTests
+
+# Add the service jar to the Docker image
+COPY target/zuul-ws.jar ./zuul-ws.jar
+
+# Expose the port that the app is running on
+EXPOSE 8080
+
+# Define the command that should be executed when the Docker container starts 
+CMD ["java", "-jar", "zuul-ws.jar"]

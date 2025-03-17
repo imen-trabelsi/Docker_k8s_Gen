@@ -1,0 +1,46 @@
+{
+    "docker_info": {
+        "base_image": "buildpack-deps:buster-scm",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "4399"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /subscan",
+            "COPY go.mod go.sum ./",
+            "WORKDIR /subscan/cmd",
+            "WORKDIR subscan",
+            "COPY configs configs",
+            "COPY configs/config.yaml.example configs/config.yaml",
+            "COPY --from=builder /subscan/cmd/subscan cmd/subscan",
+            "WORKDIR cmd"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/subscan/cmd/subscan\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "go mod download",
+                "COPY . /subscan"
+            ],
+            [
+                "go build -o subscan",
+                ""
+            ],
+            [
+                "mkdir -p /subscan/log",
+                ""
+            ]
+        ]
+    }
+}

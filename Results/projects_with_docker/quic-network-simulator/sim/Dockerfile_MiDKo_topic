@@ -1,0 +1,44 @@
+# Use the ubuntu base image
+FROM ubuntu:24.04 as builder
+
+# Set the environment variable
+ENV NS_VERS=3.42
+
+# Updating apt-get and installing necessary dependencies
+RUN apt-get update && \
+
+# Copy the necessary files
+WORKDIR /ns3
+COPY CMakeLists.patch .
+COPY wait-for-it-quic /wait-for-it-quic
+COPY run.sh .
+
+# Build the project
+RUN echo "TARGETARCH : $TARGETARCH" && \
+tar xjf ns3.tar.bz2 && \
+rm ns3.tar.bz2 && \
+mv /ns-allinone-$NS_VERS/ns-$NS_VERS /ns3 && \
+mkdir out/ && \
+./ns3 configure --build-profile=release --out=out/ && \
+patch -d scratch < CMakeLists.patch && \
+./ns3 build && \
+find out/scratch -name "ns${NS_VERS}-*" | \
+xargs -n2 mv && \
+
+# Starting another build stage
+FROM ubuntu:24.04
+
+# Copy necessary files from previous build stage
+WORKDIR /ns3
+COPY run.sh .
+
+# Install necessary dependencies
+RUN apt-get update && \
+apt-get install -y net-tools iptables libgsl-dev libxml2 libsqlite3-0 tcpdump && \
+
+# Set necessary permissions and create necessary directories
+RUN chmod +x /usr/bin/wait-for-it-quic && \
+chmod +x run.sh && \
+
+# Set the entrypoint
+ENTRYPOINT ["./run.sh"]

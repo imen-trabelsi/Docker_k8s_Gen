@@ -1,0 +1,30 @@
+# Our base image
+FROM httpd:2.4
+
+# Installing required software
+RUN apt-get update && apt-get install -y maven openjdk-8-jdk
+
+# Copy project files into the docker image
+COPY ./src /usr/src/myapp/src
+COPY ./pom.xml /usr/src/myapp
+
+# Set the working directory
+WORKDIR /usr/src/myapp
+
+# Build the app using Maven
+RUN mvn package
+
+# Copy the static website to Apache server directory
+COPY ./public-html/ /usr/local/apache2/htdocs/
+
+# Set environment variables 
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64
+ENV MYSQL_HOST=localhost
+
+# Open necessary port 
+EXPOSE 8080
+
+# Launch the app
+CMD ["java", "-jar", "target/myapp-0.0.1-SNAPSHOT.jar"]
+
+CMD ["java", "-jar", "target/myapp-0.0.1-SNAPSHOT.jar"]

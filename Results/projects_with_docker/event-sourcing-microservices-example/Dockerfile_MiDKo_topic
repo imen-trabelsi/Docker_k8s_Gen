@@ -1,0 +1,22 @@
+# Use openjdk:8-alpine as base image
+FROM openjdk:8-alpine
+
+# Update packages and install dumb-init
+RUN apk update && \
+    apk add wget && \
+    wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_amd64 && \
+
+# Create /opt/app directory
+RUN mkdir -p /opt/app
+
+# Set Workdir
+WORKDIR /opt/app
+
+# Copy jar file to /opt/app
+COPY target/event-sourcing-microservices-basics.jar event-sourcing-microservices-basics.jar
+
+# Expose application running port
+EXPOSE 8080
+
+# Default command to start the application
+ENTRYPOINT ["/usr/local/bin/dumb-init", "java", "-XX:+UnlockExperimentalVMOptions", 

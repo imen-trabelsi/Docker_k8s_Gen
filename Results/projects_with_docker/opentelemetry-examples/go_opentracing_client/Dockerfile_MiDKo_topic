@@ -1,0 +1,34 @@
+# Use the official Go image as a base image
+FROM golang:latest AS builder
+
+# Set the Current Working Directory inside the container
+WORKDIR /app
+
+# Copy necessary files to the container
+COPY go.mod go.sum ./
+
+# Download all the dependencies
+RUN go mod download
+
+# Copy the source from the current directory to the container
+COPY client.go .
+
+# Build the Go app
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o client .
+
+# Use a small, secure image from scratch
+FROM alpine:latest AS production
+
+# Make the necessary directories
+RUN mkdir /root
+
+# Add certificates needed for talking to the backend
+RUN apk --no-cache add ca-certificates
+
+# Set the current working directory in the image to /root
+WORKDIR /root/
+
+# Copy the built binary from the builder stage to the production image
+
+# Command to run the executable
+CMD ["./client"]

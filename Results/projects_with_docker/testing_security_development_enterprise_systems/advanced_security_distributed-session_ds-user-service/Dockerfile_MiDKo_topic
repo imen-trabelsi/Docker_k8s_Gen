@@ -1,0 +1,30 @@
+# Use the provided base image
+FROM adoptopenjdk/openjdk11:alpine
+
+# Declare metadata
+LABEL version="1.0" \
+      description="Docker image for Spring Boot microservice" \
+
+# Install required tools
+RUN apk update && apk upgrade && \
+
+# Copy the Maven pom.xml (list of dependencies)
+COPY pom.xml ./pom.xml
+
+# Copy project source
+COPY src ./src
+
+# Build the project
+RUN mvn clean install
+
+# Set working directory
+WORKDIR /app
+
+# Copy jar file to container
+COPY target/user-service.jar .
+
+# Expose service port
+EXPOSE 8080
+
+# Run jar file
+ENTRYPOINT ["java", "-jar", "user-service.jar"]

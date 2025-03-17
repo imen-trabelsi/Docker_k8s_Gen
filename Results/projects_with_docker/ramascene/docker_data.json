@@ -1,0 +1,135 @@
+{
+    "docker_info": {
+        "base_image": "wodby/python:${PYTHON_VER}-dev",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "8000"
+        ],
+        "user": [
+            "root"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "NODE_VERSION=12.22-dev",
+            "PYTHON_VER=3.6",
+            "NGINX_VERSION=1.21",
+            "HOST",
+            "WS_HOST",
+            "PROTOCOL",
+            "WS_PROTOCOL",
+            "PYTHON_VER",
+            "NGINX_VERSION",
+            "DJANGO_SETTINGS_MODULE",
+            "HOST",
+            "DATASETS_VERSION",
+            "SECRET_KEY",
+            "BROKER_URL",
+            "PUBLIC_DIR",
+            "WS_HOST",
+            "PROTOCOL",
+            "WS_PROTOCOL",
+            "REDIS_HOST",
+            "DATABASE_NAME",
+            "PYTHON_VER",
+            "NGINX_VERSION",
+            "DJANGO_SETTINGS_MODULE",
+            "HOST",
+            "DATASETS_VERSION",
+            "SECRET_KEY",
+            "BROKER_URL",
+            "PUBLIC_DIR",
+            "WS_HOST",
+            "PROTOCOL",
+            "WS_PROTOCOL",
+            "REDIS_HOST",
+            "DATABASE_NAME",
+            "NGINX_VERSION"
+        ],
+        "envs": [
+            "ENV PYTHONUNBUFFERED=1",
+            "ENV DATABASES_DEFAULT_NAME=/mnt/data/${DATABASE_NAME}",
+            "ENV DATASETS_DIR=/mnt/datasets"
+        ],
+        "copy_instructions": [
+            "COPY package.json yarn.lock webpack.config.js ./",
+            "COPY --chown=node:node assets ./assets",
+            "COPY --from=node --chown=wodby:wodby /usr/src/app/assets/bundles ./assets/bundles",
+            "COPY --from=node --chown=wodby:wodby /usr/src/app/webpack-stats.json ./",
+            "COPY --chown=wodby:wodby ramascene ./ramascene",
+            "COPY --chown=wodby:wodby ramasceneMasterProject ./ramasceneMasterProject",
+            "COPY --chown=wodby:wodby static_assets ./static_assets",
+            "COPY --chown=wodby:wodby templates ./templates",
+            "COPY --chown=wodby:wodby .env manage.py requirements.txt rtd_requirements.txt  ./",
+            "COPY --from=build --chown=wodby:wodby /home/wodby/.local /home/wodby/.local",
+            "COPY --from=build --chown=wodby:wodby /usr/src/app/webpack-stats.json ./",
+            "COPY --chown=wodby:wodby python_ini ./python_ini",
+            "COPY --chown=wodby:wodby ramascene ./ramascene",
+            "COPY --chown=wodby:wodby ramasceneMasterProject ./ramasceneMasterProject",
+            "COPY --chown=wodby:wodby templates ./templates",
+            "COPY manage.py .env LICENSE README.md ./",
+            "COPY --from=build --chown=wodby:wodby /usr/src/app/public/ /var/www/html/"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"daphne\",",
+                    "\"ramasceneMasterProject.asgi:application\",",
+                    "\"-b\",",
+                    "\"0.0.0.0\",",
+                    "\"-p\",",
+                    "\"8000\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "npm install",
+                ""
+            ],
+            [
+                "./node_modules/.bin/webpack --config webpack.config.js",
+                ""
+            ],
+            [
+                "pip install --retries 3 --no-cache-dir --disable-pip-version-check --no-python-version-warning -r requirements.txt",
+                ""
+            ],
+            [
+                "python manage.py collectstatic",
+                ""
+            ],
+            [
+                "install -o wodby -g wodby -d ./logs",
+                "RUN install -o wodby -g wodby -d /mnt/data"
+            ],
+            [
+                "install -o wodby -g wodby -d /mnt/datasets",
+                "USER wodby"
+            ],
+            [
+                "python manage.py makemigrations",
+                "RUN python manage.py migrate"
+            ],
+            [
+                "python manage.py populateHierarchies",
+                ""
+            ],
+            [
+                "{ \\",
+                "echo \"map \\$http_upgrade \\$connection_upgrade {\" ;",
+                "echo \"    default upgrade;\" ;",
+                "echo \"    '' close;\" ;",
+                "echo \"}\" ;",
+                "echo \"include upstream.conf;\" ;",
+                "echo \"server {\" ;",
+                "echo \"    listen 80 default_server;\" ;",
+                "echo \"    server_name default;\" ;",
+                "echo \"    root /var/www/html;\" ;",
+                "echo \"    include preset.conf;\" ;",
+                ""
+            ]
+        ]
+    }
+}

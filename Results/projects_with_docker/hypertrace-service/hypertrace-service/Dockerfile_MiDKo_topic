@@ -1,0 +1,38 @@
+# Base image
+FROM hypertrace/hypertrace-ui:${HYPERTRACE_UI_VERSION} as ui
+
+# Stage 1: Build image
+FROM gradle:jdk11 as builder
+
+# Copy source files
+COPY . /app
+WORKDIR /app
+
+# Build the project
+RUN gradle build --no-daemon
+
+# Stage 2: Runtime image
+FROM openjdk:11-jdk-slim
+
+# Setup default environment variables
+ENV SERVICE_NAME=hypertrace-service \
+
+LABEL maintainer="Hypertrace"
+
+# Setting work directory
+WORKDIR /app
+
+# Copy from build stage
+COPY docker_entrypoint.sh ./
+
+# Healthcheck
+HEALTHCHECK --interval=2s --start-period=15s --timeout=2s CMD wget -qO- http://127.0.0.1:9002/health &> /dev/null || exit 1
+
+# Expose necessary ports
+EXPOSE 9001
+
+# Set permission for execution
+RUN chmod +x docker_entrypoint.sh
+
+# Run command
+ENTRYPOINT ["/app/docker_entrypoint.sh"]

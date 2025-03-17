@@ -1,0 +1,36 @@
+# Using the user-provided base image.
+FROM ubuntu:trusty
+
+# Setting the necessary environment variables
+ENV NGHTTP2_VER 895da9a
+
+# Updating the packages.
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y git-core build-essential wget autotools-dev libtool pkg-config zlib1g-dev \
+    libcunit1-dev libssl-dev libxml2-dev libevent-dev automake autoconf make binutils autoconf \
+    automake autotools-dev libtool pkg-config zlib1g-dev libcunit1-dev libssl-dev libxml2-dev \
+
+# Installing and setting up nghttp2
+WORKDIR /root
+RUN cd /root && git clone https://github.com/tatsuhiro-t/nghttp2.git
+WORKDIR /root/nghttp2
+RUN git reset --hard $NGHTTP2_VER 
+RUN autoreconf -i && automake && autoconf && ./configure && make && make install
+
+# Installing and setting up curl
+WORKDIR /root
+RUN wget http://curl.haxx.se/download/curl-7.45.0.tar.gz
+RUN tar -zxvf curl-7.45.0.tar.gz
+WORKDIR /root/curl-7.45.0
+RUN ./configure --with-ssl --with-nghttp2=/usr/local && make && make install && ldconfig
+
+# Copying the necessary files from the source code.
+COPY . .
+
+# Exposing the default port for the spring boot application.
+EXPOSE 8080
+
+# Setting the entry point and execution command for the container.
+ENTRYPOINT ["/usr/local/bin/curl"]
+CMD ["-h"]

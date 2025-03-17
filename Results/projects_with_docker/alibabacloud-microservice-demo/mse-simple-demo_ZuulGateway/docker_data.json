@@ -1,0 +1,40 @@
+{
+    "docker_info": {
+        "base_image": "maven:3-eclipse-temurin-8",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "20000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY <<EOF /root/.m2/settings.xml",
+            "WORKDIR /app",
+            "COPY ./ ./",
+            "COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas",
+            "COPY --from=build /app/target/ZuulGateway.jar /app/target/ZuulGateway.jar"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"java\",\"-jar\",\"/app/target/ZuulGateway.jar\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "--mount=type=cache,target=/root/.m2/repository/ \\",
+                "mvn clean package --batch-mode"
+            ],
+            [
+                "apt-get update && apt-get install -y \\",
+                "vim unzip netcat-openbsd telnet tcpdump iproute2 lsof ngrep",
+                "&& rm -rf /var/lib/apt/lists/*"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,22 @@
+# Use the official maven/Java 8 image to create a build artifact.
+# This is based on OpenJDK which is GPL v2 with Class Path Exception.
+FROM maven:3.6-jdk-8 as builder
+
+# Copy local code to the container image.
+WORKDIR /app
+COPY src ./src
+COPY pom.xml .
+
+# Build a release artifact.
+RUN mvn clean package -DskipTests
+
+# Use the OpenJDK image for a lean production stage of our multi-stage build.
+FROM openjdk:8-jre-alpine
+
+# Copy the jar to the production image from the builder stage.
+
+# Expose port.
+EXPOSE 8888
+
+# Run the web service on container startup.
+CMD ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/springboot-app.jar"]

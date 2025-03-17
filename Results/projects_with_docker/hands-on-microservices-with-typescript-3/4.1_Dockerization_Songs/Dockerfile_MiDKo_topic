@@ -1,0 +1,23 @@
+# First stage: building the application
+FROM node:8.13-slim as build-env
+WORKDIR /opt/my-musik/
+# Copy all required files for building
+COPY ./gulpfile.js .
+COPY ./package.json .
+COPY ./tsconfig.json .
+COPY ./tslint.json .
+COPY ./config.json .
+COPY ./songs.json .
+COPY ./src ./src
+# Install all needed dependencies
+RUN mkdir -p /opt/my-musik/ && npm install typescript -g && npm install --no-optional && "node_modules/.bin/gulp"
+
+# Second stage: setting the environment for the application
+FROM node:8.13-slim
+WORKDIR /opt/my-musik/
+# Copy all needed files from first stage
+# Install only production dependencies
+RUN mkdir -p /opt/my-musik/ && npm install --no-optional --only=prod
+
+EXPOSE 3000
+CMD [ "node", "dist/app.js" ]

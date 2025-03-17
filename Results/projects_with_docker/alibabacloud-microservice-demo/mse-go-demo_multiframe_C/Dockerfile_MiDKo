@@ -1,0 +1,21 @@
+# Specify base image
+FROM registry-cn-hangzhou.ack.aliyuncs.com/dev/alpine:3.18-update@sha256:f2f97bbc6f3173044292cbf8d306ca31b4356a5f2eb54701fc97f64065b412cf AS build
+
+# Update and install dependencies
+RUN apk add --no-cache bash
+RUN apk add --no-cache maven
+
+# Copy source code into the container
+WORKDIR /
+COPY . ./
+
+# Build the application 
+RUN mvn clean install
+
+# Create final image
+FROM registry-cn-hangzhou.ack.aliyuncs.com/dev/alpine:3.18-update@sha256:f2f97bbc6f3173044292cbf8d306ca31b4356a5f2eb54701fc97f64065b412cf
+
+# Copy the compiled jar file from build image
+
+# Application's entry point
+ENTRYPOINT ["java","-jar","/app.jar"]

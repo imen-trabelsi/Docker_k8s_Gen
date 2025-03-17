@@ -1,0 +1,46 @@
+FROM ubuntu:18.04
+
+LABEL maintainer="skills@opendAI.com"
+
+# Build Arguments
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
+ARG NO_PROXY
+
+# Environment Variables
+ENV http_proxy $HTTP_PROXY
+ENV https_proxy $HTTPS_PROXY
+ENV no_proxy $NO_PROXY
+ENV GOROOT /usr/local/go
+ENV GOPATH /gopath
+ENV GOBIN /gopath/bin
+ENV PATH $PATH:$GOROOT/bin:$GOPATH/bin
+
+# Add User
+RUN groupadd -r onap && useradd -r -g onap onap
+
+RUN mkdir -p /opt/multicloud/k8s/orchestrator
+
+RUN chown onap:onap /opt/multicloud/k8s/orchestrator -R
+
+# Install necessary packages
+RUN apt-get update && apt-get install -y \
+    curl \
+    git \
+    mongodb \
+    openssh-server \
+
+# Install Go  
+RUN curl https://dl.google.com/go/go1.12.9.linux-amd64.tar.gz | tar xz && mv go /usr/local
+
+WORKDIR /opt/multicloud/k8s/orchestrator
+
+# Copy Files
+COPY --chown=onap ./orchestrator ./
+
+# Expose Ports
+EXPOSE 9015
+
+# Execution
+USER onap
+CMD ["./orchestrator"]

@@ -1,0 +1,29 @@
+FROM node:8.13-slim 
+
+WORKDIR /opt/my-musik/
+
+# Copy required files for npm install
+COPY package.json .
+COPY gulpfile.js .
+COPY tsconfig.json .
+COPY tslint.json .
+
+# Install dependencies
+RUN npm install typescript -g
+RUN npm install --no-optional
+RUN node_modules/.bin/gulp
+
+# Remove dev dependencies
+RUN npm prune --production
+
+# Copy remaining application files
+COPY ./src ./src
+COPY ./songs.json .
+COPY ./config.json .
+
+# Expose the required port
+EXPOSE 3000
+
+# Start the application
+CMD ["node", "dist/app.js"]
+

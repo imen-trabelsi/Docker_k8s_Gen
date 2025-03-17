@@ -1,0 +1,22 @@
+# Start with the user-specified base image
+FROM adoptopenjdk/openjdk11:alpine AS BUILD_IMAGE
+
+# Create a directory in the docker image where the app will reside
+RUN mkdir /app
+WORKDIR /app
+
+# Copy the pom and source code to the container
+COPY ./ ./
+
+# Package the application
+RUN mvn clean package -DskipTests
+
+# Layered Jars can help to improve the Dockerfile’s build time by separating dependencies from classes
+FROM adoptopenjdk/openjdk11:alpine
+
+
+# Expose the port
+EXPOSE 8080
+
+# Command to run the executable
+CMD ["java", "-jar", "receiver.jar"]

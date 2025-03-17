@@ -1,0 +1,36 @@
+# Use base image
+FROM python:3.9-alpine
+
+# Define arguments
+ARG UID=1000
+ARG COMMIT_HASH=''
+ARG GIT_BRANCH=''
+
+# Set environment variables
+ENV COMMIT_HASH $COMMIT_HASH
+ENV GIT_BRANCH $GIT_BRANCH
+ENV POETRY_VIRTUALENVS_CREATE=false
+
+# Create app directory
+WORKDIR /metadata
+
+# Install app dependencies
+COPY requirements.txt ./
+RUN apk update && \
+    apk add postgresql-libs && \
+    apk add --virtual .build-deps alpine-sdk musl-dev postgresql-dev && \
+    pip --disable-pip-version-check --no-cache-dir install -r requirements.txt && \
+
+# Copy app source code
+COPY . /metadata
+
+# Expose necessary ports
+# REPLACE WITH SPECIFIC PORTS
+# EXPOSE 
+
+# Add user
+RUN adduser --system -u $UID metadata
+USER metadata
+
+# Entry point
+ENTRYPOINT [ "lidarr-metadata-server" ]

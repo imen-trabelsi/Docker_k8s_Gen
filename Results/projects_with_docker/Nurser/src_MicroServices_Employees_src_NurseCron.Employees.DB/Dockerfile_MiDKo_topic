@@ -1,0 +1,24 @@
+# Dockerfile
+FROM ikemtz/sql_dacpac:latest
+
+LABEL author="@IkeMtz"
+
+# Default environment variables
+ENV SA_PASSWORD=SqlDockerRocks123!
+
+# Copy dacpac files and mdf/ldf files from sql-temp
+COPY /bin/Debug/*.dacpac /dacpac/
+COPY --from=sql-temp /var/opt/mssql/data/*.ldf /var/opt/mssql/data/
+COPY --from=sql-temp /var/opt/mssql/data/*.mdf /var/opt/mssql/data/
+
+# Run commands
+USER root
+RUN /opt/mssql/bin/sqlservr & sleep 20 \
+&& sqlpackage /Action:Publish /TargetServerName:localhost /TargetUser:SA /TargetPassword:$SA_PASSWORD /SourceFile:/dacpac/emplDb.dacpac /TargetDatabaseName:emplDb /p:BlockOnPossibleDataLoss=false \
+&& sleep 20 \
+&& pkill sqlservr && sleep 10 \
+
+USER mssql
+
+# Expose Ports
+EXPOSE 1433

@@ -1,0 +1,60 @@
+FROM openjdk:jre-alpine
+
+LABEL maintainer="devops@example.com"
+
+ENV LC_ALL=C \
+    OUTPUT_PATH=/var/www/html \
+    SCHEMA_SPY_VERSION=6.1.0 \
+    POSTGRESQL_VERSION=42.2.1 \
+    DATABASE_HOST=primedb \
+    DATABASE_SERVICE_NAME=primedb \
+    DATABASE_USER=postgres \
+    DATABASE_PASSWORD=postgres \
+
+USER root
+
+RUN apk update && \
+    apk upgrade && \
+    apk --no-cache add \
+    tini \
+    git \
+    openssh-client && \
+    apk --no-cache add --virtual devs \
+    tar \
+    curl && \
+    curl -L "https://github.com/caddyserver/caddy/releases/download/v0.10.10/caddy_v0.10.10_linux_amd64.tar.gz" \
+    | tar --no-same-owner -C /usr/bin/ -xz caddy && \
+    apk del devs && \
+    mkdir -p /var/www/html && \
+    chmod g+w /var/www/html && \
+    chmod g+w /etc/Caddyfile && \
+
+WORKDIR /app/
+
+COPY start.sh ./
+
+COPY Caddyfile /etc/Caddyfile
+
+RUN apk update && \
+    apk add --no-cache \
+    wget \
+    ca-certificates \
+    librsvg \
+    graphviz \
+    ttf-ubuntu-font-family && \
+    mkdir -p lib && \
+    wget -nv -O lib/schemaspy-$SCHEMA_SPY_VERSION.jar https://github.com/schemaspy/schemaspy/releases/download/v$SCHEMA_SPY_VERSION/schemaspy-$SCHEMA_SPY_VERSION.jar && \
+    cp lib/schemaspy-$SCHEMA_SPY_VERSION.jar lib/schemaspy.jar && \
+    wget --no-check-certificate -nv -O lib/pgsql-jdbc.jar https://repo1.maven.org/maven2/org/postgresql/postgresql/$POSTGRESQL_VERSION/postgresql-$POSTGRESQL_VERSION.jar && \
+    apk del \
+    wget \
+    ca-certificates && \
+    chown -R 1001:0 /app && \
+
+USER 1001
+
+ENTRYPOINT ["/sbin/tini"]
+
+CMD ["sh", "start.sh"]
+
+EXPOSE 8080

@@ -1,0 +1,23 @@
+# set base image (host OS)
+FROM nginx:alpine
+
+# set the working directory in the Docker image
+WORKDIR /app
+
+# copy project file
+COPY package*.json ./
+
+# install dependencies
+RUN npm install
+
+# copy other files
+COPY . .
+
+# copy nginx configuration
+COPY deployment/docker/nginx.conf /etc/nginx/nginx.conf
+
+# expose port
+EXPOSE 80
+
+# command to run on container start
+CMD [ "npm", "start" ]

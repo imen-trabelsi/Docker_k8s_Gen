@@ -1,0 +1,17 @@
+# Base Image
+FROM docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-8.17.3}
+
+# Copy App Source code to Docker
+COPY . /app
+
+# Change Workdir
+WORKDIR /app
+
+# Copy entrypoint shell script
+COPY ./setup/entrypoint.sh /usr/local/bin/
+
+# Give execution permissions
+RUN chmod +x /usr/local/bin/entrypoint.sh
+
+# Define Entrypoint; script to run when the container starts
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]

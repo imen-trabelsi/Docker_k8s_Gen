@@ -1,0 +1,37 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/sdk:5.0",
+        "multi_stage_build": true,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /Sln",
+            "COPY . .",
+            "WORKDIR /Sln/KlsnReceiver",
+            "WORKDIR /App",
+            "COPY --from=build-env /Sln/KlsnReceiver/out ./"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/App/KlsnReceiver\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "dotnet restore",
+                ""
+            ],
+            [
+                "dotnet publish -c Release -r linux-x64 -o out",
+                ""
+            ]
+        ]
+    }
+}

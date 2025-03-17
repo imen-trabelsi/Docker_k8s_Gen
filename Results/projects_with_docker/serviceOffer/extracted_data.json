@@ -1,0 +1,36 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"serviceoffer\",\n  \"version\": \"1.0.0\",\n  \"description\": \"GraphQL based GTFS planned service offer management API\",\n  \"main\": \"src/index.js\",\n  \"scripts\": {\n    \"test\": \"jest --coverage\",\n    \"lint\": \"npx eslint ./\",\n    \"dev\": \"nodemon src/index.js\",\n    \"prod\": \"node src/index.js\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"https://github.com/transitco/serviceOffer.git\"\n  },\n  \"author\": \"\",\n  \"license\": \"ISC\",\n  \"dependencies\": {\n    \"apollo-server-express\": \"^2.21.0\",\n    \"graphql-import\": \"^1.0.2\",\n    \"gtfs\": \"^1.10.2\",\n    \"mongoose\": \"^5.11.13\",\n    \"nodemon\": \"^2.0.7\"\n  },\n  \"devDependencies\": {\n    \"eslint\": \"^7.18.0\",\n    \"jest\": \"^26.6.3\"\n  }\n}\n"
+        },
+        "database": "MongoDB",
+        "build_system": "npm",
+        "config_files": {
+            "docker-compose.yml": "\nversion: \"2\"\nservices:\n  serviceoffer:\n    container_name: serviceoffer\n    restart: always\n    build: .\n    command: npm run dev\n    volumes:\n      - .:/usr/src/app/serviceoffer\n      - /usr/src/app/node_modules\n    ports:\n      - \"4000:4000\"\n    links:\n      - mongo\n      \n  exogtfsloader:\n    container_name: exogtfsloader\n    image: docker.pkg.github.com/transitco/gtfsloader/gtfsloader:latest\n    restart: always\n    volumes:\n      - ./src/gtfs/exo_config.json:/usr/src/app/gtfsloader/gtfs/config.json\n    ports:\n      - \"3000:3000\"\n    links:\n      - mongo\n\n  rtlgtfsloader:\n    container_name: rtlgtfsloader\n    image: docker.pkg.github.com/transitco/gtfsloader/gtfsloader:latest\n    restart: always\n    volumes:\n      - ./src/gtfs/rtl_config.json:/usr/src/app/gtfsloader/gtfs/config.json\n    ports:\n      - \"3001:3000\"\n    links:\n      - mongo\n\n  stlgtfsloader:\n    container_name: stlgtfsloader\n    image: docker.pkg.github.com/transitco/gtfsloader/gtfsloader:latest\n    restart: always\n    volumes:\n      - ./src/gtfs/stl_config.json:/usr/src/app/gtfsloader/gtfs/config.json\n    ports:\n      - \"3002:3000\"\n    links:\n      - mongo\n\n  #stmgtfsloader:\n  #  container_name: stmgtfsloader\n  #  image: docker.pkg.github.com/transitco/gtfsloader/gtfsloader:latest\n  #  restart: always\n  #  volumes:\n  #    - ./src/gtfs/stm_config.json:/usr/src/app/gtfsloader/gtfs/config.json\n  #  ports:\n  #    - \"3003:3000\"\n  #  environment:\n  #  - AGENCY=stm\n  #  links:\n  #    - mongo\n  \n  mongo:\n    container_name: mongo\n    image: mongo\n    volumes:\n      - data:/data/db\n    ports:\n      - \"27017:27017\"\n\n  admin-mongo:\n    container_name: adminMongo\n    image: 0x59/admin-mongo:latest\n    ports:\n      - \"8082:8082\"\n    environment:\n      - PORT=8082\n      - CONN_NAME=mongo\n      - DB_HOST=mongo\n      - DB_PORT=27017\n    links:\n      - mongo\n\nvolumes: \n  data:\n",
+            "Dockerfile": "FROM node:latest AS baseline\nWORKDIR /usr/src/app/serviceoffer\nCOPY ./package.json /usr/src/app/serviceoffer\n\nFROM baseline AS tester\nRUN npm install\nCOPY . /usr/src/app/serviceoffer\nRUN npm run lint\nRUN npm run test\n\nFROM baseline AS production\n#RUN npm install package-lock.json -- production\nRUN npm install\nCOPY ./src/ /usr/src/app/serviceoffer/src/\nEXPOSE 4000\nCMD [\"npm\", \"run\", \"prod\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            ".eslintrc.yml",
+            ".gitignore",
+            ".gitreview",
+            "CODE_OF_CONDUCT.md",
+            "Dockerfile",
+            "README.md",
+            "docker-compose.yml",
+            "package-lock.json",
+            "package.json"
+        ],
+        "folders": [
+            ".dependabot",
+            ".github",
+            "src",
+            "test"
+        ]
+    }
+}

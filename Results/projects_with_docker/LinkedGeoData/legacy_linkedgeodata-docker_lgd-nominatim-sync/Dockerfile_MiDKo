@@ -1,0 +1,51 @@
+#Using the base image specified by the user
+FROM ubuntu:16.04
+
+# Adding ENV Variables
+ENV DEBIAN_FRONTEND noninteractive
+ENV POSTGRES_CLIENT_VERSION 9.5
+ENV POSTGIS_CLIENT_VERSION 2.2
+
+#Updating and installing the necessary softwares and making necessary configurations
+RUN apt -y update --fix-missing && \
+    apt install -y software-properties-common wget git curl sudo && \
+    echo "pgclientver: ${POSTGRES_CLIENT_VERSION}" && \
+    apt-get install -y build-essential libxml2-dev libpq-dev libbz2-dev libtool automake libproj-dev libboost-dev libboost-system-dev libboost-filesystem-dev libboost-thread-dev libexpat-dev gcc proj-bin libgeos-c1v5 libgeos++-dev libexpat-dev php-pgsql php-json php-db postgresql postgis postgresql-contrib postgresql-${POSTGRES_CLIENT_VERSION}-postgis-${POSTGIS_CLIENT_VERSION} postgresql-server-dev-${POSTGRES_CLIENT_VERSION} wget osm2pgsql osmosis gettext-base osmctools && \ 
+    wget -qO - http://cstadler.aksw.org/repos/apt/conf/packages.precise.gpg.key  | sudo apt-key add - && \
+    echo 'deb http://cstadler.aksw.org/repos/apt precise main contrib non-free' | sudo tee -a /etc/apt/sources.list.d/cstadler.aksw.org.list && \
+    apt-get update && \
+    apt-get install -y linkedgeodata && \
+    echo "force rebuild 7" && \
+
+#Set Working directory
+WORKDIR /app/nominatim
+
+#Copying necessary files
+COPY target/nominatim.jar .
+COPY local.php.dist ./src/settings/
+COPY setup-patched.php ./src/utils/
+COPY update-patched.php ./src/utils/
+COPY lib-patched.php ./lib/lib.php
+COPY target/nominatim ./src/nominatim/
+COPY target/osm2pgsql ./src/osm2pgsql/
+COPY target/nominatim.so ./src/module/
+COPY configuration.txt.dist ./src/settings/
+COPY start.sh .
+COPY wait-for-postgres.sh .
+
+#Unzipping the jar and moving to source directory
+RUN unzip nominatim.jar && mv Nominatim src
+
+# Giving execution permissions
+RUN chmod +x ./src/utils/setup-patched.php
+RUN chmod +x ./src/utils/update-patched.php
+RUN chmod +x ./lib/lib.php
+RUN chmod +x ./src/nominatim/nominatim
+RUN chmod +x ./src/osm2pgsql/osm2pgsql
+RUN chmod +x ./start.sh ./wait-for-postgres.sh
+
+#Adding 3 seconds delay 
+RUN sleep 3
+
+#Execution command
+CMD ["./wait-for-postgres.sh", "./start.sh"]

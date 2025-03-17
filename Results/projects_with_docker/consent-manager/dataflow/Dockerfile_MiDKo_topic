@@ -1,0 +1,22 @@
+# Build stage
+FROM gradle:jdk11 as builder
+COPY --chown=gradle:gradle . /home/gradle/src
+WORKDIR /home/gradle/src
+RUN gradle build --no-daemon 
+
+# Package stage
+FROM adoptopenjdk/openjdk11:jre-11.0.8_10-alpine
+WORKDIR /application
+
+# Extract layers
+RUN java -Djarmode=layertools -jar application.jar extract
+
+# Track changes to any of these files with Docker's cache mechanism
+COPY *.gradle ./gradle/ /application/ 
+COPY src /application/src
+
+# Expose ports
+EXPOSE 8080 
+
+# set default command 
+ENTRYPOINT ["java", "org.springframework.boot.loader.JarLauncher"]

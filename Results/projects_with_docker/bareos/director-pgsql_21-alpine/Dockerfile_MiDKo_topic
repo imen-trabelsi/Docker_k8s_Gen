@@ -1,0 +1,33 @@
+# Use the base image provided by the user
+FROM alpine:3.16
+
+# Build Arguments
+ARG BUILD_DATE
+ARG NAME
+ARG VCS_REF
+ARG VERSION
+
+# Include labels
+LABEL maintainer="barcus@tou.nu" \
+    org.label-schema.schema-version="1.0" \
+    org.label-schema.build-date=$BUILD_DATE \
+    org.label-schema.name=$NAME \
+    org.label-schema.vcs-ref=$VCS_REF \
+
+# Include necessary packages for the image
+RUN apk add --no-cache bareos bareos-postgresql postgresql-client curl tzdata tar \
+    && tar czf /bareos-dir.tgz /etc/bareos \
+    && mkdir /run/bareos \
+    && chown bareos /run/bareos \
+    && chmod u+x /usr/local/bin/webhook-notify \
+
+# Copy necessary files
+COPY webhook-notify /usr/local/bin/webhook-notify
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+
+# Expose necessary ports
+EXPOSE 9101
+
+# Set the correct entry point and CMD/ENTRYPOINT instructions.
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["/usr/sbin/bareos-dir", "-u", "bareos", "-f"]

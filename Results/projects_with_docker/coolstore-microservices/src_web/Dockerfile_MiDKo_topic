@@ -1,0 +1,26 @@
+# Use the official Node.js 16 image from Docker Hub
+FROM node:16-alpine as build
+
+# Inform Docker that the container is listening on the specified port at runtime.
+EXPOSE 8080
+
+# Create a directory named app
+WORKDIR /usr/server/app
+
+# Use wildcard to copy package.json AND package-lock.json
+COPY package*.json ./
+
+# Copy the entire project
+COPY . .
+
+# Set environment variables
+ENV NODE_ENV=production
+
+RUN npm install -g npm@8.8.0 && \
+    npm install && \
+    
+FROM node:16-alpine
+WORKDIR /usr/server/app
+COPY ./package.json ./
+COPY ./ .
+CMD ["npm", "run", "start"]

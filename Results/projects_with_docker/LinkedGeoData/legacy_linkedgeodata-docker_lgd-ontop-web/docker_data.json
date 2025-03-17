@@ -1,0 +1,34 @@
+{
+    "docker_info": {
+        "base_image": "ontop/ontop-endpoint:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8080"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /opt/ontop",
+            "ADD https://repo1.maven.org/maven2/org/postgresql/postgresql/42.2.19/postgresql-42.2.19.jar jdbc/",
+            "ADD lgd.obda input/lgd.obda",
+            "ADD lgd.owl input/lgd.owl",
+            "ADD lgd.portal.toml input/lgd.portal.toml",
+            "ADD catalog-v001.xml input/catalog-v001.xml",
+            "ADD library input/library"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "sleep 3",
+                ""
+            ],
+            [
+                "env",
+                ""
+            ]
+        ]
+    }
+}

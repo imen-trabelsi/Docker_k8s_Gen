@@ -1,0 +1,41 @@
+#Sample Dockerfile:
+
+FROM harbor.nymte.ch/dockerhub/rust:latest
+
+# Create Application Directory
+WORKDIR /usr/src/nym
+
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY package*.json ./
+
+RUN npm install
+# If you are building your code for production
+# RUN npm ci --only=production
+
+# Bundle app source
+COPY . .
+
+# Copy Instructions
+COPY ./ /usr/src/nym
+WORKDIR /usr/src/nym/nym-node
+WORKDIR /nym
+COPY --from=builder /usr/src/nym/target/release/nym-node ./
+COPY ./nym-node/entrypoint.sh ./
+
+# Expose Ports
+EXPOSE 8080
+
+# Install necessary packages
+RUN apt-get update && apt-get install -y wget
+
+# Download necessary files
+RUN wget https://builds.ci.nymte.ch/develop/nym-cli
+RUN chmod +x nym-cli
+
+# Execution Command
+CMD [ "./entrypoint.sh" ] 
+
+# Build Commands
+RUN cargo build --release

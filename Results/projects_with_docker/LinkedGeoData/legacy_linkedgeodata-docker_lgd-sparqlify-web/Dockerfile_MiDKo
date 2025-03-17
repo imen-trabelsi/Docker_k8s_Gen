@@ -1,0 +1,26 @@
+# Use the specified base image
+FROM ubuntu:16.04
+
+# Set up environment variables
+ENV DEBIAN_FRONTEND noninteractive
+
+# Copy the application's codebase into the image
+WORKDIR /app/linkedgeodata
+COPY start.sh .
+COPY wait-for-postgres.sh .
+
+# Install dependencies & utilities and linkedgeodata package
+RUN apt-get -y update --fix-missing && \
+    apt-get install -y openjdk-8-jdk wget sudo curl osmosis && \
+    wget -qO - http://cstadler.aksw.org/repos/apt/conf/packages.precise.gpg.key  | sudo apt-key add - && \
+    echo 'deb http://cstadler.aksw.org/repos/apt precise main contrib non-free' | sudo tee -a /etc/apt/sources.list.d/cstadler.aksw.org.list && \
+    apt-get update && \
+
+# Set the permissions
+RUN chmod +x ./start.sh ./wait-for-postgres.sh && sleep 3
+
+# Listen on the specified port
+EXPOSE 7531
+
+# Set the entrypoint command
+ENTRYPOINT ["./wait-for-postgres.sh", "./start.sh"]

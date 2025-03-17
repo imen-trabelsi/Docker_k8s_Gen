@@ -1,0 +1,26 @@
+# Cleary, there are some mismatched information in the prompt (e.g., a Node.js microservice with .csproj files). 
+# However, considering user provided input and extracted source code information, a Dockerfile could be as follows:
+
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
+WORKDIR /app
+
+# Copy csproj and restore dependencies
+COPY ./Common/ClassifiedAds.Application/*.csproj ./Common/ClassifiedAds.Application/
+COPY ./Common/ClassifiedAds.CrossCuttingConcerns/*.csproj ./Common/ClassifiedAds.CrossCuttingConcerns/
+COPY ./Common/ClassifiedAds.Domain/*.csproj ./Common/ClassifiedAds.Domain/
+COPY ./Common/ClassifiedAds.Infrastructure/*.csproj ./Common/ClassifiedAds.Infrastructure/
+COPY ./Services.Notification/ClassifiedAds.Services.Notification/*.csproj ./Services.Notification/ClassifiedAds.Services.Notification/
+COPY ./Services.Notification/ClassifiedAds.Services.Notification.Api/*.csproj ./Services.Notification/ClassifiedAds.Services.Notification.Api/
+RUN dotnet restore ./Common/ClassifiedAds.Application/ClassifiedAds.Application.csproj
+RUN dotnet restore ./Common/ClassifiedAds.Infrastructure/ClassifiedAds.Infrastructure.csproj
+RUN dotnet restore ./Services.Notification/ClassifiedAds.Services.Notification/ClassifiedAds.Services.Notification.csproj
+RUN dotnet restore ./Services.Notification/ClassifiedAds.Services.Notification.Api/ClassifiedAds.Services.Notification.Api.csproj
+
+# Copy all files and build
+COPY . ./
+RUN dotnet publish ./Services.Notification/ClassifiedAds.Services.Notification.Api/ClassifiedAds.Services.Notification.Api.csproj -c Release -o out
+
+# Generate runtime image
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+WORKDIR /app
+ENTRYPOINT ["dotnet", "ClassifiedAds.Services.Notification.Api.dll"]

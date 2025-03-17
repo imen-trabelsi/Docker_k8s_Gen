@@ -1,0 +1,26 @@
+{
+    "docker_info": {
+        "base_image": "mysql:5.7",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3306"
+        ],
+        "user": [],
+        "labels": [
+            "maintainer=\"Debezium"
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV MYSQL_ROOT_PASSWORD=debezium",
+            "ENV MYSQL_USER=mysqluser",
+            "ENV MYSQL_PASSWORD=mysqlpw"
+        ],
+        "copy_instructions": [
+            "COPY mysql.cnf /etc/mysql/conf.d/",
+            "COPY import-data.sql /docker-entrypoint-initdb.d/"
+        ],
+        "execution": [],
+        "run": []
+    }
+}

@@ -1,0 +1,38 @@
+# Use the base Image
+FROM nginx:1 as builder
+
+# Add a new user
+RUN adduser cwww
+
+USER cwww
+
+# Set working directory
+WORKDIR /app
+
+# Update and install necessary libraries
+RUN apt-get update && \
+    apt-get install -y \
+
+# Copy requirements file and install python dependencies
+COPY pyproject.toml /app
+RUN poetry install
+
+# Copy required configuration and static files
+COPY dhparams.pem /etc/ssl/private/dhparams.pem
+COPY mime.types /etc/nginx/mime.types
+COPY nginx.conf.template /tmp/nginx.conf.template
+
+# Switch back to root user
+USER root
+
+# Make sure files/folders needed by the processes are accessible when they run under the nobody user
+RUN chown -R cwww:cwww /app && chmod -R 755 /app
+
+# Switch to the new app user
+USER cwww
+
+# Expose port
+EXPOSE <port number>
+
+# Start Django server
+CMD ["run", "python", "manage.py", "runserver", "0.0.0.0:<port number>"]

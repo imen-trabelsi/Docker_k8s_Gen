@@ -1,0 +1,44 @@
+{
+    "docker_info": {
+        "base_image": "node:8.11",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV API_URL http://localhost:8080"
+        ],
+        "copy_instructions": [
+            "WORKDIR /var/app",
+            "COPY .angular-cli.json ./.angular-cli.json",
+            "COPY tsconfig.json ./tsconfig.json",
+            "COPY package.json ./package.json",
+            "COPY package-lock.json ./package-lock.json",
+            "COPY src ./src",
+            "COPY --from=build /var/app/dist /usr/local/apache2/htdocs/",
+            "COPY docker-util/docker-entrypoint.sh /usr/local/bin/"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"docker-entrypoint.sh\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"httpd-foreground\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "npm install && \\",
+                "npm run-script build-prod"
+            ]
+        ]
+    }
+}

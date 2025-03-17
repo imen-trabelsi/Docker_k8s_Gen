@@ -1,0 +1,34 @@
+# Use base image
+FROM eventuateio/eventuate-examples-docker-images-spring-example-base-image:$baseImageVersion
+
+# Set working directory in container
+WORKDIR /app
+
+# Copy the files into the Docker image
+COPY . /app
+COPY build/libs/ftgo-api-gateway.jar service.jar
+
+# Set necessary environment variables required for our image
+ENV MYSQL_DATABASE=ftgo
+ENV MYSQL_USER=ftgo
+ENV MYSQL_PASSWORD=ftgo
+ENV MYSQL_CI_URL=jdbc:mysql://mysql:3306/ftgo
+
+# Set necessary Gradle build variables
+ENV GRADLE_USER_HOME /cache
+
+# Download all required dependencies into one layer
+COPY build.gradle .
+COPY settings.gradle .
+COPY gradlew .
+COPY gradle ./gradle
+RUN chmod +x ./gradlew
+
+# Copy persistent volumes
+COPY . .
+
+# Expose the specified port/s
+EXPOSE 8080
+
+# Run the jar file 
+ENTRYPOINT ["java","-jar","service.jar"]

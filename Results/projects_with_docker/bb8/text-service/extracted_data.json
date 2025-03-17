@@ -1,0 +1,36 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "JavaScript",
+        "dependencies": {
+            "package.json": "{\n    \"private\": true,\n    \"workspaces\": [\n        \"auth-service\",\n        \"search-service\",\n        \"text-service\",\n        \"web-ui\"\n    ]\n}"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "docker-compose.yml": "# docker-compose.yml file\n\nversion: '3.6'\n\nservices:\n  search_service:\n    build:\n      context: ./search-service\n      dockerfile: Dockerfile-dev\n    volumes:\n      - type: bind\n        source: ./search-service/\n        target: /usr/app\n    depends_on:\n      - elasticsearch\n    links: \n      - elasticsearch\n    ports:\n      - 3009:3009\n    command: npm run install_and_run\n  web_ui:\n    build:\n      context: ./web-ui\n      dockerfile: Dockerfile-dev\n    volumes:\n      - type: bind\n        source: ./web-ui/\n        target: /usr/app\n    ports:\n      - 3003:3003\n    command: npm run start\n  auth_service:\n    build:\n      context: ./auth-service\n      dockerfile: Dockerfile-dev\n    volumes:\n      - type: bind\n        source: ./auth-service/\n        target: /usr/app\n    depends_on:\n      - elasticsearch\n    links: \n      - elasticsearch\n    ports:\n      - 3010:3010\n    command: npm run install_and_run\n  elasticsearch:\n    image: docker.elastic.co/elasticsearch/elasticsearch:7.5.1\n    environment:\n      - discovery.type=single-node\n    ports:\n      - 9300:9300\n      - 9200:9200\n  kibana:\n    image: docker.elastic.co/kibana/kibana:7.5.2\n    ports:\n      - 5601:5601\n    environment:\n      ELASTICSEARCH_HOSTS: http://elasticsearch:9200\n  rabbitmq:\n    image: rabbitmq\n    ports:\n      - \"15672:15672\"\n      - \"5672:5672\"\n  mysql:\n    image: mysql\n    command: --default-authentication-plugin=mysql_native_password\n    restart: always\n    environment:\n      MYSQL_ROOT_PASSWORD: w3lc0me!\n  adminer:\n    image: adminer\n    restart: always\n    ports:\n      - 8080:8080    \n\n",
+            "text-service/Dockerfile": "FROM node:12.16\nWORKDIR /usr/app\nCOPY . .\nRUN yarn\nRUN yarn build\nCMD yarn start:prod"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".gitignore",
+            ".prettierrc",
+            "Dockerfile",
+            "Dockerfile-dev",
+            "README.md",
+            "package-lock.json",
+            "package.json",
+            "semantic.json",
+            "tsconfig.json",
+            "webpack.config.js",
+            "yarn.lock"
+        ],
+        "folders": [
+            ".storybook",
+            "src",
+            "types"
+        ]
+    }
+}

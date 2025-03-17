@@ -1,0 +1,37 @@
+FROM phusion/baseimage:master-amd64
+
+# Set noninteractive mode for apt-get
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Set working directory in container
+WORKDIR /apiserver
+
+# Copy necessary files
+COPY *.pub /tmp/
+ADD version.tar.gz /opt/
+COPY version_start /etc/service/version_start/run
+COPY dncserver/ ./dncserver/
+COPY dncstdplugin/ ./dncstdplugin/
+COPY dncgiplugin/ ./dncgiplugin/
+COPY dncserver_start /etc/service/dncserver_start/run
+COPY dncstdplugin_start /etc/service/dncstdplugin_start/run
+COPY dncgiplugin_start /etc/service/dncgiplugin_start/run
+
+# Install dependencies
+RUN /etc/my_init.d/00_regen_ssh_host_keys.sh \
+    && curl -sL https://deb.nodesource.com/setup_16.x | bash - \
+    && apt-get update \
+    && apt-get install nodejs -y \
+
+# Add public keys and remove them from temp location
+RUN cat /tmp/*.pub >> /root/.ssh/authorized_keys && rm -f /tmp/*.pub
+
+# Make run scripts executable
+RUN chmod +x /etc/service/version_start/run \
+    && chmod +x /etc/service/dncserver_start/run \
+    && chmod +x /etc/service/dncstdplugin_start/run \
+
+# Clean up SSH 
+RUN rm -f /etc/service/sshd/down
+
+CMD ["/sbin/my_init"]

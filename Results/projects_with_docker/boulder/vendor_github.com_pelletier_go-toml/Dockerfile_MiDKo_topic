@@ -1,0 +1,39 @@
+# Builder stage
+FROM golang:1.12-alpine3.9 as builder
+
+# Set the working directory in the builder stage
+WORKDIR /go/src/github.com/pelletier/go-toml
+
+# Copy source code to the builder stage
+COPY . .
+
+# Set the necessary environment variables
+ENV CGO_ENABLED=0
+ENV GOOS=linux
+
+# Install the dependencies and build the Go code
+RUN go mod download
+RUN go install ./...
+
+# Runner stage
+FROM alpine:latest
+
+# Set the working directory in the runner stage
+WORKDIR /app
+
+# Copy the executables from the builder stage to the runner stage
+
+# Ensure that the executables have the correct permissions
+RUN chmod +x /usr/bin/tomll
+RUN chmod +x /usr/bin/tomljson
+RUN chmod +x /usr/bin/jsontoml
+
+# Add the app to the PATH
+ENV PATH $PATH:/app
+
+# Provide metadata for the image with labels
+LABEL maintainer="Maintainer Name" \
+      version="1.0" \
+
+# Set the command to run the app
+ENTRYPOINT [ "tomll" ]

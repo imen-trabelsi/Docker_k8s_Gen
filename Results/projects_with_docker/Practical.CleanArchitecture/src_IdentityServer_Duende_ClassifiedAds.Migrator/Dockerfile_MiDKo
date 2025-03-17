@@ -1,0 +1,30 @@
+# Based on the user-specified .NET SDK base image
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+
+# Set the working directory
+WORKDIR /ClassifiedAds.IdentityServer
+
+# Copy csproj files and restore dependencies
+COPY ./ClassifiedAds.Application/*.csproj ./ClassifiedAds.Application/
+COPY ./ClassifiedAds.CrossCuttingConcerns/*.csproj ./ClassifiedAds.CrossCuttingConcerns/
+COPY ./ClassifiedAds.Domain/*.csproj ./ClassifiedAds.Domain/
+COPY ./ClassifiedAds.IdentityServer/*.csproj ./ClassifiedAds.IdentityServer/
+COPY ./ClassifiedAds.Infrastructure/*.csproj ./ClassifiedAds.Infrastructure/
+COPY ./ClassifiedAds.Migrator/*.csproj ./ClassifiedAds.Migrator/
+COPY ./ClassifiedAds.Persistence/*.csproj ./ClassifiedAds.Persistence/
+RUN dotnet restore
+
+# Copy all files and build the project
+COPY . ./
+RUN dotnet publish ./ClassifiedAds.Migrator/ClassifiedAds.Migrator.csproj -c Release -o out
+
+# Stage to hold the runtime
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+
+# Set working directory
+WORKDIR /ClassifiedAds.IdentityServer
+
+# Copy built executables to the new stage
+
+# Set up command for running the application
+ENTRYPOINT ["dotnet", "ClassifiedAds.Migrator.dll"]

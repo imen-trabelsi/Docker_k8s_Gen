@@ -1,0 +1,20 @@
+# Use the specified base image
+FROM nextcloud:fpm
+
+# Add the necessary run commands and dependencies
+RUN set -ex; \
+savedAptMark="$(apt-mark showmanual)"; \
+apt-get update; \
+apt-get install -y --no-install-recommends \
+libc-client-dev \
+libkrb5-dev; \
+docker-php-ext-configure imap --with-kerberos --with-imap-ssl; \
+
+# Copy the necessary files and configuration
+COPY . /var/www/
+
+# Expose the necessary port
+EXPOSE 80
+
+# Set the entrypoint command for the service
+ENTRYPOINT  ["php-fpm"]

@@ -1,0 +1,40 @@
+# Use the official Go image from Docker Hub
+FROM golang:1.24.0-bullseye
+
+# Install required packages and cleanup
+RUN apt-get update && apt-get install -y curl file gettext jq unzip protobuf-compiler libprotobuf-dev nodejs && \
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
+RUN npm install -g postcss-cli@7.1.2 autoprefixer@9.8.5
+
+# Set the working directory in the Docker container
+WORKDIR /app
+
+# Copy files, build tools and dependencies into the container
+COPY go.mod .
+COPY build.sh .
+COPY build-image/Dockerfile .
+
+# Set environment variables
+ENV GOPROXY=${goproxyValue}
+ENV SHFMT_VERSION=3.2.4
+ENV HUGO_VERSION=v0.101.0
+ENV NODE_PATH=/usr/lib/node_modules
+ENV GOCACHE=/go/cache
+
+# Install go dependencies
+RUN go mod download
+
+# Copy the rest of the files into the container
+COPY . .
+
+# Build the application
+RUN go build -tags extended -o main
+
+# Run the application when the container starts
+ENTRYPOINT ["/build.sh"]
+
+# The container listens on the specified network ports at runtime
+EXPOSE 8080
+
+# Labels for the image
+LABEL org.opencontainers.image.title="build-image"

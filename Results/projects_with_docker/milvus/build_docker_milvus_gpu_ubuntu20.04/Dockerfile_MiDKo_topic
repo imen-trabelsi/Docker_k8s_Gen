@@ -1,0 +1,36 @@
+# Stage 1
+FROM golang:1.17 AS builder
+
+WORKDIR /app
+
+# cache dependencies
+COPY go.* ./
+RUN go mod download
+
+# build
+COPY . ./
+RUN GOOS=linux GOARCH=amd64 go build -tags netgo -ldflags '-w -extldflags "-static"' -o /go/bin/milvus
+
+# Stage 2
+FROM milvusdb/milvus-base:gpu-20230822-34f9067
+WORKDIR /milvus
+
+# run commands
+RUN mkdir -p /milvus/bin
+COPY --chown=root:root --chmod=774 --from=builder /go/bin/milvus /milvus/bin/milvus
+
+# copy instructions
+COPY --chown=root:root --chmod=774 ./configs/ /milvus/configs/
+COPY --chown=root:root --chmod=774 ./lib/ /milvus/lib/
+
+# environment variables
+ENV PATH=/milvus/bin:$PATH
+ENV LD_LIBRARY_PATH=/milvus/lib:$LD_LIBRARY_PATH:/usr/lib
+ENV LD_PRELOAD=/milvus/lib/libjemalloc.so
+ENV MALLOC_CONF=background_thread:true
+
+# expose ports
+EXPOSE 8080
+
+# command to execute
+CMD ["/milvus/bin/milvus"]

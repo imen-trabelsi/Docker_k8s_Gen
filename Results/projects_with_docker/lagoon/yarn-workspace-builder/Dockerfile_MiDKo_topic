@@ -1,0 +1,35 @@
+# Dockerfile
+
+# Set Base Image
+FROM ${UPSTREAM_REPO:-uselagoon}/node-22-builder:${UPSTREAM_TAG:-latest}
+
+# Copy package.json and lock files
+COPY package.json yarn.lock .env.defaults tsconfig.json /app/
+COPY node-packages /app/node-packages
+COPY services/api/package.json /app/services/api/
+COPY services/auth-server/package.json /app/services/auth-server/
+COPY services/webhook-handler/package.json /app/services/webhook-handler/
+COPY services/webhooks2tasks/package.json /app/services/webhooks2tasks/
+
+# Install dependencies with locked versions
+RUN yarn install --frozen-lockfile
+
+# Compile the application
+RUN cd /app/node-packages/commons && yarn build
+
+# Set the working directory
+WORKDIR /app
+
+# Expose port
+# Exposed ports should be specified by the user in deployment environment according to the service requirement
+
+# Set the environment variable
+# Include this if any specific environment variable needs to be set
+
+# Default command
+# Include this if special execution command is needed
+
+# Healthcheck
+# Include this if any specific healthcheck is needed
+
+CMD ["npm", "start"]

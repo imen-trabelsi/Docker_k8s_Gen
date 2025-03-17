@@ -1,0 +1,53 @@
+# Start with provided base image
+FROM limit0/php56:imagick-latest
+
+# Set working directory
+WORKDIR /var/www
+
+# Install dependencies
+RUN apt-get update && \
+    apt-get install -y libssl-dev && \
+
+# Copy composer.lock and composer.json
+COPY composer.lock composer.json /var/www/
+
+# Install all PHP dependencies
+RUN composer install
+
+# Copy application source code
+COPY . /var/www
+
+# Copy Apache configuration
+COPY docker/vhost.conf /etc/apache2/sites-available/000-default.conf
+
+# Copy PHP configuration
+COPY docker/php.ini /usr/local/etc/php/conf.d/zzz_php.ini
+
+# Add entrypoint script
+COPY docker/entrypoint.sh /app/entrypoint.sh
+
+# Change permission of entrypoint script
+RUN chmod +x /app/entrypoint.sh
+
+# Set environment variables
+ENV SYMFONY_ENV=dev
+ENV APP_ENV=dev
+
+# Enable necessary Apache mods
+RUN a2enmod rewrite
+
+# Change owner of the application
+RUN chown -R www-data:www-data /var/www
+
+# Give the Apache user permissions to bind to low ports
+RUN setcap CAP_NET_BIND_SERVICE=+eip /usr/sbin/apache2
+
+# Set the user to Apache user
+USER www-data
+
+# Open necessary port
+EXPOSE 80
+
+# Define the command to run
+ENTRYPOINT ["sh", "/app/entrypoint.sh"]
+CMD ["apache2", "-D", "FOREGROUND"]

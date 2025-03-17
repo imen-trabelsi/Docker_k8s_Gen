@@ -1,0 +1,23 @@
+# Start from the base image
+FROM grafana/grafana
+
+# Copy the files to their respective locations as indicated by the provided input
+COPY grafana/provisioning /etc/grafana/provisioning
+COPY package.json .
+COPY src/ .
+
+# Install the dependencies
+RUN npm install 
+
+# Expose potential ports
+EXPOSE 5000 
+
+# Set the necessary environment variables. This may require modification based on the specific microservice.
+ENV INFLUX_HOST localhost 
+ENV INFLUX_PORT 8086 
+ENV DB_NAME grafana
+
+# Lastly, the entry point is specified by the provided inputs
+ENTRYPOINT ["envsubst", "$INFLUX_HOST, $INFLUX_PORT, $DB_NAME"]
+
+CMD ["npm", "start"]

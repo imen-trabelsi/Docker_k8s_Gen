@@ -1,0 +1,26 @@
+# Using base image
+FROM python:3.9-slim
+
+# Installing necessary packages
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends apache2-utils\
+
+# Setting work directory
+WORKDIR /seed
+
+# Copying the app's source code into the container
+COPY . .
+
+# Install Python dependencies
+RUN pip install -r requirements.txt
+
+# Provide script permissions to run
+RUN chmod +x /seed/generate-votes.sh
+
+# Execution Command
+CMD ["/seed/generate-votes.sh"]
+
+# Runtime command to generate data
+RUN python make-data.py
+
+EXPOSE 8080

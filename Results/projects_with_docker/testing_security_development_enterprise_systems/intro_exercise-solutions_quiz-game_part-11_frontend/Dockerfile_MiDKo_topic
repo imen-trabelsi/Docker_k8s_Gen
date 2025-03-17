@@ -1,0 +1,18 @@
+# Step 1: Build Jar File using Maven
+FROM maven:3.8.1-jdk-11 as builder
+WORKDIR /build
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+# Step 2: Use OpenJDK Image and run the Spring Boot Application
+FROM adoptopenjdk/openjdk11:alpine
+
+# Pass these arguments during Docker run. Replace with your DB credentials. 
+ENV DATABASE_USER=postgres
+ENV DATABASE_PASSWORD=password
+ENV DATABASE_NAME=test
+ENV DATABASE_HOST=localhost
+
+EXPOSE 8080
+ENTRYPOINT ["java","-jar","/app.jar"]

@@ -1,0 +1,29 @@
+# Set the base Image
+FROM eclipse-temurin:23.0.1_11-jdk-alpine
+
+# Update and upgrade system packages
+RUN apk upgrade --update-cache --available
+
+# Install openssl
+RUN apk add openssl
+
+# Create new user and directories
+RUN adduser -H -S -G root -h /opt/hmda hmda
+RUN mkdir -p /opt/docker
+RUN chmod -R 777 /opt
+RUN chown -R hmda /opt
+
+# Switch to the new user
+USER hmda
+
+# Set the working directory
+WORKDIR /opt/docker
+
+# Copy project files into docker image
+COPY . .
+
+# Expose required port
+EXPOSE 8080
+
+# Build and run the application
+ENTRYPOINT ["sbt", "run"]

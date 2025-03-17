@@ -1,0 +1,28 @@
+{
+    "docker_info": {
+        "base_image": "java:8-jre-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /home/apps/",
+            "ADD target/csedemo-1.0.0.jar .",
+            "ADD target/lib ./lib",
+            "ADD start.sh ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"sh\",",
+                    "\"/home/apps/start.sh\"]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

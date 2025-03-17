@@ -1,0 +1,30 @@
+{
+    "docker_info": {
+        "base_image": "mysql:8.4",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "reconmapper"
+        ],
+        "labels": [
+            "maintainer=\"Reconmap"
+        ],
+        "health_checks": [],
+        "build_args": [
+            "HOST_UID",
+            "HOST_GID"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "COPY database/ /docker-entrypoint-initdb.d/",
+            "COPY docker/mysql/overrides.cnf /etc/mysql/conf.d/overrides.cnf"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "groupadd -g ${HOST_GID} reconmappers && \\",
+                "useradd -r -u ${HOST_UID} -g reconmappers reconmapper"
+            ]
+        ]
+    }
+}

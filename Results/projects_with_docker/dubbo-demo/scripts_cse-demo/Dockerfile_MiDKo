@@ -1,0 +1,24 @@
+# Pull base image.
+FROM java:8
+
+# Create app directory
+RUN mkdir -p /app
+
+# Install necessary utilities
+RUN apt-get update && apt-get install -y net-tools iproute 
+
+# Set Working Directory
+WORKDIR /app
+
+# Add app source code
+COPY . /app
+
+# Update maven dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# Build the app
+RUN mvn clean install
+
+# Execute the application
+ENTRYPOINT ["bash", "app/start.sh"]

@@ -1,0 +1,24 @@
+# Use the base image provided by the user
+FROM alpine:3.20
+
+# Install necessary dependencies
+RUN apk add --no-cache bareos-webui-nginx
+
+# Setting up necessary directories and permissions
+RUN chmod u+x /docker-entrypoint.sh \
+    && tar cfvz /bareos-webui-config.tgz /etc/bareos-webui \
+    && tar cfvz /bareos-webui-code.tgz /usr/share/bareos-webui \
+
+# Copying necessary files
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+
+# Expose the required port
+EXPOSE 9100
+
+# Set the necessary environment variables. Variable values can be replaced as per the requirement.
+ENV BAREOS_WEBUI_CONFIG_TGZ /bareos-webui-config.tgz
+ENV BAREOS_WEBUI_CODE_TGZ /bareos-webui-code.tgz
+
+# Set the entrypoint and command instruction
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["/usr/sbin/nginx", "-g", "daemon off;"]

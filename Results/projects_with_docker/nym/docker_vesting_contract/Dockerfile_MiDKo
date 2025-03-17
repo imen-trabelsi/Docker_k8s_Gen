@@ -1,0 +1,26 @@
+# Set the base image
+FROM rust:1.54
+
+# Keep Rust from taking all available system memory
+ENV RUST_MIN_STACK=819200000
+ENV USER=root
+
+# Set work directory
+WORKDIR /usr/src/app
+
+# Copy over your necessary application source code files
+COPY Cargo.toml Dockerfile README.md README_SQLX.md build.rs ./
+COPY src ./src
+COPY migrations ./migrations
+
+# Add necessary target for Rust
+RUN rustup target add wasm32-unknown-unknown
+
+# Install any necessary dependencies
+RUN cargo install --path .
+
+# Commands to execute
+CMD cd nym/contracts/vesting && RUSTFLAGS='-C link-arg=-s' cargo build --release --target wasm32-unknown-unknown
+
+# Default command to execute
+ENTRYPOINT ["cargo", "run"]

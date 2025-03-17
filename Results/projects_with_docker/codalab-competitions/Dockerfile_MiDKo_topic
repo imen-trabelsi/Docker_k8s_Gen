@@ -1,0 +1,32 @@
+# Set the base image
+FROM --platform=linux/amd64 python:3.8-slim-buster 
+
+# Create and set working directory
+WORKDIR /app/codalab
+
+# Update packages
+RUN apt-get update && apt-get install -y curl npm netcat nodejs python-dev libmemcached-dev
+
+# Upgrade pip
+RUN pip install --upgrade pip
+
+# Copy the dependencies file to the working directory
+COPY codalab/requirements/requirements.txt requirements.txt
+
+# Install dependencies
+RUN pip install -r requirements.txt
+
+# Copy the source code to working directory
+COPY . .
+
+# Compile static files
+RUN python manage.py collectstatic --noinput
+
+# Run command
+RUN curl -sL https://deb.nodesource.com/setup_4.x | bash -
+
+# Expose port 8000
+EXPOSE 8000
+
+# Specify the command to run
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

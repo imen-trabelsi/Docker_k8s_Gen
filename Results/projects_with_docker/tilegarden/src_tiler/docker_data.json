@@ -1,0 +1,40 @@
+{
+    "docker_info": {
+        "base_image": "node:8.16-buster-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY package.json yarn.lock /home/tiler/",
+            "WORKDIR /home/tiler",
+            "COPY . /home/tiler"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"yarn\",",
+                    "\"dev\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update -y",
+                "RUN apt-get install git jq -y"
+            ],
+            [
+                "yarn global add carto",
+                ""
+            ],
+            [
+                "yarn install",
+                ""
+            ]
+        ]
+    }
+}

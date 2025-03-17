@@ -1,0 +1,29 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Flask",
+        "dependencies": {
+            "requirements.txt": "Flask==2.3.2\nrequests==2.20.0\nflask-cors"
+        },
+        "database": null,
+        "build_system": "pip",
+        "config_files": {
+            "docker-compose.yml": "version: '3'\n\nservices:\n  # postgresql with postgis docker image to hold the data\n  postgres:\n    image: mdillon/postgis:9.5\n    volumes:\n      - postgres:/var/lib/postgresql/data\n    networks:\n      - bety\n    ports:\n      - 9000:5432\n    restart: unless-stopped\n  # BETY docker image\n  bety:\n    image: pecan/bety:${BRANCH:-latest}\n    ports:\n      - 8000:8000\n    networks:\n      - bety\n    environment:\n      - INITIALIZE_URL=-w https://terraref.ncsa.illinois.edu/bety/dump/bety0/bety.tar.gz\n      - REMOTE_SERVERS=6\n      - UNICORN_WORKER_PROCESSES=1\n      - SECRET_KEY_BASE=thisissomereallllllylongsecretkeyandshouldbelongerthanthis\n      - DUMPURL=https://terraref.ncsa.illinois.edu/bety/dump/bety6/bety.tar.gz\n    depends_on:\n      - postgres\n    restart: unless-stopped\n\n  yaba_api:\n    build: ./app\n    networks:\n      - bety\n    volumes:\n      - ./app:/code\n    ports:\n      - 5001:5000\n    depends_on:\n      - postgres\n\n  yaba_client:\n    build: ./client\n    networks:\n      - bety\n    volumes:\n      - ./client:/code\n    ports:\n      - 6001:6000\n    depends_on:\n      - yaba_api\n  \n  yaba_visualization:\n    build: ./visualization\n    networks:\n      - bety\n    volumes:\n      - './visualization:/code'\n      - '/code/node_modules'\n    environment:\n      - HOST=0.0.0.0\n      - PORT=8075\n         \n    ports:\n      - 8008:8075\n    depends_on:\n      - postgres\n    restart: unless-stopped\n    \n  yaba_interface:\n    build: ./interface\n    networks: \n      - bety\n    volumes:\n      - './interface:/code'\n      - '/code/node_modules'\n    ports:\n      - 3001:3000\n    environment:\n      - CHOKIDAR_USEPOLLING=true\n      - REACT_APP_HOST=0.0.0.0\n      - REACT_APP_PORT=3000\n    depends_on:\n      - yaba_client\n      - yaba_visualization\n    stdin_open: true\n\nvolumes:\n  postgres:\n\nnetworks:\n  bety:",
+            "client/Dockerfile": "FROM python:3.7.2-slim\n\nCOPY . /code\n\nWORKDIR /code\n\nRUN pip install -r requirements.txt &&  pip install -U flask-cors\n\nEXPOSE 6000\n\nCMD [\"python\",\"client.py\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            "Dockerfile",
+            "README.md",
+            "package.json",
+            "yarn.lock"
+        ],
+        "folders": [
+            "public",
+            "src"
+        ]
+    }
+}

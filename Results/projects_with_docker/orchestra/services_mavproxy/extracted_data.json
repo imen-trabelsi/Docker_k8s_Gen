@@ -1,0 +1,27 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"forward-interop\",\n  \"version\": \"0.1.0\",\n  \"main\": \"lib/service.js\",\n  \"private\": true,\n  \"license\": \"MIT\",\n  \"scripts\": {\n    \"start\": \"node ./bin/start-service\",\n    \"build\": \"babel src --out-dir lib\",\n    \"build-msg\": \"mkdir -p lib && pbjs -t static-module --es6 --keep-case -o src/messages.js src/messages/*.proto\",\n    \"test\": \"jest\",\n    \"lint\": \"eslint src test --ignore-pattern src/messages.js\"\n  },\n  \"dependencies\": {\n    \"common-nodejs\": \"file:src/common\",\n    \"koa\": \"^2.5.1\",\n    \"koa-protobuf\": \"^0.1.0\",\n    \"koa-router\": \"^7.4.0\",\n    \"protobufjs\": \"~6.8.6\",\n    \"source-map-support\": \"^0.5.6\",\n    \"superagent\": \"^3.8.3\",\n    \"superagent-protobuf\": \"^0.1.0\"\n  },\n  \"devDependencies\": {\n    \"babel-cli\": \"^6.26.0\",\n    \"babel-plugin-add-module-exports\": \"^0.2.1\",\n    \"babel-plugin-source-map-support\": \"^2.0.1\",\n    \"babel-preset-env\": \"^1.6.1\",\n    \"eslint\": \"^5.3.0\",\n    \"eslint-plugin-jest\": \"^21.20.2\",\n    \"jest\": \"^23.3.0\",\n    \"lolex\": \"^2.7.1\",\n    \"nock\": \"^9.5.0\",\n    \"supertest\": \"^3.1.0\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "services/mavproxy/Dockerfile": "FROM python:2-alpine\n\nRUN apk --no-cache add \\\n   \tpy-lxml \\\n   \tgcc \\\n   \tlibxml2 \\\n   \tlibxml2-dev \\\n   \tlibxslt \\\n   \tlibxslt-dev \\\n   \tlibc-dev\n\n# mavnative expects a different assert method signature than the one currently\n# in GCC, so we have to hack the expected method signature in\n# https://github.com/gmyoungblood-parc/docker-alpine-ardupilot/blob/master/Dockerfile#L81\nRUN sed -i 's/, int,/, unsigned int,/' /usr/include/assert.h\n\nRUN pip install mavproxy\n\n# TODO: multi-stage\n\nCOPY mavproxy/entrypoint.sh .\n\nENTRYPOINT [\"sh\", \"entrypoint.sh\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".gitignore",
+            "Dockerfile",
+            "Makefile",
+            "README.md",
+            "package.json"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

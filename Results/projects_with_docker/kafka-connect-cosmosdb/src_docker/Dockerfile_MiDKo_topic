@@ -1,0 +1,42 @@
+# Use the provided base image
+FROM confluentinc/cp-kafka-connect:6.0.0
+
+# Create application directory
+WORKDIR /app
+
+# Copy.local Maven dependency files only
+COPY pom.xml .
+
+# Install Maven
+RUN apt-get update && \
+
+# Install all project dependencies and generate target/*.jar
+RUN mvn package -DskipTests
+
+# Copy application project files into the container
+COPY src ./src
+
+# Copy connectors to the appropriate directory
+COPY connectors /etc/kafka-connect/jars
+
+# Expose necessary ports
+EXPOSE 8080
+
+# Install the necessary plugins
+RUN confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:latest
+
+# Set the application's running environment
+ENV SPRING_PROFILE=prod
+
+# Copy example files and configuration files
+COPY src/docker/resources/sink-uuid-smt.example.json /usr/share/java/connector
+COPY src/docker/resources/sink.example.json /usr/share/java/connector
+COPY src/docker/resources/source.example.json /usr/share/java/connector
+COPY src/docker/.env .
+COPY src/docker/docker-compose.yml .
+
+# Ensure the .env file has the correct permissions
+RUN chmod +x .env
+
+# Execute the application on container startup
+CMD ["java", "-jar", "target/my-app.jar"]

@@ -1,0 +1,34 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: admission
+spec:
+  selector:
+    matchLabels:
+      app: admission
+  template:
+    metadata:
+      labels:
+        app: admission
+    spec:
+      containers:
+      - command:
+        - sh
+        - -c
+        - "pip install Flask gunicorn PyYAML\nexec gunicorn \\\n  --bind 0.0.0.0:443\
+          \ --keyfile /tls/tls.key --certfile /tls/tls.crt \\\n  --access-logfile\
+          \ - \\\n  --chdir /app webhook:app\n"
+        image: python
+        name: admission
+        volumeMounts:
+        - mountPath: /tls
+          name: tls
+        - mountPath: /app
+          name: app
+      volumes:
+      - name: tls
+        secret:
+          secretName: admission
+      - configMap:
+          name: admission
+        name: app

@@ -1,0 +1,33 @@
+# Using the specified base image
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-env
+
+# Set up directory
+WORKDIR /app
+
+# Copy csproj and restore as distinct layers
+COPY ["Services/Catalog/Catalog.API/Catalog.API.csproj", "Services/Catalog/Catalog.API/"]
+COPY ["BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj", "BuildingBlocks/BuildingBlocks/"]
+RUN dotnet restore "./Services/Catalog/Catalog.API/./Catalog.API.csproj"
+
+# Copy everything else and build 
+COPY . /app
+RUN dotnet build "Services/Catalog/Catalog.API/Catalog.API.csproj" -c Release -o /app/build
+
+# Publish our app
+RUN dotnet publish "./Services/Catalog/Catalog.API/Catalog.API.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/sdk:8.0 
+WORKDIR /app
+
+# Exposing the necessary ports
+EXPOSE 8080 8081
+
+# Setting up the environment variables
+ENV BUILD_CONFIGURATION=Release
+
+# Setting up the user
+USER app
+
+# Startup command
+ENTRYPOINT ["dotnet", "Catalog.API.dll"]

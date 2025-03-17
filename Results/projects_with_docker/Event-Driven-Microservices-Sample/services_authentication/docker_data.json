@@ -1,0 +1,33 @@
+{
+    "docker_info": {
+        "base_image": "node:11.2.0-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /usr/app",
+            "ADD . /server"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"node\",",
+                    "\"/server/src/server.js\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "cd /server; \\",
+                "npm install"
+            ]
+        ]
+    }
+}

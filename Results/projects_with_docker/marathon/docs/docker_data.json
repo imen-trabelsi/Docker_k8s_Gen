@@ -1,0 +1,40 @@
+{
+    "docker_info": {
+        "base_image": "buildpack-deps:buster-curl",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV LC_ALL C.UTF-8",
+            "ENV LANG en_US.UTF-8",
+            "ENV LANGUAGE en_US.UTF-8"
+        ],
+        "copy_instructions": [
+            "COPY Gemfile Gemfile.lock /jekyll/",
+            "COPY entrypoint.sh /"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/entrypoint.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && \\",
+                "curl -sL https://deb.nodesource.com/setup_12.x | bash - &&",
+                "apt-get install -y gcc g++ git libxml2 zlib1g-dev libxml2-dev ruby ruby-dev make autoconf nodejs python python-dev &&",
+                "gem install bundler &&",
+                "cd /jekyll && bundle install &&",
+                "apt-get purge -y gcc g++ ruby-dev python-dev &&",
+                "apt-get -y autoremove &&",
+                "rm -rf /var/lib/apt/lists"
+            ]
+        ]
+    }
+}

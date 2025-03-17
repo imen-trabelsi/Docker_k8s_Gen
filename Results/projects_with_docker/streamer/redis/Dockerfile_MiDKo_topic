@@ -1,0 +1,20 @@
+# Base Image
+FROM redis
+WORKDIR /app
+
+# Install app dependencies
+COPY package.json .
+RUN npm install
+
+# Copy app source
+COPY . .
+
+# Copy start script and set permissions
+COPY start_redis.sh /usr/local/bin/start_redis.sh
+RUN chmod +x /usr/local/bin/start_redis.sh
+
+# Redis database port
+EXPOSE 6379
+
+# Run the application
+CMD ["start_redis.sh"]

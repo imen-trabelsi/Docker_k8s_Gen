@@ -1,0 +1,39 @@
+# Use the official maven/Java image to create a build artifact.
+# This is based on Docker's multi-stage build feature.
+FROM maven:3.9.9-eclipse-temurin-17 AS build
+
+# Set the work directory
+WORKDIR /app
+
+# Copy the POM file to download the dependencies
+COPY pom.xml ./
+
+# Install Maven dependencies
+RUN mvn dependency:go-offline
+
+# Copy the source code to the container
+COPY src ./src
+
+# Package the application
+RUN --mount=type=cache,target=/root/.m2/repository/ mvn clean package --batch-mode
+
+FROM openjdk:17-slim
+
+# Set the work directory
+WORKDIR /app
+
+# Copy the jar file with the compiled source code to the work directory
+
+# Copy necessary files
+COPY <<EOF /root/.m2/settings.xml
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+
+# Update packages list, install necessary software
+RUN apt-get update && apt-get install -y \
+vim unzip netcat-openbsd telnet tcpdump iproute2 lsof ngrep && \
+
+# Expose the default port
+EXPOSE 20002
+
+# Command to run the executable
+ENTRYPOINT ["java","-jar","/app/target/B.jar"]

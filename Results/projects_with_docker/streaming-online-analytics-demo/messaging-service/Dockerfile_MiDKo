@@ -1,0 +1,32 @@
+# Start with a base image containing Java runtime
+FROM docker.io/java:8-jdk-alpine
+
+# Add Maintainer Info
+LABEL maintainer="devops-team@yourorganization.com"
+
+# Make port available to the world outside this container
+EXPOSE 8181
+
+# The application's jar file
+ARG JAR_FILE=./target/order-processing-service-1.0-SNAPSHOT-jar-with-dependencies.jar
+
+# Add the application's jar to the container
+COPY ${JAR_FILE} /app/order-processing-service.jar
+
+# Change to the user 1001
+USER 1001
+
+# Run mkdir command in the container to create /app directory
+RUN mkdir -p /app
+
+# Change the working directory
+WORKDIR /app
+
+# Modify the owner of the /app directory
+RUN chown -Rv 1001:0 /app
+
+# Set JAVA_HOME
+ENV JAVA_HOME=/usr/lib/jvm/java-1.8.0
+
+# Run the jar file
+ENTRYPOINT ["java","-jar", "/app/order-processing-service-1.0-SNAPSHOT-jar-with-dependencies.jar"]

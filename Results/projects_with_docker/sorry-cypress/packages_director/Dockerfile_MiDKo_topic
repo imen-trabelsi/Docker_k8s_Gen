@@ -1,0 +1,52 @@
+# Build Stage
+FROM --platform="${BUILD_PLATFORM}" node:14.16.0 as build
+
+# Ensure both yarn and node packages are cached
+RUN mkdir /home/node/.npm-global;\
+    npm config set prefix '/home/node/.npm-global';\
+
+# Variables to enable yarn/npm to perform correctly in the Docker
+ENV PATH=/home/node/.npm-global/bin:$PATH\
+    NPM_CONFIG_PREFIX=/home/node/.npm-global\
+    NODE_ENV=production\
+    USER=node
+
+# User to run build commands and own the directories
+USER node
+
+# Working Directory
+WORKDIR /app
+
+# Dependencies
+COPY package.json ./
+COPY yarn.lock ./
+RUN yarn install --frozen-lockfile
+
+# Copy rest of the project
+COPY . .
+
+# Build Project
+RUN yarn workspace @sorry-cypress/common build
+RUN yarn workspace @sorry-cypress/mongo build
+RUN yarn workspace @sorry-cypress/logger build
+RUN yarn workspace @sorry-cypress/director build
+RUN yarn install --production --frozen-lockfile
+
+# Pruning
+RUN curl -sf https://gobinaries.com/tj/node-prune | sh;
+RUN node-prune
+
+# Production Stage
+FROM --platform="${BUILD_PLATFORM}" node:14.16.0
+
+# Security and Networking setup
+RUN apk add --no-cache tini
+USER node
+EXPOSE 1234
+
+# Copy Relevant Built Code & Pruned Node Modules
+COPY --from=build --chown=node:node /app .
+
+# Start Command
+ENTRYPOINT ["/sbin/tini", "--"]
+CMD ["./node_modules/.bin/pm2-runtime", "packages/director/dist"]

@@ -1,0 +1,28 @@
+{
+    "docker_info": {
+        "base_image": "docker.io/radanalyticsio/openshift-spark",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8080"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD ./pyorder-processing.py   /opt",
+            "ADD ./entrypoint.sh   /opt",
+            "WORKDIR /opt"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"./entrypoint.sh\"]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

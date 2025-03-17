@@ -1,0 +1,34 @@
+# Use the .NET SDK image as the base image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 as build
+
+# Set the work directory for the upcoming RUN and COPY instructions
+WORKDIR /src
+
+# Copy the csproj and restore
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+COPY ["src/ApiGateways/Aggregators/Web.Sales.HttpAggregator/Web.Sales.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Sales.HttpAggregator/"]
+
+RUN dotnet restore "eShop-Learn.sln"
+
+# Copy the whole source code
+COPY . .
+
+# Build project
+WORKDIR "/src/src/ApiGateways/Aggregators/Web.Sales.HttpAggregator"
+RUN dotnet build "Web.Sales.HttpAggregator.csproj" -c Release -o /app/build
+
+# Publish project
+FROM build AS publish
+RUN dotnet publish "Web.Sales.HttpAggregator.csproj" -c Release -o /app/publish
+
+# Final stage / image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 as final
+WORKDIR /app
+
+# Copy compiled applications
+
+# Expose port
+EXPOSE 80
+
+# Set the entrypoint
+ENTRYPOINT ["dotnet", "Web.Sales.HttpAggregator.dll"]

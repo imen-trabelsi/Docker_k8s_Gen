@@ -1,0 +1,30 @@
+# Base Image
+FROM flyway/flyway:10.14.0-alpine
+
+# Add the correct PHP extensions
+RUN apk add --no-cache php7 php7-fpm php7-opcache php7-gd php7-mysqli \
+    php7-zlib php7-curl php7-mbstring php7-json php7-session \
+    && pecl install xdebug \
+    && docker-php-ext-enable xdebug \
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Copy application to container
+COPY . .
+
+# Copy patches to flyway sql directory
+COPY ./patches/ /flyway/sql/
+
+# Install dependencies through composer
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer \
+    && composer install \
+
+# Give permissions to execute scripts, if any
+RUN chmod +x scripts/*
+
+# Expose required ports (make it dynamic according to requirement)
+EXPOSE 8080
+
+# Script or command to start the service (make it dynamic according to requirement)
+CMD ["php", "index.php"]

@@ -1,0 +1,12 @@
+FROM golang:1.13 as builder
+WORKDIR /go/src/github.com/palletone
+RUN mkdir -p src/github.com/palletone && \
+    cd src/github.com/palletone && \
+    git clone -b testnet https://github.com/palletone/go-palletone.git && \
+    cd go-palletone/cmd/gptn && \
+RUN mkdir /go-palletone
+
+FROM golang:1.13
+WORKDIR /go-palletone
+EXPOSE 8545
+ENTRYPOINT ["gptn"]

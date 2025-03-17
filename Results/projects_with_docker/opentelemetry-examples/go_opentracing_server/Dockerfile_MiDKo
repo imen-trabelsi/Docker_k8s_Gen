@@ -1,0 +1,30 @@
+# Use the official golang image from the Docker Hub
+FROM golang:latest
+LABEL maintainer="Maintainer Name"
+
+# Set the Current Working Directory inside the container
+WORKDIR /app
+
+# Copy go mod and sum files
+COPY go.mod go.sum ./
+
+# Download all dependencies
+RUN go mod download
+
+# Copy the source code into the container
+COPY server.go .
+
+# Build the server
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o server .
+
+# Include trusted certificate authorities
+RUN apk --no-cache add ca-certificates
+
+# Set the home directory to /root/
+WORKDIR /root/
+
+# Copy the server binary to the home directory
+COPY --from=0 /app/server .
+
+# Command to run the binary
+CMD ["./server"]

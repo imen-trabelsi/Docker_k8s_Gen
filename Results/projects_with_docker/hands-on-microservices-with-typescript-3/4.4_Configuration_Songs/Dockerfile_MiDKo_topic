@@ -1,0 +1,32 @@
+# Base Image
+FROM node:8.13-slim 
+
+# Create app directory
+RUN mkdir -p /opt/my-musik/
+WORKDIR /opt/my-musik/
+
+# Install TypeScript globally
+RUN npm install typescript -g
+
+# Install app dependencies
+COPY package.json /opt/my-musik/
+RUN npm install --no-optional
+
+# Build the app
+COPY . /opt/my-musik/
+RUN "node_modules/.bin/gulp"
+
+# Setting environment variables for production
+ENV NODE_ENV production
+RUN npm install --only=production
+
+# Bundle app source
+COPY ./src ./src
+COPY --from=build-env /opt/my-musik/dist ./dist
+COPY --from=build-env /opt/my-musik/package.json ./
+COPY --from=build-env /opt/my-musik/config.json ./
+COPY --from=build-env /opt/my-musik/songs.json ./
+
+# Expose port and start app
+EXPOSE 3000
+CMD [ "node", "dist/app.js" ]

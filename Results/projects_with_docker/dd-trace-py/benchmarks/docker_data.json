@@ -1,0 +1,76 @@
+{
+    "docker_info": {
+        "base_image": "debian:buster-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "PYTHON_VERSION=3.9.15",
+            "PYENV_VERSION=2.4.1",
+            "PYTHON_VERSION=3.9.15",
+            "SCENARIO=base"
+        ],
+        "envs": [
+            "ENV PYENV_ROOT \"/pyenv\"",
+            "ENV PATH \"$PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH\"",
+            "ENV PYENV_ROOT \"/pyenv\"",
+            "ENV PATH \"$PYENV_ROOT/shims:$PYENV_ROOT/bin:/root/.cargo/bin/:$PATH\"",
+            "ENV PYTHONUNBUFFERED 1",
+            "ENV PYTHONDONTWRITEBYTECODE 1",
+            "ENV SCENARIO=${SCENARIO}",
+            "ENV PROFILE_BENCHMARKS=0"
+        ],
+        "copy_instructions": [
+            "WORKDIR \"$PYENV_ROOT\"",
+            "COPY --from=base /pyenv /pyenv",
+            "WORKDIR /app",
+            "COPY ./base/ /app/",
+            "COPY ./bm/ /app/bm/",
+            "COPY ./${SCENARIO}/ /app/"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/app/entrypoint\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/app/benchmark\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && apt-get install --no-install-recommends -y \\",
+                "make build-essential libssl-dev zlib1g-dev",
+                "libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm",
+                "libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev",
+                "git ca-certificates"
+            ],
+            [
+                "git clone --depth 1 https://github.com/pyenv/pyenv.git --branch \"v$PYENV_VERSION\" --single-branch \"$PYENV_ROOT\"",
+                "RUN pyenv install \"$PYTHON_VERSION\""
+            ],
+            [
+                "pyenv global \"$PYTHON_VERSION\"",
+                "RUN pip install -U pip"
+            ],
+            [
+                "apt-get update && apt-get install --no-install-recommends -y \\",
+                "curl",
+                "git",
+                "ca-certificates",
+                "# ddtrace includes c extensions"
+            ],
+            [
+                "curl https://sh.rustup.rs -sSf | \\",
+                "sh -s -- --default-toolchain stable -y"
+            ]
+        ]
+    }
+}

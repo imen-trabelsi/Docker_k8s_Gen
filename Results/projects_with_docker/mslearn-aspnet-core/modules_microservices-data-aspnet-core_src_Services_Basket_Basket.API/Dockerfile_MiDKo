@@ -1,0 +1,33 @@
+# Using multi-stage build
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+WORKDIR /app
+
+# Copy everything
+COPY . ./
+
+# Set working directory and restore project dependencies
+WORKDIR /src
+RUN dotnet restore "eShop-Learn.sln"
+
+# Build the project
+WORKDIR "/src/src/Services/Basket/Basket.API"
+RUN dotnet build "Basket.API.csproj" -c Release -o /app/build
+
+#---- Publish the project ----
+FROM build-env AS publish
+RUN dotnet publish --no-restore "Basket.API.csproj" -c Release -o /app/publish
+
+#---- Start a new stage ----
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS final
+WORKDIR /app
+
+# Set user to avoid running the container as root
+RUN addgroup -S app && adduser -S app -G app
+USER app
+
+# Exposing necessary port for the application
+EXPOSE 80
+
+# Define entrypoint
+ENTRYPOINT ["dotnet", "Basket.API.dll"]
+

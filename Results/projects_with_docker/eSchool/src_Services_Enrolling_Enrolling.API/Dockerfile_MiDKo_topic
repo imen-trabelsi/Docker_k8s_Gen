@@ -1,0 +1,31 @@
+# Use the official build image
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+WORKDIR /src
+
+# Copy csproj and restore
+COPY ["src/Services/Enrolling/Enrolling.API/Enrolling.API.csproj", "src/Services/Enrolling/Enrolling.API/"]
+COPY ["src/Services/Enrolling/Enrolling.Infrastructure/Enrolling.Infrastructure.csproj", "src/Services/Enrolling/Enrolling.Infrastructure/"]
+COPY ["src/Services/Enrolling/Enrolling.Domain/Enrolling.Domain.csproj", "src/Services/Enrolling/Enrolling.Domain/"]
+COPY ["src/Libraries/OpenTelemetry/OpenTelemetry.csproj", "src/Libraries/OpenTelemetry/"]
+RUN dotnet restore "src/Services/Enrolling/Enrolling.API/Enrolling.API.csproj"
+
+# Copy everything else and build application
+COPY . .
+WORKDIR "/src/src/Services/Enrolling/Enrolling.API"
+RUN dotnet build "Enrolling.API.csproj" -c Release -o /app/build
+
+# Using publish command to create a DLL not an EXE.
+FROM build AS publish
+RUN dotnet publish "Enrolling.API.csproj" -c Release -o /app/publish
+
+# Use a runtime-only base image
+FROM mcr.microsoft.com/dotnet/aspnet:5.0
+WORKDIR /app
+
+# Copy the publish directory from the publish image
+
+# Open web port
+EXPOSE 80
+
+# Execute application
+ENTRYPOINT ["dotnet", "Enrolling.API.dll"]

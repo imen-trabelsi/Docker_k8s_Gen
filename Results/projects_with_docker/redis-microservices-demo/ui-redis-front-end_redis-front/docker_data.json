@@ -1,0 +1,41 @@
+{
+    "docker_info": {
+        "base_image": "node:lts-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY package*.json ./",
+            "COPY --from=build-stage /app/dist /usr/share/nginx/html",
+            "COPY nginx.conf /etc/nginx"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"nginx\",",
+                    "\"-g\",",
+                    "\"daemon",
+                    "off;\",\"-c\",\"/etc/nginx/nginx.conf\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "npm install",
+                "COPY . ."
+            ],
+            [
+                "npx browserslist@latest --update-db",
+                "RUN npm run build"
+            ]
+        ]
+    }
+}

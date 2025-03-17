@@ -1,0 +1,25 @@
+{
+    "docker_info": {
+        "base_image": "busybox:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "sleep",
+                    "1;",
+                    "exit",
+                    "2"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

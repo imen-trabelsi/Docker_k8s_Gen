@@ -1,0 +1,21 @@
+# Base Image
+FROM node:14-alpine
+
+# Create app directory
+WORKDIR /app
+
+# Install app dependencies by copying
+# the package.json and package-lock.json
+COPY package*.json ./
+
+# Install all dependencies
+RUN npm install
+
+# Bundle app source code inside Docker image
+COPY . .
+
+# The application listens on port, make it available to Docker environment
+EXPOSE 8080
+
+# Provide the default command for the container
+CMD [ "npm", "start" ]

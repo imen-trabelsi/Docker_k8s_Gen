@@ -1,0 +1,29 @@
+# Use an official AdoptOpenJDK base image for Alpine and Java 11
+FROM adoptopenjdk/openjdk11:alpine AS build
+
+# Set the work directory, this is the location of your source code
+WORKDIR /app
+
+# Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy the pom.xml file
+COPY pom.xml .
+
+# Copy the source code
+COPY src src
+
+# Build the application
+RUN ./mvnw install -DskipTests
+
+# Start with adoptopenjdk/openjdk11:alpine again for a leaner image
+FROM adoptopenjdk/openjdk11:alpine
+
+# Copy the app jar from the build stage to the new image
+
+# Expose the application on port 8080
+EXPOSE 8080
+
+# Run the jar file 
+ENTRYPOINT ["java", "-jar", "user-collections.jar"]

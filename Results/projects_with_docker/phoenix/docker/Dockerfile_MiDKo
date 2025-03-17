@@ -1,0 +1,38 @@
+# Use ownCloud Nginx image as base
+FROM owncloudops/nginx@sha256:8ca0c90c2f537fef6195ba8f5ebe6d6c00fe0a0c545f25ce8acd418a831a19a4
+
+# Maintainer label
+LABEL maintainer="ownCloud"
+
+# Copy instructions
+COPY docker/overlay /
+COPY dist/ /var/lib/nginx/html
+
+# Setting the working directory
+WORKDIR /var/lib/nginx/html
+
+# Copying app source to working directory
+COPY . .
+
+# Setting system users
+USER nginx
+
+# Add scripts to package.json file
+COPY package*.json ./
+
+# Install project dependencies
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Clean up unwanted defaults
+RUN rm -f /var/lib/nginx/html/*
+
+# Expose ports
+EXPOSE 8080
+
+# Environment Variables
+
+# Startup command
+CMD ["nginx", "-g", "daemon off;"]

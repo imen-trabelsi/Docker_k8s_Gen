@@ -1,0 +1,30 @@
+{
+    "docker_info": {
+        "base_image": "alpine:3.11",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ./services /config",
+            "COPY ./init.sh /init.sh"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "/bin/true"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --update curl && rm -rf /var/cache/apk/*",
+                ""
+            ]
+        ]
+    }
+}

@@ -1,0 +1,41 @@
+{
+    "docker_info": {
+        "base_image": "jenkins/jenkins:lts",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root",
+            "jenkins"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "uname -a && cat /etc/*release",
+                ""
+            ],
+            [
+                "apt-get update \\",
+                "&& apt-get install -y --no-install-recommends",
+                "curl libunwind8 gettext apt-transport-https &&",
+                "curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg &&",
+                "mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg &&",
+                "sh -c 'echo \"deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-stretch-prod stretch main\" > /etc/apt/sources.list.d/dotnetdev.list' &&",
+                "apt-get update"
+            ],
+            [
+                "apt-get install -y dotnet-sdk-5.0 && \\",
+                "export PATH=$PATH:$HOME/dotnet &&",
+                "dotnet --version"
+            ],
+            [
+                "apt-get install -y build-essential python nodejs && \\",
+                "python --version && node --version"
+            ]
+        ]
+    }
+}

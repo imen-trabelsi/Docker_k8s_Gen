@@ -1,0 +1,34 @@
+# Use the base Image
+FROM openjdk:8u151-jdk
+
+# Create a volume in the container filesystem 
+VOLUME /tmp
+
+# Add build arguments
+ARG JAR_FILE
+
+# Copy and add necessary files from host machine to the Docker image.
+COPY startup.sh /usr/bin/startup.sh
+COPY target/${JAR_FILE} /usr/share/skalogs/standalone-importer.jar
+
+# The application's jar file
+ENV JAR_FILE=${JAR_FILE}
+
+# Setup required environment variables
+ENV JAVA_OPTS=""
+ENV SPRING_PROFILES_ACTIVE=prod
+
+# Run command to make startup.sh executable
+RUN chmod +x /usr/bin/startup.sh
+
+# Expose port XXXX for external access (Replace XXXX with the port you want to expose.)
+EXPOSE XXXX
+
+# Define default command.
+CMD ["/usr/bin/startup.sh"]
+
+# Define healthcheck command
+HEALTHCHECK --interval=5m --timeout=3s CMD curl -f http://localhost:XXXX/actuator/health || exit 1
+
+#_lbl:MAINTAINER
+LABEL maintainer="Your Name <your.email@domain.com>"

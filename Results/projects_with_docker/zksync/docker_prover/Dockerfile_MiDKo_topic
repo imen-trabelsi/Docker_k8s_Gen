@@ -1,0 +1,28 @@
+# Use rust base image
+FROM rust:1.72-bookworm AS builder
+
+# Create a new directory to run our commands in
+WORKDIR /usr/src/zksync
+
+# Copy our static files
+COPY . .
+
+# Install required dependencies and tools
+RUN apt-get update && apt-get install -y axel ca-certificates tini && rm -rf /var/lib/apt/lists/*
+
+# Execute build command
+RUN CARGO_HOME=./cargo cargo build --release
+
+FROM rust:1.72-bookworm
+
+# Create a new directory to run our commands in
+WORKDIR /usr/src/zksync
+
+# Copy built files from builder to current stage
+COPY docker/prover/prover-entry.sh docker/prover/graceful-run.sh /bin/
+COPY keys/packed /keys/packed
+COPY contracts/artifacts/ /contracts/artifacts/
+
+# The command that will be run when the container starts
+ENTRYPOINT ["/usr/bin/tini", "-g", "--" ]
+CMD ["/bin/graceful-run.sh"]

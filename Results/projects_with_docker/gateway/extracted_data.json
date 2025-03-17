@@ -1,0 +1,753 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".github",
+            "type": "tree"
+        },
+        {
+            "path": ".github/ISSUE_TEMPLATE",
+            "type": "tree"
+        },
+        {
+            "path": ".github/ISSUE_TEMPLATE/bug_report.md",
+            "type": "blob"
+        },
+        {
+            "path": ".github/ISSUE_TEMPLATE/feature_request.md",
+            "type": "blob"
+        },
+        {
+            "path": ".github/pull_request_template.md",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows",
+            "type": "tree"
+        },
+        {
+            "path": ".github/workflows/merge_request.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/release_ghostnetwork_eventhub_azureservicebus_nuget.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/release_ghostnetwork_eventhub_nuget.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/release_ghostnetwork_eventhub_rabbitmq_nuget.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/release_image.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api",
+            "type": "tree"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/AuthorizeCheckOperationFilter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Chats",
+            "type": "tree"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Chats/ChatsController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Chats/CreateChat.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Chats/UpdateChat.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/ClaimsPrincipalExtension.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Consts.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/CurrentUserProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/DomainResultExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Education",
+            "type": "tree"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Education/EducationMaterials",
+            "type": "tree"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Education/EducationMaterials/FlashCards",
+            "type": "tree"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Education/EducationMaterials/FlashCards/FlashCardsController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/FeatureFlags.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/GhostNetwork.Gateway.Api.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Helpers",
+            "type": "tree"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Helpers/LoggingHttpHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Helpers/LoggingMiddleware.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Helpers/SetRequestIdHttpHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Helpers/UtcTimestampEnricher.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Messages",
+            "type": "tree"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Messages/CreateMessage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Messages/MessagesController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Messages/UpdateMessageModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/NewsFeed",
+            "type": "tree"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/NewsFeed/AddNewsFeedComment.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/NewsFeed/AddNewsFeedReaction.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/NewsFeed/CreateNewsFeedPublication.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/NewsFeed/NewsFeedController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/NewsFeed/UpdateNewsFeedComment.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Users",
+            "type": "tree"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Users/RelationsController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Users/RelationsSummary.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Users/SecuritySettingsController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Users/UpdateUserInput.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Api/Users/UsersController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Infrastructure",
+            "type": "tree"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Infrastructure/ChatStorage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Infrastructure/GhostNetwork.Gateway.Infrastructure.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Infrastructure/GrpcUsersStorage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Infrastructure/MessagesStorage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Infrastructure/NewsFeedApi.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Infrastructure/NewsFeedCommentsStorage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Infrastructure/NewsFeedReactionsStorage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Infrastructure/NewsFeedStorage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Infrastructure/Protos",
+            "type": "tree"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Infrastructure/Protos/profiles.proto",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Infrastructure/RestUserRelationsStorage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Infrastructure/RestUsersStorage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Infrastructure/SecuritySettingResolver",
+            "type": "tree"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Infrastructure/SecuritySettingResolver/SecuritySettingsFollowersResolver.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Infrastructure/SecuritySettingResolver/SecuritySettingsFriendsResolver.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Infrastructure/SecuritySettingResolver/SecuritySettingsPublicationResolver.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Infrastructure/SecuritySettingsStorage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Infrastructure/UsersPictureLocalStorage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.Infrastructure/UsersPictureStorage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway.sln",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway",
+            "type": "tree"
+        },
+        {
+            "path": "GhostNetwork.Gateway/Chats",
+            "type": "tree"
+        },
+        {
+            "path": "GhostNetwork.Gateway/Chats/Chat.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/Chats/ChatContext.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/Chats/ChatValidator.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/Chats/IChatStorage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/GhostNetwork.Gateway.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/ICurrentUserProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/KeysBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/Messages",
+            "type": "tree"
+        },
+        {
+            "path": "GhostNetwork.Gateway/Messages/IMessageStorage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/Messages/Message.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/Messages/MessageContext.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/Messages/MessageValidator.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/NewsFeed",
+            "type": "tree"
+        },
+        {
+            "path": "GhostNetwork.Gateway/NewsFeed/CommentsShort.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/NewsFeed/INewsFeedCommentsStorage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/NewsFeed/INewsFeedReactionsStorage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/NewsFeed/INewsFeedStorage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/NewsFeed/NewsFeedPublication.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/NewsFeed/PublicationComment.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/NewsFeed/ReactionShort.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/NewsFeed/ReactionType.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/NewsFeed/UserReaction.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/RequestIdProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/UserInfo.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/Users",
+            "type": "tree"
+        },
+        {
+            "path": "GhostNetwork.Gateway/Users/ISecuritySettingStorage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/Users/IUsersPictureStorage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/Users/IUsersRelationsStorage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/Users/IUsersStorage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/Users/RelationType.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/Users/SecuritySection",
+            "type": "tree"
+        },
+        {
+            "path": "GhostNetwork.Gateway/Users/SecuritySection/AccessLevel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/Users/SecuritySection/SecuritySettingModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/Users/SecuritySection/SecuritySettingSection.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/Users/SecuritySection/SecuritySettingUpdateModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/Users/SecuritySection/SecuritySettingsSectionInputModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.Gateway/Users/User.cs",
+            "type": "blob"
+        },
+        {
+            "path": "GhostNetwork.ruleset",
+            "type": "blob"
+        },
+        {
+            "path": "Libraries",
+            "type": "tree"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus.AzureServiceBus",
+            "type": "tree"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus.AzureServiceBus/AzureServiceEventBus.cs",
+            "type": "blob"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus.AzureServiceBus/DefaultNameProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus.AzureServiceBus/GhostNetwork.EventBus.AzureServiceBus.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus.AzureServiceBus/HandlerProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus.AzureServiceBus/IHandlerProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus.AzureServiceBus/IMessageProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus.AzureServiceBus/INameProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus.AzureServiceBus/JsonMessageProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus.RabbitMq",
+            "type": "tree"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus.RabbitMq/ConnectionProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus.RabbitMq/DefaultQueueNameProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus.RabbitMq/EmptyPropertiesProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus.RabbitMq/GhostNetwork.EventBus.RabbitMq.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus.RabbitMq/HandlerProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus.RabbitMq/IHandlerProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus.RabbitMq/IMessageProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus.RabbitMq/INameProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus.RabbitMq/IPropertiesProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus.RabbitMq/JsonMessageProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus.RabbitMq/RabbitMqEventBus.cs",
+            "type": "blob"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus.RabbitMq/SubscriptionManager.cs",
+            "type": "blob"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus",
+            "type": "tree"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus/Event.cs",
+            "type": "blob"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus/GhostNetwork.EventBus.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus/IEventBus.cs",
+            "type": "blob"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus/IEventHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus/NullEventBus.cs",
+            "type": "blob"
+        },
+        {
+            "path": "Libraries/GhostNetwork.EventBus/TrackableEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "Readme.md",
+            "type": "blob"
+        },
+        {
+            "path": "dev-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "tests",
+            "type": "tree"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest",
+            "type": "tree"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/Chats",
+            "type": "tree"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/Chats/API",
+            "type": "tree"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/Chats/API/CreateChatAsyncTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/Chats/API/DeleteChatAsyncTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/Chats/API/GetChatAsyncTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/Chats/API/UpdateChatAsyncTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/Chats/Validator",
+            "type": "tree"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/Chats/Validator/ChatValidatorTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/GhostNetwork.Gateway.UnitTest.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/Messages",
+            "type": "tree"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/Messages/API",
+            "type": "tree"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/Messages/API/CreateMessageAsyncTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/Messages/API/DeleteMessageAsyncTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/Messages/API/SearchMessageAsyncTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/Messages/API/UpdateMessageAsyncTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/Messages/Validator",
+            "type": "tree"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/Messages/Validator/MessageValidatorTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/NewsFeed",
+            "type": "tree"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/NewsFeed/AddReactionAsyncTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/NewsFeed/DeleteAsyncTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/NewsFeed/NewsFeedTestsBase.cs",
+            "type": "blob"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/NewsFeed/RemoveReactionAsyncTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/NewsFeed/UpdateAsyncTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/NewsFeed/UpdateCommentAsyncTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/TestAuthHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/TestServerHelper.cs",
+            "type": "blob"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/Users",
+            "type": "tree"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/Users/GetByIdAsyncTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/Users/SecuritySettings",
+            "type": "tree"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/Users/SecuritySettings/FindByProfileAsyncTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/Users/SecuritySettings/SecuritySettingFollowersResolverTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/Users/SecuritySettings/SecuritySettingFriendsResolverTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/Users/SecuritySettings/SecuritySettingPublicationsResolverTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/Users/SecuritySettings/UpdateAsyncTests.cs",
+            "type": "blob"
+        },
+        {
+            "path": "tests/GhostNetwork.Gateway.UnitTest/Users/UpdateAsyncTests.cs",
+            "type": "blob"
+        }
+    ]
+}

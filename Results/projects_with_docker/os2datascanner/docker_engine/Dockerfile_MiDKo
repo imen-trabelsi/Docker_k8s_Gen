@@ -1,0 +1,36 @@
+# Using python:3.6 as base image
+FROM python:3.6
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1 \
+
+# Set labels
+LABEL org.opencontainers.image.title="OS2datascanner"
+
+# Add user
+RUN adduser --disabled-password --gecos '' os2ds_engine \
+    
+USER os2ds_engine:os2ds_engine
+
+# Set work directory to /code
+WORKDIR /code
+
+# Copy necessary files
+COPY requirements/sys-requirements/sys-requirements-common.txt /code/requirements/sys-requirements/
+COPY requirements/python-requirements/requirements-engine.txt /code/requirements/python-requirements/
+COPY src/os2datascanner/engine2 ./engine2/
+COPY src/os2datascanner/utils ./utils
+COPY src/os2datascanner/__init__.py ./
+COPY docker/engine/docker-settings.toml /code/docker/docker-settings.toml
+COPY docker/engine/docker-entrypoint.sh /code/docker/docker-entrypoint.sh
+COPY VERSION ./
+COPY LICENSE ./
+COPY README.rst ./
+COPY NEWS.rst ./
+
+# Install dependencies
+RUN set -ex \
+
+# Configure the startup script
+ENTRYPOINT ["/code/docker/docker-entrypoint.sh"]
+CMD ["explorer", "-h"]

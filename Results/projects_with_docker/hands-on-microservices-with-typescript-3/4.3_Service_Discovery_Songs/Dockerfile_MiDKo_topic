@@ -1,0 +1,43 @@
+# Use the specified base image
+FROM node:8.13-slim AS build-stage
+
+# Create the working directory
+RUN mkdir -p /opt/my-musik/
+
+# Set the working directory
+WORKDIR /opt/my-musik/
+
+# Copy relevant files to the working directory
+COPY ./gulpfile.js .
+COPY ./package.json .
+COPY ./tsconfig.json .
+COPY ./tslint.json .
+COPY ./songs.json .
+COPY ./config.json .
+COPY ./src ./src
+
+# Install TypeScript globally and install the dependencies
+RUN npm install typescript -g && npm install --no-optional
+
+# Run gulp to automate tasks
+RUN node_modules/.bin/gulp
+
+# Move to the next stage, setting up for production environment
+FROM node:8.13-slim AS production-stage
+
+# Create the working directory for production
+RUN mkdir -p /opt/my-musik/
+
+# Set the working directory
+WORKDIR /opt/my-musik/
+
+# Copy build files from build-stage to the production-stage
+
+# Install only production dependencies
+RUN npm install --no-optional --only=prod
+
+# Expose port 3000
+EXPOSE 3000
+
+# Start the app 
+CMD [ "node", "dist/app.js" ]

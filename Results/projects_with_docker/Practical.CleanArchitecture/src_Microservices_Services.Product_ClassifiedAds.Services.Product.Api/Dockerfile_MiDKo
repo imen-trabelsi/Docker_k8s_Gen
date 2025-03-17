@@ -1,0 +1,24 @@
+# Renaming the provided base image for clarity purposes
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS base
+
+# Setting working directory in the container
+WORKDIR /ClassifiedAds.Microservices
+
+# Copies the .csproj files and restores the dependencies
+COPY ./Common/ClassifiedAds.Application/*.csproj ./Common/ClassifiedAds.Application/
+COPY ./Common/ClassifiedAds.CrossCuttingConcerns/*.csproj ./Common/ClassifiedAds.CrossCuttingConcerns/
+COPY ./Common/ClassifiedAds.Domain/*.csproj ./Common/ClassifiedAds.Domain/
+COPY ./Common/ClassifiedAds.Infrastructure/*.csproj ./Common/ClassifiedAds.Infrastructure/
+COPY ./Services.Product/ClassifiedAds.Services.Product.Api/*.csproj ./Services.Product/ClassifiedAds.Services.Product.Api/
+RUN dotnet restore ./Common/ClassifiedAds.Application/ClassifiedAds.Application.csproj
+RUN dotnet restore ./Common/ClassifiedAds.Infrastructure/ClassifiedAds.Infrastructure.csproj
+RUN dotnet restore ./Services.Product/ClassifiedAds.Services.Product.Api/ClassifiedAds.Services.Product.Api.csproj
+
+# Copies the source into the container
+COPY . ./
+
+# Builds the application in the 'Release' configuration and publishes to the 'out' directory
+RUN dotnet publish ./Services.Product/ClassifiedAds.Services.Product.Api/ClassifiedAds.Services.Product.Api.csproj -c Release -o out
+
+# Starts the app by calling 'dotnet ClassifiedAds.Services.Product.Api.dll'
+ENTRYPOINT [ "dotnet", "ClassifiedAds.Services.Product.Api.dll" ]

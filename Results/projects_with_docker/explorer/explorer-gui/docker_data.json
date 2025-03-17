@@ -1,0 +1,70 @@
+{
+    "docker_info": {
+        "base_image": "node:10-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "ENV_CONFIG=docker-pre",
+            "API_URL=https://host-01.polkascan.io/kusama/api/v1",
+            "NETWORK_NAME=Kusama",
+            "NETWORK_ID=kusama",
+            "NETWORK_TYPE=pre",
+            "CHAIN_TYPE=relay",
+            "NETWORK_TOKEN_SYMBOL=KSM",
+            "NETWORK_TOKEN_DECIMALS=12",
+            "NETWORK_COLOR_CODE=d32e79",
+            "NGINX_CONF=nginx/polkascan-prod.conf"
+        ],
+        "envs": [
+            "ENV ENV_CONFIG=$ENV_CONFIG",
+            "ENV API_URL=$API_URL",
+            "ENV NETWORK_NAME=$NETWORK_NAME",
+            "ENV NETWORK_ID=$NETWORK_ID",
+            "ENV NETWORK_TYPE=$NETWORK_TYPE",
+            "ENV CHAIN_TYPE=$CHAIN_TYPE",
+            "ENV NETWORK_TOKEN_SYMBOL=$NETWORK_TOKEN_SYMBOL",
+            "ENV NETWORK_TOKEN_DECIMALS=$NETWORK_TOKEN_DECIMALS",
+            "ENV NETWORK_COLOR_CODE=$NETWORK_COLOR_CODE",
+            "ENV NGINX_CONF=$NGINX_CONF"
+        ],
+        "copy_instructions": [
+            "COPY explorer-gui/package.json explorer-gui/package-lock.json ./",
+            "WORKDIR /ng-app",
+            "COPY explorer-gui/ /ng-app/",
+            "COPY ${NGINX_CONF} /etc/nginx/conf.d/",
+            "COPY --from=builder /ng-app/dist /usr/share/nginx/html"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"nginx\",",
+                    "\"-g\",",
+                    "\"daemon",
+                    "off;\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "npm ci && mkdir /ng-app && mv ./node_modules ./ng-app",
+                ""
+            ],
+            [
+                "npm run ng build -- --configuration=${ENV_CONFIG} --output-path=dist",
+                ""
+            ],
+            [
+                "rm -rf /etc/nginx/conf.d/*",
+                ""
+            ],
+            [
+                "rm -rf /usr/share/nginx/html/*",
+                ""
+            ]
+        ]
+    }
+}

@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "Ruby",
+        "framework": "Ruby",
+        "dependencies": {
+            "Gemfile": "source \"https://rubygems.org\"\n# Hello! This is where you manage which Jekyll version is used to run.\n# When you want to use a different version, change it below, save the\n# file and run `bundle install`. Run Jekyll with `bundle exec`, like so:\n# Note: you probably want to set a local bundle path with : /usr/local/bin/bundle config set path 'vendor/bundle'\n#\n#     bundle exec jekyll serve\n#\n# This will help ensure the proper Jekyll version is running.\n# Happy Jekylling!\n# gem \"jekyll\", \"~> 4.0.0\"\n# This is the default theme for new Jekyll sites. You may change this to anything you like.\ngem \"minima\", \"~> 2.5\"\n# To upgrade, run `bundle update github-pages`.\ngem \"github-pages\", group: :jekyll_plugins\n# If you have any plugins, put them here!\ngroup :jekyll_plugins do\n  gem \"jekyll-feed\", \"~> 0.12\"\n  gem 'jekyll-octicons'\nend\n\ngem \"jekyll-github-metadata\"\n\n# Windows and JRuby does not include zoneinfo files, so bundle the tzinfo-data gem\n# and associated library.\ninstall_if -> { RUBY_PLATFORM =~ %r!mingw|mswin|java! } do\n  gem \"tzinfo\", \"~> 1.2\"\n  gem \"tzinfo-data\"\nend\n\n# Performance-booster for watching directories on Windows\ngem \"wdm\", \"~> 0.1.1\", :install_if => Gem.win_platform?\n\ngem \"faraday\", \"< 1.0\"\n\n# I like asciidoc & sitemaps\ngroup :jekyll_plugins do\n  gem 'jekyll-asciidoc'\n  gem 'jekyll-sitemap'\nend\n"
+        },
+        "database": "PostgreSQL",
+        "build_system": "Bundler",
+        "config_files": {
+            "subrepos/zero-to-jupyterhub-k8s/images/singleuser-sample/Dockerfile": "#FROM jupyter/base-notebook:45bfe5a474fa\nFROM  holdenk/base-notebook:latest\n# Built from... https://hub.docker.com/r/jupyter/base-notebook/\n#               https://github.com/jupyter/docker-stacks/blob/master/base-notebook/Dockerfile\n# Built from... Ubuntu 18.04\n\n# The jupyter/docker-stacks images contains jupyterhub, jupyterlab and the\n# jupyterlab-hub extension already.\n\n## NOTE: This is a default and be overridden by chartpress using the\n##       chartpress.yaml configuration\nARG JUPYTERHUB_VERSION=1.1.*\n\nRUN ls\n\n# Example install of git and nbgitpuller.\n# NOTE: git is already available in the jupyter/minimal-notebook image.\nUSER root\nRUN apt-get update && apt-get install --yes --no-install-recommends \\\n    dnsutils \\\n    git \\\n    iputils-ping \\\n && rm -rf /var/lib/apt/lists/*\nUSER $NB_USER\n\nRUN python -m pip install nbgitpuller \\\n    $(bash -c 'if [[ $JUPYTERHUB_VERSION == \"git\"* ]]; then \\\n       echo ${JUPYTERHUB_VERSION}; \\\n     else \\\n       echo jupyterhub==${JUPYTERHUB_VERSION}; \\\n     fi') && \\\n    jupyter serverextension enable --py nbgitpuller --sys-prefix\n\n# Uncomment the line below to make nbgitpuller default to start up in JupyterLab\n#ENV NBGITPULLER_APP=lab\n\n# conda/pip/apt install additional packages here, if desired.\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "prepare.sh"
+        ],
+        "folders": [
+            "examples"
+        ]
+    }
+}

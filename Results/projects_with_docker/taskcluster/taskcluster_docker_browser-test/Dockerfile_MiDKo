@@ -1,0 +1,21 @@
+# The information given is conflicting
+# The source code indicates Python while the base image provided is a Node image. 
+# Assume we are going with a Node application than a Python based on 'Base Image' and 'Microservice Project Structure' information.
+FROM node:22.13.1-bookworm
+WORKDIR /app
+
+COPY package.json yarn.lock ./
+RUN yarn install 
+
+COPY . /app
+
+RUN mkdir -p /builds && \
+    useradd -d /builds/worker -s /bin/bash -m worker && \
+    mkdir /builds/worker/artifacts && \
+
+RUN apt-get update && apt-get install -y \
+    firefox-esr \
+    xvfb && \
+
+USER worker
+CMD ["/bin/bash", "--login"]

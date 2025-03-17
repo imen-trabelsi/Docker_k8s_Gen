@@ -1,0 +1,29 @@
+# Use the nginx alpine image as base
+FROM nginx:1.19.2-alpine
+
+# Copy necessary files
+COPY ./proxy/default.conf /etc/nginx/templates/default.conf.template
+COPY ./apps/webapp/build/ /var/www/
+
+# Set working directory
+WORKDIR /var/www
+
+# Install necessary dependencies (Java and Gradle)
+RUN apk update && apk add openjdk8
+RUN wget https://services.gradle.org/distributions/gradle-6.8.3-bin.zip -P /tmp
+RUN unzip -d /opt/gradle /tmp/gradle-*.zip
+ENV PATH="/opt/gradle/gradle-6.8.3/bin:${PATH}"
+
+# Build the application
+COPY build.gradle .
+RUN gradle build
+
+# Set the environment variables
+ENV SPROUT_API_URL=http://localhost:8080
+ENV PORT=3000
+
+# Expose the necessary port 
+EXPOSE $PORT
+
+# Define the command to run at startup
+CMD ["nginx", "-g", "daemon off;"]

@@ -1,0 +1,20 @@
+# Use the OpenJDK alpine image
+FROM openjdk:14-alpine
+
+# Add curl package
+RUN apk --no-cache add curl
+
+# Make directory for project files
+RUN mkdir /app 
+
+# Set project directory as working directory
+WORKDIR /app
+
+# Copy gradient file
+COPY build.gradle /app
+
+# Copy application jar file
+COPY build/libs/*-all.jar /bin/app.jar
+
+# Set the start command
+CMD ["java", "-jar", "/bin/app.jar"]

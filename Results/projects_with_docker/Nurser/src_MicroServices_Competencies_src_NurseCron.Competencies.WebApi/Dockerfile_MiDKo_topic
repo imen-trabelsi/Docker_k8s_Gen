@@ -1,0 +1,14 @@
+# Use the Official Microsoft DotNet ASP.Net Base Image
+FROM mcr.microsoft.com/dotnet/aspnet
+
+# Set the Work Directory in the Container
+WORKDIR /app
+
+# Copy the Contents from the app Directory to the Docker Image
+COPY ./pub .
+
+# Expose Port 80 on the Container
+EXPOSE 80
+
+# Set the Entrypoint for the Microservice
+ENTRYPOINT ["dotnet", "NurseCron.Competencies.Api.dll"]

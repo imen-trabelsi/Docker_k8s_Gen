@@ -1,0 +1,31 @@
+# Use the specified base image
+FROM docker.elastic.co/elasticsearch/elasticsearch:7.17.15
+
+# Set user to root to run certain commands
+USER root
+
+# Run necessary commands
+RUN echo 'vm.max_map_count=262144' >> /etc/sysctl.conf && \
+    /usr/share/elasticsearch/bin/elasticsearch-plugin install analysis-icu && \
+    /usr/share/elasticsearch/bin/elasticsearch-plugin install repository-s3 --batch && \
+    chown elasticsearch:elasticsearch config/elasticsearch.yml && \
+    chmod go+r /usr/share/elasticsearch -R && \
+    chmod go+w /usr/share/elasticsearch \
+    /usr/share/elasticsearch/config \
+    /usr/share/elasticsearch/logs \
+    /usr/share/elasticsearch/data && \
+    chmod go+x /usr/share/elasticsearch \
+    /usr/share/elasticsearch/config \
+    /usr/share/elasticsearch/config/repository-s3 && \
+
+# Switch back to elasticsearch user
+USER elasticsearch
+
+# Set necessary environment variables
+ENV ES_JAVA_OPTS='-Xms512m -Xmx512m'
+ENV cluster.name 'pelias-dev'
+ENV discovery.type 'single-node'
+ENV bootstrap.memory_lock 'true'
+
+# Copy necessary files
+COPY elasticsearch.yml /usr/share/elasticsearch/config/

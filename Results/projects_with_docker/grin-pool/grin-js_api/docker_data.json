@@ -1,0 +1,53 @@
+{
+    "docker_info": {
+        "base_image": "node:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV NODE_ENV=production"
+        ],
+        "copy_instructions": [
+            "WORKDIR /api",
+            "COPY py/. /py/",
+            "COPY code/. /api/",
+            "COPY entrypoint.sh /"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/entrypoint.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "set -ex && \\",
+                "apt-get update &&",
+                "apt-get --no-install-recommends --yes install",
+                "build-essential",
+                "libssl-dev",
+                "vim",
+                "net-tools",
+                "psmisc",
+                "htop",
+                "curl",
+                "telnet",
+                "python3-pip",
+                "libssl-dev"
+            ],
+            [
+                "pip3 install -r /py/requirements.txt",
+                ""
+            ],
+            [
+                "yarn global add forever && \\",
+                "yarn"
+            ]
+        ]
+    }
+}

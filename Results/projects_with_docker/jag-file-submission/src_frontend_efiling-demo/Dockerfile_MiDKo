@@ -1,0 +1,41 @@
+# Base Image
+FROM node:18-alpine
+
+# Set Working Directory
+WORKDIR /app
+
+# Copy Dependencies
+COPY ./package.json ./yarn.lock ./
+
+# Install Dependencies
+RUN yarn install --production=true \
+RUN yarn build --production=true
+
+# Copy Configuration Files
+COPY ./src/frontend/efiling-demo/.env.production .env
+COPY ./src/frontend/efiling-demo/Dockerfile .
+COPY ./src/frontend/efiling-demo/nginx.conf /etc/nginx/conf.d
+
+# Copy Project Files
+COPY . .
+
+# Remove default nginx configuration
+RUN rm -rf /usr/share/nginx/html/ 
+COPY --from=build /app/build /usr/share/nginx/html
+RUN rm /etc/nginx/conf.d/default.conf 
+
+# Set New Working Directory
+WORKDIR /usr/share/nginx/html
+
+# Copy necessary shell scripts and environment files
+COPY ./env.sh .
+COPY ./.env.template .env
+
+# Give necessary permissions
+RUN chmod g+rwx /var/cache/nginx /var/run /var/log/nginx
+RUN chmod g+rwx /usr/share/nginx/html/
+RUN apk add --no-cache bash
+RUN chmod g+rwx ./env.sh
+
+# Set Execution Commands
+CMD ["/bin/bash", "-c", "/usr/share/nginx/html/env.sh, &&, nginx, -g, \"daemon off;\""]

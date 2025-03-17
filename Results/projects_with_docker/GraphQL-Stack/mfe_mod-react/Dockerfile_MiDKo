@@ -1,0 +1,22 @@
+# Use Caddy 2.0 based on the Alpine Linux
+FROM caddy:2-alpine
+
+# Set working directory in container
+WORKDIR /app
+
+# Copy package and install app dependencies
+COPY package.json ./
+RUN npm install --only=production
+
+# Copy app source to the image after installing dependencies
+COPY . ./
+
+# At the end, set the Caddyfile and static files location
+COPY Caddyfile /etc/caddy/Caddyfile
+COPY /dist /usr/share/caddy/dist
+
+# Expose port (assuming port 80 in this case)
+EXPOSE 80
+
+# Run caddy by default when the container starts
+CMD ["caddy", "run", "-config", "/etc/caddy/Caddyfile"]

@@ -1,0 +1,21 @@
+# Use the specified base image
+FROM codefarm/appnodebase:0.0.0
+
+# Create an app directory
+WORKDIR /usr/src/app
+
+# Install the app dependencies
+COPY package*.json ./
+
+RUN npm install 
+
+# Bundle the app source code inside Docker
+COPY . .
+
+EXPOSE 8080
+
+# Health check instruction
+HEALTHCHECK --interval=5m --timeout=3s CMD curl -f http://localhost:8080/ || exit 1
+
+# Start the app
+CMD [ "npm", "start" ]

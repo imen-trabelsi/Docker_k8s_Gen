@@ -1,0 +1,70 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: ovnaction
+  name: ovnaction
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ovnaction
+  template:
+    metadata:
+      labels:
+        app: ovnaction
+    spec:
+      containers:
+      - image: emcov2/emco:stable
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+        name: ovnaction
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 80
+        resources:
+          limits:
+            cpu: 500m
+            ephemeral-storage: 1Gi
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            ephemeral-storage: 500Mi
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 1000
+          runAsUser: 1000
+        volumeMounts:
+        - mountPath: /opt/emco/config.json
+          name: config
+          subPath: config.json
+      serviceAccountName: default
+      volumes:
+      - configMap:
+          items:
+          - key: config.json
+            path: config.json
+          name: ovnaction
+        name: config
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: ovnaction
+spec:
+  ports:
+  - port: 80
+  selector:
+    app: ovnaction
+  type: ClusterIP

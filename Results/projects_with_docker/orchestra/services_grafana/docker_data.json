@@ -1,0 +1,28 @@
+{
+    "docker_info": {
+        "base_image": "grafana/grafana",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY grafana/provisioning /etc/grafana/provisioning"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "envsubst",
+                    "\"$INFLUX_HOST",
+                    "$INFLUX_PORT",
+                    "$DB_NAME\"",
+                    "\\"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

@@ -1,0 +1,25 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "requirements.txt": "# This is for netlify\nPyYAML\njinja2\n"
+        },
+        "database": null,
+        "build_system": "pip",
+        "config_files": {
+            "dockercoins/docker-compose.yml": "version: \"2\"\n\nservices:\n  rng:\n    build: rng\n    ports:\n    - \"8001:80\"\n\n  hasher:\n    build: hasher\n    ports:\n    - \"8002:80\"\n\n  webui:\n    build: webui\n    ports:\n    - \"8000:80\"\n    volumes:\n    - \"./webui/files/:/files/\"\n\n  redis:\n    image: redis\n\n  worker:\n    build: worker\n\n",
+            "dockercoins/worker/Dockerfile": "FROM python:alpine\nRUN pip install redis\nRUN pip install requests\nCOPY worker.py /\nCMD [\"python\", \"worker.py\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "webui.js"
+        ],
+        "folders": [
+            "files"
+        ]
+    }
+}

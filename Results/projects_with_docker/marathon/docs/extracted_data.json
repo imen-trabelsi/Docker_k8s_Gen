@@ -1,0 +1,22 @@
+{
+    "source_code_info": {
+        "language": "Ruby",
+        "framework": "Ruby",
+        "dependencies": {
+            "Gemfile": "source 'https://rubygems.org'\ngem 'github-pages', group: :jekyll_plugins\n"
+        },
+        "database": null,
+        "build_system": "Bundler",
+        "config_files": {
+            "docs/Dockerfile": "FROM buildpack-deps:buster-curl\n\nCOPY Gemfile Gemfile.lock /jekyll/\n\nRUN apt-get update && \\\n  curl -sL https://deb.nodesource.com/setup_12.x | bash - && \\\n  apt-get install -y gcc g++ git libxml2 zlib1g-dev libxml2-dev ruby ruby-dev make autoconf nodejs python python-dev && \\\n  gem install bundler && \\\n  cd /jekyll && bundle install && \\\n  apt-get purge -y gcc g++ ruby-dev python-dev && \\\n  apt-get -y autoremove && \\\n  rm -rf /var/lib/apt/lists\n\nCOPY entrypoint.sh /\n\nVOLUME [\"/site-docs\"]\n\nENTRYPOINT [\"/entrypoint.sh\"]\n\n# Needed so sass can handle UTF-8 characters, and not die with 'Invalid US-ASCII character \"\\xE2\"' messages.\n# See https://github.com/jekyll/jekyll/issues/4268\nENV LC_ALL C.UTF-8\nENV LANG en_US.UTF-8\nENV LANGUAGE en_US.UTF-8\n",
+            "Jenkinsfile": "#!/usr/bin/env groovy\n\n@Library('sec_ci_libs@v2-latest') _\n\ndef master_branches = [\"releases/1.10\", \"releases/1.9\", \"releases/1.8\", \"releases/1.7\", \"releases/1.6\", \"releases/1.5\", \"releases/1.4\", \"master\", ] as String[]\n\nansiColor('xterm') {\n  // using shakedown node because it's a lightweight alpine docker image instead of full VM\n  node('shakedown') {\n    stage(\"Verify author\") {\n      user_is_authorized(master_branches, '8b793652-f26a-422f-a9ba-0d1e47eb9d89', '#marathon-dev')\n    }\n  }\n  node('JenkinsMarathonCI-Debian9-2021-07-24') {\n    stage(\"Run Pipeline\") {\n      try {\n        checkout scm\n        withCredentials([\n            usernamePassword(credentialsId: 'a7ac7f84-64ea-4483-8e66-bb204484e58f', passwordVariable: 'GIT_PASSWORD', usernameVariable: 'GIT_USER'),\n            string(credentialsId: '3f0dbb48-de33-431f-b91c-2366d2f0e1cf',variable: 'AWS_ACCESS_KEY_ID'),\n            string(credentialsId: 'f585ec9a-3c38-4f67-8bdb-79e5d4761937',variable: 'AWS_SECRET_ACCESS_KEY')\n        ]) {\n\t    withDockerRegistry([credentialsId: 'docker-hub-credentials']) {\n                sh \"\"\"sudo update-alternatives --set java /usr/lib/jvm/java-8-openjdk-amd64/jre/bin/java\"\"\"\n                sh \"\"\"sudo -E ci/pipeline jenkins\"\"\"\n            }\n\t}\n      } finally {\n        junit(allowEmptyResults: true, testResults: 'type-generator/target/test-reports/*.xml')\n        junit(allowEmptyResults: true, testResults: 'target/test-reports/*.xml')\n        junit(allowEmptyResults: true, testResults: 'tests/integration/target/test-reports/*.xml')\n        archive includes: \"*sandboxes.tar.gz\"\n        archive includes: \"*log.tar.gz\"\n      }\n    }\n\n    stage('Release MoM EE Docker Image') {\n      if (env.BRANCH_NAME == 'master' || env.BRANCH_NAME ==~ /releases\\/.*/) {\n        version = sh(script: \"./version docker\", returnStdout: true).trim()\n        build(\n             job: '/marathon-dcos-plugins/release-mom-ee-docker-image/master',\n             parameters: [string(name: 'from_image_tag', value: version)],\n             propagate: true\n        )\n      }\n    }\n  }\n}\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile"
+        ],
+        "folders": []
+    }
+}

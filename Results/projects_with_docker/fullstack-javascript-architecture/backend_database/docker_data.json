@@ -1,0 +1,17 @@
+{
+    "docker_info": {
+        "base_image": "mongo",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "27017"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": []
+    }
+}

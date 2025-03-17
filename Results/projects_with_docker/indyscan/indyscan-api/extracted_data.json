@@ -1,0 +1,29 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"indyscan-api\",\n  \"version\": \"4.6.1\",\n  \"description\": \"Web application to browse Hyperledger Indy blockchain transactions.\",\n  \"main\": \"index.js\",\n  \"scripts\": {\n    \"lint\": \"standard\",\n    \"lint:fix\": \"standard --fix\",\n    \"dev\": \"nodemon src/index.js\",\n    \"dev:sovrin:builder\": \"nodemon --config nodemon-buildernet.json src/index.js\",\n    \"test:unit\": \"jest tests/unit\",\n    \"start\": \"cross-env NODE_ENV=production node src/index.js\"\n  },\n  \"dependencies\": {\n    \"@elastic/elasticsearch\": \"^7.4.0\",\n    \"body-parser\": \"^1.19.0\",\n    \"cross-env\": \"^5.2.1\",\n    \"dotenv\": \"^7.0.0\",\n    \"express\": \"^4.17.1\",\n    \"express-prettify\": \"^0.1.1\",\n    \"express-validation\": \"^1.0.2\",\n    \"fs-extra\": \"^4.0.3\",\n    \"indyscan-storage\": \"file:../indyscan-storage\",\n    \"joi\": \"^14.3.1\",\n    \"lodash\": \"^4.17.21\",\n    \"uuid\": \"^3.4.0\",\n    \"winston\": \"^3.3.3\",\n    \"write\": \"^1.0.3\"\n  },\n  \"devDependencies\": {\n    \"@types/node\": \"^8.0.58\",\n    \"express-swagger-generator\": \"^1.1.17\",\n    \"@types/jest\": \"^26.0.23\",\n    \"jest\": \"^27.0.6\",\n    \"jest-cli\": \"^27.0.6\",\n    \"nodemon\": \"^1.19.4\",\n    \"rimraf\": \"^2.7.1\",\n    \"standard\": \"^14.3.4\"\n  }\n}\n"
+        },
+        "database": "Elasticsearch",
+        "build_system": "npm",
+        "config_files": {
+            "indyscan-api/Dockerfile": "FROM node:12.14.0-alpine3.9 as BUILD\n\nRUN apk update && apk upgrade && \\\n    apk add --no-cache bash git openssh\n\nRUN apk add make\nRUN apk add g++\nRUN apk add python\n\nRUN npm install -g npm@8.7.0\n\nWORKDIR /usr/src/app/indyscan-storage\nCOPY indyscan-storage ./\nRUN npm ci --only=prod\n\nWORKDIR /usr/src/app/indyscan-api\nCOPY indyscan-api/package*.json ./\nRUN npm ci --only=prod\nCOPY indyscan-api ./\n\nFROM node:12.14.0-alpine3.9 as PRODUCTION\n\nRUN apk update && apk upgrade\nCOPY --from=BUILD /usr/src/app/indyscan-storage /usr/src/app/indyscan-storage\nCOPY --from=BUILD /usr/src/app/indyscan-api /usr/src/app/indyscan-api\nWORKDIR /usr/src/app/indyscan-api\n\nENV ES_URL ${ES_URL}\nENV PORT ${PORT:-\"3708\"}\nENV NETWORKS_CONFIG_PATH ${NETWORKS_CONFIG_PATH:-\"./config-networks/localhost.json\"}\nENV LOG_LEVEL ${LOG_LEVEL:-\"info\"}\nENV LOG_HTTP_REQUESTS ${LOG_HTTP_REQUESTS:-\"false\"}\nENV LOG_HTTP_RESPONSES ${LOG_HTTP_RESPONSES:-\"false\"}\n\nEXPOSE ${PORT}\n\nLABEL org.label-schema.schema-version=\"1.0\"\nLABEL org.label-schema.vendor=\"Indyscan.io\"\nLABEL org.label-schema.name=\"IndyscanAPI\"\nLABEL org.label-schema.description=\"Indyscan API\"\nLABEL org.label-schema.vcs-url=\"https://github.com/Patrik-Stas/indyscan\"\n\nCMD npm run start\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".env",
+            "Dockerfile",
+            "README.md",
+            "dockerbuild.sh",
+            "package-lock.json",
+            "package.json"
+        ],
+        "folders": [
+            "public",
+            "src"
+        ]
+    }
+}

@@ -1,0 +1,42 @@
+# Use the base Image
+FROM holdenk/base-notebook:latest
+
+# Indicate Maintainer
+LABEL maintainer="Your Name <your-email@example.com>"
+
+# Set the working directory
+WORKDIR /app
+
+# Copy Gemfile and Gemfile.lock
+COPY Gemfile Gemfile.lock ./
+
+# Install libraries for postgres and other dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    dnsutils \
+    git \
+    iputils-ping \
+    libpq-dev && \
+
+# Install Ruby dependencies
+RUN bundle install 
+
+# Copy the application into the container
+COPY . .
+
+# Install nbgitpuller and enable server extension for it
+RUN python -m pip install nbgitpuller \
+$(bash -c 'if [[ $JUPYTERHUB_VERSION == "git"* ]]; then echo ${JUPYTERHUB_VERSION}; else echo jupyterhub==${JUPYTERHUB_VERSION}; fi') && \
+
+# Set Environment variables
+ENV JUPYTERHUB_VERSION=1.1.*
+ENV RAILS_ENV production
+
+# Switch to the non-root user
+USER $NB_USER
+
+# Expose port 8080
+EXPOSE 8080
+
+# Start the Rails server
+CMD ["rails", "server", "-b", "0.0.0.0"]

@@ -1,0 +1,32 @@
+# Base Image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+# Set work directory
+WORKDIR /src
+
+# Copy csproj and restore as distinct layers
+COPY ["src/Services/Identity/Identity.csproj", "src/Services/Identity/"]
+RUN dotnet restore "src/Services/Identity/Identity.csproj"
+
+# Copy everything else and build app
+COPY . .
+WORKDIR "/src/src/Services/Identity"
+RUN dotnet build "Identity.csproj" -c Release -o /app/build
+
+# Publish app
+RUN dotnet publish "Identity.csproj" -c Release -o /app/publish
+
+# Final Stage
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
+
+# Set work directory
+WORKDIR /app
+
+# Copy build results from build stage
+
+# Expose Ports
+EXPOSE 80
+EXPOSE 443
+
+# Run app
+ENTRYPOINT ["dotnet", "Identity.dll"]

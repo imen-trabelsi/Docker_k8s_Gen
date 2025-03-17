@@ -1,0 +1,29 @@
+# Base image
+FROM php:7-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy application files
+COPY . /app
+
+# Copy custom PHP configuration
+COPY php.ini /usr/local/etc/php/php.ini
+
+# Install dependencies
+RUN apk --no-cache add zlib-dev bzip2 bzip2-dev && docker-php-ext-install pdo pdo_mysql mysqli zip bz2
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install project dependencies
+RUN npm install
+
+# Build the application
+RUN npm run build
+
+# Expose the port
+EXPOSE 80
+
+# Run the application
+CMD ["php", "-S", "0.0.0.0:80", "-t", "/app", "server.php"]

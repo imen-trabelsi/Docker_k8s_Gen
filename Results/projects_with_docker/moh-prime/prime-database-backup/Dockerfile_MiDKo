@@ -1,0 +1,44 @@
+# Use the specified PostgreSQL base image
+FROM postgres:10.6
+
+# Set work directory
+WORKDIR /opt/backup
+
+# Copy project files into the docker image
+COPY . /opt
+COPY . /opt/backup
+COPY backup.cron /etc/cron.d
+
+# Set environment variables.
+ENV MONGO_HOST=${MONGO_HOST}
+ENV MONGO_DATABASE=${MONGO_DATABASE}
+ENV PGHOST=${DB_HOST}
+ENV PGPASSWORD=${POSTGRESQL_PASSWORD}
+ENV PGUSERNAME=${POSTGRESQL_USERNAME}
+ENV PGDATABASE=${POSTGRESQL_DATABASE}
+
+# Install necessary dependencies and tools
+RUN apt-get update -yqq \
+    && apt-get install -y inetutils-ping nano net-tools cron gnupg wget apt-transport-https ca-certificates libcurl4-openssl-dev \
+    && wget -qO - http://www.mongodb.org/static/pgp/server-4.2.asc | apt-key add - \
+    && echo "deb [ arch=amd64 ] https://repo.mongodb.org/apt/ubuntu bionic/mongodb-org/4.2 multiverse" | tee /etc/apt/sources.list.d/mongodb-org-4.2.list \
+    && apt-get update \
+    && apt-get install -y mongodb-org-tools \
+    && mkdir -p /opt/backup \
+    && chmod -R 755 /opt/backup \
+    && touch /var/log/cron.log \
+    && chmod 777 /var/log/cron.log \
+    && chmod +x /opt/backup.sh \
+    && chmod +x /opt/entrypoint.sh \
+    && chmod 0644 /opt/backup/backup.cron \
+    && cp /opt/backup/backup.cron /etc/cron.d/ \
+    && cp /opt/backup.sh /etc/cron.daily \
+    && cp /opt/backup.sh /etc/cron.hourly \
+    && crontab /etc/cron.d/backup.cron \
+    && crontab -l \
+
+# Expose required ports (should be specified by the user)
+# EXPOSE <port>
+
+# Define command to execute
+CMD ["/opt/entrypoint.sh"]

@@ -1,0 +1,33 @@
+{
+    "docker_info": {
+        "base_image": "node:alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY package.json .",
+            "COPY package-lock.json .",
+            "COPY public ./public",
+            "COPY default.conf /etc/nginx/conf.d/",
+            "COPY --from=builder /app/build /usr/share/nginx/html/"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "npm install",
+                "COPY src ./src"
+            ],
+            [
+                "REACT_APP_VERSION=v1.2.0 npm run build",
+                ""
+            ]
+        ]
+    }
+}

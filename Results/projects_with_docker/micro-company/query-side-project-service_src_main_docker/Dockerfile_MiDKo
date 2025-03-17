@@ -1,0 +1,22 @@
+# Start with a base image containing Java runtime
+FROM eclipse-temurin:11
+
+# Make port 8083 available to the world outside this container
+EXPOSE 8083
+
+# Add necessary files to the docker image at build time
+COPY *.jar /app.jar
+COPY wait-for-it.sh /wait-for-it.sh
+
+# Set permissions for the wait-for-it script
+RUN bash -c 'touch /app.jar'
+RUN bash -c 'chmod 777 /wait-for-it.sh'
+
+# The application's jar file
+ENV APP_JAR=/app.jar
+
+# the spring profiles
+ENV SPRING_PROFILES_ACTIVE=docker
+
+# Run the jar file 
+CMD ["java","-Dspring.profiles.active=${SPRING_PROFILES_ACTIVE}","-jar","${APP_JAR}"]

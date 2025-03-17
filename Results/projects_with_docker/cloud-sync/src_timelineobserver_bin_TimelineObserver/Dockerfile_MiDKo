@@ -1,0 +1,36 @@
+# Start with base image
+FROM openjdk:8-jdk-alpine
+
+ARG USER_HOME_DIR="/root"
+ENV MAVEN_HOME /usr/share/maven
+ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
+ENV MAVEN_OPTS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1"
+
+RUN apk add --no-cache curl tar bash
+
+# Install Maven
+ARG MAVEN_VERSION=3.3.9
+RUN mkdir -p /usr/share/maven && \
+    curl -fsSL http://apache.osuosl.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | tar -xzC /usr/share/maven --strip-components=1 && \
+
+# Label version
+LABEL version="2.0.0"
+
+# copy pom.xml and source code to the container
+COPY pom.xml /usr/src/app/
+COPY src/ /usr/src/app/src
+
+# Change to the app directory
+WORKDIR /usr/src/app
+
+# Build the app
+RUN mvn -T 1C install && rm -rf target
+
+# Set working directory for TimelineObserver
+RUN mkdir -p /usr/src/timelineobserver
+WORKDIR /usr/src/timelineobserver
+
+COPY --from=build /usr/src/app/target/TimelineObserver-jar-with-dependencies.jar /usr/src/timelineobserver/TimelineObserver-jar-with-dependencies.jar
+
+# Entry point for the java application
+ENTRYPOINT ["java","-jar","/usr/src/timelineobserver/TimelineObserver-jar-with-dependencies.jar"]

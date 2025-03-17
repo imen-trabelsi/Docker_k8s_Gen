@@ -1,0 +1,29 @@
+# Start with a base image
+FROM alpine
+
+# Set environment variable
+ENV GRAVITEEIO_HOME=/opt/graviteeio-management-api
+ENV GRAVITEEIO_VERSION=0
+
+# Update packages and install dependencies
+RUN apk add --update zip unzip netcat-openbsd wget
+
+# Download Gravitee.io, unzip it, move it to the right location and clean up
+RUN wget https://download.gravitee.io/graviteeio-apim/distributions/graviteeio-full-${GRAVITEEIO_VERSION}.zip --no-check-certificate -P /tmp/ \
+&& unzip /tmp/graviteeio-full-${GRAVITEEIO_VERSION}.zip -d /tmp/ \
+&& mv /tmp/graviteeio-full-${GRAVITEEIO_VERSION}/graviteeio-apim-rest-api* ${GRAVITEEIO_HOME} \
+
+# Change group ownership and file permissions
+RUN chgrp -R 0 ${GRAVITEEIO_HOME} && chmod -R g=u ${GRAVITEEIO_HOME}
+
+# Set the working directory
+WORKDIR ${GRAVITEEIO_HOME}
+
+# Expose the necessary port
+EXPOSE 8083
+
+# Set labels
+LABEL maintainer="contact@graviteesource.com"
+
+# Execution command
+CMD ["./bin/gravitee"]

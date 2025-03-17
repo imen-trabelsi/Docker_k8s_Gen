@@ -1,0 +1,42 @@
+# Dockerfile
+FROM node:20-alpine
+
+# Create a work directory
+RUN mkdir -p /app
+WORKDIR /app
+
+# Copy package.json and package-lock.json and install dependencies
+COPY package.json package-lock.json ./
+RUN npm install npm@latest
+RUN npm install --silent --progress=false --production --ignore-scripts
+
+# Copy application files
+COPY . .
+
+# Security- Set not to run as root
+USER node
+
+# Set environment variables
+ENV NODE_ENV=production
+
+# Expose the application on port 3000
+EXPOSE 3000
+
+# Define the command to run the application
+CMD ["npm", "start"]
+
+# Include labels
+LABEL maintainer="admin@yourcompany.com" \
+      version="1.0" \
+
+# Health Checks 
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD curl -f http://localhost:3000/ || exit 1
+
+# Ensure permissions are set correctly
+RUN chmod 755 /app
+
+# Add necessary build dependencies
+RUN apk add --no-cache --virtual .build-deps gcc libc-dev make python2 && \
+
+# Set the network

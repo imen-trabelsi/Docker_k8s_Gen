@@ -1,0 +1,25 @@
+# Use the correct base image
+FROM maven:3.6.3-jdk-11-slim AS build
+
+# Define working directory
+WORKDIR /usr/share/website
+
+# Copy project files to the working directory
+COPY . .
+
+# PATH environment variable
+ENV PATH=$PATH:/usr/share/maven/bin
+
+# Install project dependencies and build project
+RUN mvn clean install
+
+# Use multi-stage build to create a lean execution image
+FROM openjdk:11-jre-slim
+
+# Copy the jar from the build stage to the execution stage
+
+# Set the startup command to execute the jar
+ENTRYPOINT ["java", "-jar", "/usr/src/app/app.jar"]
+
+# Expose port 8080 for Spring Boot
+EXPOSE 8080

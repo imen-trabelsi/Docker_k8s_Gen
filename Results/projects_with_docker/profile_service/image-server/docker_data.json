@@ -1,0 +1,120 @@
+{
+    "docker_info": {
+        "base_image": "shito/alpine-nginx:edge",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY /rootfs /",
+            "WORKDIR /usr/share/nginx/html"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/etc/pictshare.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "set -x \\",
+                "&& apk upgrade -U",
+                "&& apk --update",
+                "#   --repository=http://dl-4.alpinelinux.org/alpine/edge/testing",
+                "add",
+                "openssl",
+                "nano",
+                "ffmpeg",
+                "file",
+                "unzip",
+                "bash",
+                "curl",
+                "php7",
+                "php7-pdo",
+                "php7-exif",
+                "php7-mcrypt",
+                "php7-curl",
+                "php7-gd",
+                "php7-json",
+                "php7-fpm",
+                "php7-openssl",
+                "php7-ctype",
+                "php7-opcache",
+                "php7-mbstring",
+                "php7-sodium",
+                "php7-xml",
+                "php7-ftp",
+                "php7-simplexml",
+                "php7-session",
+                "php7-fileinfo",
+                "php7-pcntl",
+                "git",
+                "&& rm -rf /var/cache/apk/*"
+            ],
+            [
+                "/bin/bash -c 'set -ex && \\",
+                "ARCH=\"$(apk --print-arch)\" &&",
+                "case \"${ARCH##*-}\" in",
+                "x86_64) S6_PLATFORM=\"amd64\" ;;",
+                "armv7l) S6_PLATFORM=\"armhf\" ;;",
+                "armv7) S6_PLATFORM=\"armhf\" ;;",
+                "armv6) S6_PLATFORM=\"armhf\" ;;",
+                "armhf) S6_PLATFORM=\"armhf\" ;;",
+                "arm) S6_PLATFORM=\"arm\" ;;",
+                "aarch64) S6_PLATFORM=\"aarch64\" ;;",
+                "i386) S6_PLATFORM=\"x86\" ;;",
+                "*) echo >&2 \"unsupported architecture: ${ARCH}\"; exit 1 ;;",
+                "esac;",
+                "curl -L -s https://github.com/just-containers/s6-overlay/releases/download/${S6_VERSION}/s6-overlay-${S6_PLATFORM}.tar.gz",
+                "| tar xvzf - -C / '"
+            ],
+            [
+                "rm /usr/bin/php && \\",
+                "ln -s /etc/php7 /etc/php &&",
+                "ln -s /usr/bin/php7 /usr/bin/php &&",
+                "ln -s /usr/sbin/php-fpm7 /usr/bin/php-fpm &&",
+                "ln -s /usr/lib/php7 /usr/lib/php &&",
+                "rm -fr /var/cache/apk/* &&",
+                "mkdir -p /var/log/php-fpm &&",
+                "ln -s /dev/stderr /var/log/php-fpm/fpm-error.log"
+            ],
+            [
+                "mkdir -p /var/lib/php7/sessions",
+                "RUN chown nginx:nginx /var/lib/php7/sessions"
+            ],
+            [
+                "mkdir -p /usr/share/nginx/html",
+                "RUN chown -Rf nginx:nginx /usr/share/nginx/html"
+            ],
+            [
+                "git clone https://github.com/gctools-outilsgc/Image-Resource-Server.git .",
+                "RUN git checkout master"
+            ],
+            [
+                "git pull",
+                "RUN mv inc/example.config.inc.php inc/config.inc.php",
+                "&& chown -R nginx:nginx /usr/share/nginx/html",
+                "&& chmod +x bin/ffmpeg"
+            ],
+            [
+                "chmod +x bin/ffmpeg",
+                ""
+            ],
+            [
+                "chown -Rf nginx:nginx /usr/share/nginx/html",
+                "RUN chmod -R 777 /usr/share/nginx/html/"
+            ],
+            [
+                "chmod 777 /etc/pictshare.sh",
+                ""
+            ]
+        ]
+    }
+}

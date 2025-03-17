@@ -1,0 +1,40 @@
+# Using OpenJDK 8 with alpine as base image
+FROM openjdk:8-jdk-alpine as builder
+
+# Environment variables for Maven
+ENV MAVEN_HOME /usr/share/maven
+ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
+ENV MAVEN_OPTS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1"
+
+# Installing necessary packages
+RUN apk add --no-cache curl tar bash
+
+# Installing Maven
+ARG MAVEN_VERSION=3.6.3
+RUN mkdir -p /usr/share/maven && \
+    curl -fsSL http://apache.osuosl.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | tar -xzC /usr/share/maven --strip-components=1 && \
+
+# Setting work directory and coping the project files
+WORKDIR /usr/src/app
+COPY pom.xml /usr/src/app
+COPY src/ /usr/src/app/src
+
+# Building the project
+RUN mvn -T 1C install && rm -rf target
+
+# Starting a new build stage
+FROM openjdk:8-jdk-alpine
+
+# Setting work directory
+WORKDIR /usr/src/timelineobserver
+
+# Copy build from previous stage
+
+# Exposing necessary ports
+EXPOSE 8080
+
+# Adding metadata to image
+LABEL version="2.0.0"
+
+# Starting the application
+ENTRYPOINT ["java", "-jar", "/usr/src/timelineobserver/TimelineObserver-jar-with-dependencies.jar"]

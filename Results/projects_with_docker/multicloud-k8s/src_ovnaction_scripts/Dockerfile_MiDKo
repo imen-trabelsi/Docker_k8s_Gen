@@ -1,0 +1,28 @@
+# Base Image
+FROM ubuntu:18.04
+
+# Set Environment Variables
+ENV http_proxy $HTTP_PROXY
+ENV https_proxy $HTTPS_PROXY
+ENV no_proxy $NO_PROXY
+
+# Add a group and user named `onap`
+RUN groupadd -r onap && useradd -r -g onap onap
+
+# Set Working Directory 
+WORKDIR /opt/multicloud/k8s/ovnaction
+
+# Copy the source code to the Docker image
+COPY --chown=onap ./ovnaction ./
+
+# Set User
+USER onap
+
+# Expose Port
+EXPOSE 9016
+
+# Command to Run
+CMD ["./ovnaction"]
+
+# Set ownership to onap user
+RUN chown onap:onap /opt/multicloud/k8s/ovnaction -R

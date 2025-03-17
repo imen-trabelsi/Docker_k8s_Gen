@@ -1,0 +1,27 @@
+# Use Base Image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+
+# Copy Configuration, Dependencies and Build System
+COPY ["NuGet.config", "./"]
+COPY ["eShop-Learn.sln", "./"]
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+COPY ["src/BuildingBlocks/EventBus/EventBus/EventBus.csproj", "src/BuildingBlocks/EventBus/EventBus/"]
+
+# Build Commands
+RUN dotnet restore "eShop-Learn.sln"
+
+COPY . .
+WORKDIR "/src/src/Services/Identity/Identity.API"
+RUN dotnet publish --no-restore "Identity.API.csproj" -c Release -o /app/publish
+
+# Multi-Stage Build for A Smaller Runtime Image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 as publish
+WORKDIR /app
+
+
+# Exposing Port
+EXPOSE 80
+
+# Set Entry Point
+ENTRYPOINT ["dotnet", "Identity.API.dll"]

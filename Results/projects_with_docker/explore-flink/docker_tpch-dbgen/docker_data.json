@@ -1,0 +1,26 @@
+{
+    "docker_info": {
+        "base_image": "gcc",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /opt"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "mkdir -p /opt",
+                "COPY ./generate-tpch-dbgen.sh /opt/generate-tpch-dbgen.sh"
+            ],
+            [
+                "chmod +x /opt/generate-tpch-dbgen.sh",
+                "ENTRYPOINT [\"/bin/sh\",\"/opt/generate-tpch-dbgen.sh\"]"
+            ]
+        ]
+    }
+}

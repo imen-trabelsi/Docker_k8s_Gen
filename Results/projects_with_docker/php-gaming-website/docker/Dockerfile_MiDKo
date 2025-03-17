@@ -1,0 +1,41 @@
+# Stage 1: Build image
+FROM ghcr.io/gaming-platform/docker-php-fpm:8.4-development
+
+# Set working directory
+WORKDIR /project
+
+# Copy necessary files
+COPY /docker/composer-install.sh /docker/composer-install-after-code-copy.sh /
+COPY /composer.json /composer.lock /project/
+COPY / /project
+
+# Set up environment variables
+ARG environment=development
+ENV ENVIRONMENT=${environment}
+
+# Install dependencies
+RUN chmod +x /composer-install.sh
+RUN /composer-install.sh
+
+COPY /docker/entrypoint.sh /docker/warmup.sh /
+COPY --from=builder /project /project
+COPY /docker/${environment}.ini /etc/php/8.4/fpm/conf.d/
+
+## Copy remaining project files and permissions
+COPY / /project
+
+# Install remaining dependencies
+RUN chmod +x /composer-install-after-code-copy.sh
+RUN /composer-install-after-code-copy.sh
+
+# Prepare for running
+RUN chmod +x /warmup.sh
+RUN /warmup.sh
+
+# Expose ports
+EXPOSE 80
+EXPOSE 443
+
+# Set entrypoint and cmd
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["php-http"]

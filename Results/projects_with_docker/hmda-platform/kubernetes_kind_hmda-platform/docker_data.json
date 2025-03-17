@@ -1,0 +1,21 @@
+{
+    "docker_info": {
+        "base_image": null,
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "apk upgrade --update-cache --available && \\",
+                "apk add openssl &&",
+                "rm -rf /var/cache/apk/*"
+            ]
+        ]
+    }
+}

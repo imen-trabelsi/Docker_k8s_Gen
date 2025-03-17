@@ -1,0 +1,28 @@
+#Set the base image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+#Switch to the directory where the application is expected to reside.
+WORKDIR /src
+
+#Copy the application code to the build stage
+COPY . .
+
+# Restore .NET dependencies
+RUN dotnet restore "eShop-Learn.sln"
+
+# Build the app in the Docker image
+RUN dotnet publish --no-restore "Catalog.API.csproj" -c Release -o /app/publish
+
+# Set the base image for the runtime phase to be the smallest possible .NET runtime
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 as runtime
+
+#Switch to the directory where the application is expected to reside.
+WORKDIR /app
+
+#Copy the compiled application to the runtime stage
+
+#Define which port the container should expose
+EXPOSE 80
+
+#Define the command to start the application
+ENTRYPOINT ["dotnet", "Catalog.API.dll"]

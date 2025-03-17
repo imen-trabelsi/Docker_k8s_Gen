@@ -1,0 +1,26 @@
+# First stage: JDK
+FROM ${BASE_IMAGE} as base
+COPY /target/spring-application.jar /application.jar
+CMD ["java", "-jar", "/application.jar"]
+
+# Second stage: Maven/Gradle (tooling)
+FROM ${TOOLING_IMAGE} as tooling
+RUN ./mvnw install
+
+# Third stage: Spring Boot
+FROM ${SOLUTION_IMAGE} as solution
+COPY . /app
+WORKDIR /app
+RUN ./mvnw package
+
+# Netowring and health check
+EXPOSE 8080
+HEALTHCHECK CMD curl --fail http://localhost:8080/health || exit 1
+
+# Copy over files/resources
+
+# CMD/ENTRYPOINT instruction
+ENTRYPOINT ["java", "-jar", "/app/target/spring-application.jar"]
+COPY --from=management_services C:/module/cm/content C:/inetpub/wwwroot
+WORKDIR C:/inetpub/wwwroot
+RUN ["chmod", "+x", "/application.jar"]

@@ -1,0 +1,18 @@
+# Use the specified image as the base
+FROM pytorch/pytorch
+
+# Set the working directory in the docker image
+WORKDIR /usr/app
+
+# Copy package.json into the image and install dependencies
+COPY package*.json ./
+RUN npm install
+
+# Copy necessary files to the working directory
+COPY . .
+
+# Expose the correct port (Replace the 'XXXX' with the correct port number)
+# EXPOSE XXXX
+
+# Specify the command to start the application
+# CMD ["npm", "start"]

@@ -1,0 +1,39 @@
+# Step 1: Set Base Image
+FROM maven:3-eclipse-temurin-11 as build
+
+# Step 2: Define arguments and environment variables
+ARG project=platform-controller
+
+# Step 3: Setting Work Directory
+WORKDIR /usr/src/hobbit-platform
+
+# Step 4: Copy maven executable to the image
+COPY parent-pom/pom.xml parent-pom/
+COPY ${project}/pom.xml ${project}/
+
+# Step 5: Clear repo and Install Project Dependencies
+RUN mvn --file parent-pom -Dmaven.test.skip=true install
+RUN mvn --file ${project} dependency:go-offline
+
+# Step 6: Create App Directory
+RUN mkdir -p /usr/src/app/metadata
+
+# Step 7: Copy app source to image
+COPY ${project}/src ${project}/src
+
+# Step 8: Build the Application
+RUN mvn --file ${project} -Dmaven.test.skip=true package
+
+# Step 9: Expose the Application Port
+EXPOSE 8080
+
+# Step 10: Switch to second step for a multi-stage build
+FROM adoptopenjdk:11-jre-hotspot as runtime
+
+# Step 11: Setting Working Directory
+WORKDIR /app
+
+# Step 12: Copy application JAR file
+
+# Step 13: Define command to start application
+CMD ["java", "-jar", "./app.jar"]

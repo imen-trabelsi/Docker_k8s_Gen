@@ -1,0 +1,43 @@
+# Use ubuntu as base image
+FROM ubuntu:focal
+
+# Set environment variables
+ENV DEBIAN_FRONTEND noninteractive
+ENV BAREOS_KEY http://download.bareos.org/bareos/release/20/xUbuntu_20.04/Release.key
+ENV BAREOS_REPO http://download.bareos.org/bareos/release/20/xUbuntu_20.04/
+ENV BAREOS_DPKG_CONF bareos-database-common bareos-database-common
+
+# Set labels
+LABEL maintainer="barcus@tou.nu"
+LABEL org.label-schema.schema-version="1.0"
+
+# Copy necessary files
+COPY webhook-notify /usr/local/bin/webhook-notify
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+
+# Update ubuntu and install dependencies
+RUN apt-get update -qq \
+&& apt-get -qq -y install --no-install-recommends curl tzdata gnupg \
+&& curl -Ls $BAREOS_KEY -o /tmp/bareos.key \
+&& apt-key --keyring /etc/apt/trusted.gpg.d/breos-keyring.gpg add /tmp/bareos.key \
+&& echo "deb $BAREOS_REPO /" > /etc/apt/sources.list.d/bareos.list \
+&& echo "${BAREOS_DPKG_CONF}/dbconfig-install boolean false" | debconf-set-selections \
+&& echo "${BAREOS_DPKG_CONF}/install-error select ignore" | debconf-set-selections \
+&& echo "${BAREOS_DPKG_CONF}/database-type select mysql" | debconf-set-selections \
+&& echo "${BAREOS_DPKG_CONF}/missing-db-package-error select ignore" | debconf-set-selections \
+&& echo 'postfix postfix/main_mailer_type select No configuration' | debconf-set-selections \
+&& apt-get update -qq \
+&& apt-get install -qq -y --no-install-recommends bareos bareos-database-mysql mysql-client \
+&& apt-get clean \
+&& rm -rf /var/lib/apt/lists/* \
+&& tar czf /bareos-dir.tgz /etc/bareos \
+&& chmod u+x /usr/local/bin/webhook-notify \
+
+# Expose necessary port
+EXPOSE 9101
+
+# Set the correct entry point
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
+# Set the default command
+CMD ["/usr/sbin/bareos-dir", "-u", "bareos", "-f"]

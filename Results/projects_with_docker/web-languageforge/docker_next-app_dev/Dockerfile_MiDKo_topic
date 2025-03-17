@@ -1,0 +1,27 @@
+# Use Node.js 22.2.0-alpine3.18 as the base image
+FROM node:22.2.0-alpine3.18 
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Install corepack
+RUN npm install -g corepack@latest
+
+# Enable corepack
+RUN corepack enable
+
+# Copy package.json and other configuration files into the work directory
+COPY tsconfig.json pnpm-lock.yaml package.json postcss.config.cjs svelte.config.js vite.config.js tailwind.config.cjs ./ 
+
+# Copy source code and static files into the work directory
+COPY src ./src
+COPY static ./static
+
+# Install all dependencies
+RUN pnpm install
+
+# Define the network ports that this container will listen on at runtime.
+EXPOSE 3000
+
+# Run the application
+CMD ["npm", "start"]

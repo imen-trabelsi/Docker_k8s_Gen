@@ -1,0 +1,21 @@
+#Set up the base image
+FROM node:20
+
+#Set the working directory in the Docker Image
+RUN mkdir -p /code
+WORKDIR /code
+
+#Copy files from the source to the Docker image
+COPY package.json /code/
+COPY package-lock.json /code/
+COPY ./src /code/src
+COPY ./images /code/images
+
+#Install the Node.js dependencies
+RUN npm install
+
+#Expose the port 3003
+EXPOSE 3003
+
+#Set up the start command
+CMD [ "npm", "start" ]

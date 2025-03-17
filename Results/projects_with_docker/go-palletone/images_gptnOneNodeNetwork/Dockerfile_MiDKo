@@ -1,0 +1,33 @@
+# Use an official Golang runtime as a parent image
+FROM golang:1.13
+
+# Set the working directory in the container
+WORKDIR /go-palletone
+
+# Copy the current directory contents into the container at /go-palletone
+COPY . /go-palletone
+
+# Download necessary dependencies
+RUN go mod download
+
+# Copy build Commands
+RUN mkdir -p src/github.com/palletone \
+&& cd src/github.com/palletone \
+&& git clone -b master https://github.com/palletone/go-palletone.git \
+&& cd go-palletone/cmd/gptn \
+&& go build -mod=vendor \
+mkdir /go-palletone \
+&& apt-get -y update \
+&& apt-get install -yqq expect \
+
+# Copy the rest of the files
+COPY --from=builder /go/src/github.com/palletone/go-palletone/cmd/gptn/gptn .
+COPY init.sh .
+COPY newgenesis.sh .
+COPY gptn-entrypoint.sh .
+
+# Make port 8545 available to the world outside this container
+EXPOSE 8545
+
+# Establish entrypoints
+ENTRYPOINT ["./gptn-entrypoint.sh"]

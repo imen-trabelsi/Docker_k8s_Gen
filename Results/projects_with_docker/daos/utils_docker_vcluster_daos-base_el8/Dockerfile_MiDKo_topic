@@ -1,0 +1,44 @@
+# Stage 1 : Set the Base image
+FROM ${LINUX_IMAGE_NAME}:${LINUX_IMAGE_TAG} as base
+
+LABEL maintainer="daos@daos.groups.io"
+
+# Copy necessary files
+COPY . /
+
+# Stage 2 : Run dependencies installation and system preparation
+RUN dnf clean all && dnf makecache && \
+    dnf --assumeyes install dnf-plugins-core && \
+    dnf config-manager --save --setopt=assumeyes=True && \
+    dnf config-manager --save --setopt=fastestmirror=True && \
+    dnf config-manager --set-enabled powertools && \
+    dnf install epel-release && \
+    dnf update && \
+
+# Verify build arguments and bust cache if flag is set, install necessary tools and libraries
+ARG LINUX_IMAGE_NAME
+ARG LINUX_IMAGE_TAG
+ARG BUST_CACHE
+ARG DAOS_REPOS
+ARG DAOS_GPG_KEYS
+ARG DAOS_VERSION
+ARG DAOS_REPOS_NOAUTH
+ARG DAOS_AUTH
+
+RUN for it in DAOS_REPOS DAOS_GPG_KEYS DAOS_VERSION ; do if eval "[[ -z \$$it ]]" ; then echo "[ERROR] Docker build argument $it is not defined" ; exit 1 ; fi ; done && \
+    if [ -n "$BUST_CACHE" ] ; then echo "[INFO] Busting cache" && dnf update ; fi && \
+    for repo in ${DAOS_REPOS} ; do echo "[INFO] Adding rpm repository: $repo" && dnf config-manager --add-repo "$repo" ; done && \
+    for gpg_key in ${DAOS_GPG_KEYS} ; do echo "[INFO] Adding repositories gpg key: $gpg_key" && rpmkeys --import "$gpg_key" ; done && \
+    for repo in ${DAOS_REPOS_NOAUTH} ; do echo "[INFO] Disabling authentication for repository: $repo" && dnf config-manager --save --setopt="${repo}.gpgcheck=0" ; done && \
+    echo "[INFO] Installing DAOS" && dnf install daos-${DAOS_VERSION} && \
+
+# Verify DAOS_AUTH argument and generate authentication certificates if flag is set
+RUN for it in DAOS_AUTH ; do if eval "[[ -z \$$it ]]" ; then echo "[ERROR] Docker build argument $it is not defined" ; exit 1 ; fi ; done && \
+    if [ "$DAOS_AUTH" == "yes" ] ; then echo "[INFO] Generating authentication certificates" && \
+    if [ ! -d /etc/daos/certs ] ; then mkdir -d /etc/daos/certs && chown root:root /etc/daos/certs && chmod 755 /etc/daos/certs ; fi && \
+    systemctl mask systemd-remount-fs.service graphical.target kdump.service systemd-logind.service dev-hugepages.mount && \
+    pushd /lib/systemd/system/sysinit.target.wants && for item in * ; do [ "$item" == systemd-tmpfiles-setup.service ] || rm -f "$item" ; done && popd && \
+    rm -f /lib/systemd/system/multi-user.target.wants/* && rm -f /etc/systemd/system/*.wants/* && rm -f /lib/systemd/system/local-fs.target.wants/* && \
+    rm -f /lib/systemd/system/sockets.target.wants/*udev* && rm -f /lib/systemd/system/sockets.target.wants/*initctl* && rm -f /lib/systemd/system/basic.target.wants/* && \
+
+CMD [ "/sbin/init", ]

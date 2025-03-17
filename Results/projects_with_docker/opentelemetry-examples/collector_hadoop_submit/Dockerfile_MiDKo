@@ -1,0 +1,28 @@
+# check your base image
+FROM curlimages/curl:7.82.0
+
+# set environment variables
+ENV JAR_FILEPATH="/opt/hadoop/applications/hadoop-mapreduce-examples-2.7.1-sources.jar"
+ENV CLASS_TO_RUN="org.apache.hadoop.examples.WordCount"
+ENV PARAMS="/input /output"
+
+# copy files
+COPY --from=hadoop_curl /hadoop-mapreduce-examples-2.7.1-sources.jar /opt/hadoop/applications/hadoop-mapreduce-examples-2.7.1-sources.jar
+COPY run.sh /run.sh
+
+# execute command
+RUN chmod a+x /run.sh
+
+# expose ports - currently unspecified, add required ports as needed
+# EXPOSE 
+
+# set user
+USER root
+
+# health check and networking options - currently unspecified
+
+# run command
+RUN curl -L --output /hadoop-mapreduce-examples-2.7.1-sources.jar "https://repo1.maven.org/maven2/org/apache/hadoop/hadoop-mapreduce-examples/2.7.1/hadoop-mapreduce-examples-2.7.1-sources.jar"
+
+# enter the command to execute
+CMD ["/run.sh"]

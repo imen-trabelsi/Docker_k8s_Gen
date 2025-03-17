@@ -1,0 +1,33 @@
+{
+    "docker_info": {
+        "base_image": "python:3",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD requirements.txt /home/requirements.txt",
+            "ADD enrich.py /home/",
+            "WORKDIR /home"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"python3\",",
+                    "\"-u\",",
+                    "\"/home/enrich.py\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "pip3 install -r /home/requirements.txt",
+                ""
+            ]
+        ]
+    }
+}

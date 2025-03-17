@@ -1,0 +1,28 @@
+# Start with a base image 
+FROM mrrm/web.go
+
+# Create app directory
+RUN mkdir -p /app
+
+# Set work directory
+WORKDIR /app
+
+# Add source code to working directory
+COPY ./src/main/main.go /app/
+
+# Build the microservice with Maven Wrapper
+COPY mvnw mvnw.cmd .mvn /app/
+COPY pom.xml /app/
+RUN ./mvnw package
+
+# Add the application’s jar file 
+COPY target/*.jar app.jar
+
+# Set necessary environment variables 
+ENV JAVA_OPTS=""
+
+# Expose port
+EXPOSE 12862
+
+# Run the application
+ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app/app.jar" ]

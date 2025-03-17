@@ -1,0 +1,27 @@
+# Step 1: Use the python 3.8 image from Docker Hub as a Base Image
+FROM ubuntu:18.04
+
+# Step 2: Set the working directory in the container
+WORKDIR /app
+
+# Step 3: Copy the local source code files to the working directory
+COPY *.py *.txt ./
+
+# Step 4: Update and upgrade Ubuntu packages including Python3
+RUN apt update && apt upgrade -y python3
+
+# Step 5: Install pip, necessary libraries and git
+RUN apt install -y python3-pip libopenblas-base libomp5 libomp-dev
+RUN apt-get install -y git
+
+# Step 6: Install Python requirements
+RUN pip3 install -r requirements.txt
+
+# Step 7: Install Python git package
+RUN pip3 install --no-cache-dir git+https://github.com/mediaforensics/medifor.git@feature/provenance
+
+# Step 8: Expose ports
+EXPOSE 50051
+
+# Step 9: Run the application
+ENTRYPOINT ["python3", "./filtersvc.py"]

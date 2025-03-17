@@ -1,0 +1,25 @@
+# Start from the prescribed base image
+FROM node:20
+
+# Create a new directory in our docker image where our code will reside.
+RUN mkdir -p /code
+
+# Set this /code directory as the default directory. When we run any command, they will run from this /code directory
+WORKDIR /code
+
+# Copy the package.json and package-lock.json to work directory
+COPY package.json /code/
+COPY package-lock.json /code/
+
+# Install the dependencies
+RUN npm install
+
+# Copy the entire code base to work directory
+COPY ./src /code/src
+COPY ./images /code/images
+
+# Expose the port 3003 for the app to be accessible from outside
+EXPOSE 3003
+
+# Default command to start the app using npm start
+CMD ["npm", "start"]

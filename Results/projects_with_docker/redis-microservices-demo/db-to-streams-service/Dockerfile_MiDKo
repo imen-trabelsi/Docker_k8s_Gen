@@ -1,0 +1,21 @@
+# Base image
+FROM openjdk:8-jdk-alpine
+
+# Environment variables
+ENV REDIS_HOST=redis-service \
+    REDIS_PORT=6379 \
+    REDIS_PASSWORD= \
+    DATABASE_HOSTNAME=app-mysql \
+    DATABASE_PORT=3306 \
+    DATABASE_USER=debezium \
+
+# Expose ports
+EXPOSE 8082
+
+VOLUME /tmp
+
+# Copy dependencies to container
+COPY target/*.jar /app.jar
+
+# Spring Boot application profile active
+ENTRYPOINT ["java","-jar","/app.jar","--spring.profiles.active=prod"]

@@ -1,0 +1,40 @@
+# Base image
+FROM debian:9
+
+# Environment variables
+ENV JAVA_HOME=/usr/lib/jvm/java-8-openjdk-amd64/
+ENV HADOOP_VERSION=3.2.1
+ENV HADOOP_URL=https://www.apache.org/dist/hadoop/common/hadoop-$HADOOP_VERSION/hadoop-$HADOOP_VERSION.tar.gz
+ENV HADOOP_HOME=/opt/hadoop-$HADOOP_VERSION
+ENV HADOOP_CONF_DIR=/etc/hadoop
+ENV MULTIHOMED_NETWORK=1
+ENV USER=root
+ENV PATH $HADOOP_HOME/bin/:$PATH
+
+# Update packages and Install dependencies
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
+openjdk-8-jdk \
+net-tools \
+curl \
+netcat \
+gnupg \
+libsnappy-dev \
+
+# Download and verify Hadoop 
+RUN curl -O https://dist.apache.org/repos/dist/release/hadoop/common/KEYS && \
+gpg --import KEYS && \
+set -x && \
+curl -fSL "$HADOOP_URL" -o /tmp/hadoop.tar.gz && \
+curl -fSL "$HADOOP_URL.asc" -o /tmp/hadoop.tar.gz.asc && \
+gpg --verify /tmp/hadoop.tar.gz.asc && \
+tar -xvf /tmp/hadoop.tar.gz -C /opt/ && \
+rm /tmp/hadoop.tar.gz* && \
+ln -s /opt/hadoop-$HADOOP_VERSION/etc/hadoop /etc/hadoop && \
+mkdir /opt/hadoop-$HADOOP_VERSION/logs && \
+
+# Copy scripts and apply necessary permissions
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod a+x /entrypoint.sh
+
+# Start script
+ENTRYPOINT ["/entrypoint.sh"]

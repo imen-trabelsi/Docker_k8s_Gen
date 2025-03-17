@@ -1,0 +1,28 @@
+# Use base image
+FROM pitstop-dotnet-sdk-base:1.0 AS build
+
+# Set work directory
+WORKDIR /app
+
+# Copy project file
+COPY *.csproj ./
+
+# Copy all other files
+COPY . ./
+
+# Restore dependencies
+RUN dotnet restore
+
+# Compile the project
+RUN dotnet publish -c Release -o out
+
+# Start a new stage and set the base image
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+
+# Set work directory
+WORKDIR /app
+
+# Copy the build output from the previous stage
+
+# Set the entrypoint
+ENTRYPOINT ["dotnet", "Pitstop.InvoiceService.dll"]

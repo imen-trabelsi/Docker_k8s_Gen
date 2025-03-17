@@ -1,0 +1,44 @@
+{
+    "docker_info": {
+        "base_image": "node:16",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3000"
+        ],
+        "user": [
+            "1000"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV PM2_HOME=\"/home/node/app/.pm2\""
+        ],
+        "copy_instructions": [
+            "WORKDIR /usr/src/app",
+            "COPY ./ ./"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"pm2-runtime\",\"dist/src/server.js\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "rm ./version.txt",
+                "RUN openssl rand -hex 12 > version.txt"
+            ],
+            [
+                "npm install dotenv",
+                "RUN npm install pm2 -g"
+            ],
+            [
+                "chmod -R 775 /usr/src/app/dist",
+                "RUN chown -R 1000:root /usr/src/app/dist"
+            ]
+        ]
+    }
+}

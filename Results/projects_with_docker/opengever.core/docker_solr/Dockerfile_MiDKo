@@ -1,0 +1,25 @@
+# Use the specified base image
+FROM solr:8.11.4
+
+# Copy the dependencies file
+COPY ./pyproject.toml /tmp/
+
+# Set the working directory.
+WORKDIR /tmp
+
+# Install the dependencies
+RUN poetry install
+
+# Copy the specified configuration files and scripts
+COPY ./solr-conf /opt/solr/server/solr/configsets/ogsite
+COPY ./docker/solr/create_and_update_cores.sh /docker-entrypoint-initdb.d/create_and_update_cores.sh
+
+# Set the specified environment variables
+ENV SOLR_OPTS="-Dlog4j2.formatMsgNoLookups=true"
+ENV SOLR_CORES="ogsite"
+
+# Interface ports for the container
+EXPOSE 8983
+
+# Define an entry point
+ENTRYPOINT ["docker-entrypoint.sh"]

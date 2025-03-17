@@ -1,0 +1,32 @@
+# Building using specified python image.
+FROM python:${PYTHON_IMG_TAG} as base
+
+# Setting up default environment variables.
+ENV PYTHONDONTWRITEBYTECODE=1 \
+    PYTHONUNBUFFERED=1 \
+    PYTHONPATH=/app \
+
+# Installing system updates and postgress client
+RUN apt-get update -qq && \
+    apt-get install -y curl build-essential libffi-dev libgeos-dev postgresql-server-dev-15 python3-dev postgresql-client proj-bin libgeos3.11.1 gettext && \
+    rm -rf /var/lib/apt/lists/* && \
+    pip install --no-cache-dir --upgrade pip && \
+
+# Adding non-root user for security.
+RUN useradd --uid 9000 --create-home --home /home/appuser --shell /bin/false appuser && chown -R appuser:appuser /usr/src/app
+USER appuser
+
+# Add all files at the root of the application (including requirements.txt).
+WORKDIR /usr/src/app
+COPY . /usr/src/app
+
+# Python dependencies are installed.
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Exposing necessary ports.
+EXPOSE 5678/tcp
+EXPOSE 5000/tcp
+
+# Setting up CMD instruction for container startup.
+CMD ["gunicorn", "-c", "python:backend.gunicorn", "manage:application"]
+ENTRYPOINT ["python", "-m", "debugpy", "--wait-for-client", "--listen", "0.0.0.0:5678"]

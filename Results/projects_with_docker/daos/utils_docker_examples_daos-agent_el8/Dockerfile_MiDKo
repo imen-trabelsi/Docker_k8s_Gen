@@ -1,0 +1,43 @@
+# Set base image
+FROM $DAOS_DOCKER_IMAGE_NSP/daos-base-$LINUX_DISTRO:$DAOS_DOCKER_IMAGE_TAG
+
+# Set maintainer
+LABEL maintainer="daos@daos.groups.io"
+
+# Set build arguments
+ARG LINUX_DISTRO=""
+ARG DAOS_DOCKER_IMAGE_NSP=""
+ARG DAOS_DOCKER_IMAGE_TAG=""
+ARG DAOS_VERSION=""
+
+# Set working directory
+WORKDIR /app
+
+# Copy the Pipfile
+COPY requirements.txt ./requirements.txt
+
+# Run commands
+RUN for it in DAOS_VERSION ; do \
+done && \
+echo "[INFO] Installing DAOS containerization dependencies" ; \
+dnf install -y \
+sudo \
+xz && \
+echo "[INFO] Installing DAOS" ; \
+dnf install -y \
+daos-client-${DAOS_VERSION} && \
+dnf clean all && \
+
+# Copy application files
+COPY . .
+
+# Install dependencies
+RUN pip install -r requirements.txt
+
+# Copy given copy instructions
+COPY daos_agent.yml /etc/daos/daos_agent.yml
+COPY run-daos_agent.sh /usr/local/sbin/run-daos_agent
+
+# Execution command
+ENTRYPOINT ["/usr/local/sbin/run-daos_agent"]
+CMD ["start"]

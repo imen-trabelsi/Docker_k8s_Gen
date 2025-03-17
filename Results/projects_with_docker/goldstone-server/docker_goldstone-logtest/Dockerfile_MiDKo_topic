@@ -1,0 +1,35 @@
+# Base Image
+FROM logstash:2.3.1
+
+# Working Directory
+WORKDIR /usr/src/app
+
+# Set Environment Variables
+ENV TEST_FILTER_SUBSET=
+ENV TEST_SUITE_DIR=example
+ENV EXTRA_PLUGINS=logstash-filter-translate
+ENV PATTERN_TARGET_DIR=/etc/logstash/patterns
+ENV FILTER_FILE_REGEX=*.filter.conf
+
+# Copy Dependencies
+COPY setup.py ./
+COPY docker/docker-compose.yml docker/goldstone-logtest/Dockerfile ./
+
+# Install Dependencies
+RUN python setup.py install
+RUN logstash-plugin install --development
+RUN logstash-plugin install ${EXTRA_PLUGINS}
+
+# Config Test
+RUN _CONFIGTEST=true \
+  TEST_TARGET=all \
+  PATTERN_TARGET_DIR=${PATTERN_TARGET_DIR} \
+  FILTER_FILE_REGEX=${FILTER_FILE_REGEX} \
+
+# Copy Instructions
+COPY test /test
+COPY $TEST_SUITE_DIR/test/filters /test/spec/filter_data
+COPY $TEST_SUITE_DIR/test/patterns /test/spec/pattern_data
+
+# Execution Command
+ENTRYPOINT ["/test/run-tests.sh"]

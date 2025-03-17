@@ -1,0 +1,33 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:8-jdk-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8084"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV REDIS_HOST=redis-service",
+            "ENV REDIS_PORT=6379",
+            "ENV REDIS_PASSWORD=",
+            "ENV MYSQL_ROOT_PASSWORD=debezium",
+            "ENV MYSQL_USER=mysqluser",
+            "ENV MYSQL_PASSWORD=mysqlpw"
+        ],
+        "copy_instructions": [
+            "COPY target/*.jar /app.jar"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"java\",\"-jar\",\"/app.jar\",\"--spring.profiles.active=prod\"]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

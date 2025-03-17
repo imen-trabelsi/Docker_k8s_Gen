@@ -1,0 +1,29 @@
+# Choose the Python base Image
+FROM tiangolo/uvicorn-gunicorn-fastapi:python3.7
+
+# Switch to the working app directory
+WORKDIR /app
+
+# Ensure pip version is updated
+RUN pip install --no-cache-dir --upgrade pip
+
+# Install 'poetry' package globally. Needed for dependency management
+RUN pip install --no-cache-dir poetry
+
+# Disable creation of virtualenvs
+RUN poetry config virtualenvs.create false
+
+# Copy the 'pyproject.toml' and 'poetry.lock' into the Docker image
+COPY ./pyproject.toml ./pyproject.toml
+COPY ./poetry.lock ./poetry.lock
+
+# Install dependencies
+RUN poetry install --no-interaction --no-ansi
+
+# Switch back to the app user
+USER app
+
+# Copy the source code files to /app/src
+COPY ./src ./src
+
+CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "5000"]

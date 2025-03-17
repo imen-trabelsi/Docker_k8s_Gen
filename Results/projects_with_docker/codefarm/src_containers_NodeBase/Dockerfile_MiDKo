@@ -1,0 +1,36 @@
+# Use the specified base image.
+FROM node:8
+
+# Set the environment variables.
+ENV user codefarm
+ENV farmerHome /home/$user
+ENV npmDir ${farmerHome}/npm
+ENV appRoot ${farmerHome}/codefarm
+ENV DISABLE_LINK_LIBS "npm installation disabled"
+
+# Install necessary system tools and dependencies.
+RUN groupadd --system $user && useradd --system --create-home --gid $user $user
+RUN npm install -g node-gyp
+
+# Create necessary directories and set the correct permissions.
+RUN mkdir -p $farmerHome/data && chown -R $user $farmerHome/data -R && chgrp -R $user $farmerHome/data
+RUN mkdir -p ${appRoot}/src/app/me
+WORKDIR ${appRoot}/src/app/me
+
+# Copy the package json files for installing the dependencies.
+COPY package.json $appRoot
+
+# Install the project node dependencies.
+RUN npm install
+
+# Copy the project source to the docker container.
+COPY . .
+
+# Document the docker image with metadata.
+LABEL Description="Base
+
+# Switch to non-root user for security.
+USER $user
+
+# Define the command to run the application.
+CMD ["yarn", "run", "start-rel"]

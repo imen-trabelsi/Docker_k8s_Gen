@@ -1,0 +1,25 @@
+{
+    "docker_info": {
+        "base_image": "docker.io/alpine:3.21.3",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ./ca-root/ /usr/local/share/ca-certificates/"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apk update && apk upgrade && apk add --no-cache ca-certificates openssh libstdc++ libintl icu",
+                "# these are only needed for REL libunwind nghttp2-libs libidn krb5-libs libuuid lttng-ust zlib"
+            ],
+            [
+                "update-ca-certificates"
+            ]
+        ]
+    }
+}

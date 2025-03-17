@@ -1,0 +1,18 @@
+# Use the base image specified by the user
+FROM microsoft/azure-functions-runtime:v2.0.0-beta1
+
+# Set the necessary environment variable
+ENV AzureWebJobsScriptRoot=/home/site/wwwroot
+
+# Install app dependencies by copying package.json file to container and running npm install
+COPY package.json ./
+RUN npm install
+
+# Copy app source code to the container
+COPY . /home/site/wwwroot
+
+# Expose port 80
+EXPOSE 80
+
+# Set the command to run when container starts
+CMD [ "node", "/home/site/wwwroot/server.js" ]

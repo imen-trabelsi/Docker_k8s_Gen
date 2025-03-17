@@ -1,0 +1,31 @@
+# Base Image
+FROM openjdk:14-alpine
+
+# Meta Data for the image
+LABEL maintainer="devops_team@organisation.com"
+
+# Adding curl 
+RUN apk --no-cache add curl
+
+# Set the current working directory inside the container
+WORKDIR /app
+
+# Copy local code to the container image.
+COPY build.gradle /app
+COPY coinbase-integration/adapter/Dockerfile /app
+COPY . /app
+
+# Build a release artifact.
+RUN gradle clean build
+
+# Copy the jar file
+COPY build/libs/*-all.jar /bin/app.jar
+
+# Set permissions 
+RUN chmod +x /bin/app.jar
+
+# Expose the application on port 8080
+EXPOSE 8080
+
+# Start the application
+CMD ["java", "-jar", "/bin/app.jar"]

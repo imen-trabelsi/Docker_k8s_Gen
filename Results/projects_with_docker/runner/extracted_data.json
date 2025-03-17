@@ -1,0 +1,809 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": ".github",
+            "type": "tree"
+        },
+        {
+            "path": ".github/workflows",
+            "type": "tree"
+        },
+        {
+            "path": ".github/workflows/base_image_update.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/commit_trigger.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/force-ci-run",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/main.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": ".kosli.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".rubocop.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".snyk",
+            "type": "blob"
+        },
+        {
+            "path": "CONTRIBUTING.md",
+            "type": "blob"
+        },
+        {
+            "path": "Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "LICENSE.md",
+            "type": "blob"
+        },
+        {
+            "path": "Makefile",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "bin",
+            "type": "tree"
+        },
+        {
+            "path": "bin/build_image.sh",
+            "type": "blob"
+        },
+        {
+            "path": "bin/check_coverage.sh",
+            "type": "blob"
+        },
+        {
+            "path": "bin/create_test_data_manifests_file.sh",
+            "type": "blob"
+        },
+        {
+            "path": "bin/demo.sh",
+            "type": "blob"
+        },
+        {
+            "path": "bin/lib.sh",
+            "type": "blob"
+        },
+        {
+            "path": "bin/rubocop_lint.sh",
+            "type": "blob"
+        },
+        {
+            "path": "bin/run_tests.sh",
+            "type": "blob"
+        },
+        {
+            "path": "bin/setup_dependent_images.sh",
+            "type": "blob"
+        },
+        {
+            "path": "bin/snyk_container_scan.sh",
+            "type": "blob"
+        },
+        {
+            "path": "deployment",
+            "type": "tree"
+        },
+        {
+            "path": "deployment/terraform",
+            "type": "tree"
+        },
+        {
+            "path": "deployment/terraform/.gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "deployment/terraform/244531986313-eu-central-1.tfvars",
+            "type": "blob"
+        },
+        {
+            "path": "deployment/terraform/274425519734-eu-central-1.tfvars",
+            "type": "blob"
+        },
+        {
+            "path": "deployment/terraform/data.tf",
+            "type": "blob"
+        },
+        {
+            "path": "deployment/terraform/deployment.tf",
+            "type": "blob"
+        },
+        {
+            "path": "deployment/terraform/ecr.tf",
+            "type": "blob"
+        },
+        {
+            "path": "deployment/terraform/locals.tf",
+            "type": "blob"
+        },
+        {
+            "path": "deployment/terraform/main.tf",
+            "type": "blob"
+        },
+        {
+            "path": "deployment/terraform/tf.sh",
+            "type": "blob"
+        },
+        {
+            "path": "deployment/terraform/variables.tf",
+            "type": "blob"
+        },
+        {
+            "path": "deployment/terraform/versions.tf",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "docs",
+            "type": "tree"
+        },
+        {
+            "path": "docs/.snyk.example",
+            "type": "blob"
+        },
+        {
+            "path": "docs/api.md",
+            "type": "blob"
+        },
+        {
+            "path": "docs/demo_screenshot.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/kubelet-garbage-collection.txt",
+            "type": "blob"
+        },
+        {
+            "path": "docs/purge-stale-images.txt",
+            "type": "blob"
+        },
+        {
+            "path": "docs/rag-functions-into-manifest.txt",
+            "type": "blob"
+        },
+        {
+            "path": "docs/rag-functions-run-in-browser.txt",
+            "type": "blob"
+        },
+        {
+            "path": "docs/readonly-containers.txt",
+            "type": "blob"
+        },
+        {
+            "path": "docs/runc-on-k8s.txt",
+            "type": "blob"
+        },
+        {
+            "path": "docs/runner-as-docker-group.txt",
+            "type": "blob"
+        },
+        {
+            "path": "docs/scratch",
+            "type": "tree"
+        },
+        {
+            "path": "docs/scratch/--stop-timout.txt",
+            "type": "blob"
+        },
+        {
+            "path": "docs/scratch/bash-command-arg-limits.txt",
+            "type": "blob"
+        },
+        {
+            "path": "docs/scratch/container-caches.txt",
+            "type": "blob"
+        },
+        {
+            "path": "docs/scratch/docker-pull-image.txt",
+            "type": "blob"
+        },
+        {
+            "path": "docs/scratch/home-sandbox-tmp-fs.txt",
+            "type": "blob"
+        },
+        {
+            "path": "docs/scratch/redirect-with-truncate.txt",
+            "type": "blob"
+        },
+        {
+            "path": "docs/scratch/root-user.txt",
+            "type": "blob"
+        },
+        {
+            "path": "docs/scratch/web-socket.txt",
+            "type": "blob"
+        },
+        {
+            "path": "docs/snyk-crib-sheet.txt",
+            "type": "blob"
+        },
+        {
+            "path": "docs/switch-to-private-ecr.txt",
+            "type": "blob"
+        },
+        {
+            "path": "docs/todo.txt",
+            "type": "blob"
+        },
+        {
+            "path": "docs/truncation.txt",
+            "type": "blob"
+        },
+        {
+            "path": "source",
+            "type": "tree"
+        },
+        {
+            "path": "source/client",
+            "type": "tree"
+        },
+        {
+            "path": "source/client/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "source/client/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "source/client/config",
+            "type": "tree"
+        },
+        {
+            "path": "source/client/config/config.ru",
+            "type": "blob"
+        },
+        {
+            "path": "source/client/config/healthcheck.sh",
+            "type": "blob"
+        },
+        {
+            "path": "source/client/config/puma.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/client/config/up.sh",
+            "type": "blob"
+        },
+        {
+            "path": "source/client/context.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/client/demo.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/client/dispatcher.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/client/http_proxy",
+            "type": "tree"
+        },
+        {
+            "path": "source/client/http_proxy/json_requester.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/client/http_proxy/json_responder.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/client/http_proxy/languages_start_points.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/client/http_proxy/net_http_adapter.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/client/http_proxy/runner.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/client/prober.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/client/rack_dispatcher.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server",
+            "type": "tree"
+        },
+        {
+            "path": "source/server/capture3_with_timeout.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/config",
+            "type": "tree"
+        },
+        {
+            "path": "source/server/config/config.ru",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/config/healthcheck.sh",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/config/puma.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/config/up.sh",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/context.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/dispatcher.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/empty_binding.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/externals",
+            "type": "tree"
+        },
+        {
+            "path": "source/server/externals/asynchronous_threader.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/externals/bash_sheller.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/externals/pipe_maker.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/externals/process_spawner.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/externals/random.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/externals/stdout_logger.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/files_delta.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/gnu_unzip.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/gnu_zip.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/home_files.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/node.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/prober.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/puller.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/rack_dispatcher.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/rag_lambdas.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/runner.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/sandbox.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/synchronized_set.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/tagged_image_name.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/tarfile_reader.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/tarfile_writer.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/tgz.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/traffic_light.rb",
+            "type": "blob"
+        },
+        {
+            "path": "source/server/utf8_clean.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test",
+            "type": "tree"
+        },
+        {
+            "path": "test/client",
+            "type": "tree"
+        },
+        {
+            "path": "test/client/bad_proxy_call_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/client/baseline_speed_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/client/check_test_metrics.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/client/clang_sanitize_address_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/client/container_properties_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/client/created_files_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/client/file_truncation_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/client/json_requester_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/client/json_responder_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/client/languages_start_points_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/client/large_incoming_file_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/client/max_metrics.json",
+            "type": "blob"
+        },
+        {
+            "path": "test/client/os_image_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/client/prober_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/client/pull_image_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/client/robustness_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/client/run_timed_out_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/data",
+            "type": "tree"
+        },
+        {
+            "path": "test/data/display_names.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/data/image_names.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/data/languages_start_points.manifests.json",
+            "type": "blob"
+        },
+        {
+            "path": "test/data/python_pytest.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/data/readme.txt",
+            "type": "blob"
+        },
+        {
+            "path": "test/dependent_display_names.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/doubles",
+            "type": "tree"
+        },
+        {
+            "path": "test/doubles/all.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/doubles/bash_sheller_stub.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/doubles/pipe_maker_stub.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/doubles/process_spawner_stub.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/doubles/rack_request_stub.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/doubles/stdout_logger_spy.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/doubles/stdout_stderr_reader_threader_stub.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/doubles/thread_value_stub.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/doubles/threader_synchronous.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/doubles/traffic_light_stub.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/doubles/wait_thread_completed_stub.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/doubles/wait_thread_timed_out_stub.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/dual",
+            "type": "tree"
+        },
+        {
+            "path": "test/dual/id58_test_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/dual/prober_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/dual/run_red_amber_green_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/id58_test_base.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/lib",
+            "type": "tree"
+        },
+        {
+            "path": "test/lib/coverage.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/lib/run.sh",
+            "type": "blob"
+        },
+        {
+            "path": "test/lib/simplecov_formatter_json.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/require_code.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server",
+            "type": "tree"
+        },
+        {
+            "path": "test/server/asynchronous_threader_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/bash_sheller_stub_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/bash_sheller_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/binary_file_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/check_test_metrics.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/docker_stop_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/files_delta_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/gnu_zip_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/node_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/process_spawner_stub_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/process_spawner_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/pull_image_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/rack_dispatcher_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/random_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/run_clang_ptrace_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/run_faulty_gzip_error_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/run_faulty_status_non_zero_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/run_pulling_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/run_timed_out_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/sandbox_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/stdout_logger_spy_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/stdout_logger_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/synchronized_set_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/tagged_image_name_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/tarfile_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/tgz_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/traffic_light_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/server/utf8_clean_test.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/slim_json_reporter.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/test_base.rb",
+            "type": "blob"
+        }
+    ]
+}

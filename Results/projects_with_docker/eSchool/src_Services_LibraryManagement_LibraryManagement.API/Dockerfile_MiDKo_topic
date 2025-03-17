@@ -1,0 +1,26 @@
+# Dockerfile
+
+FROM mcr.microsoft.com/dotnet/sdk:5.0
+
+WORKDIR /app
+WORKDIR /src
+
+# Copy necessary files
+COPY . .
+COPY ["src/Services/LibraryManagement/LibraryManagement.API/LibraryManagement.API.csproj", "src/Services/LibraryManagement/LibraryManagement.API/"]
+
+RUN dotnet restore "src/Services/LibraryManagement/LibraryManagement.API/LibraryManagement.API.csproj"
+
+WORKDIR "/src/src/Services/LibraryManagement/LibraryManagement.API"
+
+RUN dotnet build "LibraryManagement.API.csproj" -c Release -o /app/build
+RUN dotnet publish "LibraryManagement.API.csproj" -c Release -o /app/publish
+
+# Set working directory
+WORKDIR /app
+
+COPY --from=0 /app/publish .
+
+EXPOSE 80
+
+ENTRYPOINT ["dotnet", "LibraryManagement.API.dll"]

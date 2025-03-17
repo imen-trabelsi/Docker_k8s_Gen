@@ -1,0 +1,30 @@
+# Dockerfile
+
+FROM ubuntu:focal
+
+LABEL maintainer="barcus@tou.nu" \
+    org.label-schema.schema-version="1.0" \
+    BUILD_DATE=$BUILD_DATE \
+    NAME=$NAME \
+    VCS_REF=$VCS_REF \
+
+ENV BAREOS_KEY=http://download.bareos.org/bareos/release/20/xUbuntu_20.04/Release.key \
+    BAREOS_REPO=http://download.bareos.org/bareos/release/20/xUbuntu_20.04/ \
+
+RUN apt-get update -qq \
+    && apt-get -qq -y install --no-install-recommends curl tzdata gnupg \
+    && curl -Ls $BAREOS_KEY -o /tmp/bareos.key \
+    && apt-key --keyring /etc/apt/trusted.gpg.d/bareos-keyring.gpg add /tmp/bareos.key \
+    && echo "deb $BAREOS_REPO /" > /etc/apt/sources.list.d/bareos.list \
+    && apt-get update -qq \
+    && apt-get install -qq -y --no-install-recommends bareos-webui \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/* \
+    && chmod u+x /docker-entrypoint.sh \
+
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+
+EXPOSE 80
+
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["/usr/sbin/apache2ctl", "-D", "FOREGROUND"]

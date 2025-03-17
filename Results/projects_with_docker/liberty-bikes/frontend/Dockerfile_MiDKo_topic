@@ -1,0 +1,28 @@
+# Use open-liberty base image 
+FROM open-liberty:19.0.0.9-microProfile3-java11 as build-env
+
+# Set working directory 
+WORKDIR /app
+
+# Copy build.gradle and src code to the app directory
+COPY build.gradle .
+COPY src ./src
+
+# Build the app using gradle wrapper
+RUN chmod +x gradlew
+RUN ./gradlew build
+
+FROM open-liberty:19.0.0.9-microProfile3-java11
+
+WORKDIR /config/
+
+
+# Add necessary configurations 
+COPY --chown=1001:0 build/libs/frontend.war /config/apps
+COPY --chown=1001:0 src/main/liberty/config /config/
+
+# Set necessary runtime configurations
+RUN printf 'httpPort=12000\n\
+
+# Expose necessary port  
+EXPOSE 12000 12005

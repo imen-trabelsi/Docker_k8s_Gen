@@ -1,0 +1,31 @@
+{
+    "docker_info": {
+        "base_image": "ubuntu:19.04",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apt-get update \\",
+                "&& apt-get install -y curl python-dev xz-utils zlib1g libxml2-dev libxslt1-dev bzip2 python-pip",
+                "&& apt-get clean",
+                "&& rm -rf /var/lib/apt/lists/*"
+            ],
+            [
+                "curl -sL https://github.com/nexB/scancode-toolkit/releases/download/v3.1.1/scancode-toolkit-3.1.1.tar.bz2 | tar -xj \\",
+                "&& mv scancode* /app"
+            ],
+            [
+                "./scancode --version"
+            ]
+        ]
+    }
+}

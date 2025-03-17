@@ -1,0 +1,30 @@
+# Use official base image of Python
+FROM ubuntu:18.04
+
+# Set the working directory in the container to /app
+WORKDIR /app
+
+# Set environment varibles
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+ENV TERM xterm
+
+# Copy requirements file to the working directory
+COPY .pylintrc , requirements/ /app/requirements/
+
+# Install pip
+RUN apt-get update && apt-get install -y python-pip3
+
+# Install dependencies
+RUN pip3 install --no-cache-dir -r /app/requirements/.pylintrc
+
+# Delete requirements.txt after installing dependencies to save space
+RUN rm /app/requirements/.pylintrc
+
+# Copy project files to the working directory
+COPY . /app
+
+# Expose the port the app runs in
+EXPOSE 8000
+
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

@@ -1,0 +1,28 @@
+# Use base image
+FROM remp/telegraf:1.23.3
+
+# Update packages and install needed ones
+RUN apk update && \
+    apk add ca-certificates && \
+    update-ca-certificates && \
+
+# Specify working directory
+WORKDIR /usr/src/app
+
+# Copy package.json file into the container
+COPY package.json ./
+
+# Install npm packages
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Configurations
+COPY telegraf.conf /etc/telegraf/telegraf.conf
+
+# Expose ports
+EXPOSE 8080
+
+# Start the service
+CMD [ "telegraf" ]

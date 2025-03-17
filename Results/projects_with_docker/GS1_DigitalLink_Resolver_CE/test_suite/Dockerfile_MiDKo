@@ -1,0 +1,19 @@
+# Use a Python base image
+FROM python:3.10-bullseye
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the project into the container
+COPY requirements.txt .
+COPY testHarness.py .
+COPY public ./public
+
+# Install the dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Expose the required port
+EXPOSE 5000
+
+# Set the command to run on container start
+CMD ["python", "testHarness.py"]

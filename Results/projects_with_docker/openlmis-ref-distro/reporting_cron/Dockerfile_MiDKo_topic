@@ -1,0 +1,52 @@
+# Set base image
+FROM alpine:3.11
+
+# Install Python & PIP
+RUN apk add --update py-pip
+
+# Install PostgreSQL client
+RUN apk add --no-cache postgresql-dev
+
+# Install build dependencies
+RUN apk add --no-cache --virtual .build-deps gcc python3-dev musl-dev
+
+# Copy the requirements.txt file
+COPY requirements.txt /
+
+# Install the Python requirements
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+# Remove build dependencies
+RUN apk del .build-deps
+
+# Create the application directory
+RUN mkdir -p /app
+
+# Change working directory
+WORKDIR /app
+
+# Copy static files
+COPY . /app
+
+# Set the correct environment variables
+ENV FLASK_APP=main.py
+ENV FLASK_RUN_HOST=0.0.0.0
+
+# Set file permissions for cron files
+COPY ./periodic /cron/periodic
+RUN chmod -R +x /cron/periodic
+
+# Exposed Ports
+EXPOSE 5000
+
+# Copy docker entrypoint
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Healthcheck settings
+HEALTHCHECK CMD curl --fail http://localhost:5000/ || exit 1
+
+ENTRYPOINT ["sh",  "/entrypoint.sh" ]
+CMD ["flask", "run"]
+

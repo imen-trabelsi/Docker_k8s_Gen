@@ -1,0 +1,60 @@
+# Base image
+FROM node:10-alpine as builder
+
+# Provider build arguments
+ARG DISCOVERY_API_URL
+ARG API_URL
+ARG NETWORK_NAME
+ARG NETWORK_ID
+ARG NETWORK_TYPE
+ARG CHAIN_TYPE
+ARG NETWORK_TOKEN_SYMBOL
+ARG NETWORK_TOKEN_DECIMALS
+ARG NETWORK_COLOR_CODE
+
+# Env variables
+ENV DISCOVERY_API_URL=$DISCOVERY_API_URL
+ENV API_URL=$API_URL
+ENV NETWORK_NAME=$NETWORK_NAME
+ENV NETWORK_ID=$NETWORK_ID
+ENV NETWORK_TYPE=$NETWORK_TYPE
+ENV CHAIN_TYPE=$CHAIN_TYPE
+ENV NETWORK_TOKEN_SYMBOL=$NETWORK_TOKEN_SYMBOL
+ENV NETWORK_TOKEN_DECIMALS=$NETWORK_TOKEN_DECIMALS
+ENV NETWORK_COLOR_CODE=$NETWORK_COLOR_CODE
+
+# Copy package.json and package-lock.json
+COPY package.json package-lock.json ./
+
+# Create app directory and move node modules into it
+RUN npm ci && mkdir /ng-app && mv ./node_modules ./ng-app
+
+# Check the contents of the app
+RUN ls /ng-app/src/
+
+# Set Workdir
+WORKDIR /ng-app
+
+# Copy source code
+COPY . /ng-app/
+
+# Build the app
+RUN npm run ng build -- --prod --output-path=dist
+
+# Remove the default Nginx conf
+RUN rm -rf /etc/nginx/conf.d/*
+
+# Remove the default Nginx html
+RUN rm -rf /usr/share/nginx/html/*
+
+
+# Start from Nginx
+FROM nginx:alpine
+
+# Copy Nginx conf file
+COPY nginx.conf /etc/nginx/conf.d/
+
+# Copy static files
+
+# Start Nginx
+CMD ["nginx", "-g", "daemon off;"]

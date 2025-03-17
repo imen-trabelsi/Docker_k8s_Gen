@@ -1,0 +1,36 @@
+# Dockerfile
+
+# Use python:3.10-slim as the base image
+FROM python:3.10-slim
+
+# Set environment variable
+ENV VIRTUAL_ENV=/var/run/aether/venv
+
+# Create virtual environment and add it to PATH
+RUN python3 -m venv $VIRTUAL_ENV
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+# Copy setup files and project files to proper locations
+COPY ./conf/docker/* /tmp/
+WORKDIR /code
+COPY --chown=aether:aether ./conf/pip /code/conf/pip
+COPY --chown=aether:aether ./ /code
+
+# Define Version and Git_Revision as a build argument
+ARG VERSION=0.0.0
+ARG GIT_REVISION
+
+# Set up the environment and install requirements
+RUN /tmp/setup.sh && \
+  mkdir -p $VIRTUAL_ENV && \
+  python3 -m venv $VIRTUAL_ENV && \
+  pip install -q --upgrade pip && \
+  pip install -q -r /code/conf/pip/requirements.txt && \
+  mkdir -p /var/tmp && \
+  echo $VERSION > /var/tmp/VERSION && \
+
+#Set microservice project description
+LABEL description="Aether"
+
+# Finally, run the command
+ENTRYPOINT ["/code/entrypoint.sh"]

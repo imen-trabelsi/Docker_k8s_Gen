@@ -1,0 +1,53 @@
+# Start with base image, resin/rpi-raspbian
+FROM resin/rpi-raspbian
+
+# Declare environment variables
+ENV INSTALL_DIR /opt/ttn-gateway
+
+# Update and install required packages
+RUN apt-get update && apt-get install -y \
+    build-essential \
+    gettext \
+    git \
+    iproute2 \
+    iputils-ping \
+    libftdi-dev \
+    python-dev \
+    swig \
+
+# Clone the necessary repositories
+RUN git clone -b spi https://github.com/ttn-zh/ic880a-gateway.git ~/ic880a-gateway \
+    && git clone https://github.com/devttys0/libmpsse.git $INSTALL_DIR/libmpsse \
+    && git clone -b legacy https://github.com/TheThingsNetwork/lora_gateway.git $INSTALL_DIR/lora_gateway \
+
+# Configure and build projects
+RUN cd $INSTALL_DIR/libmpsse/src \
+    && ./configure --disable-python \
+    && make \
+    && make install \
+
+# Update config file and make projects
+RUN cp $INSTALL_DIR/lora_gateway/libloragw/99-libftdi.rules /etc/udev/rules.d/99-libftdi.rules \
+    && sed -i -e 's/PLATFORM= kerlink/PLATFORM= imst_rpi/g' $INSTALL_DIR/lora_gateway/libloragw/library.cfg \
+    && cd $INSTALL_DIR/lora_gateway \
+
+# Make packet_forwarder
+RUN cd $INSTALL_DIR/packet_forwarder \
+
+# Create bin directory and symlink
+RUN mkdir $INSTALL_DIR/bin \
+
+# Copy configuration file
+COPY local_conf_template.json cmd.sh $INSTALL_DIR/bin/
+    
+# More copy instructions
+RUN cp -f $INSTALL_DIR/packet_forwarder/poly_pkt_fwd/global_conf.json $INSTALL_DIR/bin/global_conf.json \
+
+# Clean up apt cache and temp files to reduce layer size
+RUN rm -rf /var/lib/apt/lists/* /tmp/*
+
+# Set working directory
+WORKDIR $INSTALL_DIR/bin
+
+# Set entrypoint for container
+CMD ["./cmd.sh"]

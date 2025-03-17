@@ -1,0 +1,28 @@
+# Use the official Golang image to create a build artifact.
+FROM golang:1.19-rc-alpine3.15 as builder
+
+# Copy local code to the container image.
+WORKDIR /usr/local/src
+
+# Install dependencies.
+RUN apk --no-cache add ca-certificates git make zsh bash
+
+#Clone etcd repo
+RUN git clone https://github.com/etcd-io/etcd \
+&& cd etcd && git checkout 08407ff7600eb16c4445d5f21c4fafaf19412e24 \
+
+# Ensure all necessary packages are installed.
+RUN apk --no-cache add zsh sed curl vim
+
+COPY start-etcd.sh /opt/start-etcd.sh
+COPY etcd.conf /etc/etcd.conf
+
+# Make the start-etcd.sh script executable.
+RUN chmod u+x /opt/start-etcd.sh
+
+# Set the entrypoint with the start-etcd.sh.
+ENTRYPOINT ["/opt/start-etcd.sh"]
+
+# Listen on the default port.
+
+EXPOSE 5050

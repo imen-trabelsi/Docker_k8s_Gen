@@ -1,0 +1,3017 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": ".gitattributes",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "LICENSE",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.override.yml",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "eShopOnContainersDDD.sln",
+            "type": "blob"
+        },
+        {
+            "path": "img",
+            "type": "tree"
+        },
+        {
+            "path": "img/commands.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/cqrs-logical.svg",
+            "type": "blob"
+        },
+        {
+            "path": "img/eventsourcing.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/overview.png",
+            "type": "blob"
+        },
+        {
+            "path": "src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Common.props",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/Elastic",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/Elastic/Basket.Applications.Elastic.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/Elastic/Basket",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/Elastic/Basket/BasketIndex.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/Elastic/Basket/Entities",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/Elastic/Basket/Entities/Item",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/Elastic/Basket/Entities/Item/BasketItemIndex.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/Elastic/Basket/Services",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/Elastic/Basket/Services/BasketsUsingProduct.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/Elastic/Setup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/MongoDb",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/MongoDb/Basket.Applications.MongoDb.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/MongoDb/Basket",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/MongoDb/Basket/Basket.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/MongoDb/Basket/Services",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/MongoDb/Basket/Services/BasketsUsingProduct.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/Tests",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/Tests/AutoFakeItEasyData.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/Tests/Basket.Applications.Tests.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/Tests/Basket",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/Tests/Basket/BasketIndex_AddRemoveItem.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/Tests/Basket/BasketIndex_CreateDestroy.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/Tests/Basket/Basket_CreateDestroy.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/Tests/Basket/Entities",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/Tests/Basket/Entities/Item",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/Tests/Basket/Entities/Item/BasketItemIndex_CreateDestroy.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Applications/Tests/Basket/Entities/Item/BasketItemIndex_Details.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/BasketAssemblyInfo.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Domain",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Domain/Entities",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Domain/Entities/Basket.Domain.Entities.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Domain/Entities/Basket",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Domain/Entities/Basket/Basket.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Domain/Entities/Basket/Entities",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Domain/Entities/Basket/Entities/Item",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Domain/Entities/Basket/Entities/Item/Item.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Domain/Handlers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Domain/Handlers/Basket.Domain.Handlers.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Domain/Handlers/Basket",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Domain/Handlers/Basket/Entities",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Domain/Handlers/Basket/Entities/Item",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Domain/Handlers/Basket/Entities/Item/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Domain/Handlers/Basket/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Domain/Tests",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Domain/Tests/AutoFakeItEasyData.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Domain/Tests/Basket.Domain.Tests.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Domain/Tests/Basket",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Domain/Tests/Basket/CreateDestroy.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Domain/Tests/Basket/Entities",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Domain/Tests/Basket/Entities/Item",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Domain/Tests/Basket/Entities/Item/AddRemove.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Domain/Tests/Basket/claim.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Language",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket.Language.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Commands",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Commands/ClaimBasket.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Commands/Destroy.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Commands/Initiate.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Entities",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Entities/Item",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Entities/Item/Commands",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Entities/Item/Commands/AddItem.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Entities/Item/Commands/RemoveItem.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Entities/Item/Commands/UpdateQuantity.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Entities/Item/Events",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Entities/Item/Events/ItemAdded.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Entities/Item/Events/ItemRemoved.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Entities/Item/Events/QuantityUpdated.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Entities/Item/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Entities/Item/Models/Item.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Entities/Item/Models/ItemIndex.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Entities/Item/Queries",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Entities/Item/Queries/Items.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Entities/Item/Services",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Entities/Item/Services/ItemsInBasket.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Entities/Item/State.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Events",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Events/BasketClaimed.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Events/Destroyed.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Events/Initiated.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Models/Basket.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Models/BasketIndex.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Queries",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Queries/Basket.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Queries/Baskets.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Services",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/Services/BasketsUsingProduct.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Language/Basket/State.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/Basket.Presentation.Api.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/BasketSettings.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/Controllers/BasketController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/Controllers/HomeController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/Extensions",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/Extensions/FailingMiddlewareAppBuilderExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/Extensions/WebHostBuilderExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/Infrastructure",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/Infrastructure/Exceptions",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/Infrastructure/Exceptions/BasketDomainException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/Infrastructure/Filters",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/Infrastructure/Filters/AuthorizeCheckOperationFilter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/Infrastructure/Filters/HttpGlobalExceptionFilter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/Infrastructure/Filters/JsonErrorResponse.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/Infrastructure/Filters/ValidateModelStateFilter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/Infrastructure/InternalServerErrorObjectResult.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/Infrastructure/Middleware",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/Infrastructure/Middleware/FailingMiddleware.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/Infrastructure/Middleware/FailingOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/Infrastructure/Middleware/FailingStartupFilter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Basket/Presentation/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Applications",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Applications/Elastic",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Applications/Elastic/Catalog.Applications.Elastic.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Applications/Elastic/CatalogBrand",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Applications/Elastic/CatalogBrand/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Applications/Elastic/CatalogType",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Applications/Elastic/CatalogType/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Applications/Elastic/Product",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Applications/Elastic/Product/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Applications/Elastic/Setup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Applications/MongoDb",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Applications/MongoDb/Catalog.Applications.MongoDb.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Applications/MongoDb/CatalogBrand",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Applications/MongoDb/CatalogBrand/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Applications/MongoDb/CatalogType",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Applications/MongoDb/CatalogType/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Applications/MongoDb/Product",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Applications/MongoDb/Product/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/CatalogAssemblyInfo.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain/Entities",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain/Entities/Catalog.Domain.Entities.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain/Entities/CatalogBrand",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain/Entities/CatalogBrand/Brand.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain/Entities/CatalogType",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain/Entities/CatalogType/Type.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain/Entities/Product",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain/Entities/Product/Product.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain/Handlers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain/Handlers/Catalog.Domain.Handlers.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain/Handlers/CatalogBrand",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain/Handlers/CatalogBrand/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain/Handlers/CatalogType",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain/Handlers/CatalogType/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain/Handlers/Product",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain/Handlers/Product/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain/Tests",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain/Tests/AutoFakeItEasyData.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain/Tests/Catalog.Domain.Tests.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain/Tests/CatalogBrand",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain/Tests/CatalogBrand/CreateDestroy.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain/Tests/CatalogType",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain/Tests/CatalogType/CreateDestroy.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain/Tests/Product",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain/Tests/Product/CreateDestroy.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Domain/Tests/Product/reordering.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Catalog.Language.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/CatalogBrand",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/CatalogBrand/Commands",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/CatalogBrand/Commands/Define.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/CatalogBrand/Commands/Destroy.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/CatalogBrand/Events",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/CatalogBrand/Events/Defined.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/CatalogBrand/Events/Destroyed.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/CatalogBrand/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/CatalogBrand/Models/CatalogBrand.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/CatalogBrand/Queries",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/CatalogBrand/Queries/Brands.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/CatalogBrand/State.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/CatalogType",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/CatalogType/Commands",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/CatalogType/Commands/Define.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/CatalogType/Commands/Destroy.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/CatalogType/Events",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/CatalogType/Events/Defined.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/CatalogType/Events/Destroyed.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/CatalogType/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/CatalogType/Models/CatalogType.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/CatalogType/Queries",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/CatalogType/Queries/Types.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/CatalogType/State.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Commands",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Commands/Add.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Commands/MarkReordered.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Commands/Remove.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Commands/SetPicture.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Commands/UnMarkReordered.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Commands/UpdateDescription.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Commands/UpdatePrice.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Commands/UpdateStock.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Commands/UpdateThresholds.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Events",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Events/Added.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Events/DescriptionUpdated.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Events/PictureSet.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Events/PriceUpdated.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Events/Removed.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Events/ReorderMarked.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Events/ReorderUnMarked.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Events/StockUpdated.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Events/ThresholdsUpdated.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Models/Product.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Models/ProductIndex.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Queries",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Queries/Catalog.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Queries/List.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/Queries/Product.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Language/Product/State.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Presentation",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Presentation/Catalog.Presentation.Api.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Presentation/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Presentation/Controllers/CatalogBrandController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Presentation/Controllers/CatalogTypeController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Presentation/Controllers/HomeController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Presentation/Controllers/ProductController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Presentation/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Presentation/Extensions",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Presentation/Extensions/FailingMiddlewareAppBuilderExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Presentation/Extensions/WebHostBuilderExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Presentation/Filters",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Presentation/Filters/AuthorizeCheckOperationFilter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Presentation/Filters/HttpGlobalExceptionFilter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Presentation/Infrastructure",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Presentation/Infrastructure/InternalServerErrorObjectResult.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Presentation/Middleware",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Presentation/Middleware/FailingMiddleware.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Presentation/Middleware/FailingOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Presentation/Middleware/FailingStartupFilter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Presentation/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Presentation/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Catalog/Presentation/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Presentation/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Presentation/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Catalog/Presentation/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Applications",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Applications/Elastic",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Applications/Elastic/Identity.Applications.Elastic.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Applications/Elastic/Role",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Applications/Elastic/Role/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Applications/Elastic/Setup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Applications/Elastic/User",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Applications/Elastic/User/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Applications/Elastic/User/Services",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Applications/Elastic/User/Services/UsersWithRole.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Applications/MongoDb",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Applications/MongoDb/Identity.Applications.MongoDb.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Applications/MongoDb/Role",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Applications/MongoDb/Role/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Applications/MongoDb/User",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Applications/MongoDb/User/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Applications/MongoDb/User/Services",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Applications/MongoDb/User/Services/UsersWithRole.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Entities",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Entities/Identity.Domain.Entities.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Entities/Role",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Entities/Role/Role.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Entities/User",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Entities/User/Entities",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Entities/User/Entities/Role",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Entities/User/Entities/Role/Role.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Entities/User/User.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Handlers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Handlers/Identity.Domain.Handlers.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Handlers/Role",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Handlers/Role/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Handlers/User",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Handlers/User/Entities",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Handlers/User/Entities/Role",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Handlers/User/Entities/Role/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Handlers/User/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Tests",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Tests/AutoFakeItEasyData.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Tests/Identity.Domain.Tests.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Tests/Role",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Tests/Role/CreateDestroy.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Tests/Role/activation.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Tests/Role/revoke.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Tests/User",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Tests/User/CreateDestroy.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Domain/Tests/User/identify.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/IdentityAssemblyInfo.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/Identity.Language.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/Role",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/Role/Commands",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/Role/Commands/Activate.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/Role/Commands/Deactivate.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/Role/Commands/Define.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/Role/Commands/Destroy.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/Role/Commands/Revoke.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/Role/Events",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/Role/Events/Activated.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/Role/Events/Deactivated.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/Role/Events/Defined.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/Role/Events/Destroyed.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/Role/Events/Revoked.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/Role/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/Role/Models/Role.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/Role/Models/RoleIndex.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/Role/Queries",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/Role/Queries/Roles.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/Role/State.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Commands",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Commands/ChangeName.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Commands/ChangePassword.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Commands/Disable.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Commands/Enable.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Commands/Identify.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Commands/Register.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Entities",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Entities/Role",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Entities/Role/Commands",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Entities/Role/Commands/Assign.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Entities/Role/Commands/Revoke.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Entities/Role/Events",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Entities/Role/Events/Assigned.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Entities/Role/Events/Revoked.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Entities/Role/State.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Events",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Events/Disabled.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Events/Enabled.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Events/Identified.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Events/NameChanged.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Events/PasswordChanged.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Events/Registered.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Models/User.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Queries",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Queries/Identity.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/Queries/Users.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Language/User/State.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Presentation",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Presentation/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Presentation/Controllers/HomeController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Presentation/Controllers/RoleController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Presentation/Controllers/UserController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Presentation/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Presentation/Extensions",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Presentation/Extensions/FailingMiddlewareAppBuilderExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Presentation/Extensions/WebHostBuilderExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Presentation/Filters",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Presentation/Filters/AuthorizeCheckOperationFilter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Presentation/Filters/HttpGlobalExceptionFilter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Presentation/Identity.Presentation.Api.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Presentation/Infrastructure",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Presentation/Infrastructure/InternalServerErrorObjectResult.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Presentation/Middleware",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Presentation/Middleware/FailingMiddleware.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Presentation/Middleware/FailingOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Presentation/Middleware/FailingStartupFilter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Presentation/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Presentation/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Identity/Presentation/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Presentation/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Presentation/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Identity/Presentation/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/Elastic",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/Elastic/Buyer",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/Elastic/Buyer/Entities",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/Elastic/Buyer/Entities/Address",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/Elastic/Buyer/Entities/Address/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/Elastic/Buyer/Entities/PaymentMethod",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/Elastic/Buyer/Entities/PaymentMethod/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/Elastic/Buyer/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/Elastic/Order",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/Elastic/Order/BuyerOrders.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/Elastic/Order/Entities",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/Elastic/Order/Entities/Item",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/Elastic/Order/Entities/Item/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/Elastic/Order/Orders.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/Elastic/Order/Sales.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/Elastic/Order/SalesByState.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/Elastic/Order/SalesWeekOverWeek.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/Elastic/Ordering.Applications.Elastic.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/Elastic/Setup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/MongoDb",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/MongoDb/Buyer",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/MongoDb/Buyer/Entities",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/MongoDb/Buyer/Entities/Address",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/MongoDb/Buyer/Entities/Address/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/MongoDb/Buyer/Entities/PaymentMethod",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/MongoDb/Buyer/Entities/PaymentMethod/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/MongoDb/Buyer/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/MongoDb/Order",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/MongoDb/Order/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Applications/MongoDb/Ordering.Applications.MongoDb.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Entities",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Entities/Buyer",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Entities/Buyer/Buyer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Entities/Buyer/Entities",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Entities/Buyer/Entities/Address",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Entities/Buyer/Entities/Address/Address.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Entities/Buyer/Entities/PaymentMethod",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Entities/Buyer/Entities/PaymentMethod/PaymentMethod.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Entities/Order",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Entities/Order/Entities",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Entities/Order/Entities/Item",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Entities/Order/Entities/Item/Item.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Entities/Order/Order.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Entities/Ordering.Domain.Entities.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Handlers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Handlers/Buyer",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Handlers/Buyer/Entities",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Handlers/Buyer/Entities/Address",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Handlers/Buyer/Entities/Address/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Handlers/Buyer/Entities/PaymentMethod",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Handlers/Buyer/Entities/PaymentMethod/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Handlers/Buyer/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Handlers/Order",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Handlers/Order/Entities",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Handlers/Order/Entities/Item",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Handlers/Order/Entities/Item/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Handlers/Order/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Handlers/Ordering.Domain.Handlers.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Tests",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Tests/AutoFakeItEasyData.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Domain/Tests/Ordering.Domain.Tests.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Commands",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Commands/Initiate.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Commands/MarkGoodStanding.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Commands/MarkSuspended.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Commands/SetPreferredAddress.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Commands/SetPreferredPaymentMethod.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Entities",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Entities/Address",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Entities/Address/Commands",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Entities/Address/Commands/Add.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Entities/Address/Commands/Remove.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Entities/Address/Events",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Entities/Address/Events/Added.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Entities/Address/Events/Removed.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Entities/Address/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Entities/Address/Models/Address.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Entities/Address/Queries",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Entities/Address/Queries/Addresses.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Entities/Address/State.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Entities/PaymentMethod",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Entities/PaymentMethod/CardType.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Entities/PaymentMethod/Commands",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Entities/PaymentMethod/Commands/Add.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Entities/PaymentMethod/Commands/Remove.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Entities/PaymentMethod/Events",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Entities/PaymentMethod/Events/Added.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Entities/PaymentMethod/Events/Removed.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Entities/PaymentMethod/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Entities/PaymentMethod/Models/PaymentMethod.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Entities/PaymentMethod/Queries",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Entities/PaymentMethod/Queries/PaymentMethods.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Entities/PaymentMethod/State.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Events",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Events/InGoodStanding.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Events/Initiated.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Events/PreferredAddressSet.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Events/PreferredPaymentSet.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Events/Suspended.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Models/Buyer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Models/BuyerIndex.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Queries",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Queries/Buyer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/Queries/Buyers.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Buyer/State.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Commands",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Commands/Cancel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Commands/ChangeAddress.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Commands/ChangePaymentMethod.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Commands/Confirm.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Commands/Draft.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Commands/Pay.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Commands/Ship.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Entities",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Entities/Item",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Entities/Item/Commands",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Entities/Item/Commands/Add.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Entities/Item/Commands/OverridePrice.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Entities/Item/Commands/Remove.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Entities/Item/Events",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Entities/Item/Events/Added.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Entities/Item/Events/PriceOverridden.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Entities/Item/Events/Removed.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Entities/Item/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Entities/Item/Models/Item.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Entities/Item/Queries",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Entities/Item/Queries/Items.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Entities/Item/State.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Events",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Events/AddressChanged.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Events/Canceled.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Events/Confirmed.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Events/Drafted.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Events/Paid.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Events/PaymentMethodChanged.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Events/Shipped.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Models/Order.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Models/OrderIndex.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Models/SalesByState.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Models/SalesChart.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Models/SalesWeekOverWeek.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Queries",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Queries/BuyerOrders.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Queries/Order.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Queries/Orders.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Queries/Sales.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Queries/SalesByState.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Queries/SalesWeekOverWeek.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/State.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Order/Status.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Language/Ordering.Language.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/OrderingAssemblyInfo.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/Controllers/BuyerAddressController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/Controllers/BuyerController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/Controllers/BuyerPaymentMethodController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/Controllers/HomeController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/Controllers/OrderController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/Controllers/OrderItemController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/Extensions",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/Extensions/FailingMiddlewareAppBuilderExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/Extensions/WebHostBuilderExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/Filters",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/Filters/AuthorizeCheckOperationFilter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/Filters/HttpGlobalExceptionFilter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/Infrastructure",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/Infrastructure/InternalServerErrorObjectResult.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/Middleware",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/Middleware/FailingMiddleware.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/Middleware/FailingOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/Middleware/FailingStartupFilter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/Ordering.Presentation.Api.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Ordering/Presentation/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Payment/Applications",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Payment/Applications/Elastic",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Payment/Applications/Elastic/Payment.Applications.Elastic.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Applications/Elastic/Payment",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Payment/Applications/Elastic/Payment/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Applications/Elastic/Setup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Domain",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Payment/Domain/Entities",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Payment/Domain/Entities/Payment.Domain.Entities.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Domain/Entities/Payment",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Payment/Domain/Entities/Payment/Payment.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Domain/Handlers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Payment/Domain/Handlers/Payment.Domain.Handlers.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Domain/Handlers/Payment",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Payment/Domain/Handlers/Payment/Handler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Language",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Payment/Language/Payment.Language.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Language/Payment",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Payment/Language/Payment/Commands",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Payment/Language/Payment/Commands/Cancel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Language/Payment/Commands/Charge.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Language/Payment/Commands/Settle.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Language/Payment/Events",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Payment/Language/Payment/Events/Canceled.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Language/Payment/Events/Charged.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Language/Payment/Events/Settled.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Language/Payment/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Payment/Language/Payment/Models/PaymentIndex.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Language/Payment/Queries",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Payment/Language/Payment/Queries/BuyerPayments.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Language/Payment/Queries/Payments.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Language/Payment/State.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Language/Payment/Status.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/PaymentAssemblyInfo.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Presentation",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Payment/Presentation/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Payment/Presentation/Controllers/HomeController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Presentation/Controllers/PaymentController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Presentation/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Presentation/Extensions",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Payment/Presentation/Extensions/FailingMiddlewareAppBuilderExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Presentation/Extensions/WebHostBuilderExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Presentation/Filters",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Payment/Presentation/Filters/AuthorizeCheckOperationFilter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Presentation/Filters/HttpGlobalExceptionFilter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Presentation/Infrastructure",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Payment/Presentation/Infrastructure/InternalServerErrorObjectResult.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Presentation/Middleware",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Payment/Presentation/Middleware/FailingMiddleware.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Presentation/Middleware/FailingOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Presentation/Middleware/FailingStartupFilter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Presentation/Payment.Presentation.Api.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Presentation/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Presentation/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/Contexts/Payment/Presentation/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Presentation/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Presentation/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Contexts/Payment/Presentation/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Endpoints",
+            "type": "tree"
+        },
+        {
+            "path": "src/Endpoints/Domain",
+            "type": "tree"
+        },
+        {
+            "path": "src/Endpoints/Domain/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Endpoints/Domain/Domain.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Endpoints/Domain/Endpoint.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Endpoints/Domain/Mutator.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Endpoints/Elastic",
+            "type": "tree"
+        },
+        {
+            "path": "src/Endpoints/Elastic/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Endpoints/Elastic/Elastic.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Endpoints/Elastic/Endpoint.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Endpoints/Elastic/UnitOfWork.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Endpoints/MongoDb",
+            "type": "tree"
+        },
+        {
+            "path": "src/Endpoints/MongoDb/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/Endpoints/MongoDb/Endpoint.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Endpoints/MongoDb/MongoDb.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Endpoints/MongoDb/UnitOfWork.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend",
+            "type": "tree"
+        },
+        {
+            "path": "src/Frontend/.gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/ClientApp",
+            "type": "tree"
+        },
+        {
+            "path": "src/Frontend/ClientApp/.env",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/ClientApp/.env.development",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/ClientApp/.gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/ClientApp/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/ClientApp/aspnetcore-https.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/ClientApp/aspnetcore-react.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/ClientApp/package-lock.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/ClientApp/package.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/ClientApp/public",
+            "type": "tree"
+        },
+        {
+            "path": "src/Frontend/ClientApp/public/favicon.ico",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/ClientApp/public/index.html",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/ClientApp/public/manifest.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/ClientApp/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/Frontend/ClientApp/src/App.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/ClientApp/src/App.test.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/ClientApp/src/AppRoutes.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/ClientApp/src/components",
+            "type": "tree"
+        },
+        {
+            "path": "src/Frontend/ClientApp/src/components/Counter.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/ClientApp/src/components/FetchData.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/ClientApp/src/components/Home.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/ClientApp/src/components/Layout.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/ClientApp/src/components/NavMenu.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/ClientApp/src/components/NavMenu.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/ClientApp/src/custom.css",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/ClientApp/src/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/ClientApp/src/reportWebVitals.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/ClientApp/src/service-worker.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/ClientApp/src/serviceWorkerRegistration.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/ClientApp/src/setupProxy.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/Frontend/Controllers/WeatherForecastController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/Frontend.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/Pages",
+            "type": "tree"
+        },
+        {
+            "path": "src/Frontend/Pages/Error.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/Pages/Error.cshtml.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/Pages/_ViewImports.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/Frontend/Properties/launchSettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/WeatherForecast.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/appsettings.Development.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Frontend/appsettings.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure",
+            "type": "tree"
+        },
+        {
+            "path": "src/Infrastructure/Commands",
+            "type": "tree"
+        },
+        {
+            "path": "src/Infrastructure/Commands/IStampedEvent.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Commands/StampedCommand.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Enumeration",
+            "type": "tree"
+        },
+        {
+            "path": "src/Infrastructure/Enumeration/Enumeration.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Enumeration/JsonConverter.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Exceptions",
+            "type": "tree"
+        },
+        {
+            "path": "src/Infrastructure/Exceptions/CommandTimeoutException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Exceptions/QueryRejectedException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Exceptions/StorageException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Extensions",
+            "type": "tree"
+        },
+        {
+            "path": "src/Infrastructure/Extensions/ArrayExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Extensions/BusExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Extensions/DIExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Extensions/DateTimeExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Extensions/EnumerableExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Extensions/LoggingExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Extensions/TaskExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Group.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Infrastructure.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Logging",
+            "type": "tree"
+        },
+        {
+            "path": "src/Infrastructure/Logging/LogIncomingMessages.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Operation.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Queries",
+            "type": "tree"
+        },
+        {
+            "path": "src/Infrastructure/Queries/IHandleQueries.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Queries/Query.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Queries/Reply.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Query",
+            "type": "tree"
+        },
+        {
+            "path": "src/Infrastructure/Query/IDefinition.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Query/IFieldDefinition.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Query/IGrouped.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Query/IQueryResult.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Query/ISort.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/QueryBuilder.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Responses",
+            "type": "tree"
+        },
+        {
+            "path": "src/Infrastructure/Responses/ErrorResponse.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Responses/Paged.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Security",
+            "type": "tree"
+        },
+        {
+            "path": "src/Infrastructure/Security/PasswordStorage.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Setup",
+            "type": "tree"
+        },
+        {
+            "path": "src/Infrastructure/Setup/AppSetup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Setup/Attributes",
+            "type": "tree"
+        },
+        {
+            "path": "src/Infrastructure/Setup/Attributes/CategoryAttribute.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Setup/Attributes/DependsAttribute.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Setup/ISeed.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Setup/ISetup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/UnitOfWork",
+            "type": "tree"
+        },
+        {
+            "path": "src/Infrastructure/UnitOfWork/IElastic.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/UnitOfWork/IMongoDb.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/Infrastructure/Validation",
+            "type": "tree"
+        },
+        {
+            "path": "src/Infrastructure/Validation/ValidationException.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/SharedAssemblyInfo.cs",
+            "type": "blob"
+        }
+    ]
+}

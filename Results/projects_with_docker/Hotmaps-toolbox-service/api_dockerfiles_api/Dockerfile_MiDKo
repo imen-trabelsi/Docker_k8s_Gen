@@ -1,0 +1,38 @@
+# Use base image
+FROM hotmaps/base_cm:latest
+
+# Label the maintainer
+LABEL maintainers="lesly"
+
+# Create necessary directories and install dependencies
+RUN mkdir -p /data \
+    && mkdir -p /var/hotmaps/users \
+    && mkdir -p /api/requirements/api \
+    && mkdir -p /var/log/supervisor \
+
+# Set working directory
+WORKDIR /api
+
+# Copy requirements and install dependencies
+COPY requirements/api/requirements.txt requirements/api
+RUN pip3 install -r requirements/api/requirements.txt
+
+# Copying all necessary files into the working directory
+COPY . /api
+
+# Copying the supervisor configurations
+COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+
+# Define the exposed port
+EXPOSE 80
+
+# Define environment variables
+ENV CELERY_BROKER_URL amqp://admin:mypass@rabbit:5672/
+ENV CELERY_RESULT_BACKEND redis://redis:6379/0
+ENV C_FORCE_ROOT true
+
+# Define volume to persist data
+VOLUME /data
+
+# Execution command
+CMD ["/usr/bin/supervisord"]

@@ -1,0 +1,26 @@
+# Define the base Image
+FROM node:10-alpine
+
+# Add metadata
+LABEL maintainer="your_name@domain.com"
+LABEL version="1.0"
+LABEL description="My Node.js App"
+
+# Working Directory
+WORKDIR /app
+
+# Environment Variables
+ENV NODE_ENV=production
+
+# Copy the package.json, yarn.lock and app's source files into image
+COPY package.json yarn.lock ./
+COPY src /app
+
+# Install dependencies and clean up cache
+RUN yarn install && yarn cache clean
+
+# Expose port 8080
+EXPOSE 8080
+
+# The command that starts our app
+CMD [ "yarn", "start" ]

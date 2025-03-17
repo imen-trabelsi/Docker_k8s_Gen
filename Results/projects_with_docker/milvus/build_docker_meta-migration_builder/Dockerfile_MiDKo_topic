@@ -1,0 +1,38 @@
+# Use an official Golang runtime as a base image
+FROM golang:1.21.11-alpine3.19 AS builder
+
+# Set the working directory in the container to /app
+WORKDIR /app
+
+# Copy the dependencies manifest (go.mod) to the container's workspace.
+# This layer is rebuilt when the dependencies manifest changes, 
+# ensuring that Go modules dependencies are cached effectively.
+COPY go.mod .
+
+# Download application dependencies
+RUN go mod download
+
+# Copy the rest of the application source code into the working directory
+COPY . .
+
+# Build the application
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
+
+# Start a new stage from scratch
+FROM alpine:latest  
+
+# Copy the binary file from builder, into the root directory of this new stage
+
+# Copy over the build/config files
+COPY build/config/topology/multicluster.json /app/build/config/topology/multicluster.json
+COPY build/docker/meta-migration/builder/Dockerfile /app/build/docker/meta-migration/builder/Dockerfile
+COPY .env /app
+
+# Set current working directory
+WORKDIR /app
+
+# Install necessary packages
+RUN apk add --no-cache ca-certificates && \
+
+# Run the binary application
+CMD ["./main"]

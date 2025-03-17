@@ -1,0 +1,57 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/sdk:6.0",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "80",
+            "443"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "WORKDIR /src",
+            "COPY [\"src/WebApi/WebApi.csproj\", \"src/WebApi/\"]",
+            "COPY [\"src/Application/Application.csproj\", \"src/Application/\"]",
+            "COPY [\"src/Domain/Domain.csproj\", \"src/Domain/\"]",
+            "COPY [\"src/Infrastructure/Infrastructure.csproj\", \"src/Infrastructure/\"]",
+            "WORKDIR \"/src/src/WebApi\"",
+            "WORKDIR /app",
+            "COPY --from=publish /app/publish .",
+            "COPY /src/WebApi/entrypoint.sh /usr/local/bin/entrypoint.sh"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"entrypoint.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "dotnet restore \"src/WebApi/WebApi.csproj\"",
+                "COPY . ."
+            ],
+            [
+                "dotnet build \"WebApi.csproj\" -c Release -o /app/build",
+                ""
+            ],
+            [
+                "dotnet publish \"WebApi.csproj\" -c Release -o /app/publish",
+                ""
+            ],
+            [
+                "chmod +x /usr/local/bin/entrypoint.sh",
+                ""
+            ],
+            [
+                "apk add icu-libs",
+                "ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,29 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"moleculerjs-boilerplate\",\n  \"version\": \"1.0.0\",\n  \"description\": \"My Moleculer microservices project\",\n  \"scripts\": {\n    \"build\": \"tsc\",\n    \"dev\": \"ts-node -r tsconfig-paths/register ./node_modules/moleculer/bin/moleculer-runner.js --hot --repl --config moleculer.config.ts services/**/*.service.ts & npm run swagger\",\n    \"start\": \"TS_NODE_PROJECT=tsconfig.production.json node -r tsconfig-paths/register ./node_modules/moleculer/bin/moleculer-runner.js dist/services\",\n    \"cli\": \"pankod-cli add\",\n    \"test\": \"jest --coverage --runInBand\",\n    \"lint\": \"eslint -c .eslintrc.js --ext .ts {services,src,test}/**\",\n    \"format\": \"eslint -c .eslintrc.js --ext .ts --fix {services,src,test}/**\",\n    \"dc:up\": \"docker-compose up --build -d\",\n    \"dc:down\": \"docker-compose down\",\n    \"swagger\": \"swagger-jsdoc -d swagger/config.js -o swagger/swagger.json services/*.service.ts && node ./swagger/index.js\",\n    \"setup-db\": \"cp db.sqlite.example db.sqlite\"\n  },\n  \"pankod\": {\n    \"project\": \"moleculer\"\n  },\n  \"keywords\": [\n    \"microservices\",\n    \"moleculer\",\n    \"typescript\",\n    \"typeorm\",\n    \"swagger\",\n    \"eslint\",\n    \"jest\",\n    \"supertest\"\n  ],\n  \"author\": \"Pankod <info@pankod.com>\",\n  \"devDependencies\": {\n    \"@pankod/pankod-cli\": \"^0.2.3\",\n    \"@types/jest\": \"^23.1.1\",\n    \"@types/node\": \"^10.12.12\",\n    \"@types/supertest\": \"^2.0.8\",\n    \"@typescript-eslint/eslint-plugin\": \"^1.9.0\",\n    \"@typescript-eslint/parser\": \"^1.9.0\",\n    \"eslint\": \"^5.16.0\",\n    \"eslint-config-prettier\": \"^4.3.0\",\n    \"eslint-plugin-prettier\": \"^3.1.0\",\n    \"jest\": \"^23.6.0\",\n    \"jest-cli\": \"^23.6.0\",\n    \"moleculer-repl\": \"^0.5.3\",\n    \"prettier\": \"^1.17.1\",\n    \"supertest\": \"^4.0.2\",\n    \"swagger-ui-express\": \"^4.0.2\",\n    \"ts-jest\": \"^23.10.5\",\n    \"ts-node\": \"^7.0.1\",\n    \"typescript\": \"^3.3.3333\"\n  },\n  \"dependencies\": {\n    \"cors\": \"^2.8.5\",\n    \"express\": \"^4.16.4\",\n    \"moleculer\": \"^0.14.5\",\n    \"moleculer-decorators\": \"^1.2.0\",\n    \"moleculer-web\": \"^0.8.0\",\n    \"nats\": \"^1.3.0\",\n    \"reflect-metadata\": \"^0.1.13\",\n    \"sqlite3\": \"^4.1.1\",\n    \"swagger-jsdoc\": \"^3.2.9\",\n    \"tsconfig-paths\": \"^3.8.0\",\n    \"typeorm\": \"^0.2.18\"\n  },\n  \"engines\": {\n    \"node\": \">= 8.x.x\"\n  },\n  \"jest\": {\n    \"coverageDirectory\": \"<rootDir>/coverage\",\n    \"testEnvironment\": \"node\",\n    \"moduleFileExtensions\": [\n      \"ts\",\n      \"js\"\n    ],\n    \"moduleNameMapper\": {\n      \"^@(Test)(.*)$\": \"<rootDir>/test/$2\",\n      \"@Entities/Connection\": \"<rootDir>/test/Config/Connection\",\n      \"^@([A-Z].*)$\": \"<rootDir>/src/$1\"\n    },\n    \"transform\": {\n      \"^.+\\\\.(ts)$\": \"ts-jest\"\n    },\n    \"testMatch\": [\n      \"**/*.spec.(ts)\"\n    ],\n    \"setupTestFrameworkScriptFile\": \"<rootDir>/test/Config/mock.setup.ts\",\n    \"globals\": {\n      \"ts-jest\": {\n        \"tsConfig\": \"<rootDir>/tsconfig.json\"\n      }\n    }\n  }\n}\n"
+        },
+        "database": "SQLite",
+        "build_system": "npm",
+        "config_files": {
+            "docker-compose.yml": "version: \"3.0\"\n\nservices:\n\n  api:\n    build: .\n    image: api\n    env_file: docker-compose.env\n    environment:\n      SERVICES: api\n      PORT: 3000\n    ports:\n      - \"3000:3000\"\n\n  attack:\n    build: .\n    image: attack\n    env_file: docker-compose.env\n    environment:\n      SERVICES: attack\n\n  planet:\n    build: .\n    image: planet\n    env_file: docker-compose.env\n    environment:\n      SERVICES: planet\n\n  nats-server:\n    image: nats:latest\n    ports:\n      - \"4222:4222\"\n",
+            "Dockerfile": "FROM node:10-alpine\n\nRUN mkdir /app\nWORKDIR /app\n\nCOPY package*.json ./\n\nRUN npm ci \n\nCOPY . .\n\nRUN npm run build && npm prune --production\n\nENV NODE_ENV=production\nCMD [\"npm\", \"start\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "README.md",
+            "demo.png",
+            "docker-compose.yml",
+            "package-lock.json"
+        ],
+        "folders": [
+            "docs",
+            "website"
+        ]
+    }
+}

@@ -1,0 +1,41 @@
+{
+    "docker_info": {
+        "base_image": "node:10",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8086"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV  REDIS_HOST=redis-service",
+            "ENV  REDIS_PORT=6379",
+            "ENV  REDIS_PASSWORD="
+        ],
+        "copy_instructions": [
+            "WORKDIR /usr/src/app",
+            "COPY package*.json ./"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"node\",",
+                    "\"server.js\",",
+                    "\"--CONF_FILE\",",
+                    "\"./config.prod.json\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "npm install",
+                "COPY . ."
+            ]
+        ]
+    }
+}

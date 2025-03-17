@@ -1,0 +1,22 @@
+# Use base image provided by user
+FROM codefarm/appnodebase:0.0.0
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Initialize environment variables
+ENV NODE_ENV production
+
+# Install app dependencies
+COPY package*.json ./
+
+RUN npm install --production
+
+# Copy app source to container
+COPY . .
+
+# Expose port 8080
+EXPOSE 8080
+
+# Start the service
+CMD [ "npm", "start" ]

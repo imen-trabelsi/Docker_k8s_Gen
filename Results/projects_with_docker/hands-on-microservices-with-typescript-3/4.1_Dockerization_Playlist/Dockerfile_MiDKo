@@ -1,0 +1,42 @@
+# Select base image from user specifications
+FROM node:8.13-slim
+
+# Create app directory. This is where your application will live inside the docker container.
+RUN mkdir -p /opt/my-musik/
+WORKDIR /opt/my-musik/
+
+# Copy over necessary config and package.json files. 
+COPY ./gulpfile.js .
+COPY ./package.json .
+COPY ./tsconfig.json .
+COPY ./tslint.json .
+COPY ./config.json .
+COPY ./Dockerfile .
+
+# Install dependencies
+RUN npm install typescript -g
+RUN npm install --no-optional
+
+# Running gulp to build the project
+RUN node_modules/.bin/gulp
+
+# Create a directory or check if it exists before setting as the work directory
+RUN mkdir -p /opt/my-musik/
+WORKDIR /opt/my-musik/
+
+# Install the production npm packages
+RUN npm install --no-optional --only=prod
+
+# Copy the source code into the docker image
+COPY ./src ./src
+
+# Copy compiled js files and additional files if any
+COPY --from=build-env /opt/my-musik/dist ./dist
+COPY --from=build-env /opt/my-musik/package.json ./
+COPY --from=build-env /opt/my-musik/config.json ./
+
+# Exposing the port for the service
+EXPOSE 3002
+
+# Start the application
+CMD [ "node", "dist/app.js"]

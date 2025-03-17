@@ -1,0 +1,26 @@
+# Set the base image.
+FROM pyaiot/base:latest
+
+# Set the maintainer or author of the image.
+LABEL maintainer="alexandre.abadie@inria.fr"
+
+# Set the environment variable for the working directory inside the container.
+WORKDIR /app
+
+# Copy source code to /app directory in the container.
+COPY . /app
+
+# ADD command to copy our script run.sh.
+COPY run.sh /run.sh
+
+# Installing the required python packages.
+RUN pip install -r requirements.txt
+
+# Execute the permissions command to make run.sh executable.
+RUN chmod +x /run.sh
+
+# Will start the python application running on 8000.
+EXPOSE 8000
+
+# Defines the command that will be run in the container.
+CMD ["/run.sh"]

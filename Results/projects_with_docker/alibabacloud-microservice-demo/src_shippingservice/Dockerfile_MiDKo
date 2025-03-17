@@ -1,0 +1,16 @@
+# Start with Base Image
+FROM registry.cn-beijing.aliyuncs.com/edas_unified/jct_dw_8_4_4:0.1
+
+# Set Work Directory
+WORKDIR /app
+
+# Copy the local pre-built elements of our Java application into our Docker image
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+COPY /shippingservice-provider/target/shippingservice-provider-1.0.0-SNAPSHOT.jar /app
+COPY /start.sh /app
+
+# Expose port 8080 for outside world
+EXPOSE 8080
+
+# Command to start Spring Boot application
+CMD ["/app/start.sh"]

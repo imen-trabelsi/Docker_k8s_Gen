@@ -1,0 +1,33 @@
+# Define the base image
+FROM hexpm/elixir:1.15.7-erlang-25.3.2.7-debian-bullseye-20231009-slim AS builder
+
+# Update and install basic tools, git, and libssl
+RUN apt-get update --allow-releaseinfo-change -y && apt-get install -y build-essential git libssl1.1 && apt-get clean && rm -f /var/lib/apt/lists/*_*
+
+# Set environment variables
+ENV MIX_ENV=prod
+ENV LANG=C.UTF-8
+
+# Install Elixir dependencies
+RUN mix local.hex --force && \
+    mix local.rebar --force && \
+
+# Set working directory and add source files
+WORKDIR /app
+COPY mix.exs mix.lock ./
+COPY . .
+
+# Get dependencies and compile source
+RUN mix do deps.get, deps.compile
+RUN mix do compile, release
+
+# Runtime container
+FROM debian:buster-slim
+
+# Install runtime dependencies
+RUN apt-get -qq update && apt-get -qq install libssl1.1
+
+# Copy the compiled app from the builder stage
+
+# Define the command to start the app
+CMD ["./bin/astarte_device_fleet_simulator", "start"]

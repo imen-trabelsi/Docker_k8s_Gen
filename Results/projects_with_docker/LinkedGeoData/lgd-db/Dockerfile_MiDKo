@@ -1,0 +1,14 @@
+# Base Image
+FROM postgis/postgis:14-3.2-alpine
+
+# Required dependencies
+RUN apk add gettext && chmod +x ./start.sh
+
+# Copy instructions
+COPY etc/postgresql/14/main/postgresql.conf.dist /conf/
+COPY target/nominatim.so /lgd/nominatim/module/nominatim.so
+COPY start.sh ./start.sh
+
+# Command to run the application
+ENTRYPOINT ["./start.sh"]
+CMD ["postgres"]

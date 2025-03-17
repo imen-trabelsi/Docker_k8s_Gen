@@ -1,0 +1,29 @@
+# Use nginx:1.19.2-alpine as base image
+FROM nginx:1.19.2-alpine
+
+# Set working directory in the container
+WORKDIR /app
+
+# Copy build.gradle and source code
+COPY build.gradle .
+COPY src ./src
+
+# Set environment variables
+ENV SPROUT_API_URL http://localhost:8080
+ENV PORT 3000
+
+# Copy instructions
+COPY ./proxy/default.conf /etc/nginx/templates/default.conf.template
+COPY ./apps/webapp/build/ /var/www/
+
+# Expose port
+EXPOSE 3000
+
+# Run gradle build
+RUN gradle build
+
+# Add the jar file to the container
+COPY build/libs/*.jar app.jar
+
+# Run command
+CMD ["java", "-jar", "app.jar"]

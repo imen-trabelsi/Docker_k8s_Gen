@@ -1,0 +1,31 @@
+# Start with a base image
+FROM openjdk:21-slim
+
+#LABEL
+
+LABEL maintainer="username@example.com"
+LABEL version="1.0"
+
+# Set our working directory
+WORKDIR /usr/local/assets
+
+# Set JAVA_HOME according to the base image java path
+ENV JAVA_HOME=/usr/local/openjdk-11
+
+# Set the environment variable for spring profile
+ENV profile=dev
+
+# Add developer source code into the Docker image
+COPY . /usr/local/assets
+
+# Build the application using Maven
+RUN mvn clean install
+
+# Copy the jar file to the root directory
+COPY api/target/restful-booker-platform-assets-*.jar / 
+
+# Expose the application on port 8080
+EXPOSE 8080
+
+# The ENTRYPOINT specifies a command that will always be executed when the container starts.
+ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=$profile", "/restful-booker-platform-assets-*.jar"]

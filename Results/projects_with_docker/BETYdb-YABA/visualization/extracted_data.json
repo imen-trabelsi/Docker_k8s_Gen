@@ -1,0 +1,29 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"metadata_visualization\",\n  \"version\": \"1.0.0\",\n  \"description\": \"\",\n  \"main\": \"index.js\",\n  \"scripts\": {\n    \"test\": \"echo \\\"Error: no test specified\\\" && exit 1\",\n    \"start\": \"node index.js\"\n  },\n  \"author\": \"\",\n  \"license\": \"ISC\",\n  \"dependencies\": {\n    \"decompress\": \"^4.2.1\",\n    \"express\": \"^4.18.2\",\n    \"google-spreadsheets-key-parser\": \"^1.1.0\",\n    \"multer\": \"^1.4.2\",\n    \"papaparse\": \"^5.2.0\",\n    \"pg\": \"^8.2.1\",\n    \"pg-format\": \"^1.0.4\",\n    \"shpjs\": \"^3.5.0\",\n    \"squel\": \"^5.13.0\"\n  }\n}\n"
+        },
+        "database": "PostgreSQL",
+        "build_system": "npm",
+        "config_files": {
+            "docker-compose.yml": "version: '3'\n\nservices:\n  # postgresql with postgis docker image to hold the data\n  postgres:\n    image: mdillon/postgis:9.5\n    volumes:\n      - postgres:/var/lib/postgresql/data\n    networks:\n      - bety\n    ports:\n      - 9000:5432\n    restart: unless-stopped\n  # BETY docker image\n  bety:\n    image: pecan/bety:${BRANCH:-latest}\n    ports:\n      - 8000:8000\n    networks:\n      - bety\n    environment:\n      - INITIALIZE_URL=-w https://terraref.ncsa.illinois.edu/bety/dump/bety0/bety.tar.gz\n      - REMOTE_SERVERS=6\n      - UNICORN_WORKER_PROCESSES=1\n      - SECRET_KEY_BASE=thisissomereallllllylongsecretkeyandshouldbelongerthanthis\n      - DUMPURL=https://terraref.ncsa.illinois.edu/bety/dump/bety6/bety.tar.gz\n    depends_on:\n      - postgres\n    restart: unless-stopped\n\n  yaba_api:\n    build: ./app\n    networks:\n      - bety\n    volumes:\n      - ./app:/code\n    ports:\n      - 5001:5000\n    depends_on:\n      - postgres\n\n  yaba_client:\n    build: ./client\n    networks:\n      - bety\n    volumes:\n      - ./client:/code\n    ports:\n      - 6001:6000\n    depends_on:\n      - yaba_api\n  \n  yaba_visualization:\n    build: ./visualization\n    networks:\n      - bety\n    volumes:\n      - './visualization:/code'\n      - '/code/node_modules'\n    environment:\n      - HOST=0.0.0.0\n      - PORT=8075\n         \n    ports:\n      - 8008:8075\n    depends_on:\n      - postgres\n    restart: unless-stopped\n    \n  yaba_interface:\n    build: ./interface\n    networks: \n      - bety\n    volumes:\n      - './interface:/code'\n      - '/code/node_modules'\n    ports:\n      - 3001:3000\n    environment:\n      - CHOKIDAR_USEPOLLING=true\n      - REACT_APP_HOST=0.0.0.0\n      - REACT_APP_PORT=3000\n    depends_on:\n      - yaba_client\n      - yaba_visualization\n    stdin_open: true\n\nvolumes:\n  postgres:\n\nnetworks:\n  bety:",
+            "visualization/Dockerfile": "FROM node:12.18.2-alpine\n\nCOPY . /code\n\nWORKDIR /code\n\nENV PATH /code/node_modules/.bin:$PATH\n\nRUN npm install --silent\n\nEXPOSE 8075\n\n# start app\nCMD [\"npm\", \"start\"]"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            "Dockerfile",
+            "README.md",
+            "package.json",
+            "yarn.lock"
+        ],
+        "folders": [
+            "public",
+            "src"
+        ]
+    }
+}

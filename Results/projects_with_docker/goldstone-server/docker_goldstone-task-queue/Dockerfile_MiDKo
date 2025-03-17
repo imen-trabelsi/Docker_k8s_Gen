@@ -1,0 +1,27 @@
+# Dockerfile
+
+FROM solinea/redis:3.0.4
+LABEL maintainer = "contact@yourdomain.com"
+
+# Ensure that Python is installed
+RUN apt-get update && \
+    apt-get install -y python3-pip python3-dev && \
+    apt-get clean && \
+
+# Add applications requirements file
+COPY setup.py /app/
+
+# Install the application requirements
+RUN pip3 install --no-cache-dir -r /app/setup.py
+
+# Copy the application source code
+COPY . /app
+
+# Set the working directory
+WORKDIR /app
+
+# Expose the application on port 8080
+EXPOSE 8080
+
+# Define the command to start the app
+CMD [ "python3", "./your-app.py" ]

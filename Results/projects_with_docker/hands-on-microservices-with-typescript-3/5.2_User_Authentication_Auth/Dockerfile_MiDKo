@@ -1,0 +1,35 @@
+# Use the specified base image
+FROM node:8.13-slim
+
+# Create the application directory in the Docker image file system
+RUN mkdir -p /opt/my-musik/
+
+# Change the working directory
+WORKDIR /opt/my-musik/
+
+# Copy package definition files to the image
+COPY ./package.json .
+COPY ./config.json .
+
+# Install TypeScript globally and necessary dependencies
+RUN npm install typescript -g && npm install --no-optional
+
+# Copy other necessary files and folders to the image 
+COPY ./gulpfile.js .
+COPY ./tsconfig.json .
+COPY ./tslint.json .
+COPY ./src ./src
+COPY ./4.0.0-dev ./4.0.0-dev
+COPY ./songs.json ./songs.json
+COPY ./package-lock.json ./package-lock.json
+COPY ./test ./test
+
+# Build and optimize for production
+RUN npm install --no-optional --only=prod
+RUN node_modules/.bin/gulp
+
+# Expose the application on port 3000
+EXPOSE 3000
+
+# Default command to run the application
+CMD [ "node", "dist/app.js" ]

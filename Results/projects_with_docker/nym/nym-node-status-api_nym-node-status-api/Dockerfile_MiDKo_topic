@@ -1,0 +1,30 @@
+# Use Rust as the base image
+FROM harbor.nymte.ch/dockerhub/rust:latest AS builder
+
+# Copy the current directory to /usr/src/nym in the Docker image
+COPY ./ /usr/src/nym
+
+# Set the current working directory in the Docker image
+WORKDIR /usr/src/nym/nym-node-status-api
+
+# Initialize the environment
+RUN apt-get update && apt-get install -y ca-certificates
+
+# Build the application
+RUN cargo build --release
+
+# =========
+# Final stage
+# =========
+FROM debian:stretch-slim
+
+# Copy the compiled binary from the builder stage
+
+# Set the current working directory
+WORKDIR /nym
+
+# Ensure the binary is executable
+RUN chmod +x /nym/nym-node-status-api
+
+# Set the binary as the entry point of the Docker image
+ENTRYPOINT ["/nym/nym-node-status-api"]

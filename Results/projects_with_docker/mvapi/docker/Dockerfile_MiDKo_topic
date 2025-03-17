@@ -1,0 +1,31 @@
+# Use base image
+FROM python:3.11
+
+# Copy the requirements file into the Docker container
+WORKDIR /code
+COPY ./requirements.txt .
+
+# Install PostgreSQL client and pip dependencies
+RUN apt-get update && \
+    apt-get install -y postgresql-client && \
+    rm -rf /var/lib/apt/lists/* && \
+    pip install --no-cache-dir -U pip && \
+
+# Copy the rest of the application files into the Docker container
+COPY . .
+
+# Expose the application on port 8877
+EXPOSE 8877
+
+# Healthcheck to monitor the health of our application within the Docker container
+HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 CMD ["CMD-SHELL", "curl --fail http://localhost:8877/health || exit 1"]
+
+#user permissions
+USER nonroot:nonroot
+
+# Set environment variables
+# replace 'key=value' with your environment variables
+ENV key=value
+
+# App execution command
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8877"]

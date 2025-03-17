@@ -1,0 +1,35 @@
+{
+    "docker_info": {
+        "base_image": "node:12.18.2-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8075"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV PATH /code/node_modules/.bin:$PATH"
+        ],
+        "copy_instructions": [
+            "COPY . /code",
+            "WORKDIR /code"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"npm\",",
+                    "\"start\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "npm install --silent",
+                ""
+            ]
+        ]
+    }
+}

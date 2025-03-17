@@ -1,0 +1,46 @@
+# Start with a base image
+FROM mongo:latest
+
+# Set environment variables
+ENV AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID
+ENV AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION
+ENV AWS_HOST_BASE=$AWS_HOST_BASE
+ENV AWS_HOST_BUCKET=$AWS_HOST_BUCKET
+ENV AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY
+ENV host_name=$hostname
+ENV relay_ip=$relay_ip
+ENV domain=$domain
+
+# Set the working directory in the container
+WORKDIR /opt/backup
+
+# Copy the shell script files from your project’s src directory to the container
+COPY nodered_backup.sh /bin/nodered_backup.sh
+COPY grafana_backup.sh /bin/grafana_backup.sh
+COPY nginx_backup.sh /bin/nginx_backup.sh
+COPY mqtts_backup.sh /bin/mqtts_backup.sh
+COPY mongodb_backup.sh /bin/mongodb_backup.sh
+COPY postfix.sh /etc/my_init.d/postfix.sh
+COPY cron.sh /etc/my_init.d/cron.sh
+
+# Run shell scripts to update system and install packages
+RUN chmod +x /bin/nodered_backup.sh /bin/grafana_backup.sh \
+/bin/nginx_backup.sh /bin/mqtts_backup.sh /bin/mongodb_backup.sh /etc/my_init.d/postfix.sh /etc/my_init.d/cron.sh \
+&& mkdir -p /etc/my_init.d /opt/backup \
+&& apt-get update && apt-get upgrade -y \
+&& ln -s /bin/true /usr/local/bin/systemctl \
+&& apt-get install -y iputils-ping net-tools debconf-utils rsync python3-pip postfix mailutils \
+&& pip3 install s3cmd \
+&& DEBIAN_FRONTEND=noninteractive apt-get install -y postfix mailutils \
+&& postconf -e relayhost=$relay_ip \
+&& echo "root@${hostname} backup@${domain}" > /etc/postfix/generic \
+&& postconf -e smtp_generic_maps=hash:/etc/postfix/generic \
+&& postmap /etc/postfix/generic \
+&& echo "postfix postfix/mailname string $hostname" | debconf-set-selections \
+
+# Run command to add information to config files
+RUN echo "[default]\naccess_key = ${AWS_ACCESS_KEY_ID}\nbucket_location = $AWS_DEFAULT_REGION\nhost_base = $AWS_HOST_BASE\nhost_bucket = $AWS_HOST_BUCKET\nsecret_key = $AWS_SECRET_ACCESS_KEY" | tee /root/.s3cfg
+
+# Terminate command signal
+CMD ["tail", "-f", "/dev/null"]
+

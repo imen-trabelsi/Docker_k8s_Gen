@@ -1,0 +1,20 @@
+# Set Base Image
+FROM untergeek/curator:8.0.10
+
+# Specify the Maintainer
+
+# Set User
+USER root
+
+# Run Command to Set Crontab for "nobody" 
+RUN >>/var/spool/cron/crontabs/nobody \
+
+# Copy Necessary Files and Directories
+COPY . /app
+
+# Open Necessary Ports
+# EXPOSE ...
+
+# Set Entrypoint and CMD
+ENTRYPOINT ["crond"]
+CMD ["-f", "-d8"]

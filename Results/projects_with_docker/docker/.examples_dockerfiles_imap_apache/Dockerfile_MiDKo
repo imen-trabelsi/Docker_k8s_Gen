@@ -1,0 +1,17 @@
+# base image that we would use is mentioned as nextcloud:apache
+FROM nextcloud:apache
+
+# Update is a common practice
+RUN apt-get update -y
+
+# install dependencies
+RUN apt-get install -y --no-install-recommends \
+    libc-client-dev \
+
+RUN docker-php-ext-configure imap --with-kerberos --with-imap-ssl 
+RUN docker-php-ext-install imap 
+
+COPY . . 
+
+# we would also define an entry point but as no specific command is mentioned we are keeping it default here
+ENTRYPOINT ["sh", "-c", "echo 'Container started'"]

@@ -1,0 +1,14 @@
+FROM node:latest
+
+WORKDIR /json-server
+
+COPY services.json /json-server/
+COPY package.json /json-server/
+COPY server.js /json-server/
+COPY authMiddleware.js /json-server/
+
+EXPOSE 3001
+
+RUN npm install
+
+CMD ["npm", "run", "start"]

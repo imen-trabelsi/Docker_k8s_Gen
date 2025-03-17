@@ -1,0 +1,42 @@
+# Start with base image
+FROM $REPOSITORY/gs-cloud-base-jre:$TAG AS builder
+
+# Set the working directory
+WORKDIR /app
+
+# Copy POM and source code
+COPY pom.xml .
+COPY src ./src
+
+# Package the application
+RUN mvn clean package
+
+# Specify build arguments
+ARG REPOSITORY=geoservercloud
+ARG TAG=latest
+ARG JAR_FILE=target/gs-cloud-*-bin.jar
+
+# Copy the built jar file
+COPY ${JAR_FILE} application.jar
+
+# Extract the layers
+RUN java -Djarmode=layertools -jar application.jar extract
+
+# Create temp dir
+RUN mkdir /tmp/tmpdatadir
+
+# Set the Environment Variable
+ENV JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS} -XX:SharedArchiveFile=application.jsa"
+
+# Start with base image for run stage
+FROM $REPOSITORY/gs-cloud-base-jre:$TAG
+
+# Copy dependencies, snapshot-dependencies, spring-boot-loader
+
+# Copy application layer
+
+# Clean up temporary directories
+RUN rm -rf /tmp/*
+
+# Configure the main command
+ENTRYPOINT ["java", "-XX:ArchiveClassesAtExit=application.jsa", "-Dspring.context.exit=onRefreshed", "-Dspring.profiles.active=standalone,datadir,offline", "-Dserver.port=0", "-Dmanagement.server.port=0", "org.springframework.boot.loader.JarLauncher"]

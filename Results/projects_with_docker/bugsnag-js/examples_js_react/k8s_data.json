@@ -1,0 +1,66 @@
+{
+  "replicaCount": 1,
+  "image": {
+    "repository": "node",
+    "pullPolicy": "IfNotPresent",
+    "tag": "8@sha256:a681bf74805b80d03eb21a6c0ef168a976108a287a74167ab593fc953aac34df"
+  },
+  "service": {
+    "type": "ClusterIP",
+    "port": 80
+  },
+  "imagePullSecrets": [],
+  "nameOverride": "",
+  "fullnameOverride": "",
+  "serviceAccount": {
+    "create": true,
+    "automount": true,
+    "annotations": {},
+    "name": ""
+  },
+  "podAnnotations": {},
+  "podLabels": {},
+  "podSecurityContext": {},
+  "securityContext": {},
+  "ingress": {
+    "enabled": false,
+    "className": "",
+    "annotations": {},
+    "hosts": [
+      {
+        "host": "chart-example.local",
+        "paths": [
+          {
+            "path": "/",
+            "pathType": "ImplementationSpecific"
+          }
+        ]
+      }
+    ],
+    "tls": []
+  },
+  "resources": {},
+  "livenessProbe": {
+    "httpGet": {
+      "path": "/",
+      "port": "http"
+    }
+  },
+  "readinessProbe": {
+    "httpGet": {
+      "path": "/",
+      "port": "http"
+    }
+  },
+  "autoscaling": {
+    "enabled": false,
+    "minReplicas": 1,
+    "maxReplicas": 100,
+    "targetCPUUtilizationPercentage": 80
+  },
+  "volumes": [],
+  "volumeMounts": [],
+  "nodeSelector": {},
+  "tolerations": [],
+  "affinity": {}
+}

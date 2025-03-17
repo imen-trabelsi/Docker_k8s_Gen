@@ -1,0 +1,34 @@
+# Set the base image
+FROM ikemtz/sql_dacpac:latest
+
+# Set environment variables
+ENV SA_PASSWORD=SqlDockerRocks123!
+
+# Set labels
+LABEL author="@IkeMtz"
+
+# Run as root user
+USER root
+
+# Create app directory
+RUN mkdir -p /usr/src/app
+
+# Working directory
+WORKDIR /usr/src/app
+
+# Copy Data
+COPY /bin/Debug/*.dacpac /dacpac/
+COPY --from=sql-temp /var/opt/mssql/data/*.ldf /var/opt/mssql/data/
+COPY --from=sql-temp /var/opt/mssql/data/*.mdf /var/opt/mssql/data/
+
+# Run the commands
+RUN /opt/mssql/bin/sqlservr & sleep 20 \
+&& sqlpackage /Action:Publish /TargetServerName:localhost /TargetUser:SA /TargetPassword:$SA_PASSWORD /SourceFile:/dacpac/compDb.dacpac /TargetDatabaseName:compDb /p:BlockOnPossibleDataLoss=false \
+&& sleep 20 \
+&& pkill sqlservr && sleep 10 \
+
+# Set the user
+USER mssql
+
+# Expose port
+EXPOSE 1433

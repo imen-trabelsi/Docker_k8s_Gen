@@ -1,0 +1,56 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.14.1",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "emco"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /go/src/github.com/onap/multicloud-k8s",
+            "COPY ./ ./",
+            "WORKDIR /opt/emco",
+            "COPY --chown=emco --from=0 /go/src/github.com/onap/multicloud-k8s/src/orchestrator/orchestrator ./",
+            "COPY --chown=emco --from=0 /go/src/github.com/onap/multicloud-k8s/src/ncm/ncm ./",
+            "COPY --chown=emco --from=0 /go/src/github.com/onap/multicloud-k8s/src/dcm/dcm ./",
+            "COPY --chown=emco --from=0 /go/src/github.com/onap/multicloud-k8s/src/rsync/rsync ./",
+            "COPY --chown=emco --from=0 /go/src/github.com/onap/multicloud-k8s/src/ovnaction/ovnaction ./",
+            "COPY --chown=emco --from=0 /go/src/github.com/onap/multicloud-k8s/src/clm/clm ./",
+            "COPY --chown=emco --from=0 /go/src/github.com/onap/multicloud-k8s/build/entrypoint ./",
+            "COPY --chown=emco --from=0 /go/src/github.com/onap/multicloud-k8s/src/orchestrator/json-schemas ./json-schemas",
+            "COPY --chown=emco --from=0 /go/src/github.com/onap/multicloud-k8s/src/ncm/json-schemas ./json-schemas",
+            "COPY --chown=emco --from=0 /go/src/github.com/onap/multicloud-k8s/src/clm/json-schemas ./json-schemas",
+            "COPY --chown=emco --from=0 /go/src/github.com/onap/multicloud-k8s/src/ovnaction/json-schemas ./json-schemas"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"./entrypoint\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "cd src/orchestrator && make all",
+                "RUN cd src/ncm && make all"
+            ],
+            [
+                "cd src/dcm && make all",
+                "RUN cd src/rsync && make all"
+            ],
+            [
+                "cd src/ovnaction && make all",
+                "RUN cd src/clm && make all"
+            ],
+            [
+                "groupadd -r emco && useradd -r -g emco emco",
+                "RUN chown emco:emco /opt/emco -R"
+            ]
+        ]
+    }
+}

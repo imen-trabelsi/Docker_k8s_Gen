@@ -1,0 +1,24 @@
+# Set base image
+FROM python:3.8-slim-buster
+
+# Set environment variables
+ENV FLASK_APP=filtersvc.py
+ENV GOPATH ""
+ENV PATH=${PATH}:/app/bin
+
+# Set work directory
+WORKDIR /app
+
+# Copy project files to /app
+COPY . .
+
+# Update and install dependencies
+RUN apt-get update && \
+    apt-get install -y g++ libmagic1 && \
+    pip install --upgrade pip && \
+
+# Expose port
+EXPOSE 50051
+
+# Run Python app
+CMD ["python", "-m", "flask", "run", "--host=0.0.0.0"]

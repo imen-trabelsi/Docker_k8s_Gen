@@ -1,0 +1,28 @@
+# Set the base image
+FROM httpd:2.4-alpine
+
+# Set the working directory
+WORKDIR /app
+
+# Install system dependencies
+RUN apk add --no-cache esh
+
+# Copy pyproject.toml (Python package manager) to Docker workspace to install dependencies
+COPY ./pyproject.toml ./pyproject.toml
+
+# Install Python dependencies
+RUN poetry install
+
+# Copy necessary files from local system to the Docker image
+COPY ./docker/httpd/conf/httpd.conf.esh /usr/local/apache2/conf/httpd.conf.esh
+COPY ./docker/httpd/msoffice.html /usr/local/apache2/htdocs/msoffice.html
+COPY ./docker/httpd/httpd-foreground /usr/local/bin/
+
+# Copy the main application code
+COPY . /app
+
+# Set the listening port for the applications that run within the container
+EXPOSE 80
+
+# Set the container's executable
+CMD ["httpd-foreground"]

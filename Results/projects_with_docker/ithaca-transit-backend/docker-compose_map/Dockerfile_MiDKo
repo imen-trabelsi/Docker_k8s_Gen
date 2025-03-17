@@ -1,0 +1,34 @@
+# Base Image
+FROM maven:3.6.0-jdk-8-alpine
+
+# Set working directory in the container
+WORKDIR /usr/src/app
+
+# Copy instructions
+COPY package.json .
+COPY config.yml .
+
+# Install app dependencies
+RUN npm install
+
+# If you are building your code for production
+RUN npm ci --only=production
+
+# Clone repositories
+RUN apk add git wget
+RUN git clone --single-branch -b tcat-map https://github.com/cuappdev/ithaca-transit-backend.git /usr/src/app
+RUN git clone --single-branch -b 0.11 https://github.com/graphhopper/map-matching.git
+
+# Configure app
+WORKDIR /usr/src/app/map-matching
+COPY config.yml .
+
+# Build and run Map Matching
+RUN mvn package -e -DskipTests
+RUN java -jar matching-web/target/graphhopper-map-matching-web-0.11-SNAPSHOT.jar import ../map.osm --vehicle=car,foot
+
+# Expose port
+EXPOSE 8989
+
+# Default command
+CMD ["java", "-jar", "matching-web/target/graphhopper-map-matching-web-0.11-SNAPSHOT.jar", "server", "config.yml"]

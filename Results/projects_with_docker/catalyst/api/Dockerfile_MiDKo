@@ -1,0 +1,28 @@
+# Set the base Image
+FROM node:12-alpine
+
+# Set the work Directory in the Docker container
+WORKDIR /app
+
+# Copy the dependencies file to the working directory
+COPY package.json .
+
+# Install dependencies and necessary tools
+RUN apk update && apk add --update alpine-sdk build-base bash python nano
+RUN npm i -g pnpm
+RUN pnpm install
+
+# Copy the remaining files to the working directory
+COPY . .
+
+# Add application run time configuration
+COPY .env .
+
+# Specify the command to start the application
+CMD ["npm", "start"]
+
+# Expose the application on a specific port
+EXPOSE 8080
+
+# Set environment variables
+ENV SUPPORTING_FILES=/app

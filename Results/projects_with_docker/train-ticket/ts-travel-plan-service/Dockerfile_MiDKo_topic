@@ -1,0 +1,24 @@
+# Use an optimized and secure base image
+FROM java:8-jre
+
+# Install necessary dependencies
+COPY pom.xml ./
+RUN mvn dependency:go-offline -B
+
+# Copy source and build the app
+COPY src ./src
+RUN mvn package -DskipTests
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the .jar application
+COPY ./target/ts-travel-plan-service-1.0.jar /app/
+
+# Expose the application on the specified port
+EXPOSE 14322
+
+# Correct timezone issues
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+# Shell form of ENTRYPOINT
+ENTRYPOINT ["java", "-Xmx200m", "-jar", "/app/ts-travel-plan-service-1.0.jar"]

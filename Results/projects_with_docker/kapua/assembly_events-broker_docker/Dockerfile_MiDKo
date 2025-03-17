@@ -1,0 +1,41 @@
+# Base Image
+FROM @docker.account@/java-base
+
+# Maintainer
+LABEL maintainer="yourEmail@example.com"
+
+# Set Correct User
+USER 1002
+
+# Set working directory in docker image filesystem.
+WORKDIR /opt/artemis
+
+# Copy Static resources if any exists
+# COPY paths-to-your-static-resources /var/www/html/
+
+# Database dependencies 
+RUN apt-get update && apt-get install -y postgresql
+
+# Add scripts to the docker image
+COPY maven /
+
+# Install Java and Maven
+RUN apt-get update && \
+    apt-get install -y maven && \
+
+# Create User
+RUN useradd -u 1002 -g 0 -d '/opt/artemis' -s '/sbin/nologin' artemis 
+
+# Permissions for necessary directory
+RUN chown -R artemis:root /opt/artemis && \
+    chmod -R g=u /opt/artemis && \
+
+# Switch to the user 1002
+USER 1002
+
+# Expose port
+EXPOSE 5672
+
+# Set the startup command to execute 
+# the run-event-broker script when docker runs the container
+ENTRYPOINT ["/opt/artemis/run-event-broker"]

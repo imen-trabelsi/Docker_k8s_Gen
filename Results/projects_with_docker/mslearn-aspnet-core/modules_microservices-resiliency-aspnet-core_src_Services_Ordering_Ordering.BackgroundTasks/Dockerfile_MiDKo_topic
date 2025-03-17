@@ -1,0 +1,25 @@
+# Use an official Microsoft .NET SDK runtime as a parent image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+# Set the working directory in the image
+WORKDIR /src
+
+# Copy csproj and restore as distinct layers to leverage Docker cache
+COPY ["NuGet.config", "./"]
+COPY ["docker-compose.dcproj", "./"]
+COPY ["eShop-Learn.sln", "./"]
+
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+# More csproj files...
+COPY ["src/Web/WebStatus/WebStatus.csproj", "src/Web/WebStatus/"]
+
+# copy everything else and build
+COPY . .
+WORKDIR "/src/src/Services/Ordering/Ordering.BackgroundTasks"
+RUN dotnet restore "eShop-Learn.sln"
+RUN dotnet publish --no-restore "Ordering.BackgroundTasks.csproj" -c Release -o /app/publish
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+WORKDIR /app
+ENTRYPOINT ["dotnet", "Ordering.BackgroundTasks.dll"]

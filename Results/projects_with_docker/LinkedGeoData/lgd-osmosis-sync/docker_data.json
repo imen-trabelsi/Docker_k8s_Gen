@@ -1,0 +1,35 @@
+{
+    "docker_info": {
+        "base_image": "lgd-build-nominatim:4.0.1",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /lgd/osmosis",
+            "COPY configuration.txt.dist .",
+            "COPY start.sh .",
+            "COPY wait-for-postgres.sh ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"./wait-for-postgres.sh\",",
+                    "\"./start.sh\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "chmod +x ./start.sh ./wait-for-postgres.sh",
+                ""
+            ]
+        ]
+    }
+}

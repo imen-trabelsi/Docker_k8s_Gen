@@ -1,0 +1,28 @@
+# Use the base image provided by the user
+FROM node:12-slim AS builder
+
+# include all necessary environments
+ENV FORWARD_INTEROP_URL='0.0.0.0:4000' \
+    LANG=en_US.UTF-8 \
+
+# define the work directory
+WORKDIR /builder
+
+# Copy files to the work directory
+COPY dashboard/package.json .
+COPY common/messages/stats.proto ${WORKDIR}
+COPY dashboard .
+
+# run npm install for downloading the project dependencies and build the project
+RUN npm install && \
+    npm run build-msg && \
+
+# use /app directory as my work directory
+WORKDIR /app
+
+# install other project dependencies
+COPY dashboard/package.json .
+RUN npm install
+
+# the command that starts our application
+CMD ["npm", "start", "--silent"]

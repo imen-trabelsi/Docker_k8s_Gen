@@ -1,0 +1,29 @@
+# Start with the OpenJDK 11 base image
+FROM openjdk:11-jre-slim AS builder
+
+# Setup work directory
+WORKDIR /usr/share/website/backend
+
+# Copy the pom.xml and Install app dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+# Copy the source code
+COPY src src
+
+# Package the application
+RUN mvn package -DskipTests
+
+FROM openjdk:11-jre-slim
+
+# Copy necessary files from builder
+COPY ./wait-for-it.sh /usr/share/website/wait-for-it.sh
+
+# Set necessary commands for wait script and create folder for backend storage
+RUN chmod +x /usr/share/website/wait-for-it.sh && mkdir -p /usr/share/website/backend/storage
+
+# Expose port 80
+EXPOSE 80
+
+# Set the docker-compose wait-for-it.sh script as the entrypoint
+ENTRYPOINT ["/usr/share/website/wait-for-it.sh", "auth.flowant.org:80", "--timeout=0", "--", "java", "-jar", "/usr/share/website/backend/backend-exec.jar"]

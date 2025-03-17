@@ -1,0 +1,72 @@
+{
+    "docker_info": {
+        "base_image": "${ARCH}ubuntu:20.04",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "9000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "ARCH=",
+            "VERSION=dev-master",
+            "PHP_VERSION=8.2",
+            "DEBIAN_FRONTEND=noninteractive",
+            "TARGETPLATFORM"
+        ],
+        "envs": [
+            "ENV VERSION=$VERSION",
+            "ENV PHP_VERSION=$PHP_VERSION"
+        ],
+        "copy_instructions": [
+            "ADD entrypoint.sh /"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"php-fpm\",",
+                    "\"--nodaemonize\"]"
+                ]
+            },
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/entrypoint.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "set -e \\",
+                "&& apt-get update",
+                "&& apt-get install -y software-properties-common",
+                "&& LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php",
+                "&& apt-get update",
+                "&& bash -c \"apt-get install -y php$PHP_VERSION-{cli,mysql,gd,xsl,bz2,opcache,tidy,zip,bcmath,mbstring,smbclient,ldap,curl,fpm,pgsql,gmp,memcached}\"",
+                "# php8.{0,1}-apcu recommends (not needed) php-apcu-bc, which cause PHP 7.4 to be installed :("
+            ],
+            [
+                "set -e \\",
+                "&& cd /usr/share/egroupware",
+                "# install nodejs 20.x (Shoelace requires >= 14.17, Ubuntu 22.04 only has 12.x)",
+                "&& if [ \"$TARGETPLATFORM\" = \"linux/ppc64le\" ]; then",
+                "dist_node_v20=https://nodejs.org/dist/latest-v20.x/",
+                "dist_node_v20_ppc64le=$(curl $dist_node_v20|grep ppc64le.tar.xz|cut -d'\"' -f2)",
+                "curl -L $dist_node_v20$dist_node_v20_ppc64le | tar --directory=/usr/local/ -xJvf - ;",
+                "else",
+                "mkdir -p /etc/apt/keyrings",
+                "&& curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg",
+                "&& echo \"deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main\" | tee /etc/apt/sources.list.d/nodesource.list",
+                "&& apt-get update",
+                "&& apt-get install -y nodejs libatomic1 ;",
+                "fi",
+                "&& npm config set fetch-retries 5",
+                "&& mkdir chunks",
+                "&& npm install",
+                "# npm install fails \"silent\" on network timeouts, retry until it works"
+            ]
+        ]
+    }
+}

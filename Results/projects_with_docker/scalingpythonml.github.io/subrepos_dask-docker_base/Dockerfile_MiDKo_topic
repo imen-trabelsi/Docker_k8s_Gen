@@ -1,0 +1,11 @@
+
+
+ENV PATH /opt/conda/bin:$PATH
+
+RUN apt-get update --force-yes  -y --fix-missing && \
+apt-get clean \
+mamba install --yes python==3.8.6 \
+
+COPY prepare.sh /usr/bin/prepare.sh
+
+ENTRYPOINT ["tini",, "-g",, "--",, "/usr/bin/prepare.sh"]

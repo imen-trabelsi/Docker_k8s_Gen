@@ -1,0 +1,35 @@
+# Select the base image
+FROM maven:3.9.9-eclipse-temurin-17 AS build
+
+# Copy Maven settings
+COPY settings.xml /root/.m2/settings.xml
+
+# Set working directory
+WORKDIR /app
+
+# Copy project files to workspace
+COPY ./ ./
+
+# Build the project
+RUN --mount=type=cache,target=/root/.m2/repository/ \
+
+# Prepare final image
+FROM maven:3.9.9-eclipse-temurin-17
+
+# Set working directory
+WORKDIR /app
+
+# Copy required files from build image
+
+# Copy Arthas for Java monitoring
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+
+# Install needed tools 
+RUN apt-get update && apt-get install -y \
+    vim unzip netcat-openbsd telnet tcpdump iproute2 lsof ngrep \
+
+# Expose the service on the given port
+EXPOSE 20002
+
+# Start the application
+ENTRYPOINT ["java", "-jar", "/app/target/B.jar"]

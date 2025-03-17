@@ -1,0 +1,52 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/sdk:8.0",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "8080",
+            "8081"
+        ],
+        "user": [
+            "app"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "BUILD_CONFIGURATION=Release",
+            "BUILD_CONFIGURATION=Release"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "WORKDIR /src",
+            "COPY [\"Services/Basket/Basket.API/Basket.API.csproj\", \"Services/Basket/Basket.API/\"]",
+            "COPY [\"BuildingBlocks/BuildingBlocks/BuildingBlocks.csproj\", \"BuildingBlocks/BuildingBlocks/\"]",
+            "WORKDIR \"/src/Services/Basket/Basket.API\"",
+            "WORKDIR /app",
+            "COPY --from=publish /app/publish ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"dotnet\",",
+                    "\"Basket.API.dll\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "dotnet restore \"./Services/Basket/Basket.API/./Basket.API.csproj\"",
+                "COPY . ."
+            ],
+            [
+                "dotnet build \"./Basket.API.csproj\" -c $BUILD_CONFIGURATION -o /app/build",
+                ""
+            ],
+            [
+                "dotnet publish \"./Basket.API.csproj\" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false",
+                ""
+            ]
+        ]
+    }
+}

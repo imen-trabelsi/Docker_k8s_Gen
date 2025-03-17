@@ -1,0 +1,23 @@
+FROM golang:latest
+
+WORKDIR /app
+
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy the code into the container
+COPY client.go .
+
+# Build the application
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o client .
+
+# Add Security Layer
+RUN apk --no-cache add ca-certificates
+
+WORKDIR /root/
+
+# Copy Built binary from previous stage
+COPY --from=0 /app/client .
+
+# Run the binary
+CMD ["./client"]

@@ -1,0 +1,25 @@
+# Use the pitstop-dotnet-sdk-base image as base
+FROM pitstop-dotnet-sdk-base:1.0 as build-env
+
+# Copy csproj and restore dependencies
+WORKDIR /app
+COPY *.csproj ./
+RUN dotnet restore
+
+# Copy everything else and build
+COPY . ./
+RUN dotnet publish -c Release -o out
+
+# Generate runtime image
+FROM mcr.microsoft.com/dotnet/runtime:5.0
+WORKDIR /app
+
+# Set environment variables
+ENV ASPNETCORE_URLS http://+:5000
+ENV ASPNETCORE_ENVIRONMENT Production
+
+# Expose port 5000
+EXPOSE 5000
+
+# Set the entrypoint
+ENTRYPOINT ["dotnet", "Pitstop.WorkshopManagementEventHandler.dll"]

@@ -1,0 +1,29 @@
+# Set the base image. The base image is a configured system, upon which other commands are run.
+FROM hmctspublic.azurecr.io/base/java:21-distroless
+
+# Create a directory to hold the application.
+RUN mkdir -p /opt/app
+
+# Set this newly created directory as the default working directory. This means that all subsequent commands will default to running within this directory.
+WORKDIR /opt/app
+
+# Copy necessary files into the working directory on the docker container.
+COPY build.gradle /opt/app/
+COPY .env /opt/app/
+COPY docker-compose.yml /opt/app/
+COPY Dockerfile /opt/app/
+COPY lib/applicationinsights.json /opt/app/
+COPY build/libs/tribunals-case-api.jar /opt/app/
+
+# Allows incoming network traffic at this port if an application within the docker image serves traffic on it.
+EXPOSE 8008 
+
+# Set environment variables
+ARG APP_INSIGHTS_AGENT_VERSION=3.7.1
+ENV APP_INSIGHTS_AGENT_VERSION=${APP_INSIGHTS_AGENT_VERSION}
+
+# Specifies that the container listens on the specified network ports at runtime.
+ENTRYPOINT ["java", "-jar", "tribunals-case-api.jar"]
+
+# Start the application
+CMD ["tribunals-case-api.jar"]

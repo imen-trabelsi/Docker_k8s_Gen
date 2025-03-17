@@ -1,0 +1,24 @@
+{
+    "docker_info": {
+        "base_image": null,
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app/",
+            "COPY topics.txt .",
+            "COPY create-topics.sh ."
+        ],
+        "execution": [],
+        "run": [
+            [
+                "chmod +x create-topics.sh",
+                "ENTRYPOINT [\"/app/create-topics.sh\"]"
+            ]
+        ]
+    }
+}

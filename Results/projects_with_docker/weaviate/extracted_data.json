@@ -1,0 +1,61 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "pyproject.toml": "[tool.black]\nline-length = 100\ninclude = 'test/acceptance_with_python/.*\\\\.py$'\n"
+        },
+        "database": null,
+        "build_system": "poetry",
+        "config_files": {
+            "docker-compose.yml": "##\n# NOTE:\n# This docker-compose file is intended only for Weaviate development by contributors and is not meant for end-users.\n# Additionally, it should not be used directly with `docker compose up`; instead, please utilize the scripts provided\n# under tools/dev for execution.\n\n# To get a docker-compose file to run Weaviate, please follow the instructions at\n# https://weaviate.io/developers/weaviate/installation/docker-compose\n##\nversion: '3.4'\nservices:\n  contextionary:\n    image: semitechnologies/contextionary:en0.16.0-v1.2.1\n    ports:\n      - \"9999:9999\"\n    environment:\n      EXTENSIONS_STORAGE_MODE: weaviate\n      EXTENSIONS_STORAGE_ORIGIN: http://host.docker.internal:8080\n      OCCURRENCE_WEIGHT_LINEAR_FACTOR: 0.75\n      LOG_LEVEL: debug\n  prometheus:\n    image: prom/prometheus:v2.46.0\n    volumes:\n      - ./tools/dev/prometheus_config/:/etc/prometheus/\n      - ./data/prometheus:/prometheus\n    command:\n      - '--config.file=/etc/prometheus/prometheus.yml'\n      - '--storage.tsdb.path=/prometheus'\n      - '--web.console.libraries=/usr/share/prometheus/console_libraries'\n      - '--web.console.templates=/usr/share/prometheus/consoles'\n    ports:\n      - \"9090:9090\"\n  grafana:\n    image: grafana/grafana-oss\n    ports:\n      - \"3000:3000\"\n    volumes:\n      - ./tools/dev/grafana/grafana.ini:/etc/grafana/grafana.ini\n      - ./tools/dev/grafana/datasource.yml:/etc/grafana/provisioning/datasources/prometheus.yml\n      - ./tools/dev/grafana/dashboard_provider.yml:/etc/grafana/provisioning/dashboards/dashboards.yml\n      - ./tools/dev/grafana/dashboards:/var/lib/grafana/dashboards\n  keycloak:\n    image: jboss/keycloak:5.0.0\n    environment:\n      KEYCLOAK_USER: admin\n      KEYCLOAK_PASSWORD: admin\n      KEYCLOAK_IMPORT: /tmp/weaviate-realm.json\n    volumes:\n      - ./tools/dev/keycloak/weaviate-realm.json:/tmp/weaviate-realm.json\n    ports:\n      - \"9090:8080\"\n  t2v-transformers:\n    image: semitechnologies/transformers-inference:baai-bge-small-en-v1.5-onnx\n    ports:\n      - \"8000:8080\"\n  qna-transformers:\n    image: semitechnologies/qna-transformers:distilbert-base-uncased-distilled-squad\n    ports:\n      - \"8001:8080\"\n  i2v-neural:\n    image: semitechnologies/img2vec-pytorch:resnet50\n    ports:\n      - \"8002:8080\"\n  ner-transformers:\n    image: semitechnologies/ner-transformers:latest\n    ports:\n      - \"8003:8080\"\n  text-spellcheck:\n    image: semitechnologies/text-spellcheck-model:pyspellchecker-en\n    ports:\n      - \"8004:8080\"\n  multi2vec-clip:\n    image: semitechnologies/multi2vec-clip:sentence-transformers-clip-ViT-B-32-multilingual-v1\n    ports:\n      - \"8005:8080\"\n  t2v-transformers-passage:\n    image: semitechnologies/transformers-inference:facebook-dpr-ctx_encoder-single-nq-base\n    ports:\n      - \"8006:8080\"\n  t2v-transformers-query:\n    image: semitechnologies/transformers-inference:facebook-dpr-question_encoder-single-nq-base\n    ports:\n      - \"8007:8080\"\n  sum-transformers:\n    image: semitechnologies/sum-transformers:facebook-bart-large-cnn\n    ports:\n      - \"8008:8080\"\n  reranker-transformers:\n    image: semitechnologies/reranker-transformers:cross-encoder-ms-marco-MiniLM-L-6-v2\n    ports:\n      - \"8009:8080\"\n  t2v-gpt4all:\n    image: semitechnologies/gpt4all-inference:all-MiniLM-L6-v2\n    ports:\n      - \"8010:8080\"\n  multi2vec-bind:\n    image: semitechnologies/multi2vec-bind:imagebind\n    ports:\n      - \"8011:8080\"\n  backup-s3:\n    image: minio/minio\n    ports:\n      - \"9000:9000\"\n    volumes:\n      - ./backups-s3:/data\n    environment:\n      MINIO_ROOT_USER: aws_access_key\n      MINIO_ROOT_PASSWORD: aws_secret_key\n    entrypoint: sh\n    command: -c 'mkdir -p /data/weaviate-backups && minio server /data'\n  backup-gcs:\n    image: oittaa/gcp-storage-emulator\n    ports:\n      - \"9090:8080\"\n    volumes:\n      - ./backups-gcs:/storage\n  backup-azure:\n    image: mcr.microsoft.com/azure-storage/azurite\n    ports:\n      - \"10000:10000\"\n    volumes:\n      - ./backups-azure:/data\n    command: \"azurite --blobHost 0.0.0.0 --blobPort 10000\"\n",
+            "Dockerfile": "# Dockerfile for development purposes.\n# Read docs/development.md for more information\n# vi: ft=dockerfile\n\n###############################################################################\n# Base build image\n# NOTE using 1.22-alpine3.20 because of error similar to: https://github.com/docker/buildx/issues/2028\n# please update tag when this issue is fixed\nFROM golang:1.22-alpine3.20 AS build_base\nRUN apk add bash ca-certificates git gcc g++ libc-dev\nWORKDIR /go/src/github.com/weaviate/weaviate\nENV GO111MODULE=on\n# Populate the module cache based on the go.{mod,sum} files.\nCOPY go.mod .\nCOPY go.sum .\nRUN go mod download\n\n###############################################################################\n# This image builds the weaviate server\nFROM build_base AS server_builder\nARG TARGETARCH\nARG GIT_BRANCH=\"unknown\"\nARG GIT_REVISION=\"unknown\"\nARG BUILD_USER=\"unknown\"\nARG BUILD_DATE=\"unknown\"\nARG EXTRA_BUILD_ARGS=\"\"\nCOPY . .\nRUN GOOS=linux GOARCH=$TARGETARCH go build $EXTRA_BUILD_ARGS \\\n      -ldflags '-w -extldflags \"-static\" \\\n      -X github.com/weaviate/weaviate/usecases/build.Branch='\"$GIT_BRANCH\"' \\\n      -X github.com/weaviate/weaviate/usecases/build.Revision='\"$GIT_REVISION\"' \\\n      -X github.com/weaviate/weaviate/usecases/build.BuildUser='\"$BUILD_USER\"' \\\n      -X github.com/weaviate/weaviate/usecases/build.BuildDate='\"$BUILD_DATE\"'' \\\n      -o /weaviate-server ./cmd/weaviate-server\n\n###############################################################################\n\n# This creates an image that can be used to fake an api for telemetry acceptance test purposes\nFROM build_base AS telemetry_mock_api\nCOPY . .\nENTRYPOINT [\"./tools/dev/telemetry_mock_api.sh\"]\n\n###############################################################################\n# Weaviate (no differentiation between dev/test/prod - 12 factor!)\nFROM alpine AS weaviate\nENTRYPOINT [\"/bin/weaviate\"]\nCOPY --from=server_builder /weaviate-server /bin/weaviate\nRUN mkdir -p /go/pkg/mod/github.com/go-ego\nCOPY --from=server_builder /go/pkg/mod/github.com/go-ego /go/pkg/mod/github.com/go-ego\nRUN apk add --no-cache --upgrade bc ca-certificates openssl\nRUN mkdir ./modules\nCMD [ \"--host\", \"0.0.0.0\", \"--port\", \"8080\", \"--scheme\", \"http\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".codeclimate.yml",
+            ".dockerignore",
+            ".gitignore",
+            ".golangci.yml",
+            ".goreleaser.yaml",
+            ".pre-commit-config.yaml",
+            ".protolint.yaml",
+            "CITATION.cff",
+            "CODE_OF_CONDUCT.md",
+            "CONTRIBUTING.md",
+            "Dockerfile",
+            "LICENSE",
+            "Makefile",
+            "README.md",
+            "codecov.yml",
+            "docker-compose-auth-test.yml",
+            "docker-compose-debug.yml",
+            "docker-compose-test.yml",
+            "docker-compose.yml",
+            "go.mod",
+            "go.sum",
+            "pyproject.toml",
+            "pytest.ini"
+        ],
+        "folders": [
+            ".github",
+            "adapters",
+            "ci",
+            "client",
+            "cluster",
+            "cmd",
+            "deprecations",
+            "docker-compose-raft",
+            "docker-compose",
+            "entities",
+            "grpc",
+            "modules",
+            "openapi-specs",
+            "test",
+            "tools",
+            "usecases"
+        ]
+    }
+}

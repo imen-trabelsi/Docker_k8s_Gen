@@ -1,0 +1,24 @@
+# Use base image provided by user
+FROM docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION}
+
+# Copy the configuration files
+COPY elastic-stack/elasticsearch/config/elasticsearch.yml /usr/share/elasticsearch/config/
+
+# Set environment variables
+ENV ES_JAVA_OPTS="-Xmx256m -Xms256m" \
+    ELASTIC_CONTAINER="true" \
+
+# Set health check
+HEALTHCHECK --interval=20s --timeout=10s --retries=6 CMD curl --silent --fail localhost:9200/_cluster/health || exit 1
+
+# Expose Default Elasticsearch port 9200
+EXPOSE 9200 9300
+
+# Setting up entrypoint
+ENTRYPOINT ["/usr/share/elasticsearch/bin/docker-entrypoint.sh"]
+
+# Docker default command
+CMD ["eswrapper"]
+
+# It is recommended to run as non-root user
+USER elasticsearch

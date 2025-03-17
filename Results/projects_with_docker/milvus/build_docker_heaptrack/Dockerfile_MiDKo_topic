@@ -1,0 +1,25 @@
+# Use the base image provided by the user
+FROM milvusdb/openblas:ubuntu20.04-20220914-179ea77 AS builder
+
+# Run commands as mentioned by the user
+RUN apt-get update && apt-get install -y --no-install-recommends wget curl ca-certificates gnupg2 && \
+    wget -qO- "https://cmake.org/files/v3.18/cmake-3.18.6-Linux-x86_64.tar.gz" | tar --strip-components=1 -xz -C /usr/local && \
+    apt-get update && apt-get install -y --no-install-recommends g++ gcc make \
+    libssl-dev zlib1g-dev libboost-regex-dev libboost-program-options-dev \
+    libboost-system-dev libboost-filesystem-dev libboost-serialization-dev libboost-iostreams-dev libunwind-dev && \
+    apt-get remove --purge -y && rm -rf /var/lib/apt/lists/* && \
+    mkdir -p /opt/heaptrack/ && wget -qO- "https://github.com/KDE/heaptrack/archive/refs/tags/v1.3.0.tar.gz" | tar --strip-components=1 -xz -C /opt/heaptrack && \
+    cd /opt/heaptrack && mkdir build && \
+    cd build && cmake -DCMAKE_BUILD_TYPE=Release .. && make -j$(nproc) && \
+    cd /opt/heaptrack/build && make install && \
+
+# Copy necessary instructions
+    
+# Begin new stage for leaner image 
+FROM milvusdb/openblas:ubuntu20.04-20220914-179ea77
+
+# Copy from builder 
+
+# Execution entrypoint
+ENTRYPOINT ["tail"]
+CMD ["-f", "/dev/null"]

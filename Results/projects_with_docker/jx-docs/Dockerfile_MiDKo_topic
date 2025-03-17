@@ -1,0 +1,30 @@
+# Dockerfile
+FROM abiosoft/caddy
+
+# Set working directory
+WORKDIR /srv
+
+# Copy package.json for installing dependencies
+COPY package.json .
+
+# Install dependencies
+RUN npm install
+
+# Copy tmp-website and static files
+COPY tmp-website .
+COPY static/browserconfig.xml static/
+COPY static/favicons/manifest.json static/favicons/
+COPY static/schemas/jx-requirements.json static/schemas/
+COPY static/schemas/jx-schema.json static/schemas/
+COPY content/en/about/_index.md content/en/about/
+COPY content/en/about/capabilities.md content/en/about/
+COPY content/en/about/concepts/_index.md content/en/about/concepts/
+COPY content/en/about/concepts/components.md content/en/about/concepts/
+COPY content/en/about/concepts/diagram.md content/en/about/concepts/
+COPY content/en/about/concepts/features.md content/en/about/concepts/
+
+# Expose port
+EXPOSE 2015
+
+# Default command
+CMD ["npm", "start"]

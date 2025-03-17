@@ -1,0 +1,23 @@
+# Use base image
+FROM ghcr.io/sillsdev/lfmerge:2.0.141
+
+# Establish working directory
+WORKDIR /app
+
+# Copy package.json file into the Docker image
+COPY package.json /app
+
+# Install npm dependencies
+RUN npm install
+
+# Copy source code from current directory to /app in Docker image
+COPY . /app
+
+# MongoDB Configuration
+ENV MONGO_DB_URL=mongodb://localhost:27017
+
+# Expose container port
+EXPOSE 8080
+
+# Default command to run app
+CMD ["npm", "start"]

@@ -1,0 +1,17 @@
+FROM golang:1.14.1
+
+RUN groupadd -r monitor && useradd -r -g monitor monitor \
+    && mkdir -p /go/src/github.com/onap/multicloud-k8s/src/monitor \
+    && mkdir /opt/monitor \
+
+USER monitor
+
+WORKDIR /go/src/github.com/onap/multicloud-k8s/src/monitor
+COPY --chown=monitor ./ ./
+
+WORKDIR /opt/monitor
+COPY --chown=monitor --from=0 /go/src/github.com/onap/multicloud-k8s/src/monitor/monitor ./
+
+RUN make all
+
+ENTRYPOINT ["/opt/monitor/monitor"]

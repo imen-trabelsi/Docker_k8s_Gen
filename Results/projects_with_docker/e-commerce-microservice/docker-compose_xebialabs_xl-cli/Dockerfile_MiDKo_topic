@@ -1,0 +1,39 @@
+# Use alpine:3.7 as the base image
+FROM openjdk:8-jdk-alpine3.7 AS stage1
+
+# Install necessary packages
+RUN apk add --no-cache curl
+
+# Download necessary tools
+RUN curl --silent --fail-early -o /usr/local/bin/xl https://s3.amazonaws.com/xl-cli/bin/9.5.2/linux-amd64/xl && \
+RUN curl --silent --fail-early -o /usr/local/bin/wait-for https://raw.githubusercontent.com/eficode/wait-for/master/wait-for && \
+RUN mkdir /.xebialabs && chown 10001:10001 /.xebialabs
+
+# Copy build.gradle and fetch dependencies, to cache them in Docker layer
+COPY build.gradle /app/
+RUN cd /app && ./gradlew download
+
+# Copy Spring Boot app to container
+COPY . /app
+
+# Set workdir
+WORKDIR /app
+
+# Build Spring Boot app
+RUN ./gradlew bootJar
+
+# Second stage for running the app
+FROM openjdk:8-jre-alpine3.7
+
+# Copy the jar file from previous stage
+
+RUN adduser -S -h /app -u 10001 springuser 
+
+# Run as non-root user
+USER springuser
+
+# Set entrypoint
+ENTRYPOINT ["/usr/local/bin/wait-for", "-t", "600", "xl-release:5516", "--", "/usr/local/bin/xl"]
+
+# Expose necessary ports
+EXPOSE 8080

@@ -1,0 +1,31 @@
+# Base Image
+FROM node:12.22.12
+
+# Adding labels
+LABEL version="2.0.0"
+LABEL description="This"
+
+# Setting up working directory and adding app source to container
+# Adding "/usr/src" directory
+RUN mkdir -p /usr/src/common
+WORKDIR /usr/src/common
+COPY package.json /usr/src/common
+
+# Copying rest of the application
+COPY common/ /usr/src/common/
+WORKDIR /usr/src
+COPY statscontroller/src /usr/src/statscontroller/src
+COPY statscontroller/Gruntfile.js /usr/src/statscontroller/
+COPY statscontroller/package.json /usr/src/statscontroller/
+
+# Installing dependencies
+RUN npm install
+RUN npm install grunt-cli -g
+WORKDIR /usr/src/statscontroller/src
+RUN npm install
+
+# Expose port 4001
+EXPOSE 4001
+
+# Command to run the application
+CMD [ "npm", "start" ]

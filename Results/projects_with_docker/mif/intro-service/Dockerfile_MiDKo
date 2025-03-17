@@ -1,0 +1,17 @@
+# Use openjdk:11-jre as base image
+FROM openjdk:11-jre
+
+# Volume to persist MongoDB data
+VOLUME /tmp 
+
+# Add .env file if available
+COPY .env .env
+
+# Add a jar file with the name of the application
+COPY target/intro-service-1.0-SNAPSHOT.jar /app.jar
+
+# Apply necessary configurations and expose the ports of the application 
+EXPOSE 8080 
+
+# Command to execute during container startup
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/app.jar", "--spring.profiles.active=docker"]

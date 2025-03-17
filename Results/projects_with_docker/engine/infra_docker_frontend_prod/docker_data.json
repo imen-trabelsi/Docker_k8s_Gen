@@ -1,0 +1,98 @@
+{
+    "docker_info": {
+        "base_image": "node:22.12-alpine",
+        "multi_stage_build": true,
+        "exposed_ports": [],
+        "user": [
+            "frontend:hash"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "API_ORIGIN",
+            "FRONTEND_URL"
+        ],
+        "envs": [
+            "ENV RUSTUP_HOME=/usr/local/rustup \\",
+            "ENV NODE_ENV=production",
+            "ENV API_ORIGIN=${API_ORIGIN}",
+            "ENV FRONTEND_URL=${FRONTEND_URL}",
+            "ENV NODE_ENV=production"
+        ],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY package.json .",
+            "COPY . .",
+            "WORKDIR /usr/local/",
+            "COPY rust-toolchain.toml .",
+            "WORKDIR /usr/local/src/",
+            "COPY --from=base /app/out/json/ .",
+            "COPY --from=base /app/out/yarn.lock ./yarn.lock",
+            "COPY --from=base /app/out/full/.yarn .yarn",
+            "COPY --from=base /app/out/full/turbo.json turbo.json",
+            "COPY --from=base /app/out/full/ .",
+            "COPY --from=installer /usr/local/src /usr/local/src",
+            "WORKDIR /usr/local/src/apps/hash-frontend"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"yarn\",",
+                    "\"--cache-folder\",",
+                    "\"/tmp/yarn-cache\",",
+                    "\"--global-folder\",",
+                    "\"/tmp/yarn-global\"",
+                    "]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"start\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --no-cache jq yq && \\",
+                "npm install -g  \"turbo@$(jq -r '.devDependencies.turbo' < package.json)\""
+            ],
+            [
+                "turbo prune --scope='@apps/hash-frontend' --docker && \\",
+                "find $(yq '.workspace.members' -p toml -o tsv Cargo.toml | tr '*' ' ') -maxdepth 2 -name Cargo.toml -exec sh -c '",
+                "[ -f \"/app/out/full/$1\" ] || (",
+                "mkdir -p \"/app/out/full/$(dirname \"$1\")/src\" &&",
+                "echo > \"/app/out/full/$(dirname \"$1\")/src/lib.rs\" &&",
+                "echo -e \"[package]\\nname = \\\"$(yq \".package.name\" -p toml -oy $1)\\\"\" > \"/app/out/full/$1\"",
+                ")' _ {} \\; &&",
+                "cp -R .cargo Cargo.toml Cargo.lock /app/out/full/"
+            ],
+            [
+                "apt-get update && \\",
+                "apt-get install -y --no-install-recommends default-jre-headless wget g++ libc-dev python3 make &&",
+                "rm -rf /var/lib/apt/lists/* &&",
+                "wget -q -O- https://sh.rustup.rs | sh -s -- -y --default-toolchain none --profile minimal &&",
+                "rustup show &&",
+                "cargo install wasm-opt --debug"
+            ],
+            [
+                "yarn install --immutable \\",
+                "&& yarn cache clean"
+            ],
+            [
+                "turbo build --filter '@apps/hash-frontend' && rm -rf target/",
+                ""
+            ],
+            [
+                "groupadd --system --gid 60000 hash && \\",
+                "useradd --system frontend -G hash"
+            ],
+            [
+                "chown -R frontend:hash .next",
+                ""
+            ]
+        ]
+    }
+}

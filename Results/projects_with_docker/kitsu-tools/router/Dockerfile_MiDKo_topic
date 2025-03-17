@@ -1,0 +1,11 @@
+# Base Image
+FROM caddy:latest
+
+# Copy Caddyfile to appropriate location
+COPY Caddyfile /etc/caddy/Caddyfile
+
+# Additional requirements or dependencies installations can go here
+
+# The CMD instruction should be included as per the specific needs of the Spring Boot application,
+# and considering other specifics provided by the user. For now it's not included.
+

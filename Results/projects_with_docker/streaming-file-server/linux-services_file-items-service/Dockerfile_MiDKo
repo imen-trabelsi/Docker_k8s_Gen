@@ -1,0 +1,29 @@
+# Base Image
+FROM openjdk:11.0.5-jre-stretch
+
+# Environment Variables
+ENV PORT=8001
+ENV DB_URL=jdbc:postgresql://db:5432/postgres
+ENV DB_USER=postgres
+ENV DB_PASS=password
+
+# Copy Dependencies
+COPY pom.xml /tmp
+
+# Run Maven Build
+RUN mvn install
+
+# Copy Application Jar
+COPY modules/apps/file-items-service/build/libs/*.jar /tmp/app.jar
+
+# Expose 8001
+EXPOSE 8001
+
+# Run Startup Script
+ENTRYPOINT mkdir -p /etc/init.d /var/log/
+
+# Healthcheck
+HEALTHCHECK --retries=33 CMD curl -f http://127.0.0.1:8001/actuator/health || exit 1
+
+# Run Application
+CMD sh -c "java -Djava.security.egd=file:/dev/./urandom -jar /tmp/app.jar"

@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mse-go-demo-c-gray
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: mse-go-demo-c
+  template:
+    metadata:
+      labels:
+        alicloud.service.tag: gray
+        aliyun.com/app-language: golang
+        app: mse-go-demo-a
+        mseNamespace: mse-go-demo
+        msePilotAutoEnable: 'on'
+        msePilotCreateAppName: mse-go-demo-c
+    spec:
+      containers:
+      - image: registry.cn-hangzhou.aliyuncs.com/mse-governance-demo/gin-server-c:1.0
+        imagePullPolicy: Always
+        name: mse-go-demo-c
+        ports:
+        - containerPort: 8080

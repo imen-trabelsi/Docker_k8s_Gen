@@ -1,0 +1,40 @@
+# Base image
+FROM python:3-slim
+
+# Install dependencies
+RUN apt-get -y update && \
+    apt-get -y install curl && \
+
+# Set work directory
+WORKDIR /app
+
+# Copy requirements
+COPY requirements.txt .
+
+# Install app dependencies
+RUN pip install -r requirements.txt
+
+# Copy source code
+COPY . .
+
+# Expose the relevant ports (you have to specify these)
+EXPOSE 5000
+
+# Check python dependencies
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
+# Configure healthcheck (you have to specify your healthcheck command)
+HEALTHCHECK CMD curl --fail http://localhost:5000/ || exit 1
+
+# Create a group and user to run our app
+RUN addgroup --system app && adduser --system --group app
+
+# Tell docker that all future commands should run as the app user
+USER app
+
+# You can pass in environment variables in this format  
+ENV VARIABLE_NAME=variable_value
+
+# The command to start the app (replace your_start_command with your actual start command)
+CMD ["your_start_command"]

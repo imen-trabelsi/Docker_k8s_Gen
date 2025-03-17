@@ -1,0 +1,31 @@
+# Start with a base image containing Java runtime
+FROM $REPOSITORY/gs-cloud-base-jre:$TAG AS builder
+
+# Set the current working directory and copy maven executable to the root of the image
+WORKDIR /app
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+
+# Copy other application dependencies
+COPY ${JAR_FILE} application.jar
+
+# Install specified Java and run necessary commands
+RUN chmod +x ./mvnw
+RUN ./mvnw install -DskipTests
+RUN java -Djarmode=layertools -jar application.jar extract
+
+# Add and setup Application 
+FROM builder as application
+WORKDIR /app
+RUN mkdir -p /tmp/tmpdatadir
+RUN java -XX:ArchiveClassesAtExit=application.jsa -Dspring.context.exit=onRefreshed -Dspring.profiles.active=standalone,datadir,offline -Dserver.port=0 -Dmanagement.server.port=0 org.springframework.boot.loader.JarLauncher
+RUN rm -rf /tmp/*
+
+# Final Stage
+FROM $REPOSITORY/gs-cloud-base-jre:$TAG
+ENV JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS} -XX:SharedArchiveFile=application.jsa"
+VOLUME /tmp
+EXPOSE 
+
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]

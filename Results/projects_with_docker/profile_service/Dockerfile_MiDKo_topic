@@ -1,0 +1,22 @@
+FROM node:10
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Install dependencies
+COPY package*.json ./
+RUN apt-get update && apt-get -y upgrade
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Add start script and make it executable
+COPY ./docker/start.sh /usr/src/app
+RUN chmod +x start.sh
+
+# Expose port
+EXPOSE 4000
+
+# Default command
+CMD ["./start.sh"]

@@ -1,0 +1,10 @@
+FROM maven:3.6.3-openjdk-11-slim AS build
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+RUN mvn clean package -DskipTests
+
+FROM openjdk:11-jdk-slim
+WORKDIR /app
+EXPOSE 80
+ENTRYPOINT ["java","-jar","/app/application.jar"]

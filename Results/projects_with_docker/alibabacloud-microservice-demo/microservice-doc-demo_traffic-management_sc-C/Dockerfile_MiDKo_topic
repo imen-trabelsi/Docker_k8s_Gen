@@ -1,0 +1,27 @@
+# Base Image
+FROM openjdk:8-jre-alpine as builder
+
+# Build Tool
+RUN apk add --no-cache maven
+
+# Copy Source Code
+WORKDIR /app
+COPY . /app
+
+# Build Application with Maven
+RUN mvn clean install
+
+# Builder for the final Image
+FROM openjdk:8-jre-alpine
+
+# Environment Variable for spring profile
+ENV SPRING_PROFILES_ACTIVE=prod
+
+# Copy built jar file from builder to new Image
+
+# Exposed Port
+EXPOSE 8080
+
+# Entrypoint and Command to run Spring Boot Application
+ENTRYPOINT ["sh", "-c"]
+CMD ["java", "-jar", "/app/sc-C-0.0.1-SNAPSHOT.jar"]

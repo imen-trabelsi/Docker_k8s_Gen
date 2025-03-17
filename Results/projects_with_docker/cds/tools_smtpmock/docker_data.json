@@ -1,0 +1,41 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.23",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "2023"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD . $GOPATH/src/github.com/ovh/cds/tools/smtpmock",
+            "WORKDIR $GOPATH/src/github.com/ovh/cds/tools/smtpmock",
+            "COPY --from=builder /tmp/smtpmockcli ./"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"start\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o /tmp/smtpmocksrv github.com/ovh/cds/tools/smtpmock/server",
+                "RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o /tmp/smtpmockcli github.com/ovh/cds/tools/smtpmock/cli"
+            ],
+            [
+                "apk --no-cache add ca-certificates",
+                "COPY --from=builder /tmp/smtpmocksrv ./"
+            ],
+            [
+                "chmod +x ./smtpmocksrv",
+                "ENTRYPOINT [\"./smtpmocksrv\"]"
+            ]
+        ]
+    }
+}

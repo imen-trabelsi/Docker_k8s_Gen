@@ -1,0 +1,23 @@
+# Select base image
+FROM openjdk:17-alpine AS builder
+
+# Set work directory
+WORKDIR /app
+
+# Copy files
+COPY ./pom.xml ./pom.xml
+COPY ./src ./src
+
+# Use Maven wrapper to make build reproducible
+RUN mvn package -DskipTests
+
+# Start a new stage from openjdk:17-alpine to build a minimal Docker image
+FROM openjdk:17-alpine
+
+# Copy the jar file built in the previous stage
+
+# Expose the application on port 8080
+EXPOSE 8080
+
+# Define the startup command
+ENTRYPOINT ["java", "-jar", "/usr/share/myservice/myservice.jar"]

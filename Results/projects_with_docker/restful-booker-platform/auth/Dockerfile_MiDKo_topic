@@ -1,0 +1,25 @@
+# Use the specified base image
+FROM openjdk:21-slim as builder
+
+# Add a working directory
+WORKDIR /usr/local/auth
+
+# Copy pom.xml and source code to the image
+COPY . /usr/local/auth
+
+# Use MAVEN to build the project
+RUN mvn clean package
+
+# Use multi-stage build for smaller image size
+FROM openjdk:21-slim
+
+# Set the working directory
+WORKDIR /usr/local/auth
+
+# Copy the built JAR file to the image
+
+# Set the profile environment variable to dev
+ENV profile=dev
+
+# Add the entry point for running the application
+ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=$profile", "-Dhoneycomb.beeline.write-key=${HONEYCOMB_API_KEY}", "restful-booker-platform-auth-*.jar"]

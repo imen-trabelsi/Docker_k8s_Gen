@@ -1,0 +1,51 @@
+{
+    "docker_info": {
+        "base_image": "jjanzic/docker-python3-opencv:opencv-4.0.1",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "5000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV NAME insearch",
+            "ENV FLASK_APP /app/server.py"
+        ],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY requirements.txt /app",
+            "COPY . /app"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"flask\"",
+                    ",",
+                    "\"run\",",
+                    "\"--host=0.0.0.0\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update",
+                ""
+            ],
+            [
+                "apt-get install -y \\",
+                "tesseract-ocr"
+            ],
+            [
+                "apt-get install -y \\",
+                "tesseract-ocr-eng libdmtx-*"
+            ],
+            [
+                "pip install --trusted-host pypi.python.org -r requirements.txt",
+                ""
+            ]
+        ]
+    }
+}

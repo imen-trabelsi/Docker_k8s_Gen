@@ -1,0 +1,52 @@
+# Base Image
+FROM harbor.nymte.ch/dockerhub/rust:latest 
+
+# Set Working Directory
+WORKDIR /usr/src/nym-vpn-client/nym-vpn-core
+
+# Set Environment Variables
+ENV PATH=/go/bin:/usr/local/go/bin:$PATH
+ENV NODE_STATUS_AGENT_PROBE_PATH=/nym/nym-gateway-probe
+ENV GIT_REF=main
+
+# Update System Packages and Install Dependencies
+RUN apt-get update && apt-get install -y ca-certificates libdbus-1-dev pkg-config libclang-dev wget git
+
+# Install Go
+RUN wget https://go.dev/dl/go1.22.5.linux-amd64.tar.gz -O go.tar.gz
+RUN tar -xzvf go.tar.gz -C /usr/local
+
+# Clone Repository
+RUN git clone https://github.com/nymtech/nym-vpn-client /usr/src/nym-vpn-client 
+
+# Checkout the GIT_REF
+WORKDIR /usr/src/nym-vpn-client
+RUN git checkout $GIT_REF
+
+# Build the application
+RUN cargo build --release --package nym-gateway-probe
+
+# Set Working Directory
+WORKDIR /usr/src/nym 
+
+# Copy local files to container
+COPY ./ /usr/src/nym
+
+# Set Working Directory
+WORKDIR /usr/src/nym/nym-node-status-agent 
+
+# Build the application
+RUN cargo build --release 
+
+# Final Working Directory
+WORKDIR /nym
+
+# Copy build output
+COPY --from=builder /usr/src/nym/target/release/nym-node-status-agent ./
+COPY --from=builder /usr/src/nym-vpn-client/nym-vpn-core/target/release/nym-gateway-probe ./
+
+# Expose the required ports
+EXPOSE 8000
+
+# Set the Docker image entrypoint 
+ENTRYPOINT ["/nym/nym-node-status-agent", "run-probe"]

@@ -1,0 +1,35 @@
+# Use the base image specified by the user
+FROM milvusdb/milvus-base:gpu-20230822-34f9067
+
+# Sets the timezone to UTC
+RUN ln -fs /usr/share/zoneinfo/UTC /etc/localtime && dpkg-reconfigure --frontend noninteractive tzdata
+
+# Copy required dependencies
+COPY --chown=root:root --chmod=774 ./configs/ /milvus/configs/
+COPY --chown=root:root --chmod=774 ./lib/ /milvus/lib/
+COPY --chown=root:root --chmod=774 ./bin/milvus /milvus/bin/milvus
+COPY go.mod /go/src/
+COPY .env /go/src/
+COPY docker-compose.yml /go/src/
+
+# Set the working directory
+WORKDIR /go/src/
+
+# Install dependencies
+RUN go mod download
+
+# Build the Go app
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .
+
+# Set the environment variables required for the microservice
+ENV PATH=/milvus/bin:$PATH
+ENV LD_LIBRARY_PATH=/milvus/lib:$LD_LIBRARY_PATH:/usr/lib
+ENV LD_PRELOAD=/milvus/lib/libjemalloc.so
+ENV MALLOC_CONF=background_thread:true
+
+# Expose the necessary ports
+EXPOSE 80
+
+# Specify the command to run the application
+CMD ["./main"]
+

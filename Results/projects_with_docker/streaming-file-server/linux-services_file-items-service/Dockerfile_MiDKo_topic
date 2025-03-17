@@ -1,0 +1,29 @@
+# Start with the base image
+FROM openjdk:11.0.5-jre-stretch as BUILD
+
+# set the working directory
+WORKDIR /usr/src/app
+
+# copy pom.xml and wildcards ensure both pom.xml file and directory src are copied
+COPY pom.xml  .
+
+# copy application code. 
+COPY . .
+
+# compile and package the application code and clean up the build system cache afterwards
+RUN mvn clean package -DskipTests
+
+FROM openjdk:11.0.5-jre-stretch
+
+WORKDIR /app
+
+# copy the packaged jar file into our docker image
+
+# expose port for external access
+EXPOSE 8001
+
+# specify the start command
+ENTRYPOINT ["java","-jar","/app/app.jar"]
+
+# add health check
+HEALTHCHECK --retries=33 CMD curl -f http://localhost:8001/actuator/health || exit 1

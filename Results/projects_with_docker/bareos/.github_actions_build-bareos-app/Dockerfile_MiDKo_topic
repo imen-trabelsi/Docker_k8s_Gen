@@ -1,0 +1,16 @@
+# Dockerfile
+
+FROM docker:stable
+
+# Setting up the necessary dependencies.
+RUN apk update && \
+apk add --no-cache curl bash git && \
+
+# Copy the entrypoint script.
+COPY entrypoint.sh /entrypoint.sh
+
+# Making the entrypoint script executable.
+RUN chmod +x /entrypoint.sh
+
+# Set the entrypoint script as the Docker entry point.
+ENTRYPOINT ["/entrypoint.sh"]

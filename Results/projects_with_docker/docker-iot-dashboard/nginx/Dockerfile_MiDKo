@@ -1,0 +1,26 @@
+FROM phusion/baseimage:master-amd64
+
+# Update Packages and Install Dependencies
+RUN apt-get update && \
+
+# Make Necessary Directories
+RUN mkdir -p /etc/my_init.d && mkdir /etc/service/nginx
+
+# Copy Setup Script
+COPY setup.sh /etc/my_init.d/setup.sh
+
+# Adding Execution Permission to setup.sh
+RUN chmod +x /etc/my_init.d/setup.sh
+
+# Copy certbot_cron.sh and add execute permissions
+COPY certbot_cron.sh /etc/my_init.d/certbot_cron.sh
+RUN chmod +x /etc/my_init.d/certbot_cron.sh
+
+# Copy Files to root
+COPY setup.sh proxy-*.conf mongo.txt /root/
+
+# Copy nginx.sh and add execute permissions
+COPY nginx.sh /etc/service/nginx/run
+RUN chmod +x /etc/service/nginx/run
+
+CMD ["/sbin/my_init"]

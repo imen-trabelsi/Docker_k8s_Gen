@@ -1,0 +1,41 @@
+# Base image
+FROM openjdk:8u151-jdk as builder
+
+# Set working directory
+WORKDIR /workspace/app
+
+# Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy the actual source code
+COPY src src
+COPY pom.xml .
+
+# Build the project
+RUN ./mvnw install -DskipTests
+
+RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+
+# Production stage
+FROM openjdk:8u151-jdk
+
+VOLUME /tmp
+
+# Copy the dependencies from builder stage
+
+# Add required files to the image
+COPY startup.sh /usr/bin/startup.sh
+COPY target/${JAR_FILE} /usr/share/skalogs/standalone-importer.jar
+
+# Provide necessary permissions to startup.sh
+RUN chmod +x /usr/bin/startup.sh
+
+# Set the docker image entry point
+ENTRYPOINT ["java","-cp","app:app/lib/*","org.springframework.boot.loader.JarLauncher"]
+
+# Expose required ports
+EXPOSE 8080
+
+# Set the startup script as the default command
+CMD ["/usr/bin/startup.sh"]

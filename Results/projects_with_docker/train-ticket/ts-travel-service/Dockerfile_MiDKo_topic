@@ -1,0 +1,21 @@
+# Use the Java 8 JRE as base image
+FROM java:8-jre
+
+# Copy .env file and scripts
+COPY .env /app/
+COPY ts-travel-service/Dockerfile /app/
+
+# Set working directory in the docker container
+WORKDIR /app/
+
+# Copy jar file into the docker container
+COPY ./target/ts-travel-service-1.0.jar .
+
+## Set timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+
+# Expose ports
+EXPOSE 12346
+
+# Set the startup command
+CMD ["java", "-Xmx200m", "-jar", "ts-travel-service-1.0.jar"]

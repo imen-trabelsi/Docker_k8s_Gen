@@ -1,0 +1,35 @@
+# Use the official Python image from the Docker Hub
+FROM python:3.10-bullseye
+
+# Maintainer of the Dockerfile
+LABEL authors="nick"
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the requirements.txt file into the container
+COPY src/requirements.txt /app/
+
+# Install the dependencies
+RUN apt-get update && apt-get install -y curl
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
+RUN apt-get install -y nodejs nano
+RUN npm init es6
+RUN npm install --save gs1encoder
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the entire project inside the container
+COPY src/gs1-digitallink-toolkit /app/gs1-digitallink-toolkit
+WORKDIR /app/gs1-digitallink-toolkit
+WORKDIR /app
+COPY src /app/
+
+# Expose the port 4000
+EXPOSE 4000
+
+# Set environment variables
+ENV PYTHONUNBUFFERED 1
+ENV FQDN='id.mydomainname_currently_set_in_dockerfile.com'
+
+# Command to run the application
+CMD ["python", "-m", "main"]

@@ -1,0 +1,29 @@
+# Dockerfile
+FROM microsoft/windowsservercore
+
+RUN echo "Starting Installer" && \
+    powershell.exe -Command $ErrorActionPreference = 'Stop'; \
+    Start-Process 'msiexec.exe' -ArgumentList '/i','c:\CosmosDBEmulator\AzureCosmosDB.Emulator.msi','/qn' -Wait && \
+    
+ADD https://aka.ms/cosmosdb-emulator c:\\CosmosDBEmulator\\AzureCosmosDB.Emulator.msi
+COPY package_scripts\\startemu.cmd c:\\CosmosDBEmulator\\startemu.cmd
+COPY package_scripts\\getaddr.ps1 c:\\CosmosDBEmulator\\getaddr.ps1
+COPY package_scripts\\exportcert.ps1 c:\\CosmosDBEmulator\\exportcert.ps1
+COPY package_scripts\\importcert.ps1 c:\\CosmosDBEmulator\\importcert.ps1
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 8081 
+EXPOSE 10250 
+EXPOSE 10251 
+EXPOSE 10252 
+EXPOSE 10253 
+EXPOSE 10254
+
+CMD ["cmd", "c:\\CosmosDBEmulator\\startemu.cmd"]

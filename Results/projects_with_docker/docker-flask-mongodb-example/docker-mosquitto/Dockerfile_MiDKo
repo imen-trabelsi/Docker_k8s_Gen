@@ -1,0 +1,27 @@
+FROM eclipse-mosquitto:1.6.8
+
+# Copy the necessary shell and configuration files into the container
+COPY ./.github /docker-mosquitto/github
+COPY ./docker-compose.test-github.yml /docker-mosquitto
+COPY ./docker-compose.yml /docker-mosquitto
+COPY ./container-storage /docker-mosquitto/container-storage
+COPY ./docker-grafana /docker-mosquitto/docker-grafana
+COPY ./docker-influxdb /docker-mosquitto/docker-influxdb
+COPY ./docker-python-pypy /docker-mosquitto/docker-python-pypy
+COPY ./docker-python /docker-mosquitto/docker-python
+COPY ./docker-redis /docker-mosquitto/docker-redis
+COPY ./kubernetes /docker-mosquitto/kubernetes
+COPY ./python /docker-mosquitto/python
+
+# Run the necessary commands
+RUN echo 'password_file /mosquitto/config/pwfile' >> /mosquitto/config/mosquitto.conf
+RUN echo 'allow_anonymous false' >> /mosquitto/config/mosquitto.conf
+RUN touch /mosquitto/config/pwfile
+RUN mosquitto_passwd -b /mosquitto/config/pwfile some_user some_pass
+
+# Expose the necessary port
+EXPOSE 1883
+
+# Setting the entrypoint and command to execute
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["/usr/sbin/mosquitto", "-c", "/mosquitto/config/mosquitto.conf"]

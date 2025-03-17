@@ -1,0 +1,30 @@
+# Base Image
+FROM maven:3-eclipse-temurin-11 as build
+
+WORKDIR /usr/src/hobbit-platform
+
+# Copy pom.xml files
+COPY parent-pom/pom.xml parent-pom/
+COPY ${project}/pom.xml ${project}/
+
+# ARG project=platform-controller
+# ARG project provided by the user
+ARG project=platform-controller
+
+# Build the parent-pom and platform-controller project dependencies 
+RUN mvn --file parent-pom -Dmaven.test.skip=true install
+RUN mvn --file ${project} dependency:go-offline
+
+# Copy source code
+COPY ${project}/src ${project}/src
+
+# Package the platform-controller project
+RUN mvn --file ${project} -Dmaven.test.skip=true package
+
+# Create appropriate directories
+RUN mkdir -p /usr/src/app/metadata
+
+# Copy jar into container
+
+# Run execution command
+CMD ["java", "-cp", "platform-controller.jar", "org.hobbit.core.run.ComponentStarter", "org.hobbit.controller.PlatformController"]

@@ -1,0 +1,68 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/sdk:5.0",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8080"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "DB_HOST",
+            "PGPASSWORD",
+            "POSTGRESQL_ADMIN_PASSWORD",
+            "POSTGRESQL_USERNAME",
+            "POSTGRESQL_DATABASE",
+            "DB_CONNECTION_STRING",
+            "ASPNETCORE_HTTPS_PORT",
+            "ASPNETCORE_ENVIRONMENT",
+            "ASPNETCORE_URLS"
+        ],
+        "envs": [
+            "ENV DB_HOST ${DB_HOST}",
+            "ENV PGPASSWORD ${POSTGRESQL_PASSWORD}",
+            "ENV POSTGRESQL_ADMIN_PASSWORD ${POSTGRESQL_PASSWORD}",
+            "ENV POSTGRESQL_USERNAME ${POSTGRESQL_USERNAME}",
+            "ENV POSTGRESQL_DATABASE ${POSTGRESQL_DATABASE}",
+            "ENV DB_CONNECTION_STRING \"host=${DB_HOST};port=5432;database=${POSTGRESQL_DATABASE};username=${POSTGRESQL_USERNAME};password=${POSTGRESQL_DATABASE}\"",
+            "ENV ASPNETCORE_HTTPS_PORT ${ASPNETCORE_HTTPS_PORT}",
+            "ENV ASPNETCORE_ENVIRONMENT ${ASPNETCORE_ENVIRONMENT}",
+            "ENV ASPNETCORE_URLS ${ASPNETCORE_URLS}",
+            "ENV DOTNET_CLI_HOME \"/tmp/DOTNET_CLI_HOME\"",
+            "ENV DOTNET_USE_POLLING_FILE_WATCHER 1",
+            "ENV API_PORT 8080"
+        ],
+        "copy_instructions": [
+            "WORKDIR /vsdbg",
+            "WORKDIR /app"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "dotnet",
+                    "watch",
+                    "run",
+                    "--urls=http://+:8080"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update \\",
+                "&& apt-get install -y --no-install-recommends",
+                "unzip",
+                "&& rm -rf /var/lib/apt/lists/*",
+                "&& curl -sSL https://aka.ms/getvsdbgsh",
+                "| bash /dev/stdin -v latest -l /vsdbg",
+                "&& apt-get update && apt-get install -y apt-utils libgdiplus libc6-dev",
+                "&& apt install -y procps"
+            ],
+            [
+                "dotnet tool install --global dotnet-ef --version 5.0.6",
+                "ENV PATH=\"${PATH}:/root/.dotnet/tools\""
+            ]
+        ]
+    }
+}

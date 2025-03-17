@@ -1,0 +1,52 @@
+# Use an official Node.js runtime as the build stage
+FROM node:12-alpine AS builder
+# Create app directory
+WORKDIR /builder
+
+# Install app dependencies
+COPY common/nodejs/package.json src/common/
+COPY forward-interop/package.json .
+
+# Bundle the source
+COPY common/messages/interop.proto \
+COPY common/nodejs src/common
+COPY forward-interop .
+RUN npm install
+RUN npm run build-msg
+RUN npm run build
+
+# Our final base image
+FROM node:12-alpine
+
+# Install curl
+RUN apk --no-cache add curl
+
+# Create app directory
+WORKDIR /app
+
+# Environment variables
+ENV NODE_ENV=production
+ENV PORT=4000
+
+# Copy the binaries from the building stage to our final base image
+COPY /forward-interop/bin bin
+
+# Add health check script
+COPY common/scripts/wait-for-it.sh .
+RUN chmod +x ./wait-for-it.sh
+
+# Install dependencies
+COPY common/nodejs/package.json src/common/
+COPY forward-interop/package.json .
+RUN npm install
+
+# Copy app source
+COPY . .
+
+# Expose the listening port
+EXPOSE 4000
+
+# Healthcheck, Networking, Users and Labels can be passed at runtime
+
+# Run the app
+CMD ["./wait-for-it.sh", "npm", "start"]

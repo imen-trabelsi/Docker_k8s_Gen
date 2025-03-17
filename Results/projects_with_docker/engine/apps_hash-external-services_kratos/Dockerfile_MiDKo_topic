@@ -1,0 +1,41 @@
+# Use the specified base image
+FROM oryd/kratos:v1.2.0
+
+# Define the necessary environment variables
+ARG ENV
+ENV ENV=${ENV}
+ENV API_SECRET=secret
+ENV API_CALLBACK_URL="http://localhost:5001/kratos-after-registration"
+
+# Define working directory
+WORKDIR /etc/config/kratos
+
+# Copy files as per provided instructions
+COPY ./templates ./
+COPY ./hooks ./
+COPY ./identity.schema.json ./
+
+# Add external file 
+ADD https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem /home/ory/.postgresql/root.crt
+
+# Create necessary directories
+RUN mkdir -p /home/ory/.postgresql
+
+# Install necessary packages
+RUN apk add --no-cache yq=~4
+
+# Make modifications to the copied files
+RUN yq -i '.selfservice.flows.registration.after.password.hooks[0].config.auth.config.value |= strenv(API_SECRET)' ./kratos.$ENV.yml && \
+    yq -i '.selfservice.flows.registration.after.password.hooks[0].config.url |= strenv(API_CALLBACK_URL)' ./kratos.$ENV.yml && \
+    ln -s ./kratos.$ENV.yml /etc/config/kratos/kratos.yml && \
+    chown -R ory:ory /home/ory && \
+    chmod a+r /home/ory/.postgresql && \
+
+# Create the user
+USER ory
+
+# Define entrypoint for the application
+ENTRYPOINT ["kratos", "-c", "/etc/config/kratos/kratos.yml"]
+
+# Define the command to be run
+CMD ["serve", "--watch-courier"]

@@ -1,0 +1,20 @@
+FROM node:12-alpine
+
+ENV NODE_ENV=production
+
+WORKDIR /nest
+
+COPY package.json .
+
+RUN npm install
+
+COPY . .
+
+RUN mkdir -p /nest \
+    && yarn global add @nestjs/cli \
+    && yarn install --production=false \
+    && nest build proto-schema \
+
+EXPOSE 500193
+
+CMD ["node", "dist/apps/service-project/main.js"]

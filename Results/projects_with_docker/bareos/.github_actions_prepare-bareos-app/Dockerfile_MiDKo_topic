@@ -1,0 +1,31 @@
+# Dockerfile
+FROM docker:stable
+
+#Update and install necessary packages
+RUN apk update && apk add --no-cache curl bash && rm -rf /var/cache/apk/*
+
+# Copy application files
+COPY . /app
+
+# Set Workdir
+WORKDIR /app
+
+# Copy entrypoint script
+COPY entrypoint.sh /entrypoint.sh
+
+# chmod entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Expose ports
+
+# Health check
+
+# Change to less privileged user
+
+#Set necessary environment variables
+
+# set Labels
+LABEL version="1.0"
+
+# Set ENTRYPOINT
+ENTRYPOINT ["/entrypoint.sh"]

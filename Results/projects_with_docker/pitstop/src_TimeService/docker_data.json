@@ -1,0 +1,38 @@
+{
+    "docker_info": {
+        "base_image": "pitstop-dotnet-sdk-base:1.0",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY *.csproj ./",
+            "COPY . ./",
+            "WORKDIR /app",
+            "COPY --from=build-env /app/out ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"dotnet\",",
+                    "\"Pitstop.TimeService.dll\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "dotnet restore",
+                ""
+            ],
+            [
+                "dotnet publish -c Release -o out",
+                ""
+            ]
+        ]
+    }
+}

@@ -1,0 +1,49 @@
+# ---- Build Stage ----
+FROM elixir:${ELIXIR_VERSION}-alpine${ALPINE_VERSION} AS build
+
+# Set environment variables for building the application
+ENV MIX_ENV=prod \
+    TEST=1 \
+
+# Install hex and rebar
+RUN mix local.hex --force && \
+
+WORKDIR /app
+
+# Copy over all the necessary application code and files
+COPY mix.exs mix.lock ./
+COPY config config
+COPY apps apps
+COPY priv priv
+
+# Fetch the application dependencies and build the application
+RUN mix deps.get
+RUN mix deps.compile
+RUN mix compile
+
+# Build the release for deployment
+RUN mix release
+
+# ---- Application Stage ----
+FROM alpine:${ALPINE_VERSION} AS app
+
+# Set necessary environment variables needed by the runtime
+# Security settings and basic system settings
+ENV LANG=C.UTF-8 \
+    HOME=/opt/app/ \
+    USER=default \
+
+# Create a user and a group
+RUN addgroup -S default && adduser -S default -G default
+
+# Change file permissions to use the app user
+RUN chown -R default: /opt && \
+
+USER default
+
+# Copy over the build artifact from the build stage and create a non root user
+
+# Change ownership of the application code
+RUN chown -R default: /opt/app
+
+CMD ["/opt/app/bin/server"]

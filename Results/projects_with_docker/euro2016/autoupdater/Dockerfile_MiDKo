@@ -1,0 +1,22 @@
+# Base Image
+FROM alpine:3.20.0
+
+# Updating packages
+RUN apk update && apk upgrade && apk add curl
+
+# Installing app dependencies
+COPY package.json .
+RUN apk add npm && npm install
+
+# Copy app source from current directory to default docker work directory
+COPY . .
+
+# Expose necessary ports (Replace XXXX with your app's expected port number)
+EXPOSE XXXX
+
+# Set the crontab file
+COPY ./crontab /etc/crontabs/root
+
+# Start the app 
+CMD ["crond", "-f", "-d",  "8"]
+

@@ -1,0 +1,46 @@
+{
+    "docker_info": {
+        "base_image": "node:16",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "4000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV NODE_ENV=production"
+        ],
+        "copy_instructions": [
+            "ADD . /srv/caliopen/frontend/",
+            "WORKDIR /srv/caliopen/frontend/",
+            "WORKDIR /srv/caliopen/frontend/",
+            "COPY --from=builder /srv/caliopen/frontend/dist ./dist",
+            "COPY --from=builder /srv/caliopen/frontend/bin ./bin",
+            "COPY --from=builder /srv/caliopen/frontend/public ./public",
+            "COPY --from=builder /srv/caliopen/frontend/package.json .",
+            "COPY --from=builder /srv/caliopen/frontend/yarn.lock ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"yarn\",",
+                    "\"run\",",
+                    "\"start:prod\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "yarn install",
+                "RUN yarn run release"
+            ],
+            [
+                "yarn install",
+                ""
+            ]
+        ]
+    }
+}

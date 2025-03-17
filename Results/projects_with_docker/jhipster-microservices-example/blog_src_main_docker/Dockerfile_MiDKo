@@ -1,0 +1,36 @@
+#Set Base Image
+FROM openjdk:8-jre-alpine
+
+#Set Working Directory
+WORKDIR /app
+
+#Set Environment Variables
+ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \
+
+#Copy project dependencies
+COPY pom.xml .
+
+#Install dependencies
+RUN mvn dependency:go-offline
+
+#Copy source code
+COPY . .
+
+#Build the application
+RUN mvn clean package -DskipTests
+
+#Unpack the jar
+RUN mv ./target/*.jar ./app.jar
+RUN jar -xf ./app.jar
+
+#Remove the jar file
+RUN rm ./app.jar
+
+#Expose Port
+EXPOSE 8080
+
+#Run the application
+ENTRYPOINT ["java","-cp","app:app/lib/*","com.example.blog.BlogApp"]
+
+#Start command
+CMD echo "The application will start in ${JHIPSTER_SLEEP}s..." && \

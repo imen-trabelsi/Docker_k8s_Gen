@@ -1,0 +1,44 @@
+# Set the base image
+FROM golang:1.15.6-alpine as builder
+
+LABEL language="golang"
+LABEL org.opencontainers.image.source="https://github.com/user/repo"
+
+# Create a user for the application.
+RUN adduser -D -g '' elf
+
+# Switch to the user.
+USER elf
+
+# Set the working directory inside the container 
+WORKDIR /opt/app/
+
+# Copy go.mod and go.sum files into the working directory
+COPY go.mod .
+COPY go.sum .
+
+# Download all dependencies
+RUN go mod download
+RUN go mod verify
+
+# Copy everything from the current directory into the container
+COPY . .
+
+# Make the 'cinema-showtimes' executable
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -a -installsuffix cgo -o /go/bin/cinema-showtimes ./cmd/app
+
+# Start a new stage from scratch
+FROM alpine:latest
+
+WORKDIR /root/
+
+# Copy the compiled binary from the previous stage
+
+# Ensure that the binary is runnable
+RUN chmod +x /cinema-showtimes
+
+# Switch to 'elf' user to comply with security considerations
+USER elf
+
+# Command to execute when the Docker container starts
+ENTRYPOINT ["./cinema-showtimes"]

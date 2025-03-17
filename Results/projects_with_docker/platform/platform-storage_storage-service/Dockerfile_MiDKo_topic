@@ -1,0 +1,25 @@
+# Multi-stage build: Compile Stage
+FROM maven:3-eclipse-temurin-11 AS build
+
+ARG project=platform-storage/storage-service 
+
+WORKDIR /usr/src/hobbit-platform
+
+COPY parent-pom/pom.xml parent-pom/
+COPY ${project}/pom.xml ${project}/
+
+RUN mvn --file parent-pom -Dmaven.test.skip=true install
+RUN mvn --file ${project} dependency:go-offline
+
+COPY ${project}/src ${project}/src
+RUN mvn --file ${project} -Dmaven.test.skip=true package
+
+# Runtime Stage
+FROM openjdk:11-jre-slim
+
+WORKDIR /app
+
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-cp", "storage-service.jar", "org.hobbit.core.run.ComponentStarter", "org.hobbit.storage.service.StorageService"]

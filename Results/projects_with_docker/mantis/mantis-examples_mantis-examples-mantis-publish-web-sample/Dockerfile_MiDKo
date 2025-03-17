@@ -1,0 +1,14 @@
+# Use specified base image
+FROM docker-hub.netflix.net/tomcat:9.0-alpine
+
+# Label with maintainer
+LABEL maintainer="mantis-oss-dev@netflix.com"
+
+# Copy the built jar file into the docker image
+COPY build/libs/mantis-examples-mantis-publish-web-sample-0.1.0-SNAPSHOT.war /usr/local/tomcat/webapps/
+
+# Declare that port 8080 should be exposed
+EXPOSE 8080
+
+# Provide run command
+CMD ["catalina.sh", "run"]

@@ -1,0 +1,41 @@
+# Base Image
+FROM pitstop-dotnet-sdk-base:1.0 AS build-env
+
+# Set working directory
+WORKDIR /app
+
+# Environment Variables
+ENV NODE_VERSION=20.x \
+
+# Update system and install dependencies
+RUN apt-get -y update && \
+    apt-get install -y curl && \
+    curl -sL https://deb.nodesource.com/setup_${NODE_VERSION} | sh - && \
+    apt-get install -y nodejs && \
+    apt-get clean && \
+
+# Copy application code
+COPY *.csproj ./
+COPY . ./
+
+# Build and Publish Application
+RUN dotnet restore && \
+    npm install && \
+    gulp default && \
+
+# Start a new stage for the final runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:5.0 
+
+# Set working directory
+WORKDIR /app
+
+# Copy the published application
+
+# Expose port
+EXPOSE 7005
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s --retries=1 CMD curl --silent --fail http://localhost:7005/hc || exit 1
+
+# Set Entry point
+ENTRYPOINT ["dotnet", "Pitstop.WebApp.dll"]

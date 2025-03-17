@@ -1,0 +1,57 @@
+# Starting from base image
+FROM alpine:3.20
+
+# Set the maintainer label
+LABEL maintainer="Your Name <yourname@yourdomain.com>"
+
+# Set the working directory in the Docker image
+WORKDIR /app
+
+# Install build dependencies
+RUN apk add --virtual .build-deps \
+    gcc \
+    python3-dev \
+    libffi-dev \
+    openssl-dev \
+    && apk add -U python3 \
+    iptables \
+    iptables-dev \
+    ip6tables \
+    xtables-addons \
+    nftables \
+    tzdata \
+    py3-pip \
+    py3-nftables \
+    musl-dev \
+    && pip3 install --ignore-installed --upgrade pip \
+    jsonschema \
+    python-iptables \
+    redis \
+    ipaddress \
+    dnspython \
+
+# Giving execution permissions to docker-entrypoint.sh
+RUN chmod +x /app/docker-entrypoint.sh
+
+# Installing PHP and Composer
+RUN apk add --update php php-phar php-openssl php-json curl && \
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/bin --filename=composer && \
+
+# Copy the composer.json file to the working directory
+COPY composer.json /app
+# Install the PHP dependencies
+RUN composer install
+
+# Copy the application files to the Docker image
+COPY . /app
+
+# Set environment variables
+ENV XTABLES_LIBDIR /usr/lib/xtables
+ENV PYTHON_IPTABLES_XTABLES_VERSION 12
+ENV IPTABLES_LIBDIR /usr/lib
+
+# Expose port 8080 for the application
+EXPOSE 8080
+
+# Start the application
+ENTRYPOINT ["/app/docker-entrypoint.sh"]

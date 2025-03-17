@@ -1,0 +1,29 @@
+# Using lightweight alpine image
+FROM python:3.7.2-slim
+
+# Creating working directory
+RUN mkdir -p /code
+WORKDIR /code
+
+# Updating and installing git
+RUN apt-get update && apt-get install -y \
+
+# Copying over requirements file
+COPY requirements.txt /code/requirements.txt
+
+# Installing requirements
+RUN pip install -r requirements.txt
+RUN pip install git+https://github.com/aleju/imgaug --no-deps
+
+# Copying over rest of the application
+COPY . /code
+
+# Setting environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# Expose port 5000 to the outside world
+EXPOSE 5000
+
+# Starting the server
+CMD ["python", "server.py"]

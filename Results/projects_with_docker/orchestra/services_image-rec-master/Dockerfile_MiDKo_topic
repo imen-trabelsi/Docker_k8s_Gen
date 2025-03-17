@@ -1,0 +1,46 @@
+#Base image
+FROM python:3.7-alpine AS builder
+
+LABEL maintainer="Your_Name <Your_Email>"
+
+# Set environment variable
+ENV PORT='8082' \
+
+WORKDIR /builder
+
+# Install dependencies
+RUN apk --no-cache add \
+    gcc \
+    musl-dev \
+
+# Copy python dependencies files
+COPY common/python/requirements.txt common/requirements.txt
+COPY image-rec-master/requirements.txt .
+
+# Install python dependencies
+RUN pip install -r common/requirements.txt -r requirements.txt
+
+# Copy proto files
+COPY common/messages/imagery.proto .
+
+# Generate python classes from proto definition
+RUN mkdir dist && protoc --python_out=dist messages/*.proto
+
+# Second phase
+FROM python:3.7-alpine
+
+WORKDIR /app
+
+# Copy python site-packages from builder image
+
+# Copy proto compiled files from builder image
+
+# Copy source code
+COPY common/python common
+COPY image-rec-master/service service
+
+# Expose port
+EXPOSE 8082
+
+# Default command
+CMD [ "python", "-m", "service" ]

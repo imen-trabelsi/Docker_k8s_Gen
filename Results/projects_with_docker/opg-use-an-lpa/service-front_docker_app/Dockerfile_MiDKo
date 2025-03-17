@@ -1,0 +1,58 @@
+# Do a multistage build to throw away the build-time environment
+FROM php:8.1.29-fpm-alpine3.20 as builder
+
+# Copy the php extensions installer into the container
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy composer into the container
+COPY --from=composer /usr/bin/composer /usr/bin/
+
+# Copy the project files into the container
+COPY service-front/app/composer.json service-front/app/composer.lock /app/
+COPY service-front/app /app
+
+# Install dependencies
+RUN set -xe \
+    && apk add --update --no-cache icu gettext fcgi \
+    && install-php-extensions apcu redis-^5 intl gettext opcache \
+    && rm /usr/bin/install-php-extensions \
+    && composer install --prefer-dist --no-dev --no-interaction --no-scripts --optimize-autoloader \
+
+# Start the production stage
+FROM php:8.1.29-fpm-alpine3.20 as production
+
+# Copy the php extensions installer into the container
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
+
+# Copy composer into the container
+COPY --from=composer /usr/bin/composer /usr/bin/
+
+# Copy the build results from the previous stage
+
+# Copy the app-specific ini files into php's configuration
+COPY service-front/docker/app/app-php.ini /usr/local/etc/php/conf.d/
+COPY service-front/docker/app/fpm-pool.ini /usr/local/etc/php-fpm.d/zz-logging.conf
+COPY service-front/docker/app/health-check.sh /usr/local/bin/health-check.sh
+
+# Additional PHP settings for development
+COPY service-front/docker/app/app-php-development.ini /usr/local/etc/php/conf.d/app-php.ini
+
+# Install xDebug
+RUN set -xe \
+    && install-php-extensions xdebug-stable \
+
+# Copy and run the hardening script
+COPY scripts/docker_hardening/harden.sh /harden.sh
+RUN /harden.sh && rm /harden.sh
+
+# Set the environment variable
+ENV OPG_PHP_POOL_CHILDREN_MAX="25"
+
+# Change the user to a non-root user
+USER www-data
+
+# Start the php service
+CMD ["php-fpm"]

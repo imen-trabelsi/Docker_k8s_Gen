@@ -1,0 +1,29 @@
+{
+    "docker_info": {
+        "base_image": "coopcycle/php:8.3",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"sh\",",
+                    "\"-c\",",
+                    "\"/var/www/html/bin/console",
+                    "messenger:consume",
+                    "async",
+                    "--limit=100",
+                    "--time-limit=900",
+                    "-n\"]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

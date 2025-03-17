@@ -1,0 +1,26 @@
+# Use base image
+FROM ninokop/dubbo-demo-base
+
+# Create app directory
+RUN mkdir -p /app
+
+# Set working directory to /app
+WORKDIR /app
+
+# Add source code to /app
+COPY . /app
+
+# Change directory to home
+WORKDIR /home
+
+# Install dependencies
+RUN mvn clean install -DskipTests
+
+# Expose port
+EXPOSE 8080
+
+# Environment variables
+ENV JAVA_OPTS=""
+
+# Set entrypoint
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app/target/*.jar"]

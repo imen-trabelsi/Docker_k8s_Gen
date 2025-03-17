@@ -1,0 +1,11 @@
+# This Dockerfile is created by looking at the source code and user-provided inputs.
+
+FROM mcr.microsoft.com/dotnet/aspnet 
+
+WORKDIR /app 
+
+COPY ./pub .
+
+EXPOSE 80 
+
+ENTRYPOINT ["dotnet", "NurseCron.Employees.Api.dll"]

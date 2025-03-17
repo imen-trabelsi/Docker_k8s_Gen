@@ -1,0 +1,28 @@
+# Use upstream base image
+FROM ${UPSTREAM_REPO:-uselagoon}/redis-7:${UPSTREAM_TAG:-latest}
+
+# Set environment variables
+ENV LAGOON_VERSION=$LAGOON_VERSION
+ENV REDIS_PASSWORD=admin
+ENV PATH /app/node_modules/.bin:$PATH
+
+# Add dependencies
+COPY package.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy all project files
+COPY . .
+
+# If necessary, you can expose specific ports
+# EXPOSE <port>
+
+# If necessary, you can define basic health checks
+# HEALTHCHECK CMD [ "command", "param" ]
+
+# Define the user to run the commands
+# USER <user>
+
+# Define the command that will be executed when the container starts
+CMD [ "npm", "start" ]

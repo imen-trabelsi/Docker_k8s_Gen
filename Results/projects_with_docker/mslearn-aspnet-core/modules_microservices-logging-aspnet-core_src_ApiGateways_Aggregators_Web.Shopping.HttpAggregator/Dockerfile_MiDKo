@@ -1,0 +1,16 @@
+# build stage
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+RUN dotnet restore "eShop-Learn.sln"
+COPY . .
+WORKDIR "/src/src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator"
+RUN dotnet publish --no-restore "Web.Shopping.HttpAggregator.csproj" -c Release -o /app/publish
+
+#final stage
+FROM mcr.microsoft.com/dotnet/sdk:6.0
+WORKDIR /app
+EXPOSE 80
+
+# Set entrypoint
+ENTRYPOINT ["dotnet", "Web.Shopping.HttpAggregator.dll"]

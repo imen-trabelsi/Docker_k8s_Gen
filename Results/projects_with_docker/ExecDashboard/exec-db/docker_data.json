@@ -1,0 +1,30 @@
+{
+    "docker_info": {
+        "base_image": "mongo:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD db-setup.sh /tmp/db-setup.sh",
+            "ADD db-setup.js /tmp/db-setup.js"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/tmp/db-setup.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "chmod +x /tmp/db-setup.sh",
+                "RUN chmod +x /tmp/db-setup.js"
+            ]
+        ]
+    }
+}

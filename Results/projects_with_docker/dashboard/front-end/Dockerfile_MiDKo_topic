@@ -1,0 +1,52 @@
+# Set base image
+FROM node:16-alpine3.13 as base
+
+# Set workdir
+WORKDIR /usr/src/build
+
+# Copy package.json and other relevant files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+RUN apk update && apk add openssl
+
+# Add coda package
+RUN yarn add @coda-19/coda19-fhir-templates@1.0.6-main-7573265b.0
+
+# Clean cache
+RUN yarn cache clean
+
+# Copy all other project files (excluding node_modules)
+COPY . .
+
+# Set environment variable
+ARG BUILD_ENV=prod
+COPY ./${BUILD_ENV}.env ./.env
+
+# Clean unwanted files
+RUN rm -f .yarnrc
+RUN rm -f .npmrc
+RUN rm ./version.txt
+
+# Generate version.txt with openssl command
+RUN openssl rand -hex 12 > version.txt
+
+# Build the application
+RUN yarn build
+
+# Global install http server
+RUN npm install -g http-server
+
+# Change to app directory
+WORKDIR /usr/src/app
+
+# Copy from builder stage
+COPY ./${BUILD_ENV}.env ./.env
+
+# Expose port
+EXPOSE 8080
+
+# Start the application
+CMD [ "http-server", "--port", "8080", "dist" ]
+

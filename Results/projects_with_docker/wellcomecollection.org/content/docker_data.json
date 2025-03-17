@@ -1,0 +1,51 @@
+{
+    "docker_info": {
+        "base_image": "public.ecr.aws/docker/library/node:20-bookworm-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3000"
+        ],
+        "user": [
+            "nextjs"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "NEXT_PUBLIC_CIVICUK_API_KEY"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY package.json yarn.lock ./",
+            "COPY common ./common",
+            "COPY toggles/webapp ./toggles/webapp",
+            "COPY config/tsconfig-base.json ./config/",
+            "WORKDIR content/webapp",
+            "COPY content/webapp/package.json ./",
+            "COPY content/webapp ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"yarn\",",
+                    "\"start\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "yarn --frozen-lockfile && yarn cache clean",
+                ""
+            ],
+            [
+                "yarn build && yarn cache clean",
+                ""
+            ],
+            [
+                "addgroup --system --gid 1001 nodejs",
+                "RUN adduser --system --gid 1001 nextjs"
+            ]
+        ]
+    }
+}

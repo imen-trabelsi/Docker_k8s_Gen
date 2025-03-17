@@ -1,0 +1,32 @@
+FROM ubuntu:18.04
+
+# Set Environment Variables
+ENV HTTP_PROXY=${HTTP_PROXY}
+ENV HTTPS_PROXY=${HTTPS_PROXY}
+ENV NO_PROXY=${NO_PROXY}
+
+# Create Non-Root User
+RUN groupadd -r onap && useradd -r -g onap onap
+WORKDIR /opt/multicloud/k8s/ncm
+
+# Copy files and set required permissions
+COPY --chown=onap:onap ./ncm ./
+RUN chown -R onap:onap /opt/multicloud/k8s/ncm
+USER onap
+
+# Install Go and other dependencies
+RUN apt-get update && \
+    apt-get install -y \
+    golang \
+    git \
+
+# Build the application
+COPY src/ncm/scripts/Dockerfile go.mod ./
+RUN go mod download
+RUN go build -o ncm
+
+# Expose Necessary Ports
+EXPOSE 9016
+
+# Execution Command
+CMD ["./ncm"]

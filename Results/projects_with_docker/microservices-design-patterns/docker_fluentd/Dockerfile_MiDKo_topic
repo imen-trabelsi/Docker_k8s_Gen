@@ -1,0 +1,46 @@
+# Start with a base image containing Java runtime
+FROM openjdk:8-jdk-alpine 
+
+# The application's jar file
+ARG JAR_FILE=target/*.jar
+
+# Copy the application's jar to the container
+COPY ${JAR_FILE} app.jar
+
+# Maven build system dependencies
+COPY pom.xml pom.xml
+
+# Adding point of entry for container
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+
+# Add Maintainer Info
+LABEL maintainer="your-email@example.com"
+
+# Add a volume pointing to /tmp
+VOLUME /tmp
+
+# Expose the ports
+EXPOSE 8080
+
+# Create working directory
+WORKDIR /app
+
+# Copy application dependencies
+COPY target/lib /app/lib
+
+# Copy other resources like .env, docker-compose.yml, etc.
+COPY docker/.env /app
+COPY docker/docker-compose.yml /app
+COPY docker/fluentd/Dockerfile /app
+
+# Make port available to the world outside this container
+EXPOSE 8080
+
+# Run Commands
+RUN ["gem", "install", "fluent-plugin-elasticsearch", "--no-rdoc", "--no-ri", "--version", "1.9.2"]
+
+# Set Environment variable
+ENV REDIS_URL "redis://localhost:6379"
+
+# Add the application's jar to the container
+COPY ${JAR_FILE} app.jar

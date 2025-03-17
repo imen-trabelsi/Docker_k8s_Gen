@@ -1,0 +1,30 @@
+# Base Image
+FROM ghcr.io/mattrobenolt/ps-http-sim:v0.0.11
+
+# Set work directory
+WORKDIR /app
+
+# Install dependencies
+COPY Cargo.toml Cargo.toml
+RUN cargo build --release
+RUN rm src/*.rs
+
+# Copy source files
+COPY src/ ./src
+
+# Build application
+RUN cargo build --release
+
+# Configure PostgreSQL Database
+ENV DATABASE_URL postgresql://postgres:password@localhost/database
+
+# Copy necessary files
+COPY --from=planetscale-proxy /ps-http-sim /ps-http-sim
+
+# Expose correct ports
+EXPOSE 5000
+
+# Set entrypoint
+ENTRYPOINT ["/ps-http-sim"]
+
+

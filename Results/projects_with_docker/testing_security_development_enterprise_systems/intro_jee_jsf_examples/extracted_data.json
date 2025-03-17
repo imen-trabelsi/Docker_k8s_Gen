@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Java",
+        "dependencies": {
+            "pom.xml": "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n\n    <modelVersion>4.0.0</modelVersion>\n    <artifactId>jsf-examples</artifactId>\n\n    <!-- Note that here we want to build a WAR and not a JAR file -->\n    <packaging>war</packaging>\n\n    <parent>\n        <groupId>org.tsdes.intro.jee.jsf</groupId>\n        <artifactId>jsf</artifactId>\n        <version>0.0.1-SNAPSHOT</version>\n    </parent>\n\n\n    <dependencies>\n\n        <dependency>\n            <groupId>javax</groupId>\n            <artifactId>javaee-api</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.hibernate</groupId>\n            <artifactId>hibernate-core</artifactId>\n        </dependency>\n\n\n        <!-- JBoss JEE -->\n        <dependency>\n            <groupId>org.jboss.spec.javax.faces</groupId>\n            <artifactId>jboss-jsf-api_2.3_spec</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.jboss.spec.javax.ejb</groupId>\n            <artifactId>jboss-ejb-api_3.2_spec</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.jboss.spec.javax.annotation</groupId>\n            <artifactId>jboss-annotations-api_1.3_spec</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.jboss.spec.javax.servlet</groupId>\n            <artifactId>jboss-servlet-api_4.0_spec</artifactId>\n        </dependency>\n\n\n    </dependencies>\n\n\n    <build>\n        <finalName>examples</finalName>\n    </build>\n\n</project>"
+        },
+        "database": null,
+        "build_system": "Maven",
+        "config_files": {
+            "intro/jee/jsf/examples/Dockerfile": "# Specify which OS image to run.\n# In our case, we are using an OS image with WildFly started\n# as a daemon/service\nFROM jboss/wildfly:18.0.1.Final\n\n# Copy the generated WAR from \"target\" folder into the Docker image,\n# in the folder where Widlfly is expecting to find installed WAR files\nCOPY target/examples.war /opt/jboss/wildfly/standalone/deployments/\n\n# No need of CMD here, as WidlFly is automatically started as a service\n\n\n\n# To run this example, we first need to build the examples.war file with\n#\n# mvn package\n#\n# then, we build a Docker image with:\n#\n# docker build . -t examples\n#\n# then, we run such image with\n#\n# docker run -p 8080:8080 examples\n#\n# finally, we can access the web app at:\n#\n# localhost:8080/examples\n\n\n\n\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "pom.xml"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

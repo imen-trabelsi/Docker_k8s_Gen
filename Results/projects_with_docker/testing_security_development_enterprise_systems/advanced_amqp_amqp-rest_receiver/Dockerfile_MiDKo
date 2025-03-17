@@ -1,0 +1,11 @@
+# The Base Image
+FROM adoptopenjdk/openjdk11:alpine
+
+#Folder in which your app resides. On Linux or Docker this is usually the home (~) directory. 
+WORKDIR /app
+
+#Copy instructions
+COPY target/receiver.jar /app/
+
+# The default command to run when the image starts
+ENTRYPOINT ["java","-jar","/app/receiver.jar"]

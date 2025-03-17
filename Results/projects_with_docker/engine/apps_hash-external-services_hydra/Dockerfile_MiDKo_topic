@@ -1,0 +1,33 @@
+# Set base image
+FROM oryd/hydra:v2.2.0 AS base
+
+# Set working directory in the container
+WORKDIR /app
+
+# Indicate that docker should use root user
+USER root
+
+# Create a directory to store the Postgres certificates
+RUN mkdir -p /home/ory/.postgresql
+
+# Copy instructions
+ADD https://truststore.pki.rds.amazonaws.com/global/global-bundle.pem /home/ory/.postgresql/root.crt
+
+# Set ownership and permissions for /home/ory/.postgresql
+RUN chown -R ory:ory /home/ory && \
+
+# Switch back to ory
+USER ory
+
+# Copy project files and directories into the WORKDIR
+COPY . .
+
+# Install dependencies
+RUN poetry install --no-dev
+
+# Expose port to the Docker host, so we can access it
+EXPOSE 8080
+
+# Command to run when the container starts
+ENTRYPOINT ["hydra"]
+CMD ["serve", "all"]

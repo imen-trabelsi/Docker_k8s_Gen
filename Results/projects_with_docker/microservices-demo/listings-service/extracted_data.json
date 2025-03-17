@@ -1,0 +1,36 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"listings-service\",\n  \"version\": \"1.0.0\",\n  \"main\": \"index.js\",\n  \"license\": \"MIT\",\n  \"scripts\": {\n    \"build\": \"webpack --progress\",\n    \"deploy\": \"node-deploy $(pwd)\",\n    \"db:migrate\": \"sequelize db:migrate\",\n    \"db:migrate:undo\": \"sequelize db:migrate:undo\",\n    \"linkall\": \"yarn link node-deploy\",\n    \"watch\": \"babel-watch -L src/index.js\"\n  },\n  \"devDependencies\": {\n    \"babel-watch\": \"^7.0.0\",\n    \"node-deploy\": \"../node-deploy\",\n    \"nodemon\": \"^2.0.2\"\n  },\n  \"dependencies\": {\n    \"@babel/core\": \"~7.7.7\",\n    \"@babel/polyfill\": \"~7.7.0\",\n    \"@babel/preset-env\": \"~7.7.7\",\n    \"babel-loader\": \"~8.0.6\",\n    \"babel-plugin-module-resolver\": \"~4.0.0\",\n    \"body-parser\": \"~1.19.0\",\n    \"cors\": \"~2.8.5\",\n    \"express\": \"~4.17.1\",\n    \"mysql2\": \"~2.0.2\",\n    \"sequelize\": \"~5.21.3\",\n    \"sequelize-cli\": \"~5.5.1\",\n    \"webpack\": \"~4.41.5\",\n    \"webpack-cli\": \"~3.3.10\",\n    \"webpack-node-externals\": \"~1.7.2\"\n  }\n}\n"
+        },
+        "database": "MySQL",
+        "build_system": "npm",
+        "config_files": {
+            "docker-compose.yml": "version: \"3\"\nservices:\n  api-gateway:\n    build:\n      context: \".\"\n      dockerfile: \"./api-gateway/Dockerfile\"\n    depends_on:\n      - listings-service\n      - users-service\n    environment:\n      - LISTINGS_SERVICE_URI=http://listings-service:7100\n      - USERS_SERVICE_URI=http://users-service:7101\n    ports:\n      - \"7000:7000\"\n    volumes:\n      - ./api-gateway:/opt/app\n\n  listings-service:\n    build:\n      context: \".\"\n      dockerfile: \"./listings-service/Dockerfile\"\n    depends_on:\n      - listings-service-db\n    environment:\n      - DB_URI=mysql://root:password@listings-service-db/db?charset=UTF8\n    ports:\n      - \"7100:7100\"\n    volumes:\n      - ./listings-service:/opt/app\n\n  listings-service-db:\n    environment:\n      - MYSQL_ROOT_PASSWORD=password\n      - MYSQL_DATABASE=db\n    image: mysql:5.7.20\n    ports:\n      - 0.0.0.0:7200:3306\n\n  users-service:\n    build:\n      context: \".\"\n      dockerfile: \"./users-service/Dockerfile\"\n    depends_on:\n      - users-service-db\n    environment:\n      - DB_URI=mysql://root:password@users-service-db/db?charset=UTF8\n    ports:\n      - \"7101:7101\"\n    volumes:\n      - ./users-service:/opt/app\n\n  users-service-db:\n    environment:\n      - MYSQL_ROOT_PASSWORD=password\n      - MYSQL_DATABASE=db\n    image: mysql:5.7.20\n    ports:\n      - 0.0.0.0:7201:3306\n",
+            "listings-service/Dockerfile": "FROM node:12\n\nCOPY . /opt/app\n\nWORKDIR /opt/app/listings-service\n\nRUN yarn\n\nCMD yarn watch\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".deploy.example.env",
+            ".gitignore",
+            ".production.example.env",
+            ".sequelizerc",
+            "Dockerfile",
+            "appspec.yml",
+            "babel.config.js",
+            "ecosystem.config.js",
+            "package.json",
+            "webpack.config.js",
+            "yarn.lock"
+        ],
+        "folders": [
+            "aws",
+            "sequelize",
+            "src"
+        ]
+    }
+}

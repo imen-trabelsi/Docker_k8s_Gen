@@ -1,0 +1,38 @@
+# Use the CentOS 8 image as the base image
+FROM centos:8 AS builder
+
+# Set up environment variable
+ENV container=docker
+
+# Setup Go Environment
+ENV GO111MODULE=on \
+    CGO_ENABLED=0 \
+    GOOS=linux \
+
+# Set the work directory
+WORKDIR /app
+
+# Copy the go.mod file to download dependencies 
+COPY go.mod .
+COPY go.sum .
+
+# Download all dependencies. They will be cached if the go.mod and the go.sum files are not changed 
+RUN go mod download
+
+# Copy the source code
+COPY . .
+
+# Build the application
+RUN go build -o main .
+
+# Start fresh from a new builder because this is where the final image starts and we do not need the extra baggage from the previous stages.
+# Use the same Base Image
+FROM centos:8
+
+# Copy the resulting binary to /app
+
+# Change the initial command to your own command
+CMD ["/app/main"]
+
+# Standardize these commands across the containers so they can be easily tested
+RUN (cd /lib/systemd/system/sysinit.target.wants/; for i in *; do [ $i == \

@@ -1,0 +1,56 @@
+{
+    "docker_info": {
+        "base_image": "node:8",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [
+            "version=\"2.0.0\"",
+            "description=\"This"
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY package.json /usr/src/wallclockservice/",
+            "COPY Gruntfile.js /usr/src/wallclockservice/"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"npm\",",
+                    "\"start\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "rm -rf /usr/local/lib/node_modules/npm \\",
+                "&& mkdir /usr/local/lib/node_modules/npm",
+                "&& curl -sL https://github.com/npm/npm/archive/v5.3.0.tar.gz | tar xz -C /usr/local/lib/node_modules/npm --strip-components=1",
+                "&& npm --version"
+            ],
+            [
+                "mkdir -p /usr/src/wallclockservice",
+                "WORKDIR /usr/src/wallclockservice"
+            ],
+            [
+                "npm install",
+                ""
+            ],
+            [
+                "mkdir -p /usr/src/wallclockservice/config",
+                "COPY config /usr/src/wallclockservice/config/"
+            ],
+            [
+                "mkdir -p /usr/src/wallclockservice/src",
+                "COPY src /usr/src/wallclockservice/src/"
+            ]
+        ]
+    }
+}

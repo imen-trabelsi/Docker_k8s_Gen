@@ -1,0 +1,47 @@
+{
+    "docker_info": {
+        "base_image": "phusion/baseimage:master-amd64",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY setup.sh proxy-*.conf mongo.txt /root/",
+            "COPY certbot_cron.sh /etc/my_init.d/certbot_cron.sh"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apt-get update && apt-get install -y \\",
+                "software-properties-common",
+                "certbot",
+                "python3-certbot-nginx",
+                "nginx",
+                "apache2-utils"
+            ],
+            [
+                "mkdir -p /etc/my_init.d",
+                "COPY setup.sh /etc/my_init.d/setup.sh"
+            ],
+            [
+                "chmod +x /etc/my_init.d/setup.sh",
+                ""
+            ],
+            [
+                "chmod +x /etc/my_init.d/certbot_cron.sh",
+                ""
+            ],
+            [
+                "mkdir /etc/service/nginx",
+                "COPY nginx.sh /etc/service/nginx/run"
+            ],
+            [
+                "chmod +x /etc/service/nginx/run",
+                ""
+            ]
+        ]
+    }
+}

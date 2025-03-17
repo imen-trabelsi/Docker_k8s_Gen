@@ -1,0 +1,38 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.10-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8020"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR $GOPATH/src/github.com/Sfeir/golang-200",
+            "ADD . $GOPATH/src/github.com/Sfeir/golang-200"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/go/bin/todolist\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add -U make git",
+                ""
+            ],
+            [
+                "make all && apk del make git && \\",
+                "rm -rf /gopath/pkg &&",
+                "rm -rf /gopath/src &&",
+                "rm -rf /var/cache/apk/*"
+            ]
+        ]
+    }
+}

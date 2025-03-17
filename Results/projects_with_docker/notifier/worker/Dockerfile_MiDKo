@@ -1,0 +1,26 @@
+# Use the official openjdk image as the base image
+FROM openjdk:11-jre
+
+# Set the working directory to /
+WORKDIR /
+
+#Exposing the port for the Spring Boot Application
+EXPOSE 8080
+
+# Copy the pom.xml file to the working directory
+COPY ./pom.xml ./pom.xml
+
+# Install Maven to handle dependencies before we copy the whole project
+RUN ["mvn","dependency:resolve"]
+
+# Copy the rest of the working directory contents
+COPY ./src ./src
+
+# Build the microservice
+RUN ["mvn","clean","install"]
+
+# Add the jar file and rename it to worker.jar
+COPY target/${JAR_FILE} /worker.jar
+
+# Set the entrypoint command
+ENTRYPOINT ["java", "-jar","/worker.jar"]

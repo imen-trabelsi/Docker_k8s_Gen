@@ -1,0 +1,12 @@
+FROM maven:3.8.1-openjdk-11 as build
+WORKDIR /app
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+COPY src ./src
+RUN mvn package -DskipTests
+
+FROM openjdk:11-jre-slim as runtime
+ENV LANG=C.UTF-8
+WORKDIR /app
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "/app/spring-boot-app.jar"]

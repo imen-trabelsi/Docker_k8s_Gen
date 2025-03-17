@@ -1,0 +1,30 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "JavaScript",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"mod-react\",\n  \"version\": \"0.1.0\",\n  \"private\": true,\n  \"dependencies\": {\n    \"preact\": \"^10.4.8\",\n    \"react\": \"^16.12.0\",\n    \"react-dom\": \"^16.12.0\",\n    \"react-router-dom\": \"^5.1.2\",\n    \"single-spa-react\": \"^3.0.1\"\n  },\n  \"scripts\": {\n    \"serve\": \"rescripts start\",\n    \"build\": \"rescripts build && mv build dist\",\n    \"lint\": \"echo \\\"Error: no lint specified\\\" && exit 1\",\n    \"test\": \"echo \\\"Error: no test specified\\\" && exit 1\"\n  },\n  \"browserslist\": {\n    \"production\": [\n      \">0.2%\",\n      \"not dead\",\n      \"not op_mini all\"\n    ],\n    \"development\": [\n      \"last 1 chrome version\",\n      \"last 1 firefox version\",\n      \"last 1 safari version\"\n    ]\n  },\n  \"devDependencies\": {\n    \"@rescripts/cli\": \"^0.0.14\",\n    \"react-scripts\": \"3.4.0\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "mfe/mod-react/.env": "SKIP_PREFLIGHT_CHECK=true\nBROWSER=none\nPORT=8002\nWDS_SOCKET_PORT=8002\n",
+            "mfe/docker-compose.yml": "version: '3.8'\n\nservices:\n  shell:\n    image: <DOCKER_ID_USER>/shell:<IMAGE_TAG>\n    build:\n      context: ./app-shell\n      dockerfile: Dockerfile\n\n  vue:\n    image: <DOCKER_ID_USER>/vue:<IMAGE_TAG>\n    build:\n      context: ./mod-vue\n      dockerfile: Dockerfile\n\n  react:\n    image: <DOCKER_ID_USER>/react:<IMAGE_TAG>\n    build:\n      context: ./mod-react\n      dockerfile: Dockerfile\n\n  angular:\n    image: <DOCKER_ID_USER>/angular:<IMAGE_TAG>\n    build:\n      context: ./mod-angular\n      dockerfile: Dockerfile\n\n  svelte:\n    image: <DOCKER_ID_USER>/svelte:<IMAGE_TAG>\n    build:\n      context: ./mod-svelte\n      dockerfile: Dockerfile\n",
+            "mfe/mod-react/Dockerfile": "FROM caddy:2-alpine\n\nCOPY Caddyfile /etc/caddy/Caddyfile\nCOPY /dist /usr/share/caddy/dist\n"
+        },
+        "static_files": {
+            "mfe/mod-react/public/manifest.json": "{\n  \"short_name\": \"React App\",\n  \"name\": \"Create React App Sample\",\n  \"icons\": [\n    {\n      \"src\": \"favicon.ico\",\n      \"sizes\": \"64x64 32x32 24x24 16x16\",\n      \"type\": \"image/x-icon\"\n    },\n    {\n      \"src\": \"logo192.png\",\n      \"type\": \"image/png\",\n      \"sizes\": \"192x192\"\n    },\n    {\n      \"src\": \"logo512.png\",\n      \"type\": \"image/png\",\n      \"sizes\": \"512x512\"\n    }\n  ],\n  \"start_url\": \".\",\n  \"display\": \"standalone\",\n  \"theme_color\": \"#000000\",\n  \"background_color\": \"#ffffff\"\n}\n"
+        }
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "babel.config.js",
+            "docker-compose.yml",
+            "package.json"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

@@ -1,0 +1,34 @@
+# Start from the base image  
+FROM node:12-alpine
+
+WORKDIR /nest
+
+# Copy all files
+COPY . .
+
+# Install dependencies
+RUN yarn global add @nestjs/cli
+RUN yarn install --production=false
+RUN nest build proto-schema
+RUN nest build service-notification
+
+# Add our user and group first to make sure their IDs get assigned consistently, regardless of whatever dependencies get added
+RUN addgroup -S app && adduser -S app -G app
+
+# Change to our app user
+USER app
+
+# Expose appropriate ports
+EXPOSE 50044
+
+# Set the correct environment variables
+ENV NODE_ENV=production
+
+# Label the image
+LABEL version="1.0"
+LABEL description="Dockerfile for a Spring Boot microservice."
+
+# Set necessary Environment Variables
+ENV MONGO_DB_USERNAME=user \
+
+ENTRYPOINT ["node", "dist/apps/service-notification/main.js"]

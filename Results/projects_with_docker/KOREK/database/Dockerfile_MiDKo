@@ -1,0 +1,39 @@
+# Step 1 : use the base image specified by the user
+FROM mdillon/postgis:11
+
+# Step 2 : set work directory in the container
+WORKDIR /usr/src/app
+
+# Step 3 : set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# Step 4 : install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Step 5 : copy project
+COPY . .
+
+# Step 6 : copy postgreSQL configurations
+COPY postgresql.conf /etc/postgresql
+
+# Step 7 : allow the "postgres" execution command
+CMD ["postgres", "-c", "config_file=/etc/postgresql/postgresql.conf"] 
+
+# Step 8 : Expose Port
+EXPOSE 5432
+
+# Step 9 : Define the database environment variable
+ENV POSTGRES_DB postgis
+ENV POSTGRES_USER postgres
+ENV POSTGRES_PASSWORD postgres
+
+# Step 10 : Add labels
+LABEL version="1.0"
+LABEL description="Dockerfile for Django and PostgreSQL application"
+LABEL maintainer="your_email@example.com"
+
+# Step 11 : Health check
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD pg_isready -U postgres || exit 1

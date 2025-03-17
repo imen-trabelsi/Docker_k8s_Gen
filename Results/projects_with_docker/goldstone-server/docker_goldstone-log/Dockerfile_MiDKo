@@ -1,0 +1,10 @@
+FROM logstash:2.1
+
+COPY logstash /logstash
+
+RUN /opt/logstash/bin/plugin install logstash-filter-translate
+RUN /opt/logstash/bin/plugin install logstash-input-http
+
+EXPOSE 5514
+
+CMD ["logstash", "-f", "/logstash/conf.d", "-w", "1"]

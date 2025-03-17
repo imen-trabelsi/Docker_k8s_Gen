@@ -1,0 +1,26 @@
+# Use base image
+FROM docker.elastic.co/logstash/logstash:${ELK_VERSION}
+
+# setup env variables
+ENV PATH="/usr/local/sbt/bin:$PATH"
+
+# copy necessary files
+COPY .env .
+
+# build and configuration
+COPY build.sbt .
+COPY docker-compose.yml .
+COPY scripts/logging_aggregator/dev/logstash/Dockerfile .
+
+# Run dependencies
+RUN logstash-plugin install logstash-input-beats
+RUN logstash-plugin install logstash-filter-json
+RUN logstash-plugin install logstash-filter-kv
+
+# Expose necessary ports
+EXPOSE 5601
+EXPOSE 9200
+EXPOSE 9300
+
+# Set correct entry point
+CMD ["/usr/local/bin/docker-entrypoint"]

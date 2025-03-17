@@ -1,0 +1,40 @@
+# Get the base Ubuntu image from Docker Hub
+FROM phusion/baseimage:master-amd64
+
+# Metadata as defined in OCI image spec annotations
+LABEL org.opencontainers.image.title="Spring Boot microservice" \
+      org.opencontainers.image.description="Containerized microservice" \
+
+# Update the OS
+RUN apt-get update && apt-get upgrade -y
+
+# Setup SSH keys
+COPY *.pub /tmp/
+RUN cat /tmp/*.pub >> /root/.ssh/authorized_keys && rm -f /tmp/*.pub
+
+# Install required packages
+RUN curl -sL https://deb.nodesource.com/setup_16.x | bash -
+RUN apt-get install -y nodejs git tmux
+RUN npm install -g expo-cli
+
+# Add git repo
+RUN add-apt-repository ppa:git-core/ppa
+RUN apt-get update && apt-get install git -y
+
+# Copy microservices app
+COPY dncui/ /expo/dncui/
+COPY expo_start /etc/service/expo_start/run
+RUN chmod +x /etc/service/expo_start/run
+
+# Run system configurations
+RUN rm -f /etc/service/sshd/down
+RUN /etc/my_init.d/00_regen_ssh_host_keys.sh
+
+# Default command
+CMD ["/sbin/my_init"]
+
+# This container will be run as an executable
+ENTRYPOINT ["/sbin/my_init", "--quiet"]
+
+# Clean up APT when done
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

@@ -1,0 +1,23 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "requirements.txt": "setuptools==39.0.1\ngrpcio==1.15.0\ngrpcio-tools==1.15.0\ngrpcio-health-checking==1.15.0\nprotobuf==3.6.1\npillow==6.2.0\ngoogleapis-common-protos==1.6.0\n"
+        },
+        "database": null,
+        "build_system": "pip",
+        "config_files": {
+            "Dockerfile": "FROM golang:1.14-buster as gobuild\n\nWORKDIR /go\n\nENV GOPATH \"\"\n\nCOPY . ./\nRUN cd cmd/analyticproxy && go build; cd -; \\\n    cd cmd/medifor && go build; cd - \\\n    cd cmd/analyticworker && go build; cd -  \\\n    cd cmd/analyticworkflow && go build; cd - \\\n    cd cmd/fusionworker && go build; cd -\n\nFROM python:3.8-slim-buster as pybuild\n\nRUN mkdir -p /src/medifor/python \\\n && apt-get update \\\n && apt-get install -y g++\n\nCOPY ./setup.py /src/medifor/\nCOPY ./python/ /src/medifor/python/\n\nRUN pip install -U pip && pip install /src/medifor\n\nFROM python:3.8-slim-buster\n\nRUN mkdir -p /app/bin \\\n && apt-get update \\\n && apt-get install -y libmagic1\n\nCOPY --from=gobuild /go/cmd/analyticproxy/analyticproxy /app/bin/\nCOPY --from=gobuild /go/cmd/medifor/medifor /app/bin/\nCOPY --from=gobuild /go/cmd/analyticworker/analyticworker /app/bin\nCOPY --from=gobuild /go/cmd/analyticworkflow/analyticworkflow /app/bin\nCOPY --from=gobuild /go/cmd/fusionworker/fusionworker /app/bin\nCOPY --from=pybuild /usr/local/lib/python3.8/ /usr/local/lib/python3.8/\n\nENV PATH ${PATH}:/app/bin\n\nEXPOSE 50051\n\nCMD ['python', '-m', 'medifor', '--help']\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "filtersvc.py",
+            "requirements.txt"
+        ],
+        "folders": []
+    }
+}

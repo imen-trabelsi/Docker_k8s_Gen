@@ -1,0 +1,90 @@
+{
+    "docker_info": {
+        "base_image": "ubuntu:14.04",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8080"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV JAVA_HOME     /usr/lib/jvm/java-8-oracle",
+            "ENV HADOOP_LVERSION      2.7.3",
+            "ENV HADOOP_HOME         /usr/local/hadoop",
+            "ENV HADOOP_OPTS         -Djava.library.path=/usr/local/hadoop/lib/native",
+            "ENV PATH          $PATH:$HADOOP_HOME/bin:$HADOOP_HOME/sbin",
+            "ENV SPARK_VERSION       2.1.1",
+            "ENV HADOOP_VERSION      2.7",
+            "ENV ALLUXIO_VERSION     1.5.0",
+            "ENV ALLUXIO_HOME         /opt/alluxio",
+            "ENV PATH          $PATH:$ALLUXIO_HOME/bin",
+            "ENV SPARK_HOME         /opt/spark",
+            "ENV PATH          $PATH:$SPARK_HOME/bin"
+        ],
+        "copy_instructions": [
+            "COPY master.conf /opt/conf/master.conf",
+            "COPY slave.conf /opt/conf/slave.conf",
+            "ADD alluxio_conf/* /opt/alluxio/conf/",
+            "ADD hadoop_conf/* /usr/local/hadoop/etc/hadoop/",
+            "ADD spark_conf/* /opt/spark/conf/"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/opt/spark/bin/spark-shell\",",
+                    "\"--master\",",
+                    "\"local[*]\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update -y && apt-get install software-properties-common -y \\",
+                "&&  apt-add-repository ppa:webupd8team/java -y",
+                "&&  apt-get update -y",
+                ""
+            ],
+            [
+                "apt-get install -y libzip2 libsnappy1 libssl-dev && \\",
+                "wget http://archive.apache.org/dist/hadoop/core/hadoop-$HADOOP_LVERSION/hadoop-$HADOOP_LVERSION.tar.gz &&",
+                "# apt-get remove -y wget &&",
+                "# rm -rf /var/lib/apt/lists/* &&",
+                "tar -zxf /hadoop-$HADOOP_LVERSION.tar.gz &&",
+                "rm /hadoop-$HADOOP_LVERSION.tar.gz &&",
+                "mv hadoop-$HADOOP_LVERSION /usr/local/hadoop &&",
+                "mkdir -p /usr/local/hadoop/logs"
+            ],
+            [
+                "cd / \\",
+                "&& wget http://alluxio.org/downloads/files/${ALLUXIO_VERSION}/alluxio-${ALLUXIO_VERSION}-hadoop-${HADOOP_VERSION}-bin.tar.gz",
+                "&& tar xvfz alluxio-${ALLUXIO_VERSION}-hadoop-${HADOOP_VERSION}-bin.tar.gz",
+                "&& rm alluxio-${ALLUXIO_VERSION}-hadoop-${HADOOP_VERSION}-bin.tar.gz",
+                "&& mv alluxio-${ALLUXIO_VERSION}-hadoop-${HADOOP_VERSION} $ALLUXIO_HOME"
+            ],
+            [
+                "cd / \\",
+                "&& wget https://d3kbcqa49mib13.cloudfront.net/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz",
+                "&& tar -xzf spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz",
+                "&& rm spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz",
+                "&& mv spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION} $SPARK_HOME"
+            ],
+            [
+                "apt-get -y install git maven",
+                ""
+            ],
+            [
+                "apt-get -y install xterm",
+                ""
+            ],
+            [
+                "wget https://artifacts.elastic.co/downloads/elasticsearch-hadoop/elasticsearch-hadoop-6.2.4.zip \\",
+                "&& unzip elasticsearch-hadoop-6.2.4.zip",
+                "&& cd elasticsearch-hadoop-6.2.4/dist/",
+                "&& cp -v elasticsearch-spark-20_2.11-6.2.4.jar /opt/spark/jars/"
+            ]
+        ]
+    }
+}

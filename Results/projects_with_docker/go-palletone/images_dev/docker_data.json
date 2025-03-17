@@ -1,0 +1,28 @@
+{
+    "docker_info": {
+        "base_image": "palletone/baseimg",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV GOPATH=/gopath",
+            "ENV GOROOT=/usr/local/go",
+            "ENV PATH=$PATH:$GOPATH/bin:$GOROOT/bin"
+        ],
+        "copy_instructions": [
+            "COPY ./vendor /gopath/src/"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "wget -o download.log https://studygolang.com/dl/golang/go1.12.linux-amd64.tar.gz \\",
+                "&& tar -C /usr/local -zxvf go1.12.linux-amd64.tar.gz >> download.log",
+                "&& rm go1.12.linux-amd64.tar.gz download.log",
+                "&& mkdir -p /gopath/bin /gopath/src /gopath/pkg /chaincode/input"
+            ]
+        ]
+    }
+}

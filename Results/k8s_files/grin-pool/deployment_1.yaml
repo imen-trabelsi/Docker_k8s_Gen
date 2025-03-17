@@ -1,0 +1,24 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: workerstats
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: workerstats
+    spec:
+      containers:
+      - args:
+        - /usr/local/bin/workerStats.py
+        env:
+        - name: DEBUG_HOLD
+          value: null
+        - name: MYSQL_ROOT_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password
+              name: mysql-pass
+        image: bitgrinmining/services:latest
+        name: grin-pool

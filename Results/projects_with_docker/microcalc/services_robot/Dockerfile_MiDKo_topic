@@ -1,0 +1,30 @@
+# Dockerfile
+
+# We are using a multi-stage build here to separate our build and runtime environments
+# This means having a smaller and more optimized Docker image at the end
+
+FROM python:3-alpine AS build
+
+# Set work directory
+WORKDIR /app
+
+# Install dependencies
+COPY package*.json ./
+
+RUN pip install requests robotframework robotframework-requests \
+
+# Copy application source code
+COPY . /app
+
+RUN chmod +x /app/
+
+# This image is for running our application
+FROM node:alpine
+
+WORKDIR /app
+
+# Copy from the build stage
+
+EXPOSE 3000
+
+CMD [ "node", "app.js" ]

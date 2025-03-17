@@ -1,0 +1,36 @@
+# Use a lightweight base image
+FROM totem/celery-flower-docker
+
+# Set the working directory in the Docker container
+WORKDIR /usr/src/app
+
+# Copy the current directory contents into the container at /app
+COPY . .
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Provide meta data about the image. Replace <value> with correct value
+LABEL maintainer="<maintainer>"
+LABEL version="<version>"
+LABEL description="<description>"
+
+# Copies your code file from your action repository to the filesystem path `/` of the container
+COPY run.py ./run.py
+
+# Make script executable
+RUN chmod +x ./run.py
+
+# Specify the command to run on container start
+CMD [ "python", "./run.py" ]
+
+# Run additional commands
+RUN echo "BROKER_USE_SSL = os.environ.get('BROKER_USE_SSL') == 'True'" >> /opt/celery-flower/celeryconfig.py
+
+# Expose ports
+# Replace '<PORT>' with correct port
+EXPOSE <PORT>
+
+# Define environment variable
+# Replace '<VARIABLE_NAME>' and '<VARIABLE_VALUE>' with correct values
+ENV <VARIABLE_NAME>=<VARIABLE_VALUE>

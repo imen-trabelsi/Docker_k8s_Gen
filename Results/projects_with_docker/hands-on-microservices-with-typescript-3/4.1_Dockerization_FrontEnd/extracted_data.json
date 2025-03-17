@@ -1,0 +1,33 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "JavaScript",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"songs-ui\",\n  \"version\": \"0.1.0\",\n  \"private\": true,\n  \"scripts\": {\n    \"serve\": \"vue-cli-service serve --port 3001\",\n    \"build\": \"vue-cli-service build\",\n    \"lint\": \"vue-cli-service lint\"\n  },\n  \"dependencies\": {\n    \"@types/request\": \"^2.48.1\",\n    \"bootstrap-vue\": \"^2.0.0-rc.11\",\n    \"request\": \"^2.88.0\",\n    \"uuid\": \"^3.3.2\",\n    \"vue\": \"^2.5.17\",\n    \"vue-class-component\": \"^6.0.0\",\n    \"vue-property-decorator\": \"^7.0.0\",\n    \"vuejs-auto-complete\": \"^0.9.0\"\n  },\n  \"devDependencies\": {\n    \"@vue/cli-plugin-typescript\": \"^3.2.0\",\n    \"@vue/cli-service\": \"^3.2.0\",\n    \"typescript\": \"^3.0.0\",\n    \"vue-template-compiler\": \"^2.5.17\"\n  },\n  \"postcss\": {\n    \"plugins\": {\n      \"autoprefixer\": {}\n    }\n  },\n  \"browserslist\": [\n    \"> 1%\",\n    \"last 2 versions\",\n    \"not ie <= 8\"\n  ]\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "4.1_Dockerization/docker-compose.yml": "version: '2'\nservices:\n\n  songs:\n    image: songs\n    ports:\n      - \"3000:3000\"\n    restart: always\n    networks:\n      - test-net\n    depends_on:\n      - mongo\n    \n  frontend:\n    image: frontend\n    ports:\n      - \"3001:3001\"\n    restart: always\n    networks:\n      - test-net\n    depends_on:\n      - songs\n      - playlist\n      \n  playlist:\n    image: playlist\n    ports:\n      - \"3002:3002\"\n    restart: always\n    networks:\n      - test-net\n        \n  mongo:\n    image: mongo\n    restart: always\n    ports:\n      - 3017:27017\n    #environment:\n      #MONGO_INITDB_ROOT_USERNAME: root\n      #MONGO_INITDB_ROOT_PASSWORD: example\n    networks:\n      - test-net\n\n  mongo-express:\n    image: mongo-express\n    restart: always\n    ports:\n      - 3018:8081\n    #environment:\n      #ME_CONFIG_MONGODB_ADMINUSERNAME: root\n      #ME_CONFIG_MONGODB_ADMINPASSWORD: example\n    networks:\n      - test-net\n  \n  nginx:\n    image: mynginx\n    networks:\n      - test-net\n    ports:\n      - 3080:3080\n    command: [nginx, '-g', 'daemon off;']\n    depends_on:\n      - songs\n      - playlist\n      - frontend\n  redis:\n    image: redis\n    ports:\n      - 3020:6379\n    command: redis-server --appendonly yes\n    restart: always\n    networks:\n      - test-net\n\n  etcd:\n    image: bitnami/etcd\n    ports:\n      - 3021:2379\n    restart: always\n    networks:\n      - test-net\n    environment:\n      - ALLOW_NONE_AUTHENTICATION=yes\n    volumes:\n      - etcd_data:/bitnami\n\nvolumes:\n  etcd_data:\n    driver: local\n\nnetworks:\n  test-net:\n    driver: bridge",
+            "4.1_Dockerization/FrontEnd/Dockerfile": "FROM node:8.13-slim AS build-env\n\n# Create app directory\nRUN mkdir -p /opt/my-musik/\nWORKDIR /opt/my-musik/\n\nCOPY ./package.json .\nCOPY ./tsconfig.json .\nCOPY ./tslint.json .\n\n# Install app dependencies\nRUN npm install typescript -g\nRUN npm install --no-optional\nRUN npm install -g @vue/cli\n\n# Bundle app source\nCOPY ./src ./src\nCOPY ./public ./public\n\nRUN npm run build\n\n\n# final stage\nFROM node:8.13-slim\nRUN npm install npm -g\nRUN mkdir -p /opt/my-musik/\nWORKDIR /opt/my-musik/\nCOPY --from=build-env /opt/my-musik/dist ./dist\nCOPY --from=build-env /opt/my-musik/package.json ./\n\nRUN npm install --no-optional --only=prod\nRUN npm install node-static -g\nEXPOSE 3001\n\nCMD [ \"static\", \"./dist\", \"-a\", \"0.0.0.0\", \"-p\", \"3001\" ]"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "4.0.0-dev",
+            "Dockerfile",
+            "config.json",
+            "gulpfile.js",
+            "package-lock.json",
+            "package.json",
+            "songs.json",
+            "tsconfig.json",
+            "tslint.json"
+        ],
+        "folders": [
+            "src",
+            "test"
+        ]
+    }
+}

@@ -1,0 +1,28 @@
+# Define the base image
+FROM node:20.18-slim 
+
+# Create the directory for our application and set it to the working directory
+RUN mkdir -p /usr/src/wallclockservice
+WORKDIR /usr/src/wallclockservice 
+
+# Copy package.json and Gruntfile.js to the working directory
+COPY package.json /usr/src/wallclockservice/
+COPY Gruntfile.js /usr/src/wallclockservice/
+
+# Install the Node.js dependencies
+RUN npm install 
+
+# Copy src directory to the working directory
+COPY src /usr/src/wallclockservice/src/
+
+# Set environment variables
+ENV NODE_ENV production
+
+# Label metadata
+LABEL version="2.0.0" description="This
+
+# Application should be accessible via port 80
+EXPOSE 80
+
+# Command to start the application
+CMD [ "npm", "start" ]

@@ -1,0 +1,12 @@
+# Use Microsoft's official MSSQL Server 2019 image as base
+FROM mcr.microsoft.com/mssql/server:2019-latest
+
+# Set environment variables
+ENV SA_PASSWORD=${SA_PASSWORD}
+ENV ACCEPT_EULA=Y
+
+# Copy SQL script to docker image directory
+COPY Restore/logcorner-edusync-speech-database_Create.sql /home/resources/Restore.sql
+
+# Run commands
+RUN (/opt/mssql/bin/sqlservr --accept-eula & ) | grep -q "SQL Server is now ready for client connections" && sleep 10 && /opt/mssql-tools/bin/sqlcmd -S localhost -U SA -P $SA_PASSWORD -i /home/resources/Restore.sql && pkill sqlservr

@@ -1,0 +1,18 @@
+# Based on openjdk image
+FROM openjdk:8-jre
+
+# Add Spring Boot app.jar to Container
+COPY abixen-platform-configuration.jar app.jar
+
+# Expose the ports
+EXPOSE 8888
+
+# Set environment variable, for example
+ENV DATABASE_URL postgres://username:password@localhost:5432/dbname
+
+# The ENTRYPOINT specifies a command that will always be executed when the container starts. 
+# The CMD specifies arguments that will be fed to the ENTRYPOINT.
+# It gives priority to -Dabixen.services.eureka.uri=discovery as the application's parameters.
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dabixen.services.eureka.uri=discovery"]
+
+CMD ["-jar","/app.jar"]

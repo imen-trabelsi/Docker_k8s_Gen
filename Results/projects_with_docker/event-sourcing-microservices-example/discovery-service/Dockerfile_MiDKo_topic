@@ -1,0 +1,31 @@
+# Set the base image
+FROM openjdk:17-alpine AS build
+
+# Set the working directory
+WORKDIR /workspace/app
+
+# Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy pom.xml and source code to the image
+COPY pom.xml .
+COPY src src
+
+# Package the application
+RUN ./mvnw package -DskipTests
+RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+
+# Use the Alpine based final stage JDK 17 image 
+FROM openjdk:17-alpine
+
+# Argument for the jar file
+ARG JAR_FILE
+
+# Copy the application's executable in a slim image
+
+# Expose the service on the provided port 
+EXPOSE 8080
+
+# Set the startup command to execute the jar
+CMD ["java", "-jar", "/usr/share/myservice/myservice.jar"]

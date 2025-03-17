@@ -1,0 +1,17 @@
+# Starting with a multi-stage build to keep the final image small
+FROM mcr.microsoft.com/dotnet/sdk:5.0 as build-env
+WORKDIR /Sln/Decoder
+
+# Copy everything and restore as distinct layers
+COPY . ./
+RUN dotnet restore
+
+# Publish the app
+RUN dotnet publish -c Release -r linux-x64 -o out
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:5.0
+
+WORKDIR /App
+# Copy from the build stage
+ENTRYPOINT [ "/App/Decoder" ]

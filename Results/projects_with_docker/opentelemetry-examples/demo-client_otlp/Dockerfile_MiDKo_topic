@@ -1,0 +1,17 @@
+# Use official python:3-alpine3.15 as base image
+FROM python:3-alpine3.15 
+
+# Set the working directory
+WORKDIR /app
+
+# Run commands
+RUN pip install opentelemetry-launcher requests pyyaml protobuf==3.20.1 && \
+
+# Copy Files
+COPY client.py /app/client.py
+
+# Set the default command for the container
+CMD ["opentelemetry-instrument", "/app/client.py"]
+
+# Expose the application on port 
+EXPOSE

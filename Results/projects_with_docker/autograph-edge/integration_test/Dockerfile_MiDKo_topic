@@ -1,0 +1,29 @@
+# Start with the base image
+FROM circleci/android:api-25-node8-alpha
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy the source code
+COPY . /app
+
+# Run necessary commands
+RUN curl -s  -f https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - 2>/dev/null \
+  && sudo sed -i -e 's/deb.debian.org/archive.debian.org/g' -e 's|security.debian.org|archive.debian.org/|g' -e '/stretch-updates/d' /etc/apt/sources.list \
+  && sudo apt-get update && sudo apt-get install -y curl netcat android-sdk-build-tools \
+
+# Copy the go.mod and download dependencies
+COPY go.mod .
+RUN go mod download
+
+# Copy all source code files
+COPY . .
+
+# Expose ports
+EXPOSE 8080
+
+# Set user
+USER app
+
+# Set the start command
+CMD ["/bin/bash", "-c", "/app/sign_test_apk.sh, edge, 8080, &&, /app/sign_test_xpi.sh, edge, 8080, &&, /app/verify_apk.sh, /tmp/signed.apk"]

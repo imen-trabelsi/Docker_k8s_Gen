@@ -1,0 +1,65 @@
+{
+    "docker_info": {
+        "base_image": "dev",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "2112"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV SRVDIR=user",
+            "ENV SRVNAME=${SRVDIR}Server",
+            "ENV SRVDIR=user",
+            "ENV SRVNAME=${SRVDIR}ServerAlp",
+            "ENV SRVDIR=user",
+            "ENV SRVNAME=${SRVDIR}ServerAlp"
+        ],
+        "copy_instructions": [
+            "WORKDIR /go/src/goTemp",
+            "COPY ./go.mod ./go.sum ./",
+            "COPY ./globalerrors ./globalerrors",
+            "COPY ./globalUtils ./globalUtils",
+            "COPY ./globalMonitoring ./globalMonitoring",
+            "COPY --from=alpBuild /go/src/goTemp/$SRVNAME $SRVNAME"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "./$SRVNAME"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "./$SRVNAME"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "go get github.com/githubnemo/CompileDaemon",
+                "ENV GO111MODULE=on"
+            ],
+            [
+                "go mod download",
+                "COPY ./$SRVDIR ./$SRVDIR"
+            ],
+            [
+                "go build -o $SRVNAME ./$SRVDIR/server/",
+                "EXPOSE 50051"
+            ],
+            [
+                "CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o $SRVNAME ./$SRVDIR/server/",
+                ""
+            ],
+            [
+                "apk --no-cache add ca-certificates",
+                "WORKDIR /goTemp"
+            ]
+        ]
+    }
+}

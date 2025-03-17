@@ -1,0 +1,39 @@
+# Set the source image
+FROM dragonwell-registry.cn-hangzhou.cr.aliyuncs.com/dragonwell/dragonwell:8-extended-ga-centos as builder
+
+# Set the working directory
+WORKDIR /app
+
+# Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy project files to the image
+COPY src ./src
+COPY pom.xml .
+
+# Build the project
+RUN ./mvnw package -DskipTests
+
+# Use a second stage to create a clean final image
+FROM dragonwell-registry.cn-hangzhou.cr.aliyuncs.com/dragonwell/dragonwell:8-extended-ga-centos
+
+# Set the working directory
+WORKDIR /app
+
+# Copy Arthas diagnostic tool
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+
+# Copy jars with dependencies
+
+# Copy start script
+COPY start.sh .
+
+# Make start script executable
+RUN chmod +x /app/start.sh
+
+# Expose the necessary ports
+EXPOSE 8080
+
+# Set the start command
+CMD ["/app/start.sh"]

@@ -1,0 +1,36 @@
+# Base image
+FROM php:7.4-apache
+
+# Update package list and install dependencies
+RUN apt-get update && apt-get -y install gnupg git p7zip-full unzip curl tini ffmpeg
+
+# Install MongoDB
+RUN curl -fsSL https://www.mongodb.org/static/pgp/server-6.0.asc | gpg -o /usr/share/keyrings/mongodb-server-6.0.gpg --dearmor
+RUN echo "deb [ signed-by=/usr/share/keyrings/mongodb-server-6.0.gpg ] http://repo.mongodb.org/apt/debian bullseye/mongodb-org/6.0 main" | tee /etc/apt/sources.list.d/mongodb-org-6.0.list
+RUN apt-get update && apt-get -y install mongodb-org-tools mongodb-mongosh && rm -rf /var/lib/apt/lists/*
+
+# Install PHP extensions
+RUN install-php-extensions mongodb intl @composer
+
+# Enable Apache mod_rewrite
+RUN a2enmod headers rewrite 
+
+# Copy php.ini with customizations
+COPY docker/base-php/customizations.php.ini $PHP_INI_DIR/conf.d/
+
+# Copy Apache configuration file
+COPY docker/base-php/000-default.conf /etc/apache2/sites-enabled
+
+# Update working directory
+WORKDIR /var/www/html
+
+# Copy the project files into the Docker container
+# As there are no project files specified, taking it as a root directory.
+COPY . . 
+
+# Make port 80 available to the world outside this container
+EXPOSE 80
+
+#Run command
+CMD [ "php", "-S", "0.0.0.0:80", "-t", "public" ]
+

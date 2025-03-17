@@ -1,0 +1,46 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "pyproject.toml": "[tool.poetry]\nname = \"openstates-scrapers\"\nversion = \"2022.7\"\ndescription = \"\"\nauthors = [\"James Turk <dev@jamesturk.net>\"]\n\n[tool.poetry.dependencies]\npython = \"^3.9\"\nxlrd = \"<2\"\nlxml = \"^4.4\"\npytz = \"^2024.1\"\nfeedparser = \"^6.0\"\npython-dateutil = \"^2.8\"\nspatula = \"^0.9\"\nchardet = \"^3.0\"\nsuds-py3 = \"^1.3\"\nrequests = {version = \"^2.22\", extras = [\"security\"]}\nmysqlclient = {version = \"^1.4.6\", optional=true}\nSQLAlchemy = {version = \"^1.3\", optional=true}\ncloudscraper = \"^1.2.58\"\nparamiko = \"^2.9.2\"\ncryptography = \"^37.0.2\"\nics = \"^0.7.2\"\npymupdf = \"^1.23.8\"\npandas = \"^2.1.4\"\nopenstates = \"^6.20.16\"\n\n[tool.poetry.extras]\ncalifornia = [\"mysqlclient\", \"SQLAlchemy\"]\n\n[tool.poetry.group.dev.dependencies]\nflake8 = \"^6.0.0\"\nblack = \"^22\"\n\n[build-system]\nrequires = [\"poetry>=0.12\"]\nbuild-backend = \"poetry.masonry.api\"\n"
+        },
+        "database": "MySQL",
+        "build_system": "poetry",
+        "config_files": {
+            "docker-compose.yml": "version: \"3.5\"\n\n# shared network so other openstates packages (core, etc.) can reach these services\nnetworks:\n  openstates-network:\n      name: openstates-network\n\n# shared postgres volume so other openstates packages can read the data more consistently\nvolumes:\n  openstates-postgres:\n    name: openstates-postgres\n\nservices:\n  scrape:\n    build:\n      context: .\n      no_cache: true\n      pull: true\n    environment:\n      - AR_FTP_USER\n      - AR_FTP_PASSWORD\n      - MYSQL_HOST=mysql\n      - DATABASE_URL=postgres://openstates:openstates@db/openstatesorg\n      - PYTHONPATH=./scrapers\n      - NEW_YORK_API_KEY\n      - INDIANA_API_KEY\n      - DC_API_KEY\n      - VIRGINIA_FTP_USER\n      - VIRGINIA_FTP_PASSWORD\n      - S3_REALTIME_BASE=s3://openstates-realtime-bills\n      - STATS_ENABLED\n      - STATS_RETRIES=1\n      - STATS_ENDPOINT\n      - STATS_JWT_TOKEN\n      # - STATS_PREFIX\n      # - STATS_BATCH_SIZE\n    volumes:\n      - .:/opt/openstates/openstates/\n    entrypoint: [\"poetry\", \"run\", \"os-update\"]\n    networks:\n      - openstates-network\n    extra_hosts:\n      - \"host.docker.internal:host-gateway\"\n\n  mysql:\n    image: mariadb:10.5\n#    command: mysqld_safe --max_allowed_packet=512M\n    ports:\n      - \"3306:3306\"\n    environment:\n      - MYSQL_DATABASE=capublic\n      - MYSQL_ALLOW_EMPTY_PASSWORD=yes\n      - MYSQL_LOG_CONSOLE=yes\n    networks:\n      - openstates-network\n  ca-scrape:\n    build:\n      context: .\n      dockerfile: Dockerfile.california\n    environment:\n      - MYSQL_HOST=mysql\n      - DATABASE_URL=postgres://openstates:openstates@db/openstatesorg\n      - PYTHONPATH=./scrapers\n      - STATS_ENABLED\n      - STATS_RETRIES=1\n      - STATS_ENDPOINT\n      - STATS_JWT_TOKEN\n    volumes:\n      - .:/opt/openstates/openstates/\n    entrypoint: [\"poetry\", \"run\", \"os-update\"]\n    networks:\n    - openstates-network\n  ca-download:\n    build:\n      context: .\n      dockerfile: Dockerfile.california\n    entrypoint: /opt/openstates/openstates/scrapers/ca/download.sh\n    environment:\n      - MYSQL_HOST=mysql\n    volumes:\n      - .:/opt/openstates/openstates/\n    depends_on:\n      - mysql\n    networks:\n      - openstates-network\n  db:\n    image: \"mdillon/postgis:11-alpine\"\n    hostname: \"db\"\n    ports:\n      - \"5405:5432\"\n    environment:\n      POSTGRES_PASSWORD: openstates\n      POSTGRES_USER: openstates\n      POSTGRES_DB: openstatesorg\n    volumes:\n      - openstates-postgres:/var/lib/postgresql/data\n    networks:\n      - openstates-network\n    command: [\"postgres\", \"-c\", \"log_statement=all\"]\n    healthcheck:\n      test: [\"CMD-SHELL\", \"pg_isready -q -d openstatesorg -U openstates\"]\n      interval: 10s\n      timeout: 5s\n      retries: 15\n",
+            "Dockerfile": "FROM python:3.9-slim\nLABEL maintainer=\"James Turk <dev@jamesturk.net>\"\n\nENV PYTHONUNBUFFERED=1\nENV PYTHONDONTWRITEBYTECODE=1\nENV PYTHONIOENCODING='utf-8'\nENV LANG='C.UTF-8'\n\nRUN apt-get update -qq \\\n    && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends \\\n      ca-certificates \\\n      curl \\\n      wget \\\n      unzip \\\n      mdbtools \\\n      libpq5 \\\n      libgdal32 \\\n      build-essential \\\n      git \\\n      libssl-dev \\\n      libffi-dev \\\n      freetds-dev \\\n      libxml2-dev \\\n      libxslt-dev \\\n      libyaml-dev \\\n      poppler-utils \\\n      libpq-dev \\\n      libgdal-dev \\\n      libgeos-dev \\\n      gnupg \\\n    && curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg -o /usr/share/keyrings/githubcli-archive-keyring.gpg \\\n    && chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \\\n    && echo \"deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main\" > /etc/apt/sources.list.d/github-cli.list \\\n    && apt-get update -qq \\\n    && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq --no-install-recommends gh\nRUN pip --no-cache-dir --disable-pip-version-check install wheel \\\n    && pip --no-cache-dir --disable-pip-version-check install crcmod poetry\n\nADD poetry.lock /opt/openstates/openstates/\nADD pyproject.toml /opt/openstates/openstates/\nWORKDIR /opt/openstates/openstates/\nENV PYTHONPATH=./scrapers\n\nRUN poetry install --no-root\n\nADD . /opt/openstates/openstates/\n\n# the last step cleans out temporarily downloaded artifacts for poetry, shrinking our build\nRUN poetry install --no-root \\\n    && rm -r /root/.cache/pypoetry/cache /root/.cache/pypoetry/artifacts/ \\\n    && apt-get remove -y -qq \\\n      build-essential \\\n      libpq-dev \\\n    && apt-get autoremove -y -qq \\\n    && apt-get clean \\\n    && rm -rf /var/lib/apt/lists/*\n\nENV OPENSSL_CONF=/opt/openstates/openstates/openssl.cnf\n\n# Entrypoint enables proper support of Google Application Credentials as env variable\nCOPY docker_entrypoint.sh /opt/openstates/entrypoint.sh\nENTRYPOINT [\"/bin/bash\", \"/opt/openstates/entrypoint.sh\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".deepsource.toml",
+            ".dockerignore",
+            ".gitignore",
+            ".pre-commit-config.yaml",
+            ".python-version",
+            "AUTHORS.md",
+            "CITATION.cff",
+            "Dockerfile",
+            "Dockerfile.california",
+            "LICENSE",
+            "README.md",
+            "docker-compose.yml",
+            "docker_entrypoint.sh",
+            "jurisdiction_configs.json",
+            "openssl.cnf",
+            "poetry.lock",
+            "pyproject.toml",
+            "setup.cfg"
+        ],
+        "folders": [
+            ".devcontainer",
+            ".github",
+            ".run",
+            "scrapers",
+            "scrapers_next",
+            "scripts"
+        ]
+    }
+}

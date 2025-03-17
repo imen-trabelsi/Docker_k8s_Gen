@@ -1,0 +1,32 @@
+# Use the official lightweight Node.js 10 image.
+# https://hub.docker.com/_/node
+FROM node:10-alpine
+
+# Create app directory
+RUN mkdir /app && chown node:node /app
+
+# Set work directory
+WORKDIR /app
+
+# Copy package and package-lock.json
+COPY package.json package-lock.json ./
+
+# Change to non-root user
+USER node
+
+# Install npm dependencies
+RUN npm install --production
+
+# Copy application source
+COPY . .
+
+# Expose the port
+EXPOSE ${APP_PORT}
+
+# Set production environment variables
+ENV NODE_ENV=production
+ENV AXIOS_DISABLE_PROXY=true
+ENV APP_PORT=3000
+
+# Run the web service
+CMD ["npm", "start"]

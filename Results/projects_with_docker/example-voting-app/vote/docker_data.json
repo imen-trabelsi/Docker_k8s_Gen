@@ -1,0 +1,60 @@
+{
+    "docker_info": {
+        "base_image": "python:3.11-slim",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /usr/local/app",
+            "COPY requirements.txt ./requirements.txt",
+            "COPY . ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"python\",",
+                    "\"app.py\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"gunicorn\",",
+                    "\"app:app\",",
+                    "\"-b\",",
+                    "\"0.0.0.0:80\",",
+                    "\"--log-file\",",
+                    "\"-\",",
+                    "\"--access-logfile\",",
+                    "\"-\",",
+                    "\"--workers\",",
+                    "\"4\",",
+                    "\"--keep-alive\",",
+                    "\"0\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && \\",
+                "apt-get install -y --no-install-recommends curl &&",
+                "rm -rf /var/lib/apt/lists/*"
+            ],
+            [
+                "pip install --no-cache-dir -r requirements.txt",
+                ""
+            ],
+            [
+                "pip install watchdog",
+                "ENV FLASK_ENV=development"
+            ]
+        ]
+    }
+}

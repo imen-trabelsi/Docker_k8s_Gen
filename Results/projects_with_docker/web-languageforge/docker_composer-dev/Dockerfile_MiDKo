@@ -1,0 +1,24 @@
+# Node base image
+FROM node:12
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Install app dependencies by copying package.json and package-lock.json
+COPY package*.json ./
+
+# Set environment variables
+ENV COMPOSER_ALLOW_SUPERUSER=1
+ENV NODE_ENV=production
+
+# Install app dependencies
+RUN npm ci --only=production
+
+# Bundle app source
+COPY . .
+
+# Your app binds to port 8080 so you use the EXPOSE instruction to have it mapped by the docker daemon
+EXPOSE 8080
+
+# Command to start your app
+CMD [ "node", "server.js" ]

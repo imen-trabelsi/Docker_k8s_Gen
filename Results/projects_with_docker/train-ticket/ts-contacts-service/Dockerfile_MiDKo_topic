@@ -1,0 +1,17 @@
+# Use the Java 8-based image provided by the user as the foundation for the Docker image
+FROM java:8-jre
+
+# Copy the jar file to the /app directory in the Docker image
+COPY ./target/ts-contacts-service-1.0.jar /app/
+
+# Run commands provided to set the correct timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' > /etc/timezone
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Expose the port 12347, as specified by the user
+EXPOSE 12347
+
+# Run the Spring Boot application
+CMD ["java", "-Xmx200m", "-jar", "/app/ts-contacts-service-1.0.jar"]

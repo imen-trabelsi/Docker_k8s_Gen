@@ -1,0 +1,32 @@
+# Use the specified base image
+FROM nginx:stable-alpine
+
+# Environment Variables
+ENV NODE_ENV production
+
+# Dependency Installation
+WORKDIR /app
+COPY package.json yarn.lock ./
+RUN yarn install --production
+
+# Copy project files
+COPY .env ./
+COPY services/gateway/Dockerfile ./
+COPY services/gateway/nginx.conf ./
+COPY ./conf.d /etc/nginx/conf.d
+COPY ./www /www
+
+# Expose the necessary port
+EXPOSE 8080
+
+# Set up health checks
+HEALTHCHECK --interval=30s --timeout=3s CMD curl -f http://localhost/ || exit 1
+
+# Set User: Non-root user for better security
+USER node
+
+# Labels for Metadata
+LABEL maintainer="your_mail@example.com"
+
+# CMD/ENTRYPOINT
+CMD ["nginx", "-g", "daemon off;"]

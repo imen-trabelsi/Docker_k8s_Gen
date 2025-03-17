@@ -1,0 +1,32 @@
+# Use a .NET SDK as a base image
+FROM mcr.microsoft.com/dotnet/sdk:9.0 as build-env
+
+# Set the working directory in the image to /app
+WORKDIR /app
+
+# Copy everything needed for the build
+COPY ./Common/ClassifiedAds.Application/*.csproj ./Common/ClassifiedAds.Application/
+COPY ./Common/ClassifiedAds.CrossCuttingConcerns/*.csproj ./Common/ClassifiedAds.CrossCuttingConcerns/
+COPY ./Common/ClassifiedAds.Domain/*.csproj ./Common/ClassifiedAds.Domain/
+COPY ./Common/ClassifiedAds.Infrastructure/*.csproj ./Common/ClassifiedAds.Infrastructure/
+COPY ./Gateways.WebAPI/ClassifiedAds.Gateways.WebAPI/*.csproj ./Gateways.WebAPI/ClassifiedAds.Gateways.WebAPI/
+COPY . ./
+
+# Restore all the projects
+RUN dotnet restore ./Common/ClassifiedAds.Application/ClassifiedAds.Application.csproj
+RUN dotnet restore ./Common/ClassifiedAds.Infrastructure/ClassifiedAds.Infrastructure.csproj
+RUN dotnet restore ./Gateways.WebAPI/ClassifiedAds.Gateways.WebAPI/ClassifiedAds.Gateways.WebAPI.csproj
+
+# Build the Gateways.WebAPI in Release mode and output to ./out
+RUN dotnet publish ./Gateways.WebAPI/ClassifiedAds.Gateways.WebAPI/ClassifiedAds.Gateways.WebAPI.csproj -c Release -o out
+
+# Use the dotnet runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
+
+# Set the working directory
+WORKDIR /ClassifiedAds.Microservices
+
+# Copy the build output from the build-env
+
+# Set the entry point
+ENTRYPOINT ["dotnet", "ClassifiedAds.Gateways.WebAPI.dll"]

@@ -1,0 +1,35 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"api\",\n  \"version\": \"0.0.1\",\n  \"description\": \"\",\n  \"author\": \"\",\n  \"license\": \"MIT\",\n  \"main\": \"dist/main.js\",\n  \"engines\": {\n    \"node\": \">=8.0.0\"\n  },\n  \"scripts\": {\n    \"prebuild\": \"rimraf dist\",\n    \"gcp-build\": \"npm run build\",\n    \"build\": \"rm -rf dist && ./node_modules/@nestjs/cli/bin/nest.js build\",\n    \"format\": \"prettier --write \\\"src/**/*.ts\\\" \\\"test/**/*.ts\\\"\",\n    \"start\": \"npm run start:prod\",\n    \"start:dev\": \"./node_modules/@nestjs/cli/bin/nest.js start --watch\",\n    \"start:debug\": \"./node_modules/@nestjs/cli/bin/nest.js start --debug --watch\",\n    \"start:prod\": \"node dist/main.js\",\n    \"lint\": \"tslint -p tsconfig.json -c tslint.json\",\n    \"test\": \"jest\",\n    \"test:watch\": \"jest --watch\",\n    \"test:cov\": \"jest --coverage\",\n    \"test:debug\": \"node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand\",\n    \"test:e2e\": \"jest --config ./test/jest-e2e.json\"\n  },\n  \"dependencies\": {\n    \"amqp-connection-manager\": \"^3.0.0\",\n    \"amqplib\": \"^0.5.5\",\n    \"cache-manager\": \"^2.10.0\",\n    \"class-transformer\": \"^0.2.3\",\n    \"class-validator\": \"^0.10.1\",\n    \"dotenv\": \"^8.1.0\",\n    \"express\": \"^4.17.1\",\n    \"express-jwt\": \"^5.3.1\",\n    \"jest\": \"^24.9.0\",\n    \"jwks-rsa\": \"^1.6.0\",\n    \"prettier\": \"^1.18.2\",\n    \"redis\": \"^2.8.0\",\n    \"reflect-metadata\": \"^0.1.13\",\n    \"rimraf\": \"^3.0.0\",\n    \"rxjs\": \"^6.5.3\",\n    \"supertest\": \"^4.0.2\",\n    \"ts-jest\": \"^24.1.0\",\n    \"ts-loader\": \"^6.1.1\",\n    \"ts-node\": \"^8.4.1\",\n    \"tsconfig-paths\": \"^3.9.0\",\n    \"tslint\": \"^5.20.0\",\n    \"typescript\": \"^3.6.3\",\n    \"@nestjs/cli\": \"^6.9.0\",\n    \"@nestjs/common\": \"^6.7.2\",\n    \"@nestjs/core\": \"^6.7.2\",\n    \"@nestjs/microservices\": \"^6.8.2\",\n    \"@nestjs/platform-express\": \"^6.9.0\",\n    \"@nestjs/schematics\": \"^6.7.0\",\n    \"@nestjs/testing\": \"^6.7.1\",\n    \"@types/dotenv\": \"^6.1.1\",\n    \"@types/express\": \"^4.17.1\",\n    \"@types/jest\": \"^24.0.18\",\n    \"@types/node\": \"^12.7.5\",\n    \"@types/supertest\": \"^2.0.8\"\n  },\n  \"jest\": {\n    \"moduleFileExtensions\": [\n      \"js\",\n      \"json\",\n      \"ts\"\n    ],\n    \"rootDir\": \"src\",\n    \"testRegex\": \".spec.ts$\",\n    \"transform\": {\n      \"^.+\\\\.(t|j)s$\": \"ts-jest\"\n    },\n    \"coverageDirectory\": \"./coverage\",\n    \"testEnvironment\": \"node\"\n  }\n}\n"
+        },
+        "database": "Redis",
+        "build_system": "npm",
+        "config_files": {
+            "docker-compose.yml": "version: '2'\nservices:\n  # redis:\n  #   image: 'bitnami/redis:5.0\n  #   environment:\n  #     # ALLOW_EMPTY_PASSWORD is recommended only for development.\n  #     - ALLOW_EMPTY_PASSWORD=yes\n  #     - REDIS_DISABLE_COMMANDS=FLUSHDB,FLUSHALL\n  #   ports:\n  #     - '6379:6379'\n  #   volumes:\n  #     - 'redis_data:/bitnami/redis/data'\n\n  redis:\n    image: redis:latest\n    command: ['redis-server', '--bind', 'redis', '--port', '6379']\n    restart: always\n\n\n\n  api:\n    build: './api'\n    # image: \"abdelhadinaimi/moon_api\"\n    restart: always\n    ports:\n      - '3000:3000'\n    depends_on:\n      - redis\n    env_file:\n      - api.env\n\n  media-service:\n    build: './media-service'\n    restart: always\n    depends_on:\n      - redis\n      - ms-mongodb\n    env_file:\n      - ms.env\n\n \n\n  user-management-service:\n    build: './user-management-service'\n    restart: always\n    depends_on:\n      - redis\n      - us-mongodb\n    env_file:\n      - us.env\n    \n\n  ms-mongodb:\n    image: mongo\n    volumes:\n      - 'ms-mongodb_data:/data/db'\n      - './ms-mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro'\n    ports:\n      - '27017:27017'\n    environment:\n      MONGO_INITDB_ROOT_USERNAME: root\n      MONGO_INITDB_ROOT_PASSWORD: example\n      MONGO_INITDB_DATABASE: mediasDB\n\n\n\n  us-mongodb:\n    image: mongo\n    volumes:\n      - 'us-mongodb_data:/data/db'\n      - './us-mongo-init.js:/docker-entrypoint-initdb.d/mongo-init.js:ro'\n    ports:\n      - '27019:27017'\n    environment:\n      MONGO_INITDB_ROOT_USERNAME: root\n      MONGO_INITDB_ROOT_PASSWORD: example\n      MONGO_INITDB_DATABASE: usersDB\n\n\n\n\nvolumes:\n  redis_data:\n    driver: local\n  ms-mongodb_data:\n    driver: local\n  us-mongodb_data:\n    driver: local\n# networks:\n#   our-custom-network:\n#     # Use a custom driver\n#     # driver: custom-driver-1\n#     driver: bridge\n",
+            "api/Dockerfile": "FROM node:12\n# RUN mkdir /app/apiservice\nWORKDIR /app/apiservice\n\nCOPY package.json package-lock.json /app/apiservice/\n\n# RUN npm cache clean --force && npm install -g npm@latest && npm install --no-optional\nRUN npm install --no-optional\n\nCOPY . /app/apiservice\n\nRUN npm run build\n\nCMD [ \"npm\", \"start\" ]"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            ".gitignore",
+            ".prettierrc",
+            "Dockerfile",
+            "README.md",
+            "nest-cli.json",
+            "package-lock.json",
+            "package.json",
+            "tsconfig.build.json",
+            "tsconfig.json",
+            "tslint.json"
+        ],
+        "folders": [
+            "src",
+            "test"
+        ]
+    }
+}

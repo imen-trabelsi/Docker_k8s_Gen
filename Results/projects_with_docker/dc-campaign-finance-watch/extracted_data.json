@@ -1,0 +1,68 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"dcCampaignFinanceWatch\",\n  \"version\": \"1.0.1\",\n  \"scripts\": {\n    \"clean\": \"rimraf dist/*\",\n    \"copy\": \"copyfiles -f ./src/index.html ./src/favicon.ico ./dist\",\n    \"dist\": \"npm run copy & webpack --env=dist\",\n    \"lint\": \"eslint ./src\",\n    \"posttest\": \"npm run lint\",\n    \"release:major\": \"npm version major && npm publish && git push --follow-tags\",\n    \"release:minor\": \"npm version minor && npm publish && git push --follow-tags\",\n    \"release:patch\": \"npm version patch && npm publish && git push --follow-tags\",\n    \"serve\": \"node server.js\",\n    \"serve:dev\": \"node server.js --env=dev\",\n    \"serve:aws\": \"node server.js --env=dist\",\n    \"start\": \"webpack-dashboard -- npm run serve\",\n    \"dev\": \"npm run api:dev & node server.js --env=dev-api\",\n    \"test\": \"karma start\",\n    \"test:watch\": \"karma start --autoWatch=true --singleRun=false\",\n    \"api:dev\": \"nodemon app.js\",\n    \"add\": \"all-contributors add\",\n    \"generate\": \"all-contributors generate\"\n  },\n  \"repository\": \"https://github.com/codefordc/dc-campaign-finance-watch.git\",\n  \"devDependencies\": {\n    \"all-contributors-cli\": \"^4.3.0\",\n    \"babel-core\": \"^6.24.1\",\n    \"babel-eslint\": \"^6.0.0\",\n    \"babel-loader\": \"^6.4.1\",\n    \"babel-plugin-transform-es2015-destructuring\": \"^6.9.0\",\n    \"babel-plugin-transform-object-rest-spread\": \"^6.8.0\",\n    \"babel-polyfill\": \"^6.23.0\",\n    \"babel-preset-es2015\": \"^6.24.1\",\n    \"babel-preset-react\": \"^6.24.1\",\n    \"babel-preset-stage-2\": \"^6.13.0\",\n    \"bower-webpack-plugin\": \"^0.1.9\",\n    \"chai\": \"^3.2.0\",\n    \"copyfiles\": \"^0.2.1\",\n    \"css-loader\": \"^0.23.1\",\n    \"enzyme\": \"^2.8.0\",\n    \"eslint\": \"^2.2.0\",\n    \"eslint-loader\": \"^1.0.0\",\n    \"eslint-plugin-react\": \"^5.0.0\",\n    \"file-loader\": \"^0.8.4\",\n    \"glob\": \"^7.0.0\",\n    \"html-loader\": \"^0.4.3\",\n    \"isparta-instrumenter-loader\": \"^1.0.0\",\n    \"json-loader\": \"^0.5.4\",\n    \"karma\": \"^1.6.0\",\n    \"karma-chai\": \"^0.1.0\",\n    \"karma-coverage\": \"^1.1.1\",\n    \"karma-mocha\": \"^1.3.0\",\n    \"karma-mocha-reporter\": \"^2.0.0\",\n    \"karma-phantomjs-launcher\": \"^1.0.4\",\n    \"karma-sourcemap-loader\": \"^0.3.5\",\n    \"karma-webpack\": \"^2.0.3\",\n    \"lodash\": \"^4.12.0\",\n    \"markdown-loader\": \"^0.1.7\",\n    \"minimist\": \"^1.2.0\",\n    \"mocha\": \"^2.2.5\",\n    \"nodemon\": \"^1.11.0\",\n    \"null-loader\": \"^0.1.1\",\n    \"open\": \"0.0.5\",\n    \"phantomjs-prebuilt\": \"^2.1.14\",\n    \"postcss\": \"^5.0.11\",\n    \"postcss-loader\": \"^0.8.2\",\n    \"prettier\": \"^1.2.2\",\n    \"proxyquire\": \"^1.7.11\",\n    \"react-addons-test-utils\": \"^15.5.1\",\n    \"react-hot-loader\": \"next\",\n    \"rimraf\": \"^2.4.3\",\n    \"sinon\": \"^2.1.0\",\n    \"style-loader\": \"^0.13.2\",\n    \"url-loader\": \"^0.5.6\",\n    \"webpack\": \"^2.3.3\",\n    \"webpack-dashboard\": \"^0.4.0\",\n    \"webpack-dev-server\": \"^1.16.3\",\n    \"whatwg-fetch\": \"^1.0.0\"\n  },\n  \"dependencies\": {\n    \"babel-preset-es2015\": \"^6.9.0\",\n    \"bluebird\": \"^3.3.5\",\n    \"core-js\": \"^2.0.0\",\n    \"d3\": \"^3.5.17\",\n    \"fixed-data-table\": \"^0.6.0\",\n    \"fs\": \"0.0.2\",\n    \"gm\": \"^1.22.0\",\n    \"json-loader\": \"^0.5.4\",\n    \"karma-chrome-launcher\": \"^2.0.0\",\n    \"lodash\": \"^4.12.0\",\n    \"moment\": \"^2.13.0\",\n    \"mongoose\": \"^4.4.16\",\n    \"normalize.css\": \"^4.0.0\",\n    \"npm\": \"^4.5.0\",\n    \"object-assign\": \"^4.1.0\",\n    \"prop-types\": \"^15.5.8\",\n    \"react\": \"^15.5.3\",\n    \"react-bootstrap\": \"^0.30\",\n    \"react-day-picker\": \"^5.4.3\",\n    \"react-dom\": \"^15.5.3\",\n    \"react-redux\": \"^4.4.5\",\n    \"react-router-bootstrap\": \"^0.24.2\",\n    \"react-router-dom\": \"^4.1.1\",\n    \"redis\": \"2.5.3\",\n    \"redis-jsonify\": \"^1.0.1\",\n    \"redux\": \"^3.5.2\",\n    \"request\": \"^2.81.0\",\n    \"restify\": \"^4.0.4\",\n    \"restler\": \"^3.4.0\",\n    \"rx\": \"^4.1.0\",\n    \"rx-react\": \"^0.3.0\",\n    \"starring\": \"^0.1.1\"\n  }\n}\n"
+        },
+        "database": "MongoDB",
+        "build_system": "npm",
+        "config_files": {
+            "docker-compose.yml": "version: '3'\nservices:\n  dc-campaign-finance-ui:\n    build: .\n    ports:\n    - \"3001:3001\"\n    environment:\n    - REACT_WEBPACK_ENV=dev\n  redis:\n    image: redis\n    ports:\n    - \"6379\"\n    command: [redis-server]\n    healthcheck:\n      test: [\"CMD\",\"redis-cli\",\"-h\",\"redis\",\"-p\",\"6379\",\"ping\"]\n      interval: 5s\n      timeout: 1s\n      retries: 5\n  mongodb:\n    image: mongo:3.0.7\n    ports:\n    - \"27017:27017\"\n  mongo-seed:\n    build:\n      context: .\n      dockerfile: Dockerfile-mongo-seed\n    links:\n     - mongodb\n  dc-campaign-finance-api:\n    build:\n      context: .\n      dockerfile: Dockerfile-api\n    ports:\n    - \"8001:8001\"\n    - \"3001:3001\"\n    links:\n    - mongodb\n    - redis\n",
+            "Dockerfile": "FROM node:boron\n\n# Create app directory and define work dir\nWORKDIR /usr/src/dc-campaign-finance-watch\n\n# Install app dependencies\nCOPY package.json .\nRUN yarn install\n\n# Copy the contents of current directory to work dir\nCOPY . .\n\n# Start server\nCMD [\"npm\", \"start\"]\n"
+        },
+        "static_files": {
+            "dist/README.md": "# About the dist folder\nAfter building the dist version of your project, the generated files are stored in this folder. You should keep it under version control.\n",
+            "dist/assets/d4d85ae49e726dcf637e2eacb3651afc.md": "# DC Candidate Fundraising Integrity Scorecard\n## Draft Parameters - Version 0.1\n\nThis is the outline for a system to evaluate the fundraising integrity of candidates for local office in the District of Columbia. Each campaign has an associated score from 0-100, where 100 is best.\n\n**The score combines indicators encompassing four categories:**\n  <!-- - Location (35 points)\n  - Amount (30 points)\n  - Contributor Type (25 points)\n  - Reporting (10 points) -->\n  - Location (40 points)\n  - Amount (30 points)\n  - Contributor Type (30 points)\n\n\nThe specific indicators included in each categories can be found below.\n<!-- we should include a link to that section here -->\n\n## Races Included:\n  - Mayor\n  - Council (Chair, 4 At-Large, 8 Ward)\n  - Attorney General\n  - Shadow Delegation (U.S. Representative, 2 U.S. Senators)\n  - School Board (mostly by ward)\n\nAny exploratory committee activities are considered candidate campaign contributions for purposes of this analysis.\n\n**Races Not Included**\n\nThe seat of U.S. Delegate, currently held by Del. Eleanor Holmes Norton, is not included in the campaign finance database, as contributions are reported to the Federal Election Commission.\n\nThe contributions to candidates in these races are included in OCF data and available through the DC Campaign Finance Tracker site, but are not included in the scorecard.\n\n\n# Race Parameters\n*Technical Note: the indicator scores are calculated dynamically with linear equations, and the values listed below are the endpoints or breakpoints in the equations used to derive those scores*\n\n## Location (40 total points)\n###Are candidates raising money from their constituents?\n\n**1. % of Money Raised from DC Addresses**\n*(25 points)*\n\n| Indicator Value | Score |\n| :---: | :---: |\n| 50% | 0 points |\n| 100% | 25 points |\n\n**2. % of Money from Ward**\n***Ward candidates only***\n*(15 points)*\n\n| Indicator Value | Score |\n| :---: | :---: |\n| 20% | 0 points |\n| 50% | 6 points |\n| 70% | 12 points |\n| 100% | 15 points |\n\n**3. Geographic Concentration Score by Ward**\n***Citywide candidates only***\n*(15 points)*\n\n| Indicator Value | Score |\n| :---: | :---: |\n| 0.15 | 15 points |\n| 0.2 | 12 points |\n| 0.25 | 6 points |\n| 0.3 | 3 points |\n| 0.4 | 0 points |\n\nExplanation: the Geographic Concentration Score is a formula that takes the share of DC-based contributions from each ward, squares it, and sums up the results:\n\n```\n  ward score = (ward i contribs / DC contribs)^2\n  concentration score = sum of ward scores\n```\n\n## Amount (30 total points)\n### Are candidates raising money from small donors or large donors?\n\n**1. Average Contribution Size**\n*(10 points)*\n\n  ***$500 limit***\n\n| Indicator Value | Score |\n| :---: | :---: |\n| $50 | 10 points |\n| $100 | 6 points |\n| $250 | 0 points |\n\n  ***$1K limit***\n\n| Indicator Value | Score |\n| :---: | :---: |\n| $50 | 10 points |\n| $100 | 7 points |\n| $300 | 2 points |\n| $400 | 0 points |\n\n  ***$1.5K limit***\n\n| Indicator Value | Score |\n| :---: | :---: |\n| $50 | 10 points |\n| $100 | 8 points |\n| $200 | 5 points |\n| $500 | 0 points |\n\n  ***$2K limit***\n\n| Indicator Value | Score |\n| :---: | :---: |\n| $50 | 10 points |\n| $100 | 8 points |\n| $400 | 2 points |\n| $600 | 0 points |\n\n\n**2. % of Contributions at Maximum Amount**\n*(10 points)*\n\n| Indicator Value | Score |\n| :---: | :---: |\n| 5% | 10 points |\n| 15% | 8 points |\n| 25% | 5 points |\n| 50% | 0 points |\n\n\n**3. % of Contributions <$100**\n*(10 points)*\n\n| Indicator Value | Score |\n| :---: | :---: |\n| 15% | 0 points |\n| 30% | 3 points |\n| 70% | 7 points |\n| 85% | 10 points |\n\n\n## Contributor Type (30 total points)\n### Is the money coming from people or from special interests?\n\n**1. Any Corporate Contributions?**\n*(3 points)*\n\n| Indicator Value | Score |\n| :---: | :---: |\n| 0 | 3 points |\n| 1 | 0 points |\n\n**2. Any PAC/Party Contributions?**\n*(2 points)*\n\n| Indicator Value | Score |\n| :---: | :---: |\n| 0 | 2 points |\n| 1 | 0 points |\n\n**3. % of Money Contributed by Candidate**\n*(3 points)\nNote: does not count loans.*\n\n| Indicator Value | Score |\n| :---: | :---: |\n| 0 | 3 points |\n| 20% | 0 points |\n\n**4. % of Individuals Contribs from DC with Business Addresses**\n*(2 points)\nNote: per master address repository*\n\n| Indicator Value | Score |\n| :---: | :---: |\n| 5% | 2 points |\n| 25% | 0 points |\n\n**5. % of Money from All Sources but Individuals with Residential Addresses**\n*(20 points)\nNote: does not include candidate self-funding. Includes corporate, PAC, unlisted/other, or individuals with business addresses*\n\n| Indicator Value | Score |\n| :---: | :---: |\n| 0 | 20 points |\n| 50% | 0 points |\n\n\n\n# Not Included\n## Reporting (10 total points)\n### Is the candidate meeting legal reporting requirements?\n\n**1. Any Records Not Meeting Minimum Requirements?**\n*(3 points)*\n\n| Indicator Value | Score |\n| :---: | :---: |\n| 0 | 3 points |\n| 1 | 0 points |\n\n**2. % of Contributions With No Discernable Name and/or Address**\n*(7 points)*\n\n| Indicator Value | Score |\n| :---: | :---: |\n| 0 | 7 points |\n| 5% | 0 points |\n\n**BONUS/ICEBOX: % of Contributions With Incorrect/Inconsistent Information**\n*Note: this indicator is too difficult to evaluate reliably at this time, but it would be helpful to explore options for future versions.\n"
+        }
+    },
+    "project_structure": {
+        "files": [
+            ".all-contributorsrc",
+            ".babelrc",
+            ".dockerignore",
+            ".editorconfig",
+            ".eslintrc",
+            ".gitignore",
+            ".travis.yml",
+            "Addressmatch-full.csv.zip",
+            "CONTRIBUTING.md",
+            "DC_contribs_since_2007.csv",
+            "Dockerfile",
+            "Dockerfile-api",
+            "Dockerfile-mongo-seed",
+            "ISSUE_TEMPLATE.md",
+            "PULL_REQUEST_TEMPLATE.md",
+            "README.md",
+            "_config.yml",
+            "app.js",
+            "campaignFinanceDb.js",
+            "candidates.js",
+            "contributions.js",
+            "dc-campaign-finance-mongodatabase.zip",
+            "dc-campaign-finance.zip",
+            "docker-compose.production.yml",
+            "docker-compose.yml",
+            "index.html",
+            "karma.conf.js",
+            "package.json",
+            "searchOpenCorporate.js",
+            "server.js",
+            "webpack.config.js",
+            "yarn.lock"
+        ],
+        "folders": [
+            "api",
+            "client",
+            "config",
+            "dist",
+            "importer",
+            "models",
+            "schema",
+            "scorecard",
+            "src",
+            "test",
+            "utils"
+        ]
+    }
+}

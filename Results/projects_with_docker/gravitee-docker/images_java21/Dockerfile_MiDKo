@@ -1,0 +1,24 @@
+FROM eclipse-temurin:21-jre-alpine
+
+# Set environment variables
+ENV LANG='en_US.UTF-8' \
+    LANGUAGE='en_US:en' \
+
+# Install dependencies
+RUN apk -U upgrade \
+    && apk add --no-cache fontconfig libretls musl-locales musl-locales-lang ttf-dejavu tzdata zlib openssl libc6-compat curl htop jattach libstdc++ libgcc \
+    && rm -rf /var/cache/apk/* \
+    && echo Verifying install ... \
+    && echo java --version && java --version \
+
+# Copy requirements.txt
+COPY requirements.txt .
+
+# Install Python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy source code
+COPY . .
+
+# Define start command
+CMD ["java", "-version"]

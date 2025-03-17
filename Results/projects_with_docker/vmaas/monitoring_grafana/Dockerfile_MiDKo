@@ -1,0 +1,33 @@
+# Define the base image
+FROM grafana/grafana:11.5.2
+
+# Set meta information
+LABEL maintainer="maintainer@mail.com"
+
+# Set environment variables
+ENV GF_AUTH_ANONYMOUS_ENABLED=true
+ENV GF_AUTH_ANONYMOUS_ORG_ROLE=Admin
+ENV GF_AUTH_DISABLE_LOGIN_FORM=true
+
+# Causes Docker to switch to 'root' user for subsequent commands within the Dockerfile
+USER root
+
+# Add the required files and directories
+COPY /scripts/extract_dashboard_configmap.py /usr/local/bin
+COPY /monitoring/grafana/datasources.yml /etc/grafana/provisioning/datasources
+COPY /monitoring/grafana/dashboards.yml /etc/grafana/provisioning/dashboards
+COPY /monitoring/grafana/dashboards/grafana-dashboard-clouddot-insights-vmaas.configmap.yml /etc/grafana
+
+RUN apk add --no-cache python3 py3-yaml
+
+# Switch back to 'grafana' user to ensure the service doesn't run as root
+USER grafana
+
+# Run the Python script
+RUN extract_dashboard_configmap.py /etc/grafana/grafana-dashboard-clouddot-insights-vmaas.configmap.yml > /etc/grafana/provisioning/dashboards/grafana-dashboard-clouddot-insights-vmaas.json
+
+# This does not need to be exposed in the Dockerfile as it is handled by the /etc/grafana/grafana.ini file
+# EXPOSE 3000
+
+# Start the application
+CMD ["/usr/sbin/grafana-server", "--config=/etc/grafana/grafana.ini", "--homepath=/usr/share/grafana", "$@"]

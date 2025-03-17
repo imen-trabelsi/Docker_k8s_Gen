@@ -1,0 +1,32 @@
+# Set the base image
+FROM golang:buster
+
+# Set the working directory
+WORKDIR /app
+
+# Update necessary packages and dependencies
+RUN apt update && apt install -y git build-essential
+
+# Copy the list of necessaries
+COPY ./package.json .
+
+# Install all dependencies to run the app
+RUN npm install
+
+# Copy the application code
+COPY . .
+
+# Copy build files
+COPY --from=go_builder /go/wasmd/build/nymd /root/nymd
+COPY --from=go_builder /go/wasmd/build/libwasmvm*.so /root
+COPY init_and_start.sh .
+
+# Install the setup script
+COPY setup.sh .
+RUN ./setup.sh
+
+# Expose the application on port 80
+EXPOSE 80
+
+# Set the startup command to execute the app
+ENTRYPOINT ["./init_and_start.sh"]

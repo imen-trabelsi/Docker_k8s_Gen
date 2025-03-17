@@ -1,0 +1,24 @@
+# Base Image
+FROM node:10-alpine
+
+# Create app directory
+WORKDIR /app
+
+## Copying Dependencies
+COPY package.json /app/package.json
+COPY yarn.lock /app/yarn.lock
+
+# Installing Dependencies
+RUN cd /app && yarn install
+
+# Copying source code and static files
+COPY src /app
+
+# Exposing Ports
+EXPOSE <your-port-number>
+
+# Environment Variables
+# ENV <your-env-variables>
+
+# Running the application
+ENTRYPOINT ["node", "/app/index.js"]

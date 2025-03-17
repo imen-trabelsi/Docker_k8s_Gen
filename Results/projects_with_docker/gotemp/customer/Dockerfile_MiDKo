@@ -1,0 +1,35 @@
+# Dockerfile
+
+# Build Stage
+FROM dev AS builder
+WORKDIR /app
+
+# Environment Variables
+ENV SRVDIR=customer
+ENV SRVNAME=${SRVDIR}Server
+ENV SRVDIR=customer
+ENV SRVNAME=${SRVDIR}ServerAlp
+ENV SRVDIR=customer
+ENV SRVNAME=${SRVDIR}ServerAlp
+ENV GO111MODULE=on
+
+# Install Dependencies
+COPY go.mod go.sum ./
+RUN go mod download 
+
+# Copy files
+COPY . . 
+
+# Build the Go app
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o $SRVNAME ./$SRVDIR/server/
+
+# Final Stage
+FROM scratch
+WORKDIR /app
+
+
+# Expose port
+EXPOSE 2112
+
+# command to run on container start
+CMD ["/app/$SRVNAME"]

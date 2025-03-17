@@ -1,0 +1,26 @@
+# Use openjdk image from Docker registry
+FROM openjdk:8
+
+# Create a directory in the image
+WORKDIR /app
+
+# Copy pom.xml file for installing the dependencies
+COPY pom.xml .
+
+# Build all dependencies for offline use
+RUN mvn dependency:go-offline -B
+
+# Copy the entire project into the image
+COPY . .
+
+# Build the project
+RUN mvn clean install
+
+# Add the jar file to the image
+COPY target/service.jar .
+
+# Expose the application on port 8080
+EXPOSE 8080
+
+# Define the start command with ENTRYPOINT
+ENTRYPOINT [ "java", "-jar", "service.jar" ]

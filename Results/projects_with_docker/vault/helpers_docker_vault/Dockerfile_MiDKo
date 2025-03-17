@@ -1,0 +1,24 @@
+# Set base image
+FROM python:3.7
+
+# Set the working directory in the container
+WORKDIR /home/app/vault
+
+# Copy the current directory contents into the container at the app folder.
+COPY . /home/app/vault
+
+# Sets dump messages to stdout and corresponds to the -b command-line option.
+ENV PYTHONUNBUFFERED=1
+
+# Run system update and install necessary packages
+RUN apt-get update && \
+    apt-get install -y build-essential libssl-dev default-libmysqlclient-dev python-pip python-dev \
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r /home/app/vault/requirements.txt
+
+# Make port available to the world outside this container
+EXPOSE 8000
+
+# The instruction to end all Dockerfiles.
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

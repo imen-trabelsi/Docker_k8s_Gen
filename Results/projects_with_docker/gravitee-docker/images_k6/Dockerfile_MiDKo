@@ -1,0 +1,20 @@
+# Set Base Image
+FROM docker.io/golang:1.19-alpine
+
+# Set Working directory
+WORKDIR /home/k6
+
+# Add user
+RUN apk add --no-cache ca-certificates && \
+
+# Change to the new user
+USER 12345
+
+# Install necessary software, Run build and add dependencies
+RUN CGO_ENABLED=0 go install go.k6.io/xk6/cmd/xk6@latest && \
+
+# Copy necessary files
+COPY --from=builder /go/k6 /usr/bin/k6
+
+# Set Entry point
+ENTRYPOINT ["k6"]

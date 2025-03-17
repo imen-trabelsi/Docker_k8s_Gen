@@ -1,0 +1,28 @@
+# Step 1: Define the base image
+FROM maven:3.6-jdk-8-slim AS builder
+
+# Step 2: Set the working directory in the image
+WORKDIR /opt
+
+# Step 3: Copy the necessary files
+COPY ./pom.xml /opt/pom.xml
+COPY ./src /opt/src
+
+# Step 4: Run commands
+RUN cd /opt && \
+    mvn clean install -Dmaven.test.skip && \
+    wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-sql-connector-kafka_2.11/1.11.0/flink-sql-connector-kafka_2.11-1.11.0.jar && \
+    wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-connector-jdbc_2.11/1.11.0/flink-connector-jdbc_2.11-1.11.0.jar && \
+    wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/org/apache/flink/flink-csv/1.11.0/flink-csv-1.11.0.jar && \
+    wget -P /opt/flink/lib/ https://repo.maven.apache.org/maven2/mysql/mysql-connector-java/8.0.19/mysql-connector-java-8.0.19.jar && \
+    echo "execution.checkpointing.interval: 10s" >> /opt/flink/conf/flink-conf.yaml; \
+    echo "pipeline.object-reuse: true" >> /opt/flink/conf/flink-conf.yaml; \
+    echo "pipeline.time-characteristic: EventTime" >> /opt/flink/conf/flink-conf.yaml; \
+
+# Step 5: Start a new image
+FROM maven:3.6-jdk-8-slim
+
+# Step 6: Copy necessary files from builder image
+
+# Step 7: Define the command to run the application
+CMD ["java", "-jar", "/opt/flink/usrlib/spend-report.jar"]

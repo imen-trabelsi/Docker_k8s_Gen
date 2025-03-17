@@ -1,0 +1,23 @@
+# Set the base image
+FROM golang:1.19
+
+# Set the working directory in the docker image
+WORKDIR /home
+
+# Copy requirements file into the docker image
+COPY requirements.txt .
+
+# Copy importer.py into docker image
+COPY importer.py .
+
+# Update the package lists for upgrades for packages that need upgrading, as well as new packages.
+# Install necessary packages, including python, pip, gdal-bin, libgeos-dev, libleveldb-dev, postgresql-client, and git.
+# Also installs the go package github.com/omniscale/imposm3/cmd/imposm@latest
+RUN apt-get update && \
+    DEBIAN_FRONTEND=noninteractive apt-get install -qy python3-pip gdal-bin libgeos-dev libleveldb-dev postgresql-client git && \
+
+# run pip to install necessary python packages listed in requirements.txt
+RUN pip3 install -r requirements.txt
+
+# Define the command to run the app when the docker container starts.
+CMD ["python3", "-u", "importer.py"]

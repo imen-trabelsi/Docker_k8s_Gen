@@ -1,0 +1,37 @@
+# Select base image
+FROM node:alpine as builder
+
+# Set the work directory
+WORKDIR /app
+
+# Copy package.json and package-lock.json to work directory
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy rest of the application to work directory
+COPY . .
+
+# Build the application
+RUN npm run build
+
+# Start a new stage from base image
+FROM node:alpine
+
+# Set the work directory
+WORKDIR /app
+
+# Copy package.json and package-lock.json to work directory
+COPY package*.json ./
+
+# Install only production dependencies
+RUN npm ci --only=production
+
+# Copy built code from the previous stage to current work directory
+
+# Expose port 8000
+EXPOSE 8000
+
+# Start the application
+CMD [ "node", "dist/main.js" ]

@@ -1,0 +1,37 @@
+# Use the official base Node.js image from the Docker Hub
+FROM node:22.13.1
+
+# Create a directory where our app will be placed. This might not be necessary
+RUN mkdir -p /app/ui
+
+# Change directory so that our commands run inside this new directory
+WORKDIR /app/ui
+
+# Copy the dependency definitions and lock files
+COPY package.json yarn.lock ./
+
+# Install dependecies using yarn
+RUN corepack enable && \
+
+# Show the current version of Node.js and NPM
+RUN node -v
+RUN npm -v
+
+# Get all the code needed to run the app
+COPY . /app/ui
+
+# Ensure all scripts in our package.json are available in the PATH
+ENV PATH="./node_modules/.bin:$PATH"
+
+# Create an environment variable for the app
+ARG PORT=8080
+ENV PORT=$PORT 
+EXPOSE $PORT
+
+# Define the healthcheck
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD curl -f http://localhost:$PORT/health || exit 1
+
+# Serve the app
+ENTRYPOINT ["yarn"]
+CMD ["start:docker"]

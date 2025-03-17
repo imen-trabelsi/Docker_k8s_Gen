@@ -1,0 +1,26 @@
+# Use the ruby base image
+FROM ruby:2.5
+
+# Set the working directory
+WORKDIR /build
+
+# Update the package list and install necessary packages
+RUN apt-get update && apt-get install -y rpm
+
+# Set the build argument
+ARG FPM_VERSION=1.10.2
+
+# Install the FPM gem
+RUN gem install fpm --version=${FPM_VERSION}
+
+# Create the /build directory
+RUN mkdir -p /build
+
+# Copy necessary files to the build directory
+COPY . /build
+
+# Set execution command
+CMD ["fpm"]
+
+# Clean up APT when done.
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

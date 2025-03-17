@@ -1,0 +1,30 @@
+{
+    "docker_info": {
+        "base_image": "eclipse-temurin:23.0.1_11-jdk-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "hmda"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "apk upgrade --update-cache --available && apk add openssl",
+                "RUN adduser -H -S -G root -h /opt hmda"
+            ],
+            [
+                "mkdir /opt/docker",
+                "RUN chmod -R 777 /opt"
+            ],
+            [
+                "chown -R hmda /opt",
+                ""
+            ]
+        ]
+    }
+}

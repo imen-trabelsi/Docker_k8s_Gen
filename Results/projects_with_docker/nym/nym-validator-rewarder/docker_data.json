@@ -1,0 +1,39 @@
+{
+    "docker_info": {
+        "base_image": "harbor.nymte.ch/dockerhub/rust:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ./ /usr/src/nym",
+            "WORKDIR /usr/src/nym/nym-validator-rewarder",
+            "WORKDIR /nym",
+            "COPY --from=builder /usr/src/nym/target/release/nym-validator-rewarder ./",
+            "COPY ./nym-validator-rewarder/entrypoint.sh /nym/entrypoint.sh"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"/nym/entrypoint.sh\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "cargo build --release",
+                ""
+            ],
+            [
+                "apt-get update && apt-get install -y ca-certificates",
+                ""
+            ]
+        ]
+    }
+}

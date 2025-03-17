@@ -1,0 +1,41 @@
+# Use the provided dotnet base image
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+
+# Create a working directory to operate within
+WORKDIR /src
+
+# Copy the project file to the working directory
+COPY ["Services/Discount/Discount.Grpc/Discount.Grpc.csproj", "Services/Discount/Discount.Grpc/"]
+
+# Set the environment variable
+ENV BUILD_CONFIGURATION=Release
+
+# Install dependencies
+RUN dotnet restore "./Services/Discount/Discount.Grpc/Discount.Grpc.csproj"
+
+# Copy the rest of the source code
+COPY . .
+
+# Build the application
+RUN dotnet build "./Services/Discount/Discount.Grpc/Discount.Grpc.csproj" -c $BUILD_CONFIGURATION -o /app/build
+
+# Publish the application
+RUN dotnet publish "./Services/Discount/Discount.Grpc/Discount.Grpc.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+
+# Set a user to use for the application
+USER app
+
+# Create another layer from a base image to minimise layer size
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS runtime
+
+# Create a final working directory
+WORKDIR /app
+
+# Copy the published application to the current working directory
+
+# Set the base ports
+EXPOSE 8080
+EXPOSE 8081
+
+# Set the entrypoint for the Docker image
+ENTRYPOINT ["dotnet", "Discount.Grpc.dll"]

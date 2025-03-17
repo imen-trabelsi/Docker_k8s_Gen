@@ -1,0 +1,25 @@
+# Use Redis Base Image 
+FROM redis
+
+# Maintainer Info
+LABEL maintainer="devops@company.com"
+
+# Install app dependencies
+COPY package.json /
+RUN npm install
+
+# Copy start_redis.sh to /usr/local/bin/start_redis.sh
+COPY start_redis.sh /usr/local/bin/start_redis.sh
+RUN chmod +x /usr/local/bin/start_redis.sh
+
+# Expose application to desired port
+EXPOSE 6379
+
+# Define environment variable
+ENV NODE_ENV production
+
+# Bundle app source
+COPY . .
+
+# Start the Redis server
+ENTRYPOINT ["start_redis.sh"]

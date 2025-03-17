@@ -1,0 +1,27 @@
+# Start from the base image alpine:3.9
+FROM alpine:3.9
+
+# Set the working directory in the docker image
+WORKDIR /app
+
+# Add the necessary dependencies
+RUN apk --no-cache add ca-certificates icu-libs musl
+
+# Copy the binary file from the builder image
+COPY --from=covenantsql/covenantsql-builder /go/src/github.com/CovenantSQL/CovenantSQL/bin/* /app/
+
+# Set the environment variables
+ENV VERSION=${VERSION}
+ENV COVENANT_ROLE=miner
+ENV COVENANT_CONF=config.yaml
+
+# Add labels
+LABEL version="1.0"
+LABEL description="Gin framework based Go microservice running on alpine"
+
+# Expose the application on port 4661
+EXPOSE 4661
+
+# Run the command shell by default when the container starts
+ENTRYPOINT ["./docker-entry.sh"]
+

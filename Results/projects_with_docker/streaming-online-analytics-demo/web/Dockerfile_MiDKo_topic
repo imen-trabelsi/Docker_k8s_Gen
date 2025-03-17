@@ -1,0 +1,20 @@
+# Begin by setting the base image
+FROM nodesource/centos7:0.10.45
+
+# Set working directory to /usr/src/app/
+WORKDIR /usr/src/app
+
+# Copy package.json to the working directory
+COPY ./package.json /usr/src/app/
+
+# Install necessary dependencies
+RUN npm install
+
+# Copy the rest of the source code to the working directory
+COPY . /usr/src/app
+
+# Expose the port the Spring Boot app runs on
+EXPOSE 8181
+
+# Command to run the application
+CMD ["npm", "start"]

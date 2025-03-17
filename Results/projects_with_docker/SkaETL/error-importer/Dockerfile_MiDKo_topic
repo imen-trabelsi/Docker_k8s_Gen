@@ -1,0 +1,29 @@
+# This is our base image from the user's choice
+FROM openjdk:8u151-jdk as builder
+
+WORKDIR application
+
+# Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy pom.xml
+COPY pom.xml .
+
+# Copy application source and build
+COPY src src
+RUN ./mvnw package -DskipTests
+
+# Implementing docker multi-stage build 
+# to discard all the maven target files from our final image.
+FROM openjdk:8u151-jdk
+RUN mkdir -p /usr/share/skalogs/
+RUN mv /app.jar /usr/share/skalogs/error-importer.jar
+
+# Copy startup script
+COPY startup.sh /usr/bin/startup.sh
+RUN chmod +x /usr/bin/startup.sh
+COPY target/${JAR_FILE} /usr/share/skalogs/error-importer.jar
+
+# Set the entry point
+ENTRYPOINT ["/usr/bin/startup.sh"]

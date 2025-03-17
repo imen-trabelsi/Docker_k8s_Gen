@@ -1,0 +1,44 @@
+# Set base image
+FROM timescale/timescaledb:latest-pg12 as builder
+
+# Set working directory
+WORKDIR /app
+
+# Ensure Golang environment matches docker environment
+ENV CGO_ENABLED=0 \
+    GOOS=linux \
+
+# Copy Golang files 
+COPY . .
+
+#Install the dependencies for Golang application
+RUN go mod download
+
+# Build Golang application
+RUN go build -o main .
+
+# Using Multi-stage build to create a slim image
+FROM alpine:latest 
+
+# Set working directory
+WORKDIR /root/ 
+
+# Copy necessary files into the Docker container
+
+# Add Postegresql client
+RUN apk --no-cache add postgresql-client
+
+# TIMESCALEDB initialization
+COPY ./timescaleInit/* /docker-entrypoint-initdb.d/
+
+# TIMESCALEDB
+ENV TIMESCALEDB_TELEMETRY='off' \
+    TIMESCALEDB_TELEMETRY_LEVEL='basic' \
+    POSTGRES_PASSWORD='password' \
+
+# Ports exposing
+EXPOSE 8080
+
+# Run the binary program
+ENTRYPOINT ["/root/main"]
+CMD ["postgres"]

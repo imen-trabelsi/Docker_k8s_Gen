@@ -1,0 +1,38 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.14",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8080"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY go.mod go.sum /app/",
+            "WORKDIR /app",
+            "COPY . /app/",
+            "COPY --from=builder /app/mult /usr/local/bin/mult"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/usr/local/bin/mult\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "go mod download",
+                ""
+            ],
+            [
+                "CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo",
+                ""
+            ]
+        ]
+    }
+}

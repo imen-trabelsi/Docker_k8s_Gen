@@ -1,0 +1,25 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Spring Boot",
+        "dependencies": {
+            "pom.xml": "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n    <modelVersion>4.0.0</modelVersion>\n\n    <artifactId>gateway-scg</artifactId>\n    <packaging>jar</packaging>\n\n    <parent>\n        <groupId>org.tsdes.advanced.microservice.gateway</groupId>\n        <artifactId>gateway</artifactId>\n        <version>0.0.1-SNAPSHOT</version>\n    </parent>\n\n\n\n    <dependencies>\n\n\n        <dependency>\n            <groupId>org.springframework.cloud</groupId>\n            <artifactId>spring-cloud-starter-consul-discovery</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.springframework.cloud</groupId>\n            <artifactId>spring-cloud-starter-gateway</artifactId>\n        </dependency>\n\n        <dependency>\n            <groupId>org.springframework.boot</groupId>\n            <artifactId>spring-boot-starter-actuator</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>ch.qos.logback</groupId>\n            <artifactId>logback-classic</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.slf4j</groupId>\n            <artifactId>jcl-over-slf4j</artifactId>\n        </dependency>\n\n\n    </dependencies>\n\n    <build>\n        <plugins>\n            <plugin>\n                <groupId>org.springframework.boot</groupId>\n                <artifactId>spring-boot-maven-plugin</artifactId>\n                <configuration>\n                    <finalName>scg</finalName>\n                </configuration>\n            </plugin>\n        </plugins>\n    </build>\n\n\n\n</project>"
+        },
+        "database": null,
+        "build_system": "Maven",
+        "config_files": {
+            "advanced/microservice/gateway/docker-compose.yml": "version: '3.3'\n\nservices:\n\n  # The Spring Cloud Gateway will be the ONLY Docker instance\n  # that does open a port accessible from outside the\n  # Docker network.\n\n  scg:\n    build:\n      context: ./gateway-scg\n      dockerfile: Dockerfile\n    ports:\n      - \"80:8080\"\n    depends_on:\n      - discovery\n\n  discovery:\n    image: \"consul:1.8\"\n    environment:\n      - CONSUL_LOCAL_CONFIG={\"log_level\":\"info\"}\n\n\n  frontend:\n    build:\n      context: ./gateway-frontend\n      dockerfile: Dockerfile\n\n\n  # Note that here I am using a real database.\n  # Cannot use embedded H2 as done so far, because\n  # all the different instances of the replicated services\n  # need to work on the same data.\n  #\n  # All these replicated instances of \"service\" will use the\n  # same database.\n  # However, if we had other kinds of APIs here, each kind will\n  # need to use their own database.\n  postgres:\n    image: \"postgres:10\"\n    environment:\n      - POSTGRES_HOST_AUTH_METHOD=trust\n\n  service_0:\n    build:\n      context: ./gateway-service\n      dockerfile: Dockerfile\n    environment:\n      - TSDES_SERVICE_ID=A\n    depends_on:\n      - scg\n      - postgres\n\n\n  service_1:\n    build:\n      context: ./gateway-service\n      dockerfile: Dockerfile\n    environment:\n      - TSDES_SERVICE_ID=B\n    depends_on:\n      - scg\n      - postgres\n\n\n  service_2:\n    build:\n      context: ./gateway-service\n      dockerfile: Dockerfile\n    environment:\n      - TSDES_SERVICE_ID=C\n    depends_on:\n      - scg\n      - postgres\n\n\n",
+            "advanced/microservice/gateway/gateway-scg/Dockerfile": "FROM adoptopenjdk/openjdk11:alpine\n\nCOPY target/scg.jar .\n\nCMD java -jar scg.jar"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "pom.xml"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

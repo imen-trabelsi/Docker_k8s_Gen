@@ -1,0 +1,28 @@
+# Use the specified base image
+FROM openlmis/dev:3
+
+# Copy the requirements.txt and install the dependencies
+COPY requirements.txt /app
+RUN pip install -r /app/requirements.txt
+
+# Copy the source code into the container
+COPY . /app
+
+# Copy the entrypoint.sh file and grant it executable permission
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod u+x /entrypoint.sh
+
+# Install necessary packages
+RUN apk -v --update add python py-pip jq && \
+    pip install --upgrade awscli s3cmd python-magic && \
+    apk -v --purge del py-pip && \
+
+# Set the working directory
+WORKDIR /
+
+# Expose the port
+EXPOSE 
+
+# Set the entry point and command
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["sh"]

@@ -1,0 +1,32 @@
+{
+    "source_code_info": {
+        "language": "Elixir",
+        "framework": null,
+        "dependencies": {
+            "mix.exs": "defmodule LordsWs.Mixfile do\n  use Mix.Project\n\n  def project do\n    [\n      app: :lords_ws,\n      version: \"0.0.1\",\n      elixir: \"~> 1.4\",\n      elixirc_paths: elixirc_paths(Mix.env),\n      compilers: [:phoenix, :gettext] ++ Mix.compilers,\n      start_permanent: Mix.env == :prod,\n      deps: deps()\n    ]\n  end\n\n  # Configuration for the OTP application.\n  #\n  # Type `mix help compile.app` for more information.\n  def application do\n    [\n      mod: {LordsWs, []},\n      extra_applications: [:logger]\n    ]\n  end\n\n  # Specifies which paths to compile per environment.\n  defp elixirc_paths(:test), do: [\"lib\", \"web\", \"test/support\"]\n  defp elixirc_paths(_),     do: [\"lib\", \"web\"]\n\n  # Specifies your project dependencies.\n  #\n  # Type `mix help deps` for examples and options.\n  defp deps do\n    [\n      {:phoenix, \"~> 1.3.2\"},\n      {:phoenix_pubsub, \"~> 1.0\"},\n      {:phoenix_html, \"~> 2.10\"},\n      {:phoenix_live_reload, \"~> 1.0\", only: :dev},\n      {:gettext, \"~> 0.11\"},\n      {:cowboy, \"~> 1.0\"},\n      {:httpoison, \"~> 1.0\"},\n      {:poison, \"~> 3.1\"},\n      {:jason, \"~> 1.0\"},\n      {:logger_file_backend, \"~> 0.0.10\"}\n    ]\n  end\nend\n"
+        },
+        "database": null,
+        "build_system": "Mix",
+        "config_files": {
+            "docker-compose.yml": "version: '3.4'\n\nservices:\n  db:\n    image: \"mysql:5.5\"\n    ports:\n      - \"3306:3306\"\n    environment:\n      MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}\n      MYSQL_CLIENT_PASSWORD: ${MYSQL_CLIENT_PASSWORD}\n      MYSQL_READER_PASSWORD: ${MYSQL_READER_PASSWORD}\n    volumes:\n      - ./database:/database\n    networks:\n      - lords-network\n  \n  ws:\n    build:\n      context: ws\n      dockerfile: Dockerfile\n    command: bash -c \"mix deps.get && mix phx.server\"\n    ports:\n      - \"4000:4000\"\n    environment:\n      MIX_ENV: dev\n      PORT: 4000\n    volumes:\n      - ./ws:/app\n      - ./log/ws:/var/log/ws/\n    networks:\n      - lords-network\n\n  web:\n    build:\n      context: .\n      dockerfile: Dockerfile\n    ports:\n      - \"80:80\"\n    environment:\n      LORDS_DOMAIN: ${LORDS_DOMAIN}\n      REVISION: ${REVISION}\n      MYSQL_CLIENT_PASSWORD: ${MYSQL_CLIENT_PASSWORD}\n      MYSQL_READER_PASSWORD: ${MYSQL_READER_PASSWORD}\n      VISIBILITY: public\n    volumes:\n      - ./web:/var/www/html\n      - ./log/web:/var/log/apache2\n    networks:\n      - lords-network\n  \n  web-internal:\n    build:\n      context: .\n      dockerfile: Dockerfile\n    environment:\n      LORDS_DOMAIN: ${LORDS_DOMAIN}\n      REVISION: ${REVISION}\n      MYSQL_CLIENT_PASSWORD: ${MYSQL_CLIENT_PASSWORD}\n      MYSQL_READER_PASSWORD: ${MYSQL_READER_PASSWORD}\n      VISIBILITY: internal\n    volumes:\n      - ./web:/var/www/html\n      - ./log/web-internal:/var/log/apache2\n    networks:\n      - lords-network\n\n  ai:\n    image: \"openjdk:8\"\n    ports:\n      - \"5600:5600\"\n    volumes:\n      - ./deployment:/deployment\n      - ./ai:/ai\n      - ./log/ai:/tmp/log\n    command: bash -c \"cd /deployment ; chmod 755 ./deploy_ai.sh ; ./deploy_ai.sh\"\n    networks:\n      - lords-network\n\nnetworks:\n  lords-network:\n",
+            "Dockerfile": "FROM php:8.2.25-apache\nRUN apt-get update && apt-get install -y \\\n        libfreetype6-dev \\\n        libjpeg62-turbo-dev \\\n        libmcrypt-dev \\\n        libpng-dev \\\n        libxml2-dev \\\n    && docker-php-ext-install -j$(nproc) mysqli soap \\\n    && docker-php-ext-configure gd --with-freetype=/usr/include/ --with-jpeg=/usr/include/ \\\n    && docker-php-ext-install -j$(nproc) gd \\\n    && a2enmod rewrite \\\n    && a2enmod expires\n\nEXPOSE 80\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".gitignore",
+            "Dockerfile",
+            "README.md",
+            "mix.exs",
+            "mix.lock"
+        ],
+        "folders": [
+            "config",
+            "lib",
+            "priv",
+            "test",
+            "web"
+        ]
+    }
+}

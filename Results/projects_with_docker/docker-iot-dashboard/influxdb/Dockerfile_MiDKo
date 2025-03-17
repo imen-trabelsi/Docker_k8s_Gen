@@ -1,0 +1,56 @@
+# Base Image
+FROM phusion/baseimage:master-amd64
+
+# Build Arguments
+ARG distrib_codename
+ARG AWS_ACCESS_KEY_ID
+ARG AWS_DEFAULT_REGION
+ARG AWS_HOST_BASE
+ARG AWS_HOST_BUCKET
+ARG AWS_SECRET_ACCESS_KEY
+ARG hostname
+ARG relay_ip
+ARG domain
+
+# Environment Variables
+ENV INFLUX_HOST=influxdb
+
+# Update and Install Dependencies
+RUN apt-get update && apt-get install -y wget iputils-ping net-tools debconf-utils python3-pip influxdb postfix mailutils
+
+# Configure Application
+RUN echo "${distrib_id}" && \
+    wget -qO- https://repos.influxdata.com/influxdb.key | apt-key add - && \
+    /bin/bash -c "source /etc/lsb-release" && \
+    echo "deb https://repos.influxdata.com/${distrib_id} ${distrib_codename} stable" | tee /etc/apt/sources.list.d/influxdb.list && \
+    apt-get update && mkdir -p /opt/influxdb-backup && \
+    WORKDIR "/opt/influxdb-backup" && \
+
+# Install s3cmd
+RUN pip3 install s3cmd && \
+
+# Configure postfix
+RUN echo "postfix postfix/mailname string $host_name" | debconf-set-selections && \
+    echo "postfix postfix/main_mailer_type select Satellite system" | debconf-set-selections && \
+    apt-get update && apt-get install -y postfix mailutils && \
+    postconf -e relayhost=$relay_ip && \
+    echo "root@${hostname} influxdbbackup@${domain}" > /etc/postfix/generic && \
+    postconf -e smtp_generic_maps=hash:/etc/postfix/generic && \
+
+# Copy Scripts
+COPY backup.sh /bin/backup.sh
+COPY postfix.sh /etc/my_init.d/postfix.sh
+COPY influxdb.conf /etc/influxdb/influxdb.conf
+COPY influxdb_cron.sh /etc/my_init.d/influxdb_cron.sh
+COPY influx.sh /etc/service/influx/run
+
+# Set Permissions
+RUN chmod +x /bin/backup.sh && \
+    chmod +x /etc/my_init.d/postfix.sh && \
+    chmod +x /etc/my_init.d/influxdb_cron.sh && \
+
+# Create Required Directories
+RUN mkdir -p /etc/my_init.d && \
+
+# Run Application
+CMD ["/sbin/my_init"]

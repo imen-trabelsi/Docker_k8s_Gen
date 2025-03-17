@@ -1,0 +1,23 @@
+# Base Image
+FROM maven:3.9.9-eclipse-temurin-17 AS build
+
+# Setting Working directory
+WORKDIR /app
+
+# Copying the pom.xml and source code
+COPY pom.xml /app
+COPY src /app/src
+
+# Building the application
+RUN mvn clean package
+
+# Running commands
+RUN apt-get update && apt-get install -y \
+    vim unzip netcat-openbsd telnet tcpdump iproute2 lsof ngrep \
+
+# Expose port 20003
+EXPOSE 20003
+
+# final stage/image
+FROM openjdk:17
+ENTRYPOINT ["java","-jar","/app.jar"]

@@ -1,0 +1,27 @@
+# Use base image from the user input
+FROM centos:7
+
+# Maintainer information
+LABEL maintainer="contact@graviteesource.com"
+
+# Environment Variable 
+ENV FPM_VERSION=1.13.1
+
+# Update and install dependencies
+RUN yum update -y && yum install -y \
+ruby-devel \
+gcc \
+make \
+ruby \
+rpm-build \
+rpm-sign && \
+yum clean all && \
+
+# copy instructions
+WORKDIR /tmp/fpm
+
+# Exposed Ports
+
+# ENTRYPOINT and CMD configs
+ENTRYPOINT ["/usr/local/bin/fpm"]
+CMD ["--help"]

@@ -1,0 +1,25 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:11",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD ./target/login-service-0.0.1-SNAPSHOT.jar /usr/src/login-service-0.0.1-SNAPSHOT.jar",
+            "WORKDIR usr/src"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"java\",\"-jar\",\"login-service-0.0.1-SNAPSHOT.jar\"]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

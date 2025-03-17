@@ -1,0 +1,33 @@
+{
+    "docker_info": {
+        "base_image": "pyaiot/base:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8000"
+        ],
+        "user": [],
+        "labels": [
+            "maintainer=\"alexandre.abadie@inria.fr\""
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD run.sh /run.sh"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/run.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "chmod +x /run.sh",
+                ""
+            ]
+        ]
+    }
+}

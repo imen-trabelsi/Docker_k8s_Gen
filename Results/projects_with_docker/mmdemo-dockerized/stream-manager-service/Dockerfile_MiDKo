@@ -1,0 +1,33 @@
+FROM node:14
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+EXPOSE 8080
+
+CMD ["npm", "start"]
+FROM mcr.microsoft.com/java/jdk:11u6-zulu-debian8
+
+RUN apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y git maven
+
+WORKDIR /stream_manager
+
+RUN mkdir /stream_manager && \
+    git clone --single-branch --branch no-deps-sm https://github.com/MKLab-ITI/mklab-stream-manager.git && \
+    cd mklab-stream-manager	&& \
+    mvn clean package && \
+
+COPY conf /stream_manager/conf
+
+RUN cp mklab-stream-manager/target/mklab-stream-manager-0.3-lightweight-with-dependencies.jar /stream_manager/mklab-stream-manager.jar && \
+    cp -r mklab-stream-manager/src/main/resources/profiles.sm /stream_manager && \
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-DMONGO_USER=$MONGO_USER", "-DMONGO_PASSWORD=$MONGO_PASSWORD", "-jar", "mklab-stream-manager.jar"]
+CMD ["conf/streams.conf.xml"]

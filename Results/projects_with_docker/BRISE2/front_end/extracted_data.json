@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"frontend\",\n  \"version\": \"0.0.0\",\n  \"license\": \"MIT\",\n  \"scripts\": {\n    \"ng\": \"ng\",\n    \"start\": \"ng serve\",\n    \"build\": \"ng build --prod\",\n    \"test\": \"ng test\",\n    \"lint\": \"ng lint\",\n    \"e2e\": \"ng e2e\"\n  },\n  \"private\": true,\n  \"dependencies\": {\n    \"@angular/animations\": \"6.1.3\",\n    \"@angular/cdk\": \"^6.4.5\",\n    \"@angular/common\": \"6.1.3\",\n    \"@angular/compiler\": \"6.1.3\",\n    \"@angular/core\": \"6.1.3\",\n    \"@angular/forms\": \"6.1.3\",\n    \"@angular/http\": \"6.1.3\",\n    \"@angular/material\": \"^6.4.5\",\n    \"@angular/platform-browser\": \"6.1.3\",\n    \"@angular/platform-browser-dynamic\": \"6.1.3\",\n    \"@angular/router\": \"6.1.3\",\n    \"@stomp/ng2-stompjs\": \"^7.2.0\",\n    \"buffer\": \"^5.2.0\",\n    \"core-js\": \"^2.5.7\",\n    \"file-saver\": \"^2.0.2\",\n    \"hammerjs\": \"^2.0.8\",\n    \"node-sass\": \"^4.9.3\",\n    \"plotly.js\": \"^1.40.0\",\n    \"rxjs\": \"^6.2.2\",\n    \"rxjs-compat\": \"^6.2.2\",\n    \"socket.io\": \"^2.1.1\",\n    \"zone.js\": \"^0.8.26\"\n  },\n  \"devDependencies\": {\n    \"@angular-devkit/build-angular\": \"^0.12.4\",\n    \"@angular/cli\": \"^6.1.4\",\n    \"@angular/compiler-cli\": \"6.1.3\",\n    \"@angular/language-service\": \"6.1.3\",\n    \"@types/jasmine\": \"^2.8.8\",\n    \"@types/jasminewd2\": \"~2.0.2\",\n    \"@types/node\": \"^6.0.116\",\n    \"codelyzer\": \"^4.4.4\",\n    \"jasmine-core\": \"~2.8.0\",\n    \"jasmine-spec-reporter\": \"~4.2.1\",\n    \"karma\": \"^2.0.5\",\n    \"karma-chrome-launcher\": \"~2.2.0\",\n    \"karma-coverage-istanbul-reporter\": \"^1.4.3\",\n    \"karma-jasmine\": \"^1.1.2\",\n    \"karma-jasmine-html-reporter\": \"^0.2.2\",\n    \"protractor\": \"^5.4.0\",\n    \"ts-node\": \"~4.1.0\",\n    \"tslint\": \"~5.9.1\",\n    \"typescript\": \"2.9.2\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "docker-compose.yml": "# Launch & Build a bunch containers with workers and one service for them.\nversion: \"3.7\"\nservices: \n  main-node:\n    build: ./main_node/\n    tty: true\n    container_name: main-node\n    environment:\n      - EXP_DUMP_NAME=undefined\n    restart: on-failure\n\n  event_service:\n    build: ./event_service/\n    stdin_open: true\n    tty: true\n    container_name: event-service\n    ports:\n        - 49153:49153\n        - 49154:49154\n        - 49155:49155\n    restart: on-failure\n\n  mongo-db:\n    image: mongo:4.4.0\n    container_name: mongo-db\n    restart: on-failure\n    environment:\n        MONGO_INITDB_DATABASE: BRISE_db\n    ports:\n        - 27017:27017\n    volumes:\n      - ./mongo_db/init.js:/docker-entrypoint-initdb.d/init.js\n\n  worker_service:\n    build: ./worker_service/\n    stdin_open: true\n    tty: true\n    container_name: worker-service\n    restart: on-failure\n\n  front-end:\n    build: ./front_end/\n    container_name: front-end\n    tty: true\n    ports:\n        - 80:80\n    restart: on-failure\n\n  worker:\n    build: ./worker/\n    restart: on-failure\n",
+            "front_end/Dockerfile": "# Stage 0, \"build-stage\", based on Node.js, to build and compile the frontend\nFROM brisedev/front-end-prod:2.5.0 as build-stage\nCOPY ./ /app/\nARG configuration=production\nRUN npm run build -- --output-path=./dist/out --configuration $configuration\n\n# Stage 1, based on Nginx, to have only the compiled app, ready for production with Nginx\nFROM nginx:1.19.3\nCOPY --from=build-stage /app/dist/out/ /usr/share/nginx/html\n# Copy the default nginx.conf provided by tiangolo/node-frontend\nCOPY --from=build-stage /nginx.conf /etc/nginx/conf.d/default.conf\nEXPOSE 80\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "README.md",
+            "intro.py"
+        ],
+        "folders": []
+    }
+}

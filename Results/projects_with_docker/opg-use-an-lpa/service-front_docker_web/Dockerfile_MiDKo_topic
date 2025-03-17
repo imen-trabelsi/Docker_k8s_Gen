@@ -1,0 +1,28 @@
+FROM nginxinc/nginx-unprivileged:stable-alpine
+
+# Run as root for setup, will change to the nginx user later
+USER root
+
+# Nginx will listen to this port
+EXPOSE 8080
+
+# Copy static files and scripts
+COPY service-front/docker/web/default.conf.template /etc/nginx/templates/default.conf.template
+COPY service-front/docker/web/web /web
+COPY scripts/docker_hardening/harden-nginx.sh /harden-nginx.sh
+
+# Update packages and install necessary dependencies
+RUN apk upgrade && \
+    apk update curl && \
+    apk --no-cache add libcap && \
+    setcap 'cap_net_bind_service=+ep' /usr/sbin/nginx && \
+
+RUN ln -sf /dev/stdout /var/log/nginx/csp.log
+
+# Harden Nginx and then remove the hardening script
+RUN chmod +x /harden-nginx.sh && \
+
+# Switch to nginx unprivileged user
+USER nginx
+
+CMD ["nginx", "-g", "daemon off;"]

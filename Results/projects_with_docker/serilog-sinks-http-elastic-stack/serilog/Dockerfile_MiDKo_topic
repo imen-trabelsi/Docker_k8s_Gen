@@ -1,0 +1,22 @@
+# Use the Microsoft .NET SDK Alpine image as the base image
+FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine AS build
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the entire source code directory into the container
+COPY . .
+
+# Compile the project
+RUN dotnet publish -c Release -o out
+
+# Start a new stage from runtime for optimized image
+FROM mcr.microsoft.com/dotnet/runtime:8.0-alpine AS runtime
+
+# Set the working directory
+WORKDIR /dotnetapp
+
+# Copy the compiled project into the container from the build stage
+
+# Set the container entry point
+ENTRYPOINT ["dotnet", "serilog-example.dll"]

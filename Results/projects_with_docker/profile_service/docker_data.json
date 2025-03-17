@@ -1,0 +1,44 @@
+{
+    "docker_info": {
+        "base_image": "node:10",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "4000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /usr/src/app",
+            "COPY package*.json ./",
+            "COPY . .",
+            "COPY ./docker/start.sh /usr/src/app"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"./start.sh\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && apt-get -y upgrade",
+                ""
+            ],
+            [
+                "npm install",
+                ""
+            ],
+            [
+                "chmod +x start.sh",
+                ""
+            ]
+        ]
+    }
+}

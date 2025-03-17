@@ -1,0 +1,53 @@
+{
+    "docker_info": {
+        "base_image": "phusion/baseimage:master-amd64",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY *.pub /tmp/",
+            "ADD version.tar.gz /opt/",
+            "COPY version_start /etc/service/version_start/run",
+            "ADD dncserver/ /apiserver/dncserver/",
+            "ADD dncstdplugin/ /apiserver/dncstdplugin/",
+            "ADD dncgiplugin/ /apiserver/dncgiplugin/",
+            "COPY dncserver_start /etc/service/dncserver_start/run",
+            "COPY dncstdplugin_start /etc/service/dncstdplugin_start/run",
+            "COPY dncgiplugin_start /etc/service/dncgiplugin_start/run"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "rm -f /etc/service/sshd/down",
+                "RUN /etc/my_init.d/00_regen_ssh_host_keys.sh"
+            ],
+            [
+                "curl -sL https://deb.nodesource.com/setup_16.x | bash -",
+                "RUN apt-get update && apt-get install nodejs -y"
+            ],
+            [
+                "cat /tmp/*.pub >> /root/.ssh/authorized_keys && rm -f /tmp/*.pub",
+                ""
+            ],
+            [
+                "chmod +x /etc/service/version_start/run",
+                ""
+            ],
+            [
+                "chmod +x /etc/service/dncserver_start/run",
+                ""
+            ],
+            [
+                "chmod +x /etc/service/dncstdplugin_start/run",
+                ""
+            ],
+            [
+                "chmod +x /etc/service/dncgiplugin_start/run"
+            ]
+        ]
+    }
+}

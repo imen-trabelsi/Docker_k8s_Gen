@@ -1,0 +1,22 @@
+# Dockerfile
+
+FROM node:12-alpine
+
+LABEL maintainer="admin@microservice.com"
+
+ENV SUPPORTING_FILES /app
+
+WORKDIR $SUPPORTING_FILES
+
+RUN apk update && apk add --update alpine-sdk build-base bash python nano
+
+COPY package.json .
+COPY . $SUPPORTING_FILES
+
+RUN mkdir -p /node_modules
+
+RUN npm install
+
+EXPOSE 8080
+
+CMD ["npm", "start"]

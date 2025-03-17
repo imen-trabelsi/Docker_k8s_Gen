@@ -1,0 +1,47 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/sdk:5.0",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "WORKDIR /src",
+            "COPY [\"src/ApiGateways/eSchool.GraphQL/eSchool.GraphQL.csproj\", \"src/ApiGateways/eSchool.GraphQL/\"]",
+            "COPY [\"src/Libraries/OpenTelemetry/OpenTelemetry.csproj\", \"src/Libraries/OpenTelemetry/\"]",
+            "COPY . .",
+            "WORKDIR \"/src/src/ApiGateways/eSchool.GraphQL\"",
+            "WORKDIR /app",
+            "COPY --from=publish /app/publish ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"dotnet\",",
+                    "\"ESchool.GraphQL.dll\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "dotnet restore \"src/ApiGateways/eSchool.GraphQL/eSchool.GraphQL.csproj\"",
+                ""
+            ],
+            [
+                "dotnet build \"eSchool.GraphQL.csproj\" -c Release -o /app/build",
+                ""
+            ],
+            [
+                "dotnet publish \"eSchool.GraphQL.csproj\" -c Release -o /app/publish",
+                ""
+            ]
+        ]
+    }
+}

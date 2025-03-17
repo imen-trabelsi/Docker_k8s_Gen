@@ -1,0 +1,38 @@
+# Use an official Python runtime as a parent image.
+FROM python:3.9
+
+# Set the working directory in the container to /app.
+WORKDIR /workspace/mqtt_logger/
+
+# Copy the current directory contents into the container at /app.
+COPY ./ /workspace/mqtt_logger/
+
+# Add metadata to an image to help future users understand how to use it.
+LABEL vendor="SampleMicroservice" \
+      version="1.0" \
+
+# Set environment variables.
+ENV PIP_NO_CACHE_DIR=false \
+    PIP_INDEX_URL=http://pypi.python.org/simple \
+
+# Installing build dependencies.
+RUN pip install --upgrade pip
+
+# Copying requirements files
+COPY ./requirements.txt /workspace/mqtt_logger/
+
+# Installing python dependencies.
+RUN pip install --upgrade -r /workspace/mqtt_logger/requirements.txt
+
+# Coping project files
+COPY ./ /workspace/mqtt_logger/
+
+# Add execute permission for shell scripts.
+RUN chmod +x /workspace/mqtt_logger/wait_for_it.sh
+
+# Expose the necessary port numbers here
+# There are no detailed ports given in the instruction, please replace "PORT" with actual value.
+EXPOSE PORT
+
+# Define the command to run our app.
+CMD ["./wait_for_it.sh", "mqtt:1883", "--timeout=60", "--strict", "--", "python", "main.py"]

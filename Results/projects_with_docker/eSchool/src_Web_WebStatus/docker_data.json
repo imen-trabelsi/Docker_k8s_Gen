@@ -1,0 +1,46 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/sdk:5.0",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "WORKDIR /src",
+            "COPY [\"src/Web/WebStatus/WebStatus.csproj\", \"src/Web/WebStatus/\"]",
+            "COPY . .",
+            "WORKDIR \"/src/src/Web/WebStatus\"",
+            "WORKDIR /app",
+            "COPY --from=publish /app/publish ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"dotnet\",",
+                    "\"WebStatus.dll\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "dotnet restore \"src/Web/WebStatus/WebStatus.csproj\"",
+                ""
+            ],
+            [
+                "dotnet build \"WebStatus.csproj\" -c Release -o /app/build",
+                ""
+            ],
+            [
+                "dotnet publish \"WebStatus.csproj\" -c Release -o /app/publish",
+                ""
+            ]
+        ]
+    }
+}

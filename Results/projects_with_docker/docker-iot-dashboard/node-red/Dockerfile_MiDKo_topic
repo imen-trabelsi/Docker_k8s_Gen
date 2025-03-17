@@ -1,0 +1,20 @@
+# Building the application
+FROM nodered/node-red:${node_red_version} AS builder
+
+# Install the necessary modules
+RUN npm install ${node_red_install_modules} \
+    && npm install node-red-contrib-influxdb \
+    && npm install node-red-node-base64 \
+    && npm audit fix \
+
+# Configuring the environment variables
+ENV NODE_TLS_REJECT_UNAUTHORIZED=0
+
+# Copy required settings.js
+COPY settings.js /usr/src/node-red/.node-red/
+
+# Switch to non-root user
+USER node-red
+
+# Running the application
+CMD ["npm", "start", "--", "--userDir", "/data", "--settings", "/usr/src/node-red/.node-red/settings.js"]

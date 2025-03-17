@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tpch-dbgen-deployment
+  namespace: kafka
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      component: tpch-dbgen
+  template:
+    metadata:
+      labels:
+        component: tpch-dbgen
+    spec:
+      containers:
+      - image: felipeogutierrez/tpch-dbgen
+        imagePullPolicy: IfNotPresent
+        name: tpch-dbgen

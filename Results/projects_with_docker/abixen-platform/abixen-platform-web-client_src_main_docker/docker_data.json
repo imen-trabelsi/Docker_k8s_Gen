@@ -1,0 +1,35 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:8-jre",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD abixen-platform.war app.war"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"java\",\"-Djava.security.egd=file:/dev/./urandom\",\"-Dspring.profiles.active=docker\",\"-Dabixen.services.eureka.uri=discovery\",\"-Dabixen.services.gateway.uri=gateway\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"-jar\",\"/app.war\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "bash -c 'touch /app.war'",
+                "EXPOSE 8080"
+            ]
+        ]
+    }
+}

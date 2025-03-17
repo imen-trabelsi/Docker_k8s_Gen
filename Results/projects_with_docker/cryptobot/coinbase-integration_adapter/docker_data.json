@@ -1,0 +1,31 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:${VERSION}-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "VERSION=14"
+        ],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"java\",",
+                    "\"-jar\",",
+                    "\"/bin/app.jar\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk --no-cache add curl",
+                "COPY build/libs/*-all.jar /bin/app.jar"
+            ]
+        ]
+    }
+}

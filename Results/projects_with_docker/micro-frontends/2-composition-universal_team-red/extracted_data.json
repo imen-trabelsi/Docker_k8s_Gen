@@ -1,0 +1,26 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"team-red\",\n  \"version\": \"1.0.0\",\n  \"description\": \"\",\n  \"main\": \"src/server.js\",\n  \"type\": \"module\",\n  \"scripts\": {\n    \"build\": \"rollup src/client.js --file build/page.js --format iife\",\n    \"server\": \"node --experimental-modules ./src/server.js\",\n    \"start\": \"npm run build; npm run server\",\n    \"test\": \"echo \\\"Error: no test specified\\\" && exit 1\"\n  },\n  \"author\": \"\",\n  \"license\": \"ISC\",\n  \"dependencies\": {\n    \"ejs\": \"^3.1.9\",\n    \"express\": \"^4.17.1\",\n    \"morgan\": \"^1.10.0\"\n  },\n  \"devDependencies\": {\n    \"rollup\": \"^3.28.0\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "2-composition-universal/docker-compose.yml": "version: '2'\nservices:\n  nginx:\n    image: nginx:1-alpine\n    volumes:\n     - ./nginx/nginx.conf:/etc/nginx/conf.d/nginx.conf\n     - ./nginx/common:/usr/share/nginx/html/common\n    ports:\n     - \"3000:3000\"\n    depends_on:\n     - team_blue\n     - team_green\n     - team_red\n\n  team_blue:\n    build: ./team-blue\n    ports:\n     - \"3001:3001\"\n\n  team_green:\n    build: ./team-green\n    ports:\n     - \"3002:3002\"\n\n  team_red:\n    build: ./team-red\n    ports:\n     - \"3003:3003\"\n",
+            "2-composition-universal/team-red/Dockerfile": "FROM node:20\n\n# Create app directory\nRUN mkdir -p /code\nWORKDIR /code\n\n# Install app dependencies\nCOPY package.json /code/\nCOPY package-lock.json /code/\nRUN npm install\n\n# Bundle app source\nCOPY ./src /code/src\nCOPY ./images /code/images\n\nEXPOSE 3003\nCMD [ \"npm\", \"start\" ]"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "package-lock.json",
+            "package.json"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

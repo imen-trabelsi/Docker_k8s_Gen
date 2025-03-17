@@ -1,0 +1,43 @@
+# Base Image
+FROM node:8.13-slim as builder
+
+# Healthcheck
+HEALTHCHECK --interval=5m --timeout=3s CMD node healthcheck.js || exit 1
+
+# Set up work directory
+RUN mkdir -p /opt/my-musik/
+WORKDIR /opt/my-musik/
+
+# Install typescript and dependencies
+RUN npm install typescript -g
+COPY ./package.json .
+RUN npm install --no-optional
+
+# Build Application
+COPY ./tsconfig.json .
+COPY ./gulpfile.js .
+RUN node_modules/.bin/gulp
+
+# Build Run Stage Image
+FROM node:8.13-slim
+
+# Set up work directory
+RUN mkdir -p /opt/my-musik/
+WORKDIR /opt/my-musik/
+
+# Copy Built Application
+COPY ./5.2_User_Authentication/Playlist/config.json .
+COPY ./5.2_User_Authentication/docker-compose.yml .
+COPY ./5.2_User_Authentication/Playlist/Dockerfile .
+
+# Install production dependencies
+RUN npm install --no-optional --only=prod
+
+# Expose necessary port
+EXPOSE 3002
+
+# Set the user
+USER node
+
+# CMD
+CMD [ "node", "dist/app.js" ]

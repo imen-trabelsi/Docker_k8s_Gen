@@ -1,0 +1,20 @@
+# Node.JS Dockerfile
+FROM node:14
+
+# Create working directory
+WORKDIR /app
+
+# Copy package.json to workdir
+COPY ./package.json /app/
+
+# Install dependencies
+RUN npm install
+
+# Copy all other source code to work directory
+COPY . /app/
+
+# Expose default port for Node.js application
+EXPOSE 3000
+
+# CMD command to run our Node.js app
+CMD ["npm", "start"]

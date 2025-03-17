@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ncm
+  name: ncm
+spec:
+  ports:
+  - name: http
+    nodePort: 32737
+    port: 9031
+    protocol: TCP
+    targetPort: 9031
+  selector:
+    app: ncm
+  type: NodePort

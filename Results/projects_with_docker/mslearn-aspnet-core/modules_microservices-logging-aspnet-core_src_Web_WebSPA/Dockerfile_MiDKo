@@ -1,0 +1,31 @@
+# base image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /app
+
+# copy source code
+COPY . .
+
+# restore dependencies and build
+RUN dotnet restore "eShop-Learn.sln"
+COPY . .
+RUN dotnet publish "WebSPA.csproj" -c Release -o /app/publish
+
+# Run stage with minimal runtime.
+FROM mcr.microsoft.com/dotnet/runtime:6.0 AS runtime
+WORKDIR /app
+
+# Copy the publish directory from the build stage
+
+# Setup NodeJs
+RUN npm install -g npm@6
+RUN npm install
+RUN npm run build:prod
+
+# copy static build artifacts
+COPY --from=node-build /web/wwwroot /src/src/Web/WebSPA/wwwroot/
+
+# define entry point
+ENTRYPOINT ["dotnet", "WebSPA.dll"]
+
+# Expose the required port
+EXPOSE 80

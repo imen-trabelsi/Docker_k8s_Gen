@@ -1,0 +1,26 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: webui
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: webui
+    spec:
+      containers:
+      - command:
+        - /entrypoint.sh
+        env:
+        - name: NODE_ENV
+          value: production
+        - name: POOL
+          valueFrom:
+            configMapKeyRef:
+              key: pool
+              name: environment
+        image: bitgrinmining/webui-js:latest
+        name: webui
+        ports:
+        - containerPort: 13524

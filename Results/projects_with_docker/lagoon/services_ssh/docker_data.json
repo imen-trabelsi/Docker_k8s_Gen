@@ -1,0 +1,121 @@
+{
+    "docker_info": {
+        "base_image": "${UPSTREAM_REPO:-uselagoon}/commons:${UPSTREAM_TAG:-latest}",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "2020"
+        ],
+        "user": [],
+        "labels": [
+            "maintainer=\"amazee.io\""
+        ],
+        "health_checks": [],
+        "build_args": [
+            "UPSTREAM_REPO",
+            "UPSTREAM_TAG",
+            "LAGOON_VERSION",
+            "DEBIAN_FRONTEND=noninteractive"
+        ],
+        "envs": [
+            "ENV LAGOON_VERSION=$LAGOON_VERSION",
+            "ENV TMPDIR=/tmp \\",
+            "ENV=/home/.bashrc \\",
+            "ENV LAGOON=ssh \\",
+            "ENV USER_NAME lagoon",
+            "ENV AUTH_SERVER=http://auth-server:3000 \\"
+        ],
+        "copy_instructions": [
+            "COPY --from=commons /lagoon /lagoon",
+            "COPY --from=commons /bin/fix-permissions /bin/ep /bin/docker-sleep /bin/",
+            "COPY --from=commons /home /home",
+            "COPY services/ssh/libnss-ato-master.tar.gz /tmp/libnss-ato-master.tar.gz",
+            "COPY services/ssh/etc/ /etc/",
+            "COPY services/ssh/home/ /home/",
+            "COPY services/ssh/authorize.sh /authorize.sh",
+            "COPY services/ssh/create_60_sec_jwt.py /create_60_sec_jwt.py",
+            "COPY services/ssh/docker-entrypoint.sh /lagoon/entrypoints/99-envplate.sh",
+            "COPY .env.defaults ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/sbin/tini\",",
+                    "\"--\",",
+                    "\"/lagoon/entrypoints.sh\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/usr/sbin/sshd\",",
+                    "\"-e\",",
+                    "\"-D\",",
+                    "\"-f\",",
+                    "\"/etc/ssh/sshd_config\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "chmod g+w /etc/passwd \\",
+                "&& mkdir -p /home"
+            ],
+            [
+                "apt-get update && apt-get install -y curl build-essential ssh curl vim jq python3-jwt",
+                ""
+            ],
+            [
+                "architecture=$(case $(uname -m) in x86_64 | amd64) echo \"amd64\" ;; aarch64 | arm64 | armv8) echo \"arm64\" ;; *) echo \"amd64\" ;; esac) \\",
+                "&& curl -Lo kubectl \"https://dl.k8s.io/release/${KUBECTL_VERSION}/bin/linux/${architecture}/kubectl\"",
+                "&& chmod +x kubectl",
+                "&& mv kubectl /usr/bin/kubectl"
+            ],
+            [
+                "architecture=$(case $(uname -m) in x86_64 | amd64) echo \"amd64\" ;; aarch64 | arm64 | armv8) echo \"arm64\" ;; *) echo \"amd64\" ;; esac) \\",
+                "&& curl -sL https://github.com/krallin/tini/releases/download/v0.19.0/tini-${architecture} -o /sbin/tini && chmod a+x /sbin/tini"
+            ],
+            [
+                "mkdir /tmp/libnss-ato \\",
+                "&& tar -xzf /tmp/libnss-ato-master.tar.gz -C /tmp/libnss-ato --strip-components=1",
+                "&& cd /tmp/libnss-ato/",
+                "&& make",
+                "&& make install",
+                "&& rm -rf /tmp/libnss-ato-master.tar.gz /tmp/libnss-ato"
+            ],
+            [
+                "apt-get remove --purge -y build-essential \\",
+                "&& apt-get autoremove -y",
+                "&& rm -rf /var/lib/apt/lists/*"
+            ],
+            [
+                "rm -f /bin/sh && ln -s /bin/bash /bin/sh",
+                ""
+            ],
+            [
+                "fix-permissions /home/token.sh",
+                "RUN fix-permissions /home/grant.sh"
+            ],
+            [
+                "fix-permissions /etc/ssh/ && \\",
+                "fix-permissions /run/"
+            ],
+            [
+                "mkdir -p /var/run/sshd && chmod 700 /var/run/sshd",
+                ""
+            ],
+            [
+                "chmod 755 /authorize.sh",
+                ""
+            ],
+            [
+                "touch /authorize.env && fix-permissions /authorize.env",
+                ""
+            ],
+            [
+                "mkdir -p /home/.kube && fix-permissions /home/.kube",
+                ""
+            ]
+        ]
+    }
+}

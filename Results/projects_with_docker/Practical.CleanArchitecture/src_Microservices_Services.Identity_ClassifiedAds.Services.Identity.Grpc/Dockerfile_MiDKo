@@ -1,0 +1,24 @@
+# Use official base image of Microsoft's .NET SDK
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+
+# Set the Working Directory in the container
+WORKDIR /ClassifiedAds.Microservices
+
+# Copy csproj and restore dependencies
+COPY ./Common/ClassifiedAds.Application/*.csproj ./Common/ClassifiedAds.Application/
+COPY ./Common/ClassifiedAds.CrossCuttingConcerns/*.csproj ./Common/ClassifiedAds.CrossCuttingConcerns/
+COPY ./Common/ClassifiedAds.Domain/*.csproj ./Common/ClassifiedAds.Domain/
+COPY ./Common/ClassifiedAds.Infrastructure/*.csproj ./Common/ClassifiedAds.Infrastructure/
+COPY ./Services.Identity/ClassifiedAds.Services.Identity/*.csproj ./Services.Identity/ClassifiedAds.Services.Identity/
+COPY ./Services.Identity/ClassifiedAds.Services.Identity.Grpc/*.csproj ./Services.Identity/ClassifiedAds.Services.Identity.Grpc/
+RUN dotnet restore ./Common/ClassifiedAds.Application/ClassifiedAds.Application.csproj
+RUN dotnet restore ./Common/ClassifiedAds.Infrastructure/ClassifiedAds.Infrastructure.csproj
+RUN dotnet restore ./Services.Identity/ClassifiedAds.Services.Identity/ClassifiedAds.Services.Identity.csproj
+RUN dotnet restore ./Services.Identity/ClassifiedAds.Services.Identity.Grpc/ClassifiedAds.Services.Identity.Grpc.csproj
+
+# Copy everything else and build
+COPY . ./
+RUN dotnet publish ./Services.Identity/ClassifiedAds.Services.Identity.Grpc/ClassifiedAds.Services.Identity.Grpc.csproj -c Release -o out
+
+# Specify the entry point for the docker container. This needs to be the same path as where we published our service DLL.
+ENTRYPOINT ["dotnet", "out/ClassifiedAds.Services.Identity.Grpc.dll"]

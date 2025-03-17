@@ -1,0 +1,20 @@
+# Start with the Open Liberty base image
+FROM open-liberty:19.0.0.9-microProfile3-java11
+
+# Copy the build output
+COPY --chown=1001:0 build/libs/frontend.war /config/apps
+COPY --chown=1001:0 src/main/liberty/config /config/
+
+# Define environment variables
+ENV httpPort=12000
+ENV httpsPort=12005
+ENV application.name=frontend.war
+
+# Create bootstrap.properties
+RUN printf 'httpPort=%s\nhttpsPort=%s\napplication.name=%s' "$httpPort" "$httpsPort" "$application.name" > /config/bootstrap.properties
+
+# Expose the httpPort, which is defined in the environment variables.
+EXPOSE ${httpPort}
+
+# Define the ENTRYPOINT, this is the command (with arguments) that is executed when the container starts.
+ENTRYPOINT [ "java", "-jar", "/config/apps/frontend.war" ]

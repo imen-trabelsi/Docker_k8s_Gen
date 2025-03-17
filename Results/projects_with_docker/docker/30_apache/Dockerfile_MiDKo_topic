@@ -1,0 +1,43 @@
+# Use the official PHP 8.2 image from the dockerhub
+FROM php:8.2-apache-bookworm
+
+# Set environment variables
+ENV APACHE_DOCUMENT_ROOT=/var/www/html/public
+ENV IMAGICK_COMMIT_HASH d7d3c24af1b4f599897408f1714600b69a56473b
+ENV PHP_MEMORY_LIMIT 512M
+ENV PHP_UPLOAD_LIMIT 512M
+ENV PHP_OPCACHE_MEMORY_CONSUMPTION 128
+ENV APACHE_BODY_LIMIT 1073741824
+ENV NEXTCLOUD_VERSION 30.0.6
+
+# Installing essentials and dependencies
+RUN set -ex; \
+apt-get update; \
+apt-get install -y --no-install-recommends \
+busybox-static \
+bzip2 \
+libldap-common \
+libmagickcore-6.q16-6-extra \
+rsync \
+; \
+
+RUN docker-php-ext-install -j "$(nproc)" \
+zip \
+opcache \
+pdo_mysql \
+
+# Copy configuration files
+COPY *.sh upgrade.exclude /
+COPY config/* /usr/src/nextcloud/config/
+
+# Setting up cron job
+RUN mkdir -p /var/spool/cron/crontabs; \
+
+# Setting folder permissions
+RUN chown -R www-data:root /var/www; \
+
+# Define default command to start Apache server
+CMD ["apache2-foreground"]
+
+# Define the entrypoint script
+ENTRYPOINT ["/entrypoint.sh"]

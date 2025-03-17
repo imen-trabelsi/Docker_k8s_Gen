@@ -1,0 +1,38 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"microservices-demo-front-end\",\n  \"version\": \"0.0.1\",\n  \"description\": \"Front end for microservices demo application.\",\n  \"main\": \"server.js\",\n  \"scripts\": {\n    \"test\": \"istanbul cover node_modules/.bin/_mocha -- test/*_test.js test/api/*_test.js\",\n    \"coverage\": \"istanbul cover --report cobertura node_modules/.bin/_mocha -- test/*_test.js test/api/*_test.js && mocha test/*_test.js test/api/*_test.js --reporter mocha-junit-reporter --reporter-options mochaFile=./results/test-results.xml\",\n    \"start\": \"node server.js\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"https://github.com/weaveworks/microservices-demo\"\n  },\n  \"contributors\": [\n    \"Ian Crosby <ian.daniel.crosby@gmail.com>\",\n    \"Carlos Le\u00f3n <mail@carlosleon.info> (carlosleon.info)\"\n  ],\n  \"license\": \"MIT\",\n  \"dependencies\": {\n    \"async\": \"^1.5.2\",\n    \"body-parser\": \"^1.15.1\",\n    \"cookie-parser\": \"^1.4.3\",\n    \"express\": \"^4.13.4\",\n    \"express-session\": \"^1.13.0\",\n    \"finalhandler\": \"^0.4.1\",\n    \"request\": \"^2.72.0\",\n    \"serve-static\": \"^1.10.2\",\n    \"prom-client\": \"^6.3.0\",\n    \"morgan\": \"^1.7.0\",\n    \"connect-redis\": \"^3.2.0\"\n  },\n  \"devDependencies\": {\n    \"chai\": \"^3.5.0\",\n    \"chai-http\": \"^3.0.0\",\n    \"sinon\": \"^1.17.5\",\n    \"mocha\": \"^3.0.0\",\n    \"mocha-junit-reporter\": \"^1.12.1\",\n    \"istanbul\": \"^0.4.4\",\n    \"mongodb\": \"^2.2.5\"\n  }\n}\n"
+        },
+        "database": "MongoDB",
+        "build_system": "npm",
+        "config_files": {
+            "Dockerfile": "FROM node:10-alpine\nENV NODE_ENV \"production\"\nENV PORT 8079\nEXPOSE 8079\nRUN addgroup mygroup && adduser -D -G mygroup myuser && mkdir -p /usr/src/app && chown -R myuser /usr/src/app\n\n# Prepare app directory\nWORKDIR /usr/src/app\nCOPY package.json /usr/src/app/\nCOPY yarn.lock /usr/src/app/\nRUN chown myuser /usr/src/app/yarn.lock\n\nUSER myuser\nRUN yarn install\n\nCOPY . /usr/src/app\n\n# Start the app\nCMD [\"/usr/local/bin/npm\", \"start\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".gitignore",
+            ".travis.yml",
+            "Dockerfile",
+            "LICENSE",
+            "Makefile",
+            "README.md",
+            "config.js",
+            "package.json",
+            "server.js",
+            "shippable.yml",
+            "yarn.lock"
+        ],
+        "folders": [
+            ".github",
+            "api",
+            "helpers",
+            "public",
+            "scripts",
+            "test"
+        ]
+    }
+}

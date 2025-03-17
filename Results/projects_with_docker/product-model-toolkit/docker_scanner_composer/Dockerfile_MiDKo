@@ -1,0 +1,31 @@
+# Use an official lightweight Alpine image for the parent image
+FROM alpine:3.7
+
+# Set GO Environment Variables
+ENV GO111MODULE=on \
+    CGO_ENABLED=0 \
+    GOOS=linux \
+
+# Install Go and Git
+RUN apk add --no-cache git go curl
+
+# Set the working directory in the container to /app
+WORKDIR /app
+
+# Copy the go.mod and go.sum file
+COPY go.mod go.sum ./
+
+# Download all dependencies. will be cached if the go.mod and the go.sum files are not changed 
+RUN go mod download
+
+# Copy everything from the current directory to the working directory in the container
+COPY . .
+
+# Build the Go app
+RUN go build -o main .
+
+# Run the binary executable produced by `go install`
+CMD ["./main"]
+
+# Expose port 8080 to the outside world 
+EXPOSE 8080

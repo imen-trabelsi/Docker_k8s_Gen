@@ -1,0 +1,28 @@
+# Base Image
+FROM node:12
+
+# Create the Working Directory
+WORKDIR /app/userservice
+
+# Bundle app source and install app dependencies
+COPY package*.json ./
+RUN npm cache clean --force && npm install --no-optional
+COPY . .
+
+# Building the app
+RUN npm run build
+
+# Set necessary environment variables
+ENV NODE_ENV production
+
+# Expose port
+# TODO: Place your actual port here, e.g. EXPOSE 8080
+EXPOSE <your-exposed-port>
+
+# Health check instruction
+# TODO: Customize the healthcheck for your service, e.g. HEALTHCHECK CMD curl --fail http://localhost:8080/health || exit 1
+HEALTHCHECK NONE
+
+# Specify the Command command
+CMD [ "npm", "start" ]
+

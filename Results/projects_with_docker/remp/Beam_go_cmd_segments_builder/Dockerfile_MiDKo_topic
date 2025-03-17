@@ -1,0 +1,18 @@
+# Below is the Dockerfile
+
+FROM golang:1.22
+
+# Set working directory
+WORKDIR /go/src/gitlab.com/remp/remp/Beam/go
+
+# Copy build file to /usr/local/bin/
+COPY build /usr/local/bin/
+
+# Install dependencies and prepare necessary directories
+RUN go install golang.org/x/tools/cmd/goimports@latest
+RUN mkdir -p /src/build
+RUN mkdir -p /go/src/gitlab.com/remp/remp/Beam/go
+RUN chmod +x /usr/local/bin/build
+
+# Set execution command
+CMD ["build"]

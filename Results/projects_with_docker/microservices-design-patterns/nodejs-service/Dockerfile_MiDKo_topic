@@ -1,0 +1,35 @@
+# Set the base image
+FROM openjdk:8-jdk-alpine
+
+# Install maven
+RUN apk add maven
+
+# Create working directory and copy files
+WORKDIR /usr/src/app
+COPY pom.xml .
+COPY src ./src
+
+# Build and package application
+RUN mvn -f pom.xml clean package
+
+# Run netcat
+RUN apt-get update && apt-get install netcat-openbsd -y
+
+# Install node
+RUN apk add nodejs
+
+# Copy package.json and run npm install
+COPY package*.json ./
+RUN npm install --only=production
+
+# Copy all static files
+COPY . .
+
+# Set up JAVA_CMD environment variable
+ENV JAVA_CMD="node server.js"
+
+# Define the entry point
+ENTRYPOINT [ "sh", "-c", "java -jar target/myapp.jar" ]
+
+# Expose the application on port 8080
+EXPOSE 8080

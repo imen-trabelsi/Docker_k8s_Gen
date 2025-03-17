@@ -1,0 +1,19 @@
+# Dockerfile
+
+FROM node:16-alpine
+
+WORKDIR /srv/coopcycle
+
+COPY package.json .
+COPY package-lock.json .
+COPY docker/storybook/start.sh /
+
+RUN apk update && apk upgrade && \
+    apk add --no-cache bash git openssh && \
+    chmod +x /start.sh && \
+
+COPY . .
+
+EXPOSE 
+
+ENTRYPOINT ["/start.sh"]

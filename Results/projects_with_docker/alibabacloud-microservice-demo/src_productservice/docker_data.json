@@ -1,0 +1,29 @@
+{
+    "docker_info": {
+        "base_image": "dragonwell-registry.cn-hangzhou.cr.aliyuncs.com/dragonwell/dragonwell:8-extended-ga-centos",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8080"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas",
+            "WORKDIR /app",
+            "COPY /productservice-provider/target/productservice-provider-1.0.0-SNAPSHOT.jar /app",
+            "COPY /start.sh /app"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/app/start.sh\"]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

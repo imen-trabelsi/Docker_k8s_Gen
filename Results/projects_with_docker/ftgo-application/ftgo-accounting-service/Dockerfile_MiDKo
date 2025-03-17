@@ -1,0 +1,37 @@
+# Start with base image
+FROM eventuateio/eventuate-examples-docker-images-spring-example-base-image:${baseImageVersion}
+
+# Add maintainer info
+LABEL maintainer="devops@company.com"
+
+# Set Work Directory
+WORKDIR /app
+
+# Copy the dependencies file to the working directory
+COPY build.gradle gradle.build
+
+# Install dependencies
+RUN gradle build
+
+# Copy the project files in the working directory (You could also specify individual files and take care of static files. As there are no listed static files, I am omitting that part)
+COPY . .
+
+# Add JDBC connection to MySQL (depending upon your configuration change MYSQL_HOST, MYSQL_PORT, MYSQL_DB, MYSQL_USER, MYSQL_PASSWORD)
+ENV SPRING_DATASOURCE_URL=jdbc:mysql://MYSQL_HOST:MYSQL_PORT/MYSQL_DB
+ENV SPRING_DATASOURCE_USERNAME=MYSQL_USER
+ENV SPRING_DATASOURCE_PASSWORD=MYSQL_PASSWORD
+ENV SPRING_JPA_HIBERNATE_DDL_AUTO=create
+
+# Expose port (you need to replace XXXX with the actual port number of your Spring Boot service. As no port number is mentioned, I am omitting that part)
+EXPOSE XXXX
+
+# Copy the jar file from local machine to the container
+COPY build/libs/ftgo-accounting-service.jar service.jar
+
+# Configure a health check
+HEALTHCHECK --interval=5m --timeout=3s CMD curl -f http://localhost:XXXX/actuator/health || exit 1
+
+# The command to execute the jar file
+CMD ["java", "-jar", "service.jar"]
+
+

@@ -1,0 +1,56 @@
+{
+    "docker_info": {
+        "base_image": "nginx:1.23-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [
+            "maintainer=\"contact@graviteesource.com\""
+        ],
+        "health_checks": [],
+        "build_args": [
+            "GRAVITEEIO_VERSION=0"
+        ],
+        "envs": [
+            "ENV CONFD_VERSION=\"0.16.0\"",
+            "ENV CONFD_URL=\"https://github.com/kelseyhightower/confd/releases/download\"",
+            "ENV WWW_TARGET /var/www/html/"
+        ],
+        "copy_instructions": [
+            "ADD config /etc/confd",
+            "COPY run.sh /run.sh"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"sh\",",
+                    "\"/run.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk --update add zip unzip bash wget",
+                ""
+            ],
+            [
+                "apk add --upgrade --no-cache libgcrypt",
+                ""
+            ],
+            [
+                "wget https://download.gravitee.io/graviteeio-apim/components/gravitee-management-webui/gravitee-management-webui-${GRAVITEEIO_VERSION}.zip --no-check-certificate -P /tmp/ \\",
+                "&& unzip /tmp/gravitee-management-webui-${GRAVITEEIO_VERSION}.zip -d /tmp/",
+                "&& mkdir -p ${WWW_TARGET}",
+                "&& mv /tmp/gravitee-management-webui-${GRAVITEEIO_VERSION}/* ${WWW_TARGET}",
+                "&& rm -rf /tmp/*",
+                "&& wget -T 5 ${CONFD_URL}/v${CONFD_VERSION}/confd-${CONFD_VERSION}-linux-amd64 -O /bin/confd",
+                "&& chmod +x /bin/confd"
+            ],
+            [
+                "chgrp -R 0 /var/www/ /var/log/nginx /var/cache/nginx/ /etc/nginx/ /var/run/ && \\",
+                "chmod -R g=u /var/www/ /var/log/nginx /var/cache/nginx/ /etc/nginx/ /var/run/"
+            ]
+        ]
+    }
+}

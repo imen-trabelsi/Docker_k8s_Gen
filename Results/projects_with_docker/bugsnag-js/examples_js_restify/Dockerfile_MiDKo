@@ -1,0 +1,20 @@
+# Specifying the base image
+FROM node:8@sha256:a681bf74805b80d03eb21a6c0ef168a976108a287a74167ab593fc953aac34df
+
+# Setting working directory in the container
+WORKDIR /usr/src/app
+
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+COPY package* ./
+
+# Installing app dependencies
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Exposing the port
+EXPOSE 8080
+
+# Starting the application
+CMD ["npm", "start"]

@@ -1,0 +1,44 @@
+# Set base image (host OS)
+FROM openjdk:8-jdk-alpine as build
+
+# Set the working directory in the Docker image
+WORKDIR /usr/src/app
+
+# Set env variables
+ENV MAVEN_HOME /usr/share/maven
+ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
+ENV MAVEN_OPTS="-XX:+TieredCompilation -XX:TieredStopAtLevel=1"
+
+# Install dependencies
+RUN apk add --no-cache curl tar bash
+
+# Set maven version
+ARG MAVEN_VERSION=3.3.9
+
+# Install Maven
+RUN mkdir -p /usr/share/maven && \
+    curl -fsSL http://apache.osuosl.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | tar -xzC /usr/share/maven --strip-components=1 && \
+
+# Copy pom.xml and install dependencies
+COPY pom.xml .
+
+# Build the application
+RUN mvn -T 1C install && rm -rf target
+
+# Running again to finalize
+RUN mvn -T 1C install
+
+
+# Stage 2 for healthier multi-stage build
+FROM openjdk:8-jdk-alpine
+
+# Set labels for the image
+LABEL version="2.0.0"
+
+# Set the working directory
+WORKDIR /usr/src/timelineobserver
+
+# Copy necessary files from build stage to final stage
+
+# Specify the command to run
+ENTRYPOINT ["java", "-jar", "/usr/src/timelineobserver/TimelineObserver-jar-with-dependencies.jar"]

@@ -1,0 +1,36 @@
+# Set base image to the provided one 
+FROM alpine:3.19 as build
+
+# Install dependencies
+RUN apk add --no-cache ca-certificates
+RUN apk add go
+
+WORKDIR /app
+
+# Copy go.mod and download dependencies
+COPY go.mod .
+RUN go mod download
+
+# Copy the rest of code
+COPY . .
+
+# Set environment variable
+ENV CGO_ENABLED=0
+
+ARG TARGETARCH
+ARG revision
+
+# Run commands to build the project
+RUN go build -o /go/bin/query-tee-$TARGETARCH .
+
+# Stage 2, this is to compile our Go binary, using Alpine because it is much smaller than the build stage
+FROM alpine:3.19
+
+# Set labels
+LABEL org.opencontainers.image.title="query-tee"
+
+# Copy binary from build to root of this stage
+
+# Execution command
+ENTRYPOINT ["/query-tee"]
+

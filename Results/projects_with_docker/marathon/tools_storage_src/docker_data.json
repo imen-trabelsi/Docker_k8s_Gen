@@ -1,0 +1,31 @@
+{
+    "docker_info": {
+        "base_image": "mesosphere/openjdk-alpine-ammonite:2.0.4-2.13",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY lib/ /lib/",
+            "COPY bin/ /bin/",
+            "COPY marathon/ /marathon/"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/bin/storage-tool.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "amm-2.13 --predef lib/predef.sc --predef-code 'println(\"it worked\"); sys.exit(0)' | grep \"it worked\"",
+                ""
+            ]
+        ]
+    }
+}

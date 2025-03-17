@@ -1,0 +1,33 @@
+{
+    "docker_info": {
+        "base_image": "php:8.3.8-cli-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /smr",
+            "COPY src/lib src/lib",
+            "COPY phpdoc.dist.xml .",
+            "COPY --from=builder /smr/api-docs/build/ /usr/share/nginx/html/"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "curl -L -O https://github.com/phpDocumentor/phpDocumentor/releases/download/v3.7.1/phpDocumentor.phar",
+                "RUN chmod +x phpDocumentor.phar"
+            ],
+            [
+                "mv phpDocumentor.phar /usr/local/bin/phpdoc",
+                ""
+            ],
+            [
+                "phpdoc",
+                ""
+            ]
+        ]
+    }
+}

@@ -1,0 +1,21 @@
+FROM adoptopenjdk/openjdk11:alpine as builder
+
+ARG DEPENDENCY=/advanced/exercise-solutions/card-game/part-10/
+WORKDIR ${DEPENDENCY}
+
+# Build and extract dependency
+COPY pom.xml .
+RUN mvn install clean
+COPY . ${DEPENDENCY}
+RUN mvn package
+
+FROM adoptopenjdk/openjdk11:alpine
+
+ENV DEPENDENCY=/advanced/exercise-solutions/card-game/part-10/
+WORKDIR /opt/app
+
+# Expose the default Spring Boot port
+EXPOSE 8080
+
+# Provide the command to execute the application
+CMD ["java", "-jar", "auth.jar"]

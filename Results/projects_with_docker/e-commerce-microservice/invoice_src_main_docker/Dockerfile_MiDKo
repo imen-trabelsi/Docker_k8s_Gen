@@ -1,0 +1,33 @@
+#Use base image
+FROM openjdk:8-jre-alpine
+
+# Add user
+RUN adduser -D -s /bin/sh jhipster
+
+# Copy build files
+COPY build.gradle /home/jhipster
+
+# Copy static files
+COPY invoice/src/main/resources/config/ /home/jhipster/resources/config/
+
+# Set environment variable
+ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS
+
+# Work directory
+WORKDIR /home/jhipster
+
+#Copy entrypoint shell script and WAR file
+COPY entrypoint.sh entrypoint.sh
+COPY *.war app.war
+
+# Change permissions of entrypoint.sh and change user
+RUN chmod 755 entrypoint.sh && chown jhipster:jhipster entrypoint.sh
+
+# Use the created user
+USER jhipster
+
+# Expose the port
+EXPOSE 8081
+
+# execution command
+ENTRYPOINT ["./entrypoint.sh"]

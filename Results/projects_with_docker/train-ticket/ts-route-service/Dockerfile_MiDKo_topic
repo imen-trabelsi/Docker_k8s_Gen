@@ -1,0 +1,17 @@
+# Base Image
+FROM java:8-jre
+
+# Setting up timezone to Shanghai
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Create a directory in the container
+WORKDIR /app
+
+# Add the service's JAR to the container
+COPY ./target/ts-route-service-1.0.jar /app/
+
+# Port that the service listens to
+EXPOSE 11178
+
+# Command to execute to start the service
+ENTRYPOINT ["java", "-Xmx200m", "-jar", "/app/ts-route-service-1.0.jar"]

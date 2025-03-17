@@ -1,0 +1,28 @@
+# Base Image
+FROM nginx:1.25-alpine
+
+# Maintainer
+LABEL maintainer="contact@graviteesource.com"
+
+# Environment Variables
+ENV NGINX_VERSION 1.25
+ENV WWW_TARGET /usr/share/nginx/html
+ENV HTTP_PORT 8080
+ENV HTTPS_PORT 8443
+ENV SERVER_NAME _
+
+# Copy Instructions
+COPY nginx.conf /etc/nginx
+COPY run.sh /run.sh
+
+# Run Commands
+RUN mkdir -p /rw.mount/nginx/logs; \
+    ln -sf /dev/stdout /var/log/nginx/access.log; \
+    ln -sf /dev/stderr /var/log/nginx/error.log; \
+    chown -R 101:0 /usr/share/nginx /var/log/nginx /var/cache/nginx /rw.mount /var/run; \
+
+# Expose Ports
+EXPOSE 8080 8443
+
+# Execution Command
+CMD ["sh", "/run.sh"]

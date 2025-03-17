@@ -1,0 +1,35 @@
+# Use the .NET SDK for the build stage
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+
+# Copy csproj and restore as distinct layers
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+COPY ["src/BuildingBlocks/EventBus/EventBus/EventBus.csproj", "src/BuildingBlocks/EventBus/EventBus/"]
+COPY ["NuGet.config", "./"]
+COPY ["docker-compose.dcproj", "./"]
+COPY ["eShop-Learn.sln", "./"]
+
+# Ensure SSL dev certs are available to buid stage
+COPY --from=publish /app/publish .
+# Restore dependencies
+RUN dotnet restore "eShop-Learn.sln"
+
+# Copy everything else and build application
+COPY . .
+WORKDIR "/src/src/Services/Identity/Identity.API"
+RUN dotnet publish --no-restore "Identity.API.csproj" -c Release -o /app/publish
+
+# Runtime image
+FROM mcr.microsoft.com/dotnet/sdk:6.0
+WORKDIR /app
+
+# Security practices,
+# Either use a non-root user using a built-in nonprivileged user or create a user in Dockerfile
+# Example of creating a user in Dockerfile:
+RUN groupadd -r app && useradd --no-log-init -r -g app app
+USER app
+
+# Expose application over port 80
+EXPOSE 80
+
+ENTRYPOINT ["dotnet", "Identity.API.dll"]

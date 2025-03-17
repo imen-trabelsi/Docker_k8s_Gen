@@ -1,0 +1,41 @@
+# Set the base image
+FROM node:12-alpine
+
+# Create global directories
+RUN mkdir /builder && mkdir /app
+
+# Set the working directory
+WORKDIR /builder
+
+# Copy files and install dependencies
+COPY common/nodejs/package.json src/common/
+COPY telemetry/package.json .
+RUN npm install
+
+# Build Messages
+COPY common/messages/interop.proto .
+RUN npm run build-msg
+
+# Build the application
+COPY common/nodejs src/common
+COPY telemetry .
+RUN npm run build
+
+# Set to application directory
+WORKDIR /app
+
+# Copy files from builder to app directory
+COPY common/nodejs/package.json src/common/
+COPY telemetry/package.json .
+COPY --from=builder /builder/lib lib
+COPY telemetry/bin bin
+
+# Set the environment variables
+ENV NODE_ENV=production 
+ENV PORT=5000
+
+# Expose ports
+EXPOSE 5000
+
+# Default command
+CMD FORCE_COLOR=1 npm start --silent

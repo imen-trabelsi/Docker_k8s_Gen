@@ -1,0 +1,46 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/sdk:5.0",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "WORKDIR /src",
+            "COPY [\"src/Services/ResultProcessing/ResultProcessing.API/ResultProcessing.API.csproj\", \"src/Services/ResultProcessing/ResultProcessing.API/\"]",
+            "COPY . .",
+            "WORKDIR \"/src/src/Services/ResultProcessing/ResultProcessing.API\"",
+            "WORKDIR /app",
+            "COPY --from=publish /app/publish ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"dotnet\",",
+                    "\"ResultProcessing.API.dll\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "dotnet restore \"src/Services/ResultProcessing/ResultProcessing.API/ResultProcessing.API.csproj\"",
+                ""
+            ],
+            [
+                "dotnet build \"ResultProcessing.API.csproj\" -c Release -o /app/build",
+                ""
+            ],
+            [
+                "dotnet publish \"ResultProcessing.API.csproj\" -c Release -o /app/publish",
+                ""
+            ]
+        ]
+    }
+}

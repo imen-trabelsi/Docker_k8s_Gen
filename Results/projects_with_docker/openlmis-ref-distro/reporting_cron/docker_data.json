@@ -1,0 +1,24 @@
+{
+    "docker_info": {
+        "base_image": "alpine:3.11",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ./periodic /cron/periodic"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "/bin/true"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

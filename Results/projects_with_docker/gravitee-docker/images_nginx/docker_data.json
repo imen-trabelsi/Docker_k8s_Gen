@@ -1,0 +1,43 @@
+{
+    "docker_info": {
+        "base_image": "nginx:${NGINX_VERSION}-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [
+            "maintainer=\"contact@graviteesource.com\""
+        ],
+        "health_checks": [],
+        "build_args": [
+            "NGINX_VERSION=1.25"
+        ],
+        "envs": [
+            "ENV WWW_TARGET /usr/share/nginx/html",
+            "ENV HTTP_PORT 8080",
+            "ENV HTTPS_PORT 8443",
+            "ENV SERVER_NAME _"
+        ],
+        "copy_instructions": [
+            "ADD nginx.conf /etc/nginx",
+            "COPY run.sh /run.sh"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"sh\",",
+                    "\"/run.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p /rw.mount/nginx/logs; \\",
+                "ln -sf /dev/stdout /var/log/nginx/access.log;",
+                "ln -sf /dev/stderr /var/log/nginx/error.log;",
+                "chown -R 101:0 /usr/share/nginx /var/log/nginx /var/cache/nginx /rw.mount /var/run;",
+                "chmod -R g+w /var/cache/nginx /rw.mount"
+            ]
+        ]
+    }
+}

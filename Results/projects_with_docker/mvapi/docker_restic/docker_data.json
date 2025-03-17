@@ -1,0 +1,103 @@
+{
+    "docker_info": {
+        "base_image": "alpine:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "RESTIC_REPOSITORY=/mnt/restic",
+            "RESTIC_PASSWORD=\"\"",
+            "RESTIC_TAG=\"\"",
+            "NFS_TARGET=\"\"",
+            "BACKUP_CRON=\"0",
+            "RESTIC_INIT_ARGS=\"\"",
+            "RESTIC_FORGET_ARGS=\"\"",
+            "RESTIC_JOB_ARGS=\"\"",
+            "MAILX_ARGS=\"\"",
+            "OS_AUTH_URL=\"\"",
+            "OS_PROJECT_ID=\"\"",
+            "OS_PROJECT_NAME=\"\"",
+            "OS_USER_DOMAIN_NAME=\"Default\"",
+            "OS_PROJECT_DOMAIN_ID=\"default\"",
+            "OS_USERNAME=\"\"",
+            "OS_PASSWORD=\"\"",
+            "OS_REGION_NAME=\"\"",
+            "OS_INTERFACE=\"\"",
+            "OS_IDENTITY_API_VERSION=3"
+        ],
+        "envs": [
+            "ENV RESTIC_REPOSITORY=${RESTIC_REPOSITORY}",
+            "ENV RESTIC_PASSWORD=${RESTIC_PASSWORD}",
+            "ENV RESTIC_TAG=${RESTIC_TAG}",
+            "ENV NFS_TARGET=$NFS_TARGET",
+            "ENV BACKUP_CRON=${RESTIC_BACKUP_CRON}",
+            "ENV RESTIC_INIT_ARGS=${RESTIC_INIT_ARGS}",
+            "ENV RESTIC_FORGET_ARGS=$RESTIC_FORGET_ARGS",
+            "ENV RESTIC_JOB_ARGS=$RESTIC_JOB_ARGS",
+            "ENV MAILX_ARGS=$MAILX_ARGS",
+            "ENV OS_AUTH_URL=$OS_AUTH_URL",
+            "ENV OS_PROJECT_ID=$OS_PROJECT_ID",
+            "ENV OS_PROJECT_NAME=$OS_PROJECT_NAME",
+            "ENV OS_USER_DOMAIN_NAME=$OS_USER_DOMAIN_NAME",
+            "ENV OS_PROJECT_DOMAIN_ID=$OS_PROJECT_DOMAIN_ID",
+            "ENV OS_USERNAME=$OS_USERNAME",
+            "ENV OS_PASSWORD=$OS_PASSWORD",
+            "ENV OS_REGION_NAME=$OS_REGION_NAME",
+            "ENV OS_INTERFACE=$OS_INTERFACE",
+            "ENV OS_IDENTITY_API_VERSION=$OS_IDENTITY_API_VERSION"
+        ],
+        "copy_instructions": [
+            "ADD https://downloads.rclone.org/rclone-current-linux-amd64.zip /",
+            "COPY --from=rclone /bin/rclone /bin/rclone",
+            "COPY backup.sh /bin/backup",
+            "COPY entry.sh /entry.sh",
+            "WORKDIR \"/\""
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/entry.sh\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"tail\",\"-fn0\",\"/var/log/cron.log\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "unzip rclone-current-linux-amd64.zip && mv rclone-*-linux-amd64/rclone /bin/rclone && chmod +x /bin/rclone",
+                ""
+            ],
+            [
+                "apk add --update --no-cache heirloom-mailx fuse curl",
+                ""
+            ],
+            [
+                "\\",
+                "mkdir -p /mnt/restic /var/spool/cron/crontabs /var/log;",
+                "touch /var/log/cron.log;"
+            ],
+            [
+                "mkdir /.cache && \\",
+                "chgrp -R 0 /.cache &&",
+                "chmod -R g=u /.cache &&",
+                "chgrp -R 0 /mnt &&",
+                "chmod -R g=u /mnt &&",
+                "chgrp -R 0 /var/spool/cron/crontabs/root &&",
+                "chmod -R g=u /var/spool/cron/crontabs/root &&",
+                "chgrp -R 0 /var/log/cron.log &&",
+                "chmod -R g=u /var/log/cron.log"
+            ],
+            [
+                "sed -i 's/$$RESTIC_INIT_ARGS/$RESTIC_INIT_ARGS/g'  /entry.sh",
+                "RUN sed -i 's/$$RESTIC_PASSWORD/$RESTIC_PASSWORD/g'  /entry.sh"
+            ]
+        ]
+    }
+}

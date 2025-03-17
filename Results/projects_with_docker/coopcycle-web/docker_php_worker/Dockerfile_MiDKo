@@ -1,0 +1,19 @@
+# Use PHP base image from the user provided base image
+FROM coopcycle/php:8.3
+
+# Copying the source code into the image
+COPY . /var/www/html
+
+# Changing the Workdir
+WORKDIR /var/www/html
+
+# Copying configuration files 
+COPY .env.test /var/www/html
+COPY docker-compose.yml /var/www/html
+COPY docker/php_worker/Dockerfile /var/www/html
+
+# Copying static files
+COPY assets/controllers.json /var/www/html/assets
+
+# Set the correct entry point
+ENTRYPOINT ["sh", "-c", "/var/www/html/bin/console messenger:consume async --limit=100 --time-limit=900 -n"]

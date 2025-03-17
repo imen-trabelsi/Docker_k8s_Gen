@@ -1,0 +1,32 @@
+# Using the specified base image
+FROM adoptopenjdk/openjdk11:alpine AS builder
+
+# Set the current working directory inside the container
+WORKDIR /workspace/app
+
+# Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy the pom.xml file.
+COPY pom.xml .
+
+# Build all the dependencies the application needs and cache those
+RUN ./mvnw dependency:go-offline -B
+
+# Copy the project source files.
+COPY src src
+
+# Package the application
+RUN ./mvnw package -DskipTests
+
+# Start a new build stage to minimize the final image size
+FROM adoptopenjdk/openjdk11:alpine
+
+# Copy the application jar from the builder image.
+
+# Command to run on container startup.
+CMD ["java", "-jar", "cards.jar"]
+
+# Expose the application port.
+EXPOSE 8080

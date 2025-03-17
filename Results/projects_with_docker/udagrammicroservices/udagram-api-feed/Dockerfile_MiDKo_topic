@@ -1,0 +1,21 @@
+# Use specified base image
+FROM node:12
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Install dependencies for the app
+COPY package*.json ./
+RUN npm ci 
+
+# Bundle app source
+COPY . .
+
+# Expose app on specified port
+EXPOSE 8080
+
+# Ensure graceful shutdown 
+STOPSIGNAL SIGINT
+
+# Command to run the application
+CMD [ "npm", "run", "prod" ]

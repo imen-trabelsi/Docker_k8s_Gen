@@ -1,0 +1,40 @@
+# Base Image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 as build
+
+# Define working directory
+WORKDIR /app
+
+# Install Node.js dependencies
+RUN npm install -g npm@6
+
+# Copy Project Files
+COPY . .
+
+WORKDIR /web/src
+COPY src/Web/WebSPA/Client/package.json .
+COPY src/Web/WebSPA/Client/package-lock.json .
+COPY src/Web/WebSPA/Client .
+WORKDIR /src
+COPY ["NuGet.config", "./"]
+COPY ["docker-compose.dcproj", "./"]
+COPY ["eShop-Learn.sln", "./"]
+COPY . .
+
+# Build our microservice project
+RUN dotnet restore "eShop-Learn.sln"
+RUN dotnet publish --no-restore "WebSPA.csproj" -c Release -o /app/publish
+
+###########################################################
+
+# Final Stage - Build runtime image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 as final
+
+WORKDIR /app
+EXPOSE 80
+
+# Set Environment Variables
+ENV ASPNETCORE_ENVIRONMENT Local
+ENV ASPNETCORE_URLS http://*:80
+
+# Set entry point
+ENTRYPOINT ["dotnet", "WebSPA.dll"]

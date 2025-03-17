@@ -1,0 +1,23 @@
+# Use base image
+FROM node:alpine
+
+# Create application directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# Set environment variable
+ENV DEBUG loopback:connector:swagger
+
+# Install and cache app dependencies
+COPY package*.json ./
+RUN npm install
+COPY . .
+
+# Expose port
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK --interval=1m --timeout=3s CMD curl --fail http://localhost/vitals/docker || exit 1
+
+# Start app
+CMD [ "npm", "run", "start.dev" ]

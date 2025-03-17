@@ -1,0 +1,32 @@
+FROM node:alpine
+
+# Specify the creator of the Dockerfile
+LABEL maintainer="your-email@example.com"
+
+# Create app directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+COPY package*.json ./
+
+# Update & install required packages
+RUN apk update && apk upgrade && \
+
+# Install project dependencies
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Expose app on the following ports
+EXPOSE 3000
+
+# Set environment variables
+ENV DEBUG loopback:connector:swagger
+
+# Perform healthcheck
+HEALTHCHECK --interval=1m --timeout=3s CMD curl --fail http://localhost/vitals/docker || exit 1
+
+# Start the app
+ENTRYPOINT [ "npm", "run", "start.dev" ]

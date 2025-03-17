@@ -1,0 +1,40 @@
+# using the base image provided by the user
+FROM @docker.account@/jetty-base
+
+# set the working directory in the docker image
+WORKDIR /app
+
+# Add necessary environment variables
+ENV BROKER_ADDR broker
+ENV BROKER_PORT 1883
+ENV DATASTORE_ADDR es:9200
+ENV SQL_DB_ADDR db
+ENV SQL_DB_PORT 3306
+ENV SERVICE_BROKER_ADDR failover:(amqp://events-broker:5672)?jms.sendTimeout=1000
+ENV JOB_ENGINE_BASE_ADDR http://job-engine:8080/v1
+ENV JAVA_OPTS "-Dapi.cors.origins.allowed=\${API_CORS_ORIGINS_ALLOWED} \
+
+# Adding source code to /app directory
+COPY . /app
+
+# Copying Maven dependencies
+COPY maven /
+
+# Add the application’s artifacts
+COPY target/*.jar app.jar
+
+# Run the command to give proper permissions
+RUN chown -R 1000:0 /opt/jetty /var/opt/jetty
+RUN chmod -R g=u /opt/jetty /var/opt/jetty
+
+# Exposing the predetermined port
+EXPOSE 3306
+
+# The command that runs the application
+CMD [ "java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/app.jar" ]
+
+# Set the user to run the java process
+USER 1000
+
+# Define the entrypoint script
+ENTRYPOINT ["/var/opt/jetty/run-api"]

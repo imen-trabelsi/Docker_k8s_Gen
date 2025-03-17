@@ -1,0 +1,38 @@
+# Use the base image provided by user
+FROM registry.cn-beijing.aliyuncs.com/edas_unified/jct_dw_8_4_4:0.1 as builder
+
+# Set the working directory
+WORKDIR  /app 
+
+# Copy pom.xml file
+COPY pom.xml .
+
+# Pull the dependencies first for layer caching
+RUN mvn dependency:go-offline -B
+
+# Copy the application's source code
+COPY src /app/src
+
+# Build the application
+RUN mvn package -DskipTests
+
+# Multi-stage build for smaller image
+FROM registry.cn-beijing.aliyuncs.com/edas_unified/jct_dw_8_4_4:0.1 
+
+# Install necessary dependencies
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+WORKDIR /app
+
+#Copy built jar from builder
+
+# Copy start.sh from user provided instructions
+COPY /start.sh /app
+
+# Ensuring scripts are executable
+RUN chmod +x /app/start.sh
+
+# Expose the application on port 8080
+EXPOSE 8080
+
+# Run the application
+CMD ["/app/start.sh"]

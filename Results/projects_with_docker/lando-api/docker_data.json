@@ -1,0 +1,68 @@
+{
+    "docker_info": {
+        "base_image": "python:3.9",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "9000"
+        ],
+        "user": [
+            "app"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV PYTHONUNBUFFERED=1",
+            "ENV MOZBUILD_STATE_PATH /app/.mozbuild",
+            "ENV UWSGI_MODULE=landoapi.wsgi:app \\"
+        ],
+        "copy_instructions": [
+            "COPY requirements.txt /python_requirements.txt",
+            "COPY migrations /migrations",
+            "COPY . /app",
+            "WORKDIR /app"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"lando-cli\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"uwsgi\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "addgroup --gid 10001 app \\",
+                "&& adduser",
+                "--disabled-password",
+                "--uid 10001",
+                "--gid 10001",
+                "--home /app",
+                "--gecos \"app,,,\"",
+                "app"
+            ],
+            [
+                "pip install pip --upgrade",
+                "RUN pip install --no-cache -r /python_requirements.txt"
+            ],
+            [
+                "cd / && pip install --no-cache /app",
+                "ENV PYTHONPATH /app"
+            ],
+            [
+                "chown -R app:app /app",
+                ""
+            ],
+            [
+                "mkdir /repos",
+                ""
+            ]
+        ]
+    }
+}

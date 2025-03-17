@@ -1,0 +1,39 @@
+# Dockerfile
+
+FROM ${BASE_IMAGE}
+
+# Specify the maintainer of the Dockerfile
+LABEL maintainer=jon@jaggersoft.com
+
+# Set environment variables
+ENV BASE_IMAGE ${BASE_IMAGE}
+ENV SHA ${COMMIT_SHA}
+
+# Create working directory
+RUN mkdir -p /runner
+WORKDIR /runner
+
+# Install necessary dependencies
+RUN gem install --no-document 'concurrent-ruby'
+
+# Change to root user
+USER root
+
+# Copy necessary files from local machine to Docker container
+COPY source/server/ ./
+
+# Set necessary permissions for scripts
+RUN chmod +x /runner/config/healthcheck.sh
+RUN chmod +x /runner/config/puma.rb
+RUN chmod +x /runner/config/up.sh
+
+# Set the health check for the Docker container
+HEALTHCHECK --interval=1s --timeout=1s --retries=5 --start-period=5s CMD /runner/config/healthcheck.sh
+
+# Set the entrypoint and command for the Docker container
+ENTRYPOINT ["/sbin/tini", "-g", "--"]
+CMD ["/runner/config/up.sh"]
+
+# Add a non-root user to prevent running the container as root
+RUN adduser --disabled-password --home /runner nonroot
+USER nonroot

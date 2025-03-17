@@ -1,0 +1,30 @@
+# Fetch base image
+FROM nginx:1.25.4
+
+# Set work directory
+WORKDIR /usr/src/app
+
+# Copy package.json and install dependencies
+COPY package.json ./
+RUN npm install
+
+# Bundle app source
+COPY . . 
+
+# Copy configs
+COPY nginx.conf /etc/nginx/nginx.conf
+COPY ./html/ /usr/share/nginx/html/
+
+# Make sure files/folders needed by the processes are accessable 
+RUN chown -R nginx:nginx /var/cache/nginx && \
+    chmod -R 755 /var/cache/nginx && \
+    chown -R nginx:nginx /var/run && \
+
+# Switch to non-root user
+USER nginx
+
+# Expose port
+EXPOSE 80
+
+# Start Node.js app
+CMD [ "npm", "start" ]

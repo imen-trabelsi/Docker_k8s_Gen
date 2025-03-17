@@ -1,0 +1,25 @@
+# Starting from the given base image
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+
+# Setting the working directory
+WORKDIR /ClassifiedAds.Microservices 
+
+# Copying necessary files to the Docker image
+COPY ./Common/ClassifiedAds.Application/*.csproj ./Common/ClassifiedAds.Application/ 
+COPY ./Common/ClassifiedAds.CrossCuttingConcerns/*.csproj ./Common/ClassifiedAds.CrossCuttingConcerns/ 
+COPY ./Common/ClassifiedAds.Domain/*.csproj ./Common/ClassifiedAds.Domain/ 
+COPY ./Common/ClassifiedAds.Infrastructure/*.csproj ./Common/ClassifiedAds.Infrastructure/ 
+COPY ./Services.Notification/ClassifiedAds.Services.Notification/*.csproj ./Services.Notification/ClassifiedAds.Services.Notification/ 
+COPY ./Services.Notification/ClassifiedAds.Services.Notification.Background/*.csproj ./Services.Notification/ClassifiedAds.Services.Notification.Background/ 
+COPY . ./ 
+
+# Executing necessary Dotnet commands
+RUN dotnet restore ./Common/ClassifiedAds.Application/ClassifiedAds.Application.csproj 
+RUN dotnet restore ./Common/ClassifiedAds.Infrastructure/ClassifiedAds.Infrastructure.csproj 
+RUN dotnet restore ./Services.Notification/ClassifiedAds.Services.Notification/ClassifiedAds.Services.Notification.csproj 
+RUN dotnet restore ./Services.Notification/ClassifiedAds.Services.Notification.Background/ClassifiedAds.Services.Notification.Background.csproj 
+RUN dotnet publish ./Services.Notification/ClassifiedAds.Services.Notification.Background/ClassifiedAds.Services.Notification.Background.csproj -c Release -o out 
+
+# Setting entry point
+ENTRYPOINT ["dotnet", "ClassifiedAds.Services.Notification.Background.dll"]
+

@@ -1,0 +1,35 @@
+# Using the official node base image
+FROM node:latest 
+
+# Create application directory
+WORKDIR /app 
+
+# Copy package.json and set up the project's dependencies
+COPY package.json ./
+RUN npm install
+
+# Copy entire project
+COPY . .
+
+# Add necessary health checks, such as curl for instance
+RUN apt-get update -qq && apt-get install -qq -y curl && rm -rf /var/lib/apt/lists/*
+
+# Expose the port on which your app runs
+# This has to do with networking within Docker, and nothing to do with the outside world, replace `8080` if you wish for another port.
+EXPOSE 8080
+
+# Set necessary environment variables
+#ENV NODE_ENV production or development
+
+# Add labels or metadata
+#LABEL version="1.0"
+
+# Set build arguments, users, run commands (if given)
+RUN apt update && apt install -y netcat
+COPY entrypoint.sh /entrypoint.sh
+
+# Change permissions to run the entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+# Final command to run your application, replace `node` with your actual start script, e.g `npm start` in most situations.
+CMD ["/entrypoint.sh"]

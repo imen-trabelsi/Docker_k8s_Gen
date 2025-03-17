@@ -1,0 +1,26 @@
+# Set the base image 
+FROM golang:1.23-alpine3.21 AS builder
+
+# Set the environment variables
+ENV LAGOON_VERSION=$LAGOON_VERSION
+ENV LAGOON=workflows
+ENV JWT_SECRET=super-secret-string
+ENV CGO_ENABLED=0
+ENV GOOS=linux
+ENV GOARCH=amd64
+
+# Copy the source files from the current directory to the project directory in the container
+COPY . /go/src/github.com/uselagoon/lagoon/services/workflows/
+
+# Set the current working directory in the image
+WORKDIR /go/src/github.com/uselagoon/lagoon/services/workflows/
+
+# Build the Go app
+RUN go build -a -o workflows .
+
+# Copy the output file to the app directory
+WORKDIR /app/
+
+# Define the execution command
+ENTRYPOINT ["//sbin/tini", "--", "/lagoon/entrypoints.sh"]
+CMD ["/app/workflows"]

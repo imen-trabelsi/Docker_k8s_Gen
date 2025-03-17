@@ -1,0 +1,11 @@
+# Use the OpenJDK image from Docker Hub as a base image.
+FROM openjdk:8-jre-alpine
+# Set working directory
+WORKDIR /app
+# Copy the application's .jar file which was built using Maven into the /app directory of our Docker image.
+COPY /target/provider-1.0.0.jar /app/provider-1.0.0.jar
+# Inform Docker that the container is going to listen on the specified port at runtime.
+EXPOSE 20002
+# Provide a default command that will be executed when the Docker container is started.
+ENTRYPOINT ["sh", "-c"]
+CMD ["java", "-jar", "/app/provider-1.0.0.jar"]

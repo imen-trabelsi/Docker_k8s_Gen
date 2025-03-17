@@ -1,0 +1,75 @@
+{
+    "docker_info": {
+        "base_image": "$REPOSITORY/gs-cloud-base-jre:$TAG",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8080",
+            "8081"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [
+            "HEALTHCHECK \\"
+        ],
+        "build_args": [
+            "REPOSITORY=geoservercloud",
+            "TAG=latest",
+            "JAR_FILE=target/gs-cloud-*-bin.jar"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ${JAR_FILE} application.jar",
+            "COPY target/config/ /etc/geoserver/",
+            "WORKDIR /opt/app/bin",
+            "COPY --from=builder dependencies/ ./"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "curl",
+                    "-f",
+                    "-s",
+                    "-o",
+                    "/dev/null",
+                    "localhost:8081/actuator/health",
+                    "||",
+                    "exit",
+                    "1"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "exec",
+                    "env",
+                    "USER_ID=\"$(id",
+                    "-u)\"",
+                    "USER_GID=\"$(id",
+                    "-g)\"",
+                    "java",
+                    "$JAVA_OPTS",
+                    "org.springframework.boot.loader.JarLauncher"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "java -Djarmode=layertools -jar application.jar extract",
+                ""
+            ],
+            [
+                "mkdir -p /opt/app/bin",
+                ""
+            ],
+            [
+                "true",
+                "COPY --from=builder snapshot-dependencies/ ./"
+            ],
+            [
+                "true",
+                "COPY --from=builder spring-boot-loader/ ./"
+            ]
+        ]
+    }
+}

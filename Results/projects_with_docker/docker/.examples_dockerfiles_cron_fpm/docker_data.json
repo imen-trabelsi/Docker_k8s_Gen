@@ -1,0 +1,35 @@
+{
+    "docker_info": {
+        "base_image": "nextcloud:fpm",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV NEXTCLOUD_UPDATE=1"
+        ],
+        "copy_instructions": [
+            "COPY supervisord.conf /"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/usr/bin/supervisord\",",
+                    "\"-c\",",
+                    "\"/supervisord.conf\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && apt-get install -y \\",
+                "supervisor",
+                "&& rm -rf /var/lib/apt/lists/*",
+                "&& mkdir /var/log/supervisord /var/run/supervisord"
+            ]
+        ]
+    }
+}

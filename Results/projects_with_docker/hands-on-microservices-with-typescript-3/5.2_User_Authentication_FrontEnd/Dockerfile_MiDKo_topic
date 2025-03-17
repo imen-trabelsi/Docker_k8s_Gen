@@ -1,0 +1,39 @@
+# Use the base image provided by the user
+FROM node:8.13-slim AS build-env
+
+# Create a directory for the application
+RUN mkdir -p /opt/my-musik/
+
+# Set the working directory
+WORKDIR /opt/my-musik/
+
+# Copy the necessary files
+COPY ./package.json .
+COPY ./tsconfig.json .
+COPY ./tslint.json .
+COPY ./src ./src
+COPY ./public ./public
+
+# Install the necessary NPM packages
+RUN npm install typescript -g --no-optional
+RUN npm install -g @vue/cli --no-optional
+RUN npm install --no-optional --only=production
+RUN npm install npm -g
+RUN npm install node-static -g
+
+# Build the app
+RUN npm run build
+
+# Start with a final stage for a slim image
+FROM node:8.13-slim
+
+# Set up working directory
+WORKDIR /opt/my-musik/
+
+# Copy from build environment
+
+# Set up the runtime environment
+EXPOSE 3001
+CMD ["static", "./dist", "-a", "0.0.0.0","-p","3001"]
+
+

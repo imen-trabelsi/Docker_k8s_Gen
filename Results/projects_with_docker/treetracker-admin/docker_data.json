@@ -1,0 +1,30 @@
+{
+    "docker_info": {
+        "base_image": "node:12.19.0-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV PATH /app/node_modules/.bin:$PATH"
+        ],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY package.json ./",
+            "COPY package-lock.json ./"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "npm ci --silent",
+                "COPY . ./"
+            ],
+            [
+                "npm run build",
+                "CMD [ \"node\", \".\" ]"
+            ]
+        ]
+    }
+}

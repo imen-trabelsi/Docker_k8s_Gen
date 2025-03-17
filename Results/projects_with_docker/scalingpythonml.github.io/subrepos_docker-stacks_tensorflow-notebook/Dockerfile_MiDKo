@@ -1,0 +1,40 @@
+# Use base image
+FROM $BASE_CONTAINER
+
+# Label maintainer
+LABEL maintainer="Jupyter"
+
+# Update and install dependencies
+RUN apt-get update -y && \
+
+# Set work directory
+WORKDIR /usr/src/app
+
+# Copy Gemfile to the work directory
+COPY Gemfile* ./
+
+# Install Bundler and Gems 
+RUN gem install bundler && \
+
+# Set the environment variable for PostgreSQL
+ENV DATABASE_URL postgresql://localhost/dbname
+
+# COPY rest of application to work directory
+COPY . .
+
+# Expose ports
+EXPOSE  $PORT
+
+# Run the application
+CMD bundle exec ruby app.rb
+
+# Handle Permissions and install tensorflow
+RUN pip install --quiet --no-cache-dir 'tensorflow==2.4.1' && \
+    fix-permissions "${CONDA_DIR}" && \
+
+# COPY configuration files
+COPY ./subrepos/docker-stacks/tensorflow-notebook/Dockerfile /usr/src/app/subrepos/docker-stacks/tensorflow-notebook/Dockerfile
+
+# COPY scripts
+COPY ./prepare.sh /usr/local/bin/prepare.sh
+RUN chmod +x /usr/local/bin/prepare.sh

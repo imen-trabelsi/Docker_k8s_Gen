@@ -1,0 +1,13 @@
+# Using Base Image
+FROM mesosphere/openjdk-alpine-ammonite:2.0.4-2.13
+
+# Copy necessary files
+COPY lib/ /lib/
+COPY bin/ /bin/
+COPY marathon/ /marathon/
+
+# Run necessary commands
+RUN amm-2.13 --predef lib/predef.sc --predef-code 'println("it worked"); sys.exit(0)' | grep "it worked"
+
+# Specify the entry point
+ENTRYPOINT ["/bin/storage-tool.sh"]

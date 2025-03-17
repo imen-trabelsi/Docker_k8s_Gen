@@ -1,0 +1,13 @@
+# Builder image
+FROM maven:3.8.1-openjdk-11-slim AS build
+WORKDIR /app
+COPY .mvn .mvn
+COPY mvnw .
+COPY pom.xml .
+COPY src src
+RUN ./mvnw package -DskipTests
+
+# Production image
+FROM openjdk:21-slim-buster
+EXPOSE 8090 61613 61616
+ENTRYPOINT ["java", "-jar", "/policy-management-backend.jar"]

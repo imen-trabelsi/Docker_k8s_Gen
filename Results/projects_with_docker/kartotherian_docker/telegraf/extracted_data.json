@@ -1,0 +1,28 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "pyproject.toml": "[tool.black]\nline-length = 100\ntarget-version = ['py36']\ninclude = '''\n    exec.py\n  | /import_data/tasks/\n'''\n"
+        },
+        "database": null,
+        "build_system": "poetry",
+        "config_files": {
+            "docker-compose.yml": "version: '3'\n\nservices:\n  postgres:\n    # Custom image maintained by openmaptiles in https://github.com/openmaptiles/openmaptiles-tools\n    # Based on postgres:9.6 and includes PostGIS and osml10n extensions\n    image: openmaptiles/postgis:latest@sha256:dc9eb0a534366197b5f187771846aab3dae1368d44d77378cdd5f4412007f31c\n    volumes:\n      - \"pgdata:/var/lib/postgresql/data\"\n    ports:\n      - \"5632:5432\"\n    environment:\n     - POSTGRES_DB=gis\n     - POSTGRES_USER=gis\n     - POSTGRES_PASSWORD=gis\n\n  cassandra:\n    image: cassandra:3\n    volumes:\n     - \"cassandra_data:/var/lib/cassandra\"\n\n  tilerator:\n    build:\n      context: .\n      dockerfile: tilerator/Dockerfile\n    depends_on:\n      - cassandra\n      - postgres\n      - redis\n    environment:\n      - TILERATOR_MODE=api # This service will not process tiles\n    volumes:\n      - update_tiles_data:/data/update_tiles_data\n\n  tilerator-worker:\n    build:\n      context: .\n      dockerfile: tilerator/Dockerfile\n    environment:\n      - TILERATOR_NUM_WORKERS=ncpu # Number of workers (or ncpu by default)\n    depends_on:\n      - cassandra\n      - postgres\n      - redis\n\n  redis:\n    image: redis:latest\n    command: redis-server --appendonly yes # to enable persistence\n    volumes:\n      - \"redisdata:/data\"\n\n  load_db:\n    build:\n      context: .\n      dockerfile: load_db/Dockerfile\n    read_only: true\n    environment:\n      - INVOKE_GENERATED_FILES_DIR=/data/generated\n      - INVOKE_DATA_DIR=/data/input\n      - INVOKE_UPDATE_TILES_DIR=/data/update_tiles_data\n    tmpfs:\n      - /tmp\n    volumes:\n      - input_data:/data/input\n      - imposm_generated_data:/data/generated\n      - update_tiles_data:/data/update_tiles_data\n    depends_on:\n      - postgres\n\n  kartotherian:\n    build:\n      context: .\n      dockerfile: kartotherian/Dockerfile\n\n  telegraf:\n    build:\n      context: .\n      dockerfile: telegraf/Dockerfile\n\nvolumes:\n  pgdata:\n  cassandra_data:\n  redisdata:\n  input_data:\n  imposm_generated_data:\n  update_tiles_data:\n",
+            "telegraf/Dockerfile": "FROM telegraf:1.8-alpine@sha256:7f6873f5745fe9b4f610c5dcfaaa73d7cd75adb63bd770bb70c26a7e85c94a2a\n\nCOPY telegraf/telegraf.conf /etc/telegraf/telegraf.conf\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "README.md",
+            "config.api.yaml",
+            "config.worker.yaml",
+            "gen_tiles.sh",
+            "runserver.sh",
+            "sources.yaml"
+        ],
+        "folders": []
+    }
+}

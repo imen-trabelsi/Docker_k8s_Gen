@@ -1,0 +1,52 @@
+# Set the base image
+FROM python:3.11 as build
+
+# Switch to non-interactive mode
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Update system
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends build-essential curl bzip2 libjemalloc2 libpq-dev && \
+    pip install --upgrade pip && \
+
+# Copy the dependencies file
+COPY .requirements/ /build/.requirements/
+COPY speedup/ /build/speedup/
+
+# Install all the dependencies
+RUN pip install -r .requirements/cython.txt && \
+    cythonize -i speedup/*.pyx && \
+
+# Install additional packages
+RUN python3 ./scripts/deploy/install-packages requirements/*.json && \
+    curl -L https://get.static-web-server.net/ | sed 's/sudo //g' | sh && \
+    find /opt/noc/ -type f -name "*.py" -print0 | xargs -0 python3 -m py_compile && \
+    pip cache purge && \
+
+# Setup the user
+RUN useradd -d /opt/noc -M -r -u 1200 -U noc -s /bin/sh && \
+
+# Switch to the user
+USER noc
+
+WORKDIR /build
+
+# Set the environment variable to ensure smooth running of the application
+ENV PYTHONUNBUFFERED 1
+
+# Copy the main application
+COPY . /opt/noc/
+
+# Move from build to final image
+FROM build as final
+
+# Copy from previous stage
+
+# Expose the necessary ports
+EXPOSE 8000
+
+# Set workdir
+WORKDIR /opt/noc
+
+# Initiate the container
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

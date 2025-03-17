@@ -1,0 +1,20 @@
+# Use the official Java 8 Runtime Environment as a parent image
+FROM java:8-jre
+
+# Copy zone data for the timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Create a directory in the container where the application will be placed
+RUN mkdir /app
+
+# Copy the jar file into the /app folder of the container
+COPY ./target/ts-food-service-1.0.jar /app/
+
+# Set /app as the working directory
+WORKDIR /app
+
+# Expose Container Port 18856
+EXPOSE 18856
+
+# Execute the jar file
+CMD ["java", "-Xmx200m", "-jar", "/app/ts-food-service-1.0.jar"]

@@ -1,0 +1,51 @@
+{
+    "docker_info": {
+        "base_image": "python:3.9-slim-bullseye",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "9498"
+        ],
+        "user": [],
+        "labels": [
+            "maintainer=\"Wazo"
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV PATH=\"/opt/venv/bin:$PATH\"",
+            "ENV PATH=\"/opt/venv/bin:$PATH\""
+        ],
+        "copy_instructions": [
+            "COPY . /usr/src/wazo-phoned",
+            "WORKDIR /usr/src/wazo-phoned",
+            "COPY --from=compile-image /opt/venv /opt/venv",
+            "COPY ./etc/wazo-phoned /etc/wazo-phoned",
+            "COPY ./contribs/docker/certs /usr/share/wazo-certs"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"wazo-phoned\",",
+                    "\"-d\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "python -m venv /opt/venv",
+                "# Activate virtual env"
+            ],
+            [
+                "pip install -r requirements.txt",
+                "RUN python setup.py install"
+            ],
+            [
+                "true \\",
+                "&& adduser --quiet --system --group --home /var/lib/wazo-phoned wazo-phoned",
+                "&& mkdir -p /etc/wazo-phoned/conf.d",
+                "&& install -o www-data -g www-data /dev/null /var/log/wazo-phoned.log"
+            ]
+        ]
+    }
+}

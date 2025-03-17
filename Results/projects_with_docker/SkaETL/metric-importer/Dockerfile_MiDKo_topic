@@ -1,0 +1,30 @@
+# Base image
+FROM openjdk:8u151-jdk as builder
+
+# The source code resides in /usr/src/app
+WORKDIR /usr/src/app
+COPY ./pom.xml ./pom.xml
+COPY ./src ./src
+
+# Build a layered jar 
+RUN mvn -B -DskipTests clean package -Pprod -e
+
+# Minimaline Java runtime
+FROM openjdk:8u151-jdk-slim
+
+WORKDIR /usr/share/skalogs/
+
+# Copy the jar file and startup script from the builder image
+COPY startup.sh /usr/bin/startup.sh
+
+# Make sure our startup script is executable
+RUN chmod +x /usr/bin/startup.sh
+
+# Introduce build argument for the JAR file
+ARG JAR_FILE
+
+# Expose the application on port 8080
+EXPOSE 8080    
+
+# Running the startup script should launch the application
+ENTRYPOINT ["/usr/bin/startup.sh"]

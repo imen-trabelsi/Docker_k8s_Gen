@@ -1,0 +1,23 @@
+FROM node:10.16.0-alpine
+WORKDIR /ng-app
+
+# Install app dependencies
+COPY package.json ./
+RUN npm i && mkdir /ng-app && mv ./node_modules ./ng-app
+
+# Bundle app source
+COPY . .
+
+# Build and clean up
+RUN npm run build
+RUN rm -rf /usr/share/nginx/html/*
+
+# Network config
+COPY ./config/nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /ng-app/dist/angular /usr/share/nginx/html
+
+# Set your preferred port
+EXPOSE 80
+
+# Start the server
+CMD ["nginx", "-g", "daemon off;"]

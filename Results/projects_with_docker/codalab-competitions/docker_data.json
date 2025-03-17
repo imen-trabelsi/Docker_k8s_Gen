@@ -1,0 +1,30 @@
+{
+    "docker_info": {
+        "base_image": "--platform=linux/amd64",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app/codalab"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "curl -sL https://deb.nodesource.com/setup_4.x | bash -",
+                "RUN apt-get update && apt-get install -y npm netcat nodejs python-dev libmemcached-dev"
+            ],
+            [
+                "pip install --upgrade pip  # make things faster, hopefully",
+                "COPY codalab/requirements/requirements.txt requirements.txt"
+            ],
+            [
+                "pip install -r requirements.txt",
+                ""
+            ]
+        ]
+    }
+}

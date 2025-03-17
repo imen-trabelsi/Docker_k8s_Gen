@@ -1,0 +1,27 @@
+# Use Elasticsearch 2.4 as base image
+FROM elasticsearch:2.4
+
+# Copy package.json to the working directory and install dependencies
+COPY package.json ./
+RUN npm install
+
+# Copy relevant static files and project files
+COPY .env ./
+COPY docker-compose.yml ./
+COPY docker-compose.override.yml ./
+COPY Dockerfile ./
+COPY resources/README.md resources/
+COPY resources/examples/topics_sample.xml resources/examples/
+COPY resources/hudson/ant.xml resources/hudson/
+COPY resources/hudson/config.json resources/hudson/
+COPY resources/www/common/styles/fonts/PhraseanetIcomoon/selection.json resources/www/common/styles/fonts/PhraseanetIcomoon/
+
+# Add the run command
+RUN /usr/share/elasticsearch/bin/plugin install analysis-icu
+
+# Expose correct ports 
+EXPOSE 8080
+
+# Set the entrypoint
+ENTRYPOINT ["npm", "start"]
+

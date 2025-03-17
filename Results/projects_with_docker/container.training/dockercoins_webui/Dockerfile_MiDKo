@@ -1,0 +1,13 @@
+# Dockerfile
+FROM node:4-slim
+
+WORKDIR /app
+
+COPY files/ /app/files/
+COPY webui.js /app/
+
+RUN npm install express \
+
+EXPOSE 80
+
+CMD ["node", "webui.js"]

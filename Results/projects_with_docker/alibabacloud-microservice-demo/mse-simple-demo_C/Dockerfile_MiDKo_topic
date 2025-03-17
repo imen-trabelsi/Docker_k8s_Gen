@@ -1,0 +1,23 @@
+# Base image
+FROM maven:3.9.9-eclipse-temurin-17 as build
+WORKDIR /app
+COPY ./ ./
+COPY <<EOF /root/.m2/settings.xml
+
+# Install additional tools
+RUN apt-get update && apt-get install -y vim unzip netcat-openbsd telnet tcpdump iproute2 lsof ngrep \
+
+# Build project
+RUN --mount=type=cache,target=/root/.m2/repository/ mvn clean package --batch-mode 
+
+# Start from base
+FROM openjdk:17-jdk-alpine 
+
+# Copy necessary resources from build image
+WORKDIR /app
+
+# Expose correct port
+EXPOSE 20003
+
+# Define entrypoint 
+ENTRYPOINT ["java","-jar","/app/target/C.jar"]

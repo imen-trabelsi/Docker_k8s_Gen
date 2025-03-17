@@ -1,0 +1,26 @@
+# Use the base image 
+FROM amazon/dynamodb-local:1.18.0
+
+# Set work directory
+WORKDIR /app
+
+# Copy gradle configuration to the container 
+COPY build.gradle build.gradle
+
+# Download all required dependencies
+RUN gradle build --no-daemon 
+
+# Copy source code to the container 
+COPY . .
+
+# Build application 
+RUN gradle bootJar --no-daemon 
+
+# Expose application port
+EXPOSE 8000
+
+# Healthcheck of the container
+HEALTHCHECK --start-period=5s --interval=5s CMD curl http://localhost:8000 || exit 1
+
+# Run Java application
+ENTRYPOINT ["java", "-Djava.security.egd=file:/dev/./urandom", "-jar", "/app/build/libs/app.jar"]

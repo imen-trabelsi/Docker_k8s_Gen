@@ -1,0 +1,33 @@
+{
+    "docker_info": {
+        "base_image": "remp/telegraf:1.23.3",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD telegraf.conf /etc/telegraf/telegraf.conf"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "telegraf"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk update",
+                "RUN apk add ca-certificates"
+            ],
+            [
+                "update-ca-certificates",
+                "RUN apk add openssl"
+            ]
+        ]
+    }
+}

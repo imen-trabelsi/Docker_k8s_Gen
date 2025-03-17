@@ -1,0 +1,30 @@
+# Use base image
+FROM open-liberty:19.0.0.9-microProfile3-java11
+
+# Set working directory
+WORKDIR /app
+
+# Include Gradle
+COPY build.gradle .
+RUN apt-get update && apt-get install -y gradle
+
+# Copy source code to container
+COPY src ./src
+
+# Build application
+RUN gradle build
+
+# Add WAR file to application server
+COPY --chown=1001:0 build/libs/game-service.war /config/dropins/
+
+# Copy the configuration file to the right location for the server to find it
+COPY --chown=1001:0 src/main/liberty/config /config/
+
+# Run commands
+RUN printf 'httpPort=8080\n\
+
+# Expose port
+EXPOSE 8080
+
+# Run the server
+CMD ["gradle", "bootRun"]

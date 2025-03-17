@@ -1,0 +1,34 @@
+# Use base image
+FROM jupyter/minimal-notebook:2d125a7161b5
+
+# Set work directory
+WORKDIR /app
+
+# Make ports available to the outside world
+EXPOSE 8080 
+
+# Copy files from your host to your current location.
+COPY . /app
+
+# Set environment variables
+ENV LANG=C.UTF-8 LC_ALL=C.UTF-8
+ENV PATH=/opt/conda/bin:$PATH
+ENV HOME=/app
+ENV SHELL=/bin/bash
+ENV USER=$NB_UID
+ENV MYSQL_USER=root
+ENV MYSQL_PASSWORD=MySQL@123
+
+# Install any needed packages specified in Gemfile
+RUN apt-get update -qq && apt-get install -y nodejs libpq-dev build-essential ruby-dev \
+&& gem install bundler --no-ri --no-rdoc\
+
+# Add the current user as application user
+RUN useradd -ms /bin/bash $USER
+
+# Modify file permissions
+RUN chown -R $USER:$USER /app
+USER $USER
+
+# Run the command on container startup
+CMD bundle exec rails server -b 0.0.0.0 -p 8080

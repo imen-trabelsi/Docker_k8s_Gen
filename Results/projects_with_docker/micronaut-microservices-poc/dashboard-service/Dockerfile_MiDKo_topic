@@ -1,0 +1,35 @@
+# Use the official image as the base image
+FROM adoptopenjdk/openjdk14:jre-14.0.2_12-alpine
+
+# Set the current working directory in the container
+WORKDIR /app
+
+# Copy the pom.xml file into our app directory in the container
+COPY pom.xml .
+
+# Copy the Static Files and Configuration Files into app directory
+COPY src/main/resources/* ./resources/
+COPY docker-compose.yml .
+COPY dashboard-service/Dockerfile .
+COPY azure-pipelines.yml .
+
+# Download all required dependencies
+RUN apk add --no-cache maven && mvn dependency:go-offline -B
+
+# Copy the rest of the source code into the app directory
+COPY src/main/java ./java
+
+# Compile the application
+RUN mvn package
+
+# Move the packaged application into the root directory
+RUN mv target/*.jar ./app.jar
+
+# Remove the source code and maven
+RUN rm -rf ./src && \
+
+# Expose the port
+EXPOSE 80
+
+# The command to start the application
+CMD [ "java", "-jar", "app.jar" ]

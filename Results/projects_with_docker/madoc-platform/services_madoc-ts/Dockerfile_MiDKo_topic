@@ -1,0 +1,53 @@
+FROM node:18-bullseye as build
+
+# Setting up the work directory
+WORKDIR /home/node/app
+
+# Copy All dependencies
+COPY ./package.json /home/node/app/package.json
+COPY ./yarn.lock /home/node/app/yarn.lock
+COPY ./npm /home/node/app/npm
+COPY ./tsconfig.json /home/node/app/tsconfig.json
+COPY ./tsconfig.frontend.json /home/node/app/tsconfig.frontend.json
+COPY ./src /home/node/app/src
+COPY ./schemas /home/node/app/schemas
+COPY ./generate-schemas.js /home/node/app/generate-schemas.js
+
+# install dependencies
+RUN yarn install --no-interactive --frozen-lockfile
+RUN yarn generate-schema
+
+# Build
+RUN yarn build:vite-producer
+RUN yarn build:vite-auth
+RUN yarn build:vite-scheduler
+RUN yarn build:frontend
+RUN yarn build:vite-server
+
+# setting up prod environment
+FROM node:18-bullseye as production
+WORKDIR /home/node/app
+
+# Copy dependencies from build phase
+
+# install production dependencies
+RUN yarn install --no-interactive --frozen-lockfile --production=true
+
+# setting environment and user
+USER node
+ENV NODE_ENV=production
+ENV SERVER_PORT=3000
+ENV DATABASE_HOST=localhost
+ENV DATABASE_NAME=postgres
+ENV DATABASE_PORT=5400
+ENV DATABASE_USER=postgres
+ENV DATABASE_SCHEMA=public
+ENV DATABASE_PASSWORD=postgres
+ENV API_GATEWAY_HOST=http://gateway
+ENV BUILD_TIME=${BUILD_TIME}
+ENV BUILD_VERSION=${BUILD_VERSION}
+ENV BUILD_REVISION=${BUILD_REVISION}
+
+EXPOSE $SERVER_PORT
+
+CMD ["pm2-runtime", "start", "./ecosystem.config.cjs"]

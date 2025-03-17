@@ -1,0 +1,21 @@
+# Base Image
+FROM eclipse-temurin:11
+
+# Make port 9000 available to the world outside this container
+EXPOSE 9000
+
+# Set the working directory in the container to /app
+WORKDIR /app
+
+# Copy the jar file inside the container
+COPY *.jar /app.jar
+
+# Copy the script to wait for a service to be available
+COPY wait-for-it.sh /wait-for-it.sh
+
+# Run commands
+RUN bash -c 'touch /app.jar'
+RUN bash -c 'chmod 777 /wait-for-it.sh'
+
+# Expose the application on port 8080
+CMD ["java","-Dspring.profiles.active=docker","-jar","/app.jar"]

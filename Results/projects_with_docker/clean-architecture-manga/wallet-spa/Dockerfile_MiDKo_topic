@@ -1,0 +1,31 @@
+# Set the Base Image
+FROM node:9-alpine
+
+# Create app directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# System dependencies
+RUN apk add --no-cache --virtual build-dependencies \
+    python \
+    make \
+
+# Install app dependencies
+COPY package.json /usr/src/app/
+RUN npm install
+
+# Remove Build dependencies
+RUN apk del build-dependencies 
+
+# Bundle app source
+COPY . /usr/src/app
+
+# Expose the application's port 
+EXPOSE 3000
+
+# Set environment variable
+ARG ENV
+ENV ENV ${ENV}
+
+# Start the application
+CMD [ "npm", "run", "start-${ENV}" ]

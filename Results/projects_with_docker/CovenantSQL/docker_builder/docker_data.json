@@ -1,0 +1,30 @@
+{
+    "docker_info": {
+        "base_image": "golang:alpine3.10",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR $GOPATH"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apk add build-base",
+                "RUN apk add make"
+            ],
+            [
+                "apk add git",
+                "RUN apk add icu-dev"
+            ],
+            [
+                "apk add icu-static",
+                ""
+            ]
+        ]
+    }
+}

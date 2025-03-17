@@ -1,0 +1,26 @@
+# Using the base image specified by the user
+FROM flask_service:python-3.10-slim-bullseye AS base
+
+# Building the python dependencies 
+FROM base AS builder
+COPY requirements.txt /tmp/requirements.txt
+RUN pip3 install -r /tmp/requirements.txt --root="/install"
+
+# Pull the envoy proxy for sidecar pattern
+FROM envoyproxy/envoy-dev:latest 
+
+# Copy the envoyproxy binary from envoy image to the local bin directory
+COPY --from=envoyproxy/envoy-dev:latest /usr/local/bin/envoy /usr/local/bin/envoy
+
+# Now, set up our microservice 
+FROM base
+
+# Copy the python code and the start script
+COPY ./service.py /code/service.py
+COPY ./start_service.sh /usr/local/bin/start_service.sh
+
+# Making the start script executable
+RUN chmod u+x /usr/local/bin/start_service.sh
+
+# Set the entry point
+ENTRYPOINT ["/usr/local/bin/start_service.sh"]

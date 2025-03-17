@@ -1,0 +1,63 @@
+{
+    "docker_info": {
+        "base_image": "ubuntu:18.04",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [
+            "maintainer=\"Omar",
+            "version=\"1.0\"",
+            "description=\"Docker"
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /root",
+            "WORKDIR /root/immunizer-monitor/scripts"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apt-get clean",
+                "RUN apt-get update"
+            ],
+            [
+                "apt-get install -y --no-install-recommends apt-utils",
+                ""
+            ],
+            [
+                "apt-get install -qy openjdk-8-jdk",
+                "RUN apt-get install -qy locales"
+            ],
+            [
+                "apt-get install -qy vim",
+                "RUN apt-get install -qy zip unzip"
+            ],
+            [
+                "apt-get install -qy git",
+                "RUN apt-get install -qy curl"
+            ],
+            [
+                "curl -O https://downloads.apache.org/spark/spark-2.4.5/spark-2.4.5-bin-hadoop2.7.tgz",
+                "RUN tar -xvzf spark-2.4.5-bin-hadoop2.7.tgz"
+            ],
+            [
+                "git clone --progress --verbose https://github.com/oiraqi/immunizer-monitor.git",
+                "RUN git clone --progress --verbose https://github.com/oiraqi/immunizer-analyze.git"
+            ],
+            [
+                "./build.sh",
+                "WORKDIR /root"
+            ],
+            [
+                "apt-get -qy autoremove",
+                ""
+            ],
+            [
+                "locale-gen \"en_US.UTF-8\" && /usr/sbin/update-locale LANG=en_US.UTF-8",
+                "ENV LC_ALL en_US.UTF-8"
+            ]
+        ]
+    }
+}

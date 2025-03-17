@@ -1,0 +1,34 @@
+# Use the Java base image
+FROM eclipse-temurin:11 as builder
+
+# Make the application directory in the container
+WORKDIR /app
+
+# Copy the pom.xml file to the application directory
+COPY pom.xml .
+
+# Download dependencies
+RUN mvn dependency:go-offline -B
+
+# Copy the source code to the application directory
+COPY src src
+
+# Compile and package the application
+RUN mvn package -DskipTests
+
+# Use the Java base image for the runtime
+FROM eclipse-temurin:11
+
+# Set environment variable
+ENV SPRING_PROFILES_ACTIVE=docker
+
+# Expose the application on port 8888
+EXPOSE 8888
+
+# Copy the executable jar file from the previous stage
+
+# Create a touch command to the /app.jar
+RUN bash -c 'touch /app.jar'
+
+# Setup the application entrypoint
+ENTRYPOINT ["java","-Dspring.profiles.active=docker","-jar","/app.jar"]

@@ -1,0 +1,42 @@
+# Dockerfile to build a Spring-Boot application based on node:10-alpine
+FROM node:10-alpine
+
+# Set work directory
+WORKDIR /ng-app
+
+# COPY package.json and package-lock.json files to 
+COPY explorer-gui/package.json explorer-gui/package-lock.json ./
+
+# Run npm commands to setup the environment
+RUN npm ci && mkdir /ng-app && mv ./node_modules ./ng-app
+
+# COPY the explorer-gui directory to the Dockerfile
+COPY explorer-gui/ /ng-app/
+
+# Build and Cleanup
+RUN npm run ng build -- --configuration=${ENV_CONFIG} --output-path=dist
+RUN rm -rf /etc/nginx/conf.d/*
+RUN rm -rf /usr/share/nginx/html/*
+
+# COPY the nginx configuration file to the Dockerfile
+COPY ${NGINX_CONF} /etc/nginx/conf.d/
+
+# COPY dist directory to nginx
+COPY --from=builder /ng-app/dist /usr/share/nginx/html
+
+# Expose Port to Enable communication 
+EXPOSE 80
+
+# Environment variables
+ENV ENV_CONFIG=docker-pre \
+    API_URL=https://host-01.polkascan.io/kusama/api/v1 \
+    NETWORK_NAME=Kusama \
+    NETWORK_ID=kusama \
+    NETWORK_TYPE=pre \
+    CHAIN_TYPE=relay \
+    NETWORK_TOKEN_SYMBOL=KSM \
+    NETWORK_TOKEN_DECIMALS=12 \
+    NETWORK_COLOR_CODE=d32e79 \
+
+# CMD to start the application
+CMD ["nginx", "-g", "daemon off;"]

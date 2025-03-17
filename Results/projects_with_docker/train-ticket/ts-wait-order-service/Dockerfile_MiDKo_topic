@@ -1,0 +1,17 @@
+#Base Image
+FROM java:8-jre
+
+#Set the working directory in the image to "/app"
+WORKDIR /app
+
+#Copy the jar into the /app directory in docker image
+COPY ./target/ts-wait-order-service-1.0.jar /app/
+
+#Setting the timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+#Ports to be exposed for this container
+EXPOSE 15678
+
+#The command that will be executed during the container start up
+CMD ["java", "-Xmx200m", "-jar", "/app/ts-wait-order-service-1.0.jar"]

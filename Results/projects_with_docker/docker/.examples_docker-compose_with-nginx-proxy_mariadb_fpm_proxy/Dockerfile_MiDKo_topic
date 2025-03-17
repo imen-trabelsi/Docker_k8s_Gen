@@ -1,0 +1,10 @@
+FROM nginxproxy/nginx-proxy:alpine
+
+# Copy the configurations
+COPY uploadsize.conf /etc/nginx/conf.d/uploadsize.conf
+
+# Broadcasting service ports
+EXPOSE 80 443
+
+# Run nginx
+CMD ["nginx", "-g", "daemon off;"]

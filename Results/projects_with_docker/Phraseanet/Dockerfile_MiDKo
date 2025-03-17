@@ -1,0 +1,64 @@
+# -----------------------------------
+
+# Use the image alchemyfr/phraseanet-base:1.2.2 as base
+FROM alchemyfr/phraseanet-base:1.2.2 as base
+
+# Add user "app"
+RUN adduser --uid 1000 --disabled-password app
+
+# Set environment variables
+ENV PHRASEANET_PLUGINS=$PHRASEANET_PLUGINS
+ENV SSH_PRIVATE_KEY=$SSH_PRIVATE_KEY
+
+# Copy dependencies
+COPY package.json /var/alchemy/Phraseanet/
+COPY docker-compose.yml /var/alchemy/Phraseanet/
+COPY docker-compose.override.yml /var/alchemy/Phraseanet/
+COPY .env /var/alchemy/Phraseanet/
+COPY resources/README.md /var/alchemy/Phraseanet/resources/
+COPY resources/examples/topics_sample.xml /var/alchemy/Phraseanet/resources/examples/
+COPY resources/hudson/ant.xml /var/alchemy/Phraseanet/resources/hudson/
+COPY resources/hudson/config.json /var/alchemy/Phraseanet/resources/hudson/
+COPY resources/www/common/styles/fonts/PhraseanetIcomoon/selection.json /var/alchemy/Phraseanet/resources/www/common/styles/fonts/PhraseanetIcomoon/
+
+# Install dependencies
+RUN apk add --update apache2-utils
+RUN apt-get update \
+
+# Install Node and tools
+RUN cd /tmp \
+&& curl -O https://nodejs.org/download/release/v10.24.1/node-v10.24.1-linux-x64.tar.gz \
+&& tar -xvf node-v10.24.1-linux-x64.tar.gz \
+&& cp -Rf node-v10.24.1-linux-x64/* /usr/ \
+&& curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+&& echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
+&& apt-get update \
+
+# Install npm modules
+RUN cd /var/alchemy/Phraseanet; npm install
+
+# -----------------------------------
+
+# By using multi-stage builds, we ensure that our final image only contains the necessary dependencies, which can reduce the size of the image.
+# In the second stage, we are only copying over the things we installed in the first stage
+
+# Start second stage
+FROM alchemyfr/phraseanet-base:1.2.2
+
+# Copying the node_modules folder from Builder Stage into our app directory
+COPY --from=builder /var/alchemy/Phraseanet/node_modules /var/alchemy/Phraseanet/node_modules
+
+# Set working directory
+WORKDIR /var/alchemy/Phraseanet
+
+# Expose port number
+EXPOSE 80
+
+# Health check command
+HEALTHCHECK CMD wget --spider http://127.0.0.1/login || nginx -s reload || exit 1
+HEALTHCHECK CMD wget --spider http://127.0.0.1/ || nginx -s reload || exit 1
+
+# Startup command
+ENTRYPOINT [ "npm", "start" ]
+
+# -----------------------------------

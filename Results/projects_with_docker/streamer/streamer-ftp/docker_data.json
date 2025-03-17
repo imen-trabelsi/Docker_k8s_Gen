@@ -1,0 +1,21 @@
+{
+    "docker_info": {
+        "base_image": null,
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY sshd_config /etc/ssh/sshd_config"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "echo UID_MAX 60000 >> /etc/login.defs"
+            ]
+        ]
+    }
+}

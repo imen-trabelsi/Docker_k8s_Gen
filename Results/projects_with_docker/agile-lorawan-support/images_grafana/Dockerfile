@@ -1,0 +1,1 @@
+FROM monitoringartist/grafana-xxl

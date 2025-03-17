@@ -1,0 +1,47 @@
+{
+    "docker_info": {
+        "base_image": "mhart/alpine-node:8.9.1",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3000",
+            "4000"
+        ],
+        "user": [
+            "ico"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /usr/src/app",
+            "COPY . .",
+            "COPY custom-entrypoint.sh /usr/local/bin/custom-entrypoint.sh"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/usr/local/bin/custom-entrypoint.sh\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"npm\",",
+                    "\"start\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "chmod 755 /usr/local/bin/custom-entrypoint.sh && \\",
+                "addgroup ico &&",
+                "adduser -D -G ico ico &&",
+                "apk add --update --no-cache git python make g++ curl grep bash &&",
+                "npm i -g yarn &&",
+                "yarn install"
+            ]
+        ]
+    }
+}

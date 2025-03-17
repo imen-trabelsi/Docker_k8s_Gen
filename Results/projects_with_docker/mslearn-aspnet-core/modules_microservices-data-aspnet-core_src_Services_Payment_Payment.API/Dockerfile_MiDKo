@@ -1,0 +1,27 @@
+# Check the base image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+
+# Copy csproj and restore as distinct layers
+COPY ["NuGet.config", "./"]
+COPY ["docker-compose.dcproj", "./"]
+COPY ["eShop-Learn.sln", "./"]
+COPY . .
+
+# Restore dependencies
+RUN dotnet restore "eShop-Learn.sln"
+
+# Compile and minimize the .NET SDK runtime dependencies using multi-stage build.
+FROM build AS publish
+WORKDIR "/src/src/Services/Payment/Payment.API"
+RUN dotnet publish --no-restore "Payment.API.csproj" -c Release -o /app/publish
+
+# Create a runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+WORKDIR /app
+
+# Expose port 80
+EXPOSE 80
+
+# Set the Docker entrypoint
+ENTRYPOINT ["dotnet", "Payment.API.dll"]

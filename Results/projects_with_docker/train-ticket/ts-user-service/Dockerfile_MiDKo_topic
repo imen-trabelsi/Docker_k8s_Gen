@@ -1,0 +1,17 @@
+# Start with a base image containing Java runtime
+FROM java:8-jre
+
+# Set the timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Set the working directory in the localhost
+WORKDIR /app
+
+# Add the application's jar to the container
+COPY ./target/ts-user-service-1.0.jar /app/
+
+# The application's port
+EXPOSE 12346
+
+# Run the Java application
+CMD ["java", "-Xmx200m", "-jar", "/app/ts-user-service-1.0.jar"]

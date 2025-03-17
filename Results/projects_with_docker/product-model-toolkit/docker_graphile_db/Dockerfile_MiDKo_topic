@@ -1,0 +1,40 @@
+# Start from the desired base image
+FROM postgres:11.0-alpine AS builder
+
+# Copy necessary files - Configuration file, Docker-Compose file, and DB Dockerfile
+COPY ./docker/graphile/.env .
+COPY ./docker/graphile/docker-compose.yml .
+COPY ./docker/graphile/db/Dockerfile .
+
+# Copy Go dependencies file.
+COPY go.mod .
+
+# Download all the dependencies
+RUN go mod download
+
+# Copy the rest source code into the workspace
+COPY . .
+
+# Build the go app
+RUN go build -o main .
+
+# Start a new stage from scratch
+FROM alpine:latest
+RUN apk --no-cache add ca-certificates
+
+# Copy the pre-built binary file from the previous stage.
+
+# Copy the initialization script to the entrypoint directory
+COPY ./init/ /docker-entrypoint-initdb.d/
+
+# Set the correct work directory
+WORKDIR /app
+
+# Set necessary environment variables
+ENV PATH /app:$PATH
+
+# Expose necessary ports
+EXPOSE 
+
+# Define the runtime command
+CMD ["app"]

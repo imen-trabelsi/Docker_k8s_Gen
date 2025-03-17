@@ -1,0 +1,31 @@
+# Use specified base image
+FROM python:3.12
+
+# Set work directory
+WORKDIR /data-act/backend
+
+# Set environment variables
+ENV PYTHONPATH /data-act/backend
+
+# Update and install required packages based on user input and source code
+RUN apt-get -y update && \
+    apt-get install -y gcc libpq-dev postgresql-client netcat-openbsd libsqlite3-dev && \
+    pip install unittest-xml-reporting setuptools==68.1.2 && \
+
+# Copy requirement files to the directory in the docker image
+COPY requirements.txt /data-act/backend/requirements.txt
+COPY server_requirements.txt /data-act/backend/server_requirements.txt
+
+# Install the requirements
+RUN pip install -r /data-act/backend/requirements.txt && \
+
+# Install OpenTelemetry based on user-provided run commands
+RUN opentelemetry-bootstrap -a install
+
+# Add the current directory (the source) to the docker image
+COPY . /data-act/backend
+
+# Currently no exposed ports or health checks are provided, hence no instructions for them
+
+# Set the execution command as specified by the user
+CMD ["/bin/sh"]

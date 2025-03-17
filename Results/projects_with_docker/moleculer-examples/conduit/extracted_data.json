@@ -1,0 +1,39 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\r\n  \"name\": \"moleculer-examples-conduit\",\r\n  \"version\": \"3.0.0\",\r\n  \"description\": \"RealWorld example app with Moleculer microservices framework\",\r\n  \"scripts\": {\r\n    \"dev\": \"moleculer-runner --repl --hot services\",\r\n    \"start\": \"moleculer-runner\",\r\n    \"deps\": \"npm-check -u\",\r\n    \"ci\": \"jest --watch\",\r\n    \"test\": \"jest --coverage\",\r\n    \"lint\": \"eslint services\",\r\n    \"docker:build\": \"docker build -t conduit .\"\r\n  },\r\n  \"keywords\": [\r\n    \"microservices\",\r\n    \"moleculer\",\r\n    \"realworld\"\r\n  ],\r\n  \"author\": \"\",\r\n  \"devDependencies\": {\r\n    \"eslint\": \"^6.8.0\",\r\n    \"jest\": \"^25.1.0\",\r\n    \"jest-cli\": \"^25.1.0\",\r\n    \"moleculer-repl\": \"^0.6.2\",\r\n    \"npm-check\": \"5.9.0\"\r\n  },\r\n  \"dependencies\": {\r\n    \"bcryptjs\": \"2.4.3\",\r\n    \"ioredis\": \"^4.14.1\",\r\n    \"jsonwebtoken\": \"8.5.1\",\r\n    \"lodash\": \"^4.17.15\",\r\n    \"moleculer\": \"0.14.0\",\r\n    \"moleculer-db\": \"0.8.5\",\r\n    \"moleculer-db-adapter-mongo\": \"^0.4.7\",\r\n    \"moleculer-web\": \"0.9.0\",\r\n    \"redlock\": \"^4.1.0\",\r\n    \"slug\": \"^2.1.1\"\r\n  },\r\n  \"engines\": {\r\n    \"node\": \">= 8.x.x\"\r\n  },\r\n  \"jest\": {\r\n    \"testEnvironment\": \"node\",\r\n    \"rootDir\": \"./services\",\r\n    \"roots\": [\r\n      \"../test\"\r\n    ]\r\n  }\r\n}\r\n"
+        },
+        "database": "Redis",
+        "build_system": "npm",
+        "config_files": {
+            "conduit/docker-compose.yml": "version: \"3.2\"\r\n\r\nservices:\r\n\r\n  api:\r\n    build:\r\n      context: .\r\n    image: conduit\r\n    env_file: docker-compose.env\r\n    environment:\r\n      SERVICES: api\r\n      PORT: 3000\r\n    links:\r\n      - redis\r\n    depends_on:\r\n      - redis\r\n    labels:\r\n      - \"traefik.enable=true\"\r\n      - \"traefik.backend=api\"\r\n      - \"traefik.port=3000\"\r\n      - \"traefik.frontend.entryPoints=http\"\r\n      - \"traefik.frontend.rule=PathPrefix:/\"\r\n\r\n  articles:\r\n    build:\r\n      context: .\r\n    image: conduit\r\n    env_file: docker-compose.env\r\n    environment:\r\n      SERVICES: articles\r\n    links:\r\n      - redis\r\n      - mongo\r\n    depends_on:\r\n      - redis\r\n      - mongo\r\n\r\n  comments:\r\n    build:\r\n      context: .\r\n    image: conduit\r\n    env_file: docker-compose.env\r\n    environment:\r\n      SERVICES: comments\r\n    links:\r\n      - redis\r\n      - mongo\r\n    depends_on:\r\n      - redis\r\n      - mongo\r\n\r\n  favorites:\r\n    build:\r\n      context: .\r\n    image: conduit\r\n    env_file: docker-compose.env\r\n    environment:\r\n      SERVICES: favorites\r\n    links:\r\n      - redis\r\n      - mongo\r\n    depends_on:\r\n      - redis\r\n      - mongo\r\n\r\n  follows:\r\n    build:\r\n      context: .\r\n    image: conduit\r\n    env_file: docker-compose.env\r\n    environment:\r\n      SERVICES: follows\r\n    links:\r\n      - redis\r\n      - mongo\r\n    depends_on:\r\n      - redis\r\n      - mongo\r\n\r\n  users:\r\n    build:\r\n      context: .\r\n    image: conduit\r\n    env_file: docker-compose.env\r\n    environment:\r\n      SERVICES: users\r\n    links:\r\n      - redis\r\n      - mongo\r\n    depends_on:\r\n      - redis\r\n      - mongo\r\n\r\n  redis:\r\n    image: redis:alpine\r\n\r\n  mongo:\r\n    image: mongo\r\n    volumes:\r\n      - ./db:/data/db\r\n\r\n  traefik:\r\n    image: traefik:1.7\r\n    command: --web --docker --docker.domain=docker.localhost --logLevel=INFO --docker.exposedbydefault=false\r\n    ports:\r\n      - \"3000:80\"\r\n      - \"3001:8080\"\r\n    volumes:\r\n      - /var/run/docker.sock:/var/run/docker.sock\r\n      - /dev/null:/traefik.toml\r\n",
+            "conduit/Dockerfile": "FROM node:12\n\nRUN mkdir /app\nWORKDIR /app\n\nENV NODE_ENV=production\n\nCOPY package*.json ./\n\nRUN npm install --silent --progress=false --production\n\nCOPY . .\n\nCMD [\"npm\", \"start\"]\n"
+        },
+        "static_files": {
+            "conduit/public/asset-manifest.json": "{\n  \"main.js\": \"static/js/main.cd99036f.js\",\n  \"main.js.map\": \"static/js/main.cd99036f.js.map\"\n}"
+        }
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            ".editorconfig",
+            ".eslintrc.js",
+            "Dockerfile",
+            "LICENSE",
+            "README.md",
+            "moleculer.config.js",
+            "package-lock.json",
+            "package.json"
+        ],
+        "folders": [
+            "docker",
+            "mixins",
+            "models",
+            "public",
+            "services",
+            "views"
+        ]
+    }
+}

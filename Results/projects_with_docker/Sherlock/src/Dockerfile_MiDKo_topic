@@ -1,0 +1,29 @@
+#  Choose a base Python image to build on
+FROM continuumio/miniconda:4.4.10
+
+# Install necessary libraries
+RUN apt-get update && apt-get install -y --no-install-recommends apt-utils
+RUN conda install gxx_linux-64
+RUN apt-get install -y --force-yes default-libmysqlclient-dev mysql-client build-essential
+
+# Add new user for security purposes
+RUN adduser --disabled-password --gecos "" foo
+
+# Set working directory
+WORKDIR /opt/src
+
+# Copy necessary files into container
+COPY requirements.txt /tmp/requirements.txt
+COPY ./ /opt/src
+
+# Install Python dependencies
+RUN pip install -qr /tmp/requirements.txt
+
+# Switch to the new user
+USER foo
+
+# Expose the necessary port for the service
+EXPOSE 5000
+
+# Define the command to start the container
+CMD ["flask", "run", "--host=0.0.0.0", "--port=5000"]

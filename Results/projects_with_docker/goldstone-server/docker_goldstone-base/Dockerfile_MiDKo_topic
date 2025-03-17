@@ -1,0 +1,55 @@
+# Use the provided base image
+FROM solinea/gunicorn:19.3.0
+
+# Create a dedicated application directory
+ARG APPDIR=/app
+RUN mkdir -p ${APPDIR}
+WORKDIR ${APPDIR}
+
+# Copy necessary files
+COPY config ${APPDIR}/config
+COPY docker-entrypoint.sh /
+
+# Setup environment
+ENV DJANGO_ADMIN_EMAIL="root@localhost"
+ENV DJANGO_SETTINGS_MODULE=goldstone.settings.docker
+
+# Define users
+ARG APPUSER=AppUser
+RUN useradd -ms /bin/bash ${APPUSER}
+
+# Install dependencies
+RUN buildReqs=' \
+    python2.7-dev \
+    gcc \
+    g++ \
+    ' && \
+    preReqs=' \
+    libffi-dev \
+    libssl-dev \
+    libpq-dev \
+    git \
+    ' && \
+    apt-get update -y -q && \
+    apt-get install -y $buildReqs && \
+    apt-get install -y $preReqs && \
+    mkdir -p /usr/share/nginx/html/static && \
+    chown -R ${APPUSER}:staff /usr/share/nginx/html/static && \
+
+# Switch to the app user
+USER ${APPUSER}
+
+# Activate virtual environment and install requirements
+RUN . /venv/bin/activate && pip install -r ${APPDIR}/config/requirements.txt
+
+# Clean-up unnecessary packages
+USER root
+RUN apt-get remove -y $buildReqs && \
+    apt-get autoremove -y && \
+    apt-get clean && \
+
+# Expose port 8000
+EXPOSE 8000
+
+# Execution command
+ENTRYPOINT ["/docker-entrypoint.sh"]

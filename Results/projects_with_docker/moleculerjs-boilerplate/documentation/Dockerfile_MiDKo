@@ -1,0 +1,23 @@
+# Use official Node.js 8.11.4 as base image
+FROM node:8.11.4
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copying package.json for dependencies installation
+COPY package*.json ./
+
+# Install dependencies
+RUN yarn install
+
+# Copy application files
+COPY . .
+
+# Make sure the application's directory has all the necessary read and write permissions
+RUN chmod -R 755 /app
+
+# Expose Application port
+EXPOSE 3000
+
+# Command to start application
+CMD [ "yarn", "start" ]

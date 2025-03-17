@@ -1,0 +1,35 @@
+# Use base image
+FROM xxx/mwnginx-dockerbase
+
+# Set environment to avoid any interactive dialog while installing packages
+ENV DEBIAN_FRONTEND=noninteractive
+ENV HOME /keybase
+
+# Creating keybase user and group 
+RUN echo "keybase:x:1000:1000:,,,:/keybase:/bin/bash" >> /etc/passwd && \
+echo "keybase:x:1000:" >> /etc/group && \
+echo "keybase:x:17888:0:99999:7:::" >> /etc/shadow && \
+
+# Change the working directory
+WORKDIR /keybase
+
+# Copy necessary files
+COPY keybase_amd64.deb /keybase/
+COPY entrypoint.sh /
+
+# Package installation and keybase setup
+RUN set -ex && \
+apt-get update && \
+apt-get --no-install-recommends --yes install vim net-tools procps && \
+dpkg -i keybase_amd64.deb || /bin/true && \
+
+# Install Cargo dependencies
+COPY Cargo.toml Cargo.lock ./
+RUN cargo build --release
+
+# Expose port
+EXPOSE 16423
+EXPOSE 16723
+
+# Entry point
+ENTRYPOINT ["/entrypoint.sh"]

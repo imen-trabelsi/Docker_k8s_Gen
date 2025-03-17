@@ -1,0 +1,47 @@
+# Use an official Python runtime as a parent image
+FROM python:3.9-slim-bullseye as compile-image
+
+# Set the working directory
+WORKDIR /usr/src/wazo-phoned
+
+# Install any needed dependencies and packages specified in requirements.txt
+COPY requirements.txt ./
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the working directory contents into the container at the working directory
+COPY . .
+
+RUN python setup.py install
+
+# Start a new build stage
+FROM python:3.9-slim-bullseye as build-image
+
+# Set the working directory
+WORKDIR /usr/src/wazo-phoned
+
+# Copy the complied build from previous stage
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Copy additional configuration and certificates
+COPY ./etc/wazo-phoned /etc/wazo-phoned
+COPY ./contribs/docker/certs /usr/share/wazo-certs
+
+# Setting up the user environment
+RUN true \
+&& adduser --quiet --system --group --home /var/lib/wazo-phoned wazo-phoned \
+&& mkdir -p /etc/wazo-phoned/conf.d \
+
+# Make port 9498 available to the world outside this container
+EXPOSE 9498
+
+# Define environment variable
+ENV NAME=Wazo
+
+# Setting up labels
+LABEL maintainer="Wazo"
+
+# Run microservice when the container launches
+CMD ["wazo-phoned", "-d"] 
+

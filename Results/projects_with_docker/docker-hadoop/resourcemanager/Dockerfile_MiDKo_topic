@@ -1,0 +1,17 @@
+# Declare the base image
+FROM bde2020/hadoop-base:2.0.0-hadoop3.2.1-java8
+
+# Add run script
+COPY run.sh /run.sh
+
+# Provide necessary permissions to run script
+RUN chmod a+x /run.sh
+
+# Expose the necessary port
+EXPOSE 8088
+
+# Setting Health checks
+HEALTHCHECK CMD curl -f http://localhost:8088/ || exit 1
+
+# Set the default command to execute
+CMD ["/run.sh"]

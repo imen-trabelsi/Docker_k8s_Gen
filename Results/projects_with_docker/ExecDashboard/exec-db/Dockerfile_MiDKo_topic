@@ -1,0 +1,49 @@
+# Base Image
+FROM openjdk:8-jdk-alpine as builder
+
+WORKDIR application
+
+# Copy pom.xml and download dependencies
+COPY pom.xml .
+RUN mvn dependency:go-offline -B
+
+# Copy Source Code
+COPY src src 
+
+# Package the application
+RUN mvn package -DskipTests
+RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+
+# Runtime stage
+FROM openjdk:8-jdk-alpine
+
+WORKDIR application
+
+# Copy over our application from the builder step
+
+# Environment Variables for Spring
+ENV SPRING_DATASOURCE_DRIVER-CLASS-NAME org.postgresql.Driver
+ENV SPRING_DATASOURCE_URL jdbc:postgresql://db:5432/sampledb
+ENV SPRING_DATASOURCE_USERNAME postgres
+ENV SPRING_DATASOURCE_PASSWORD postgres
+ENV SPRING_JPA_HIBERNATE_DDL-AUTO update
+
+# Execution Command
+CMD [ "java", "-cp", "application:application/lib/*", "com.example.demo.DemoApplication" ]
+
+# Exposed Ports
+EXPOSE 8080
+
+# Copy Instructions
+COPY db-setup.sh /tmp/db-setup.sh
+COPY db-setup.js /tmp/db-setup.js
+
+# Run Commands
+RUN chmod +x /tmp/db-setup.sh
+RUN chmod +x /tmp/db-setup.js
+
+# MongoDB Base Image
+FROM mongo:latest
+
+# Execution Command
+CMD ["/tmp/db-setup.sh"]

@@ -1,0 +1,1321 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".env.example",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": ".vscode",
+            "type": "tree"
+        },
+        {
+            "path": ".vscode/settings.json",
+            "type": "blob"
+        },
+        {
+            "path": "LICENSE",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "backend",
+            "type": "tree"
+        },
+        {
+            "path": "backend/.gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "backend/.vscode",
+            "type": "tree"
+        },
+        {
+            "path": "backend/.vscode/settings.json",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST",
+            "type": "tree"
+        },
+        {
+            "path": "backend/ApiREST/.babelrc",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/.env.example",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/.eslintrc.json",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/.gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/.prettierrc.json",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/components",
+            "type": "tree"
+        },
+        {
+            "path": "backend/ApiREST/components/categories",
+            "type": "tree"
+        },
+        {
+            "path": "backend/ApiREST/components/categories/categoriesService.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/components/categories/routes.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/components/keywords",
+            "type": "tree"
+        },
+        {
+            "path": "backend/ApiREST/components/keywords/keywordsService.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/components/keywords/routes.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/components/products",
+            "type": "tree"
+        },
+        {
+            "path": "backend/ApiREST/components/products/productsService.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/components/products/routes.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/config",
+            "type": "tree"
+        },
+        {
+            "path": "backend/ApiREST/config/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/lib",
+            "type": "tree"
+        },
+        {
+            "path": "backend/ApiREST/lib/mongo.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/now.json",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/package-lock.json",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/package.json",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/public",
+            "type": "tree"
+        },
+        {
+            "path": "backend/ApiREST/public/swagger-ui-dist",
+            "type": "tree"
+        },
+        {
+            "path": "backend/ApiREST/public/swagger-ui-dist/swagger-ui-bundle.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/public/swagger-ui-dist/swagger-ui-bundle.js.map",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/public/swagger-ui-dist/swagger-ui-standalone-preset.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/public/swagger-ui-dist/swagger-ui-standalone-preset.js.map",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/public/swagger-ui-dist/swagger-ui.css",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/public/swagger-ui-dist/swagger-ui.css.map",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/public/swagger-ui-dist/swagger-ui.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/public/swagger-ui-dist/swagger-ui.js.map",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "backend/ApiREST/scripts/mongo",
+            "type": "tree"
+        },
+        {
+            "path": "backend/ApiREST/scripts/mongo/seedCategories.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/scripts/mongo/seedCountries.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/scripts/mongo/seedKeywords.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/scripts/mongo/seedProducts.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/swagger.json",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/utils",
+            "type": "tree"
+        },
+        {
+            "path": "backend/ApiREST/utils/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/utils/mocks",
+            "type": "tree"
+        },
+        {
+            "path": "backend/ApiREST/utils/mocks/categoriesMock.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/utils/mocks/countriesMock.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/utils/mocks/keywordsMock.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/utils/mocks/productsMock.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/utils/network",
+            "type": "tree"
+        },
+        {
+            "path": "backend/ApiREST/utils/network/response.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ApiREST/utils/schema",
+            "type": "tree"
+        },
+        {
+            "path": "backend/ApiREST/utils/schema/productsSchema.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ServerGraphlQL",
+            "type": "tree"
+        },
+        {
+            "path": "backend/ServerGraphlQL/.babelrc",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ServerGraphlQL/.env-example",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ServerGraphlQL/.eslintrc.json",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ServerGraphlQL/.gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ServerGraphlQL/.prettierrc.json",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ServerGraphlQL/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ServerGraphlQL/config",
+            "type": "tree"
+        },
+        {
+            "path": "backend/ServerGraphlQL/config/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ServerGraphlQL/database.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ServerGraphlQL/graphql",
+            "type": "tree"
+        },
+        {
+            "path": "backend/ServerGraphlQL/graphql/resolvers",
+            "type": "tree"
+        },
+        {
+            "path": "backend/ServerGraphlQL/graphql/resolvers/Mutation.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ServerGraphlQL/graphql/resolvers/Query.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ServerGraphlQL/graphql/resolvers/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ServerGraphlQL/graphql/schema.graphql",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ServerGraphlQL/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ServerGraphlQL/models",
+            "type": "tree"
+        },
+        {
+            "path": "backend/ServerGraphlQL/models/Products.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ServerGraphlQL/now.json",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ServerGraphlQL/package-lock.json",
+            "type": "blob"
+        },
+        {
+            "path": "backend/ServerGraphlQL/package.json",
+            "type": "blob"
+        },
+        {
+            "path": "bash",
+            "type": "tree"
+        },
+        {
+            "path": "bash/docker_services.bash",
+            "type": "blob"
+        },
+        {
+            "path": "bash/mongo.bash",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager",
+            "type": "tree"
+        },
+        {
+            "path": "datamanager/.env.example",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/.gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/Readme.md",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/amazon",
+            "type": "tree"
+        },
+        {
+            "path": "datamanager/amazon/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/amazon/scrap.js",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/auth",
+            "type": "tree"
+        },
+        {
+            "path": "datamanager/auth/MockML.js",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/auth/index-cli.js",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/auth/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/config",
+            "type": "tree"
+        },
+        {
+            "path": "datamanager/config/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/consumer.js",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/criteria",
+            "type": "tree"
+        },
+        {
+            "path": "datamanager/criteria/.env.example",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/criteria/.gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/criteria/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/criteria/components",
+            "type": "tree"
+        },
+        {
+            "path": "datamanager/criteria/components/criteriaService.js",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/criteria/components/routes.js",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/criteria/config",
+            "type": "tree"
+        },
+        {
+            "path": "datamanager/criteria/config/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/criteria/lib",
+            "type": "tree"
+        },
+        {
+            "path": "datamanager/criteria/lib/mongo.js",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/criteria/package-lock.json",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/criteria/package.json",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/criteria/server.js",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/criteria/utils",
+            "type": "tree"
+        },
+        {
+            "path": "datamanager/criteria/utils/arrayUtils.js",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/database",
+            "type": "tree"
+        },
+        {
+            "path": "datamanager/database/.gitkeep",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/lib",
+            "type": "tree"
+        },
+        {
+            "path": "datamanager/lib/mongo.js",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/lib/mongo.old.js",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/mercadoLibre",
+            "type": "tree"
+        },
+        {
+            "path": "datamanager/mercadoLibre/.gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/mercadoLibre/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/mercadoLibre/error.json",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/mercadoLibre/error.txt",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/mercadoLibre/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/mercadoLibre/package-lock.json",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/mercadoLibre/package.json",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/mercadoLibre/sendProducts.js",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/mercadoLibre/services",
+            "type": "tree"
+        },
+        {
+            "path": "datamanager/mercadoLibre/services/productsService.js",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/package-lock.json",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/package.json",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/producer.js",
+            "type": "blob"
+        },
+        {
+            "path": "datamanager/trends",
+            "type": "tree"
+        },
+        {
+            "path": "datamanager/trends/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "docker",
+            "type": "tree"
+        },
+        {
+            "path": "docker/backend",
+            "type": "tree"
+        },
+        {
+            "path": "docker/backend/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "docker/datamanager",
+            "type": "tree"
+        },
+        {
+            "path": "docker/datamanager/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "docker/mongo",
+            "type": "tree"
+        },
+        {
+            "path": "docker/mongo/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "docker/mongo/init-mongo.js",
+            "type": "blob"
+        },
+        {
+            "path": "docker/normalization",
+            "type": "tree"
+        },
+        {
+            "path": "docker/normalization/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "fronted",
+            "type": "tree"
+        },
+        {
+            "path": "fronted/.eslintrc.js",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/.gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components",
+            "type": "tree"
+        },
+        {
+            "path": "fronted/components/compare-keywords",
+            "type": "tree"
+        },
+        {
+            "path": "fronted/components/compare-keywords/AddKeyword.module.styl",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components/compare-keywords/CompareKeywords.module.styl",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components/compare-keywords/Keyword.module.styl",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components/compare-keywords/PointColor.module.styl",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components/compare-keywords/add-keyword.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components/compare-keywords/index.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components/compare-keywords/keyword.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components/compare-keywords/point-color.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components/dashboard",
+            "type": "tree"
+        },
+        {
+            "path": "fronted/components/dashboard/Dashboard.module.styl",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components/dashboard/index.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components/dashboard/price-products",
+            "type": "tree"
+        },
+        {
+            "path": "fronted/components/dashboard/price-products/index.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components/dashboard/published-products",
+            "type": "tree"
+        },
+        {
+            "path": "fronted/components/dashboard/published-products/index.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components/dashboard/qty-products.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components/dashboard/sold-products",
+            "type": "tree"
+        },
+        {
+            "path": "fronted/components/dashboard/sold-products/index.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components/dashboard/total-products.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components/filters",
+            "type": "tree"
+        },
+        {
+            "path": "fronted/components/filters/Filters.module.styl",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components/filters/index.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components/header",
+            "type": "tree"
+        },
+        {
+            "path": "fronted/components/header/Header.module.styl",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components/header/index.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components/link.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components/logo",
+            "type": "tree"
+        },
+        {
+            "path": "fronted/components/logo/Logo.module.styl",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components/logo/index.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components/map",
+            "type": "tree"
+        },
+        {
+            "path": "fronted/components/map/index.tsx",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components/map/layer.ts",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components/page.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components/search-trends",
+            "type": "tree"
+        },
+        {
+            "path": "fronted/components/search-trends/SearchTrends.module.styl",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/components/search-trends/index.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/context",
+            "type": "tree"
+        },
+        {
+            "path": "fronted/context/trend-context.js",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/hooks",
+            "type": "tree"
+        },
+        {
+            "path": "fronted/hooks/useRequestData.js",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/mocks",
+            "type": "tree"
+        },
+        {
+            "path": "fronted/mocks/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/next-env.d.ts",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/next.config.js",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/package-lock.json",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/package.json",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/pages",
+            "type": "tree"
+        },
+        {
+            "path": "fronted/pages/_app.js",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/pages/_document.js",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/pages/explore.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/pages/index.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/public",
+            "type": "tree"
+        },
+        {
+            "path": "fronted/public/images",
+            "type": "tree"
+        },
+        {
+            "path": "fronted/public/images/datviz.png",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/public/images/logo.svg",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/styles",
+            "type": "tree"
+        },
+        {
+            "path": "fronted/styles/app.styl",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/styles/libstyle",
+            "type": "tree"
+        },
+        {
+            "path": "fronted/styles/libstyle/_mixin.styl",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/styles/libstyle/_reboot.styl",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/styles/libstyle/_variables.styl",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/styles/libstyle/index.styl",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/styles/theme.js",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/tsconfig.json",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/utils",
+            "type": "tree"
+        },
+        {
+            "path": "fronted/utils/colors.js",
+            "type": "blob"
+        },
+        {
+            "path": "fronted/utils/date-filters.js",
+            "type": "blob"
+        },
+        {
+            "path": "normalization",
+            "type": "tree"
+        },
+        {
+            "path": "normalization/.env.example",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/.eslintrc.js",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/.gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template",
+            "type": "tree"
+        },
+        {
+            "path": "normalization/custom-template/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/publish.js",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/static",
+            "type": "tree"
+        },
+        {
+            "path": "normalization/custom-template/static/fonts",
+            "type": "tree"
+        },
+        {
+            "path": "normalization/custom-template/static/fonts/OpenSans-Bold-webfont.eot",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/static/fonts/OpenSans-Bold-webfont.svg",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/static/fonts/OpenSans-Bold-webfont.woff",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/static/fonts/OpenSans-BoldItalic-webfont.eot",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/static/fonts/OpenSans-BoldItalic-webfont.svg",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/static/fonts/OpenSans-BoldItalic-webfont.woff",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/static/fonts/OpenSans-Italic-webfont.eot",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/static/fonts/OpenSans-Italic-webfont.svg",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/static/fonts/OpenSans-Italic-webfont.woff",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/static/fonts/OpenSans-Light-webfont.eot",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/static/fonts/OpenSans-Light-webfont.svg",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/static/fonts/OpenSans-Light-webfont.woff",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/static/fonts/OpenSans-LightItalic-webfont.eot",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/static/fonts/OpenSans-LightItalic-webfont.svg",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/static/fonts/OpenSans-LightItalic-webfont.woff",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/static/fonts/OpenSans-Regular-webfont.eot",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/static/fonts/OpenSans-Regular-webfont.svg",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/static/fonts/OpenSans-Regular-webfont.woff",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/static/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "normalization/custom-template/static/scripts/linenumber.js",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/static/scripts/prettify",
+            "type": "tree"
+        },
+        {
+            "path": "normalization/custom-template/static/scripts/prettify/Apache-License-2.0.txt",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/static/scripts/prettify/lang-css.js",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/static/scripts/prettify/prettify.js",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/static/styles",
+            "type": "tree"
+        },
+        {
+            "path": "normalization/custom-template/static/styles/jsdoc-default.css",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/static/styles/prettify-jsdoc.css",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/static/styles/prettify-tomorrow.css",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/tmpl",
+            "type": "tree"
+        },
+        {
+            "path": "normalization/custom-template/tmpl/augments.tmpl",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/tmpl/container.tmpl",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/tmpl/details.tmpl",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/tmpl/example.tmpl",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/tmpl/examples.tmpl",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/tmpl/exceptions.tmpl",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/tmpl/layout.tmpl",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/tmpl/mainpage.tmpl",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/tmpl/members.tmpl",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/tmpl/method.tmpl",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/tmpl/modifies.tmpl",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/tmpl/params.tmpl",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/tmpl/properties.tmpl",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/tmpl/returns.tmpl",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/tmpl/source.tmpl",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/tmpl/tutorial.tmpl",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/custom-template/tmpl/type.tmpl",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/jsdoc.json",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/now.json",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/package-lock.json",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/package.json",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src",
+            "type": "tree"
+        },
+        {
+            "path": "normalization/src/components",
+            "type": "tree"
+        },
+        {
+            "path": "normalization/src/components/auth",
+            "type": "tree"
+        },
+        {
+            "path": "normalization/src/components/auth/network.js",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/components/auth/services.js",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/components/data-manager",
+            "type": "tree"
+        },
+        {
+            "path": "normalization/src/components/data-manager/network.js",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/components/data-manager/services.js",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/components/data-manager/store.js",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/config",
+            "type": "tree"
+        },
+        {
+            "path": "normalization/src/config/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/lib",
+            "type": "tree"
+        },
+        {
+            "path": "normalization/src/lib/AmazonLib.js",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/lib/MercadoLibreLib.js",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/lib/RedisLib.js",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/lib/SourceLib.js",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/network",
+            "type": "tree"
+        },
+        {
+            "path": "normalization/src/network/response.js",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/network/router.js",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/utils",
+            "type": "tree"
+        },
+        {
+            "path": "normalization/src/utils/auxToken.js",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/utils/grammar.js",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/utils/middleware",
+            "type": "tree"
+        },
+        {
+            "path": "normalization/src/utils/middleware/bodyDataHandler.js",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/utils/middleware/errorHandlers.js",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/utils/middleware/notFoundHandler.js",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/utils/middleware/tokenHandler.js",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/utils/mocks",
+            "type": "tree"
+        },
+        {
+            "path": "normalization/src/utils/mocks/countriesMock.json",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/utils/mocks/dataFromBackendAMZ.json",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/utils/mocks/dataFromBackendML copy 2.json",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/utils/mocks/dataFromBackendML copy.json",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/utils/mocks/dataFromBackendML.json",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/utils/mocks/dataFromBackendPCGOOGLE-Large.json",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/utils/mocks/dataFromBackendPCGOOGLE.json",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/utils/mocks/dataToBackendAMZ.json",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/utils/mocks/dataToBackendML.json",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/utils/mocks/internalProductCategories.json",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/utils/mocks/productSearchCriteria.json",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/utils/mocks/sendDataMock.json",
+            "type": "blob"
+        },
+        {
+            "path": "normalization/src/utils/schemas",
+            "type": "tree"
+        },
+        {
+            "path": "normalization/src/utils/schemas/normalizeSchema.js",
+            "type": "blob"
+        },
+        {
+            "path": "package-lock.json",
+            "type": "blob"
+        }
+    ]
+}

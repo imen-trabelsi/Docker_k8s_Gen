@@ -1,0 +1,24 @@
+# Start from the base image provided by the user
+FROM adoptopenjdk/openjdk11:alpine AS build
+
+WORKDIR /workspace/app
+
+# Copy the Project's pom.xml and src directory to the container
+COPY pom.xml .
+COPY src src
+
+# Build the project inside the container
+RUN mvn -DskipTests clean package
+
+# Start the final base image 
+FROM adoptopenjdk/openjdk11:alpine
+
+# Defines the working directory within the docker image
+WORKDIR /app
+
+# Copy the jar file from the build stage to the final stage
+
+# Command to run the application in the container
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app/app.jar"]
+
+

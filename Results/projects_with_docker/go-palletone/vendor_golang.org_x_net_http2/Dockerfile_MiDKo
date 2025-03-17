@@ -1,0 +1,38 @@
+# Use ubuntu trusty as base image
+FROM ubuntu:trusty
+
+# Maintainance Label
+LABEL maintainer="developer@domain.com"
+
+# Defining container environment variable
+ENV NGHTTP2_VER 895da9a 
+
+# Updating and installing necessary dependencies
+RUN apt-get update && \
+apt-get upgrade -y && \
+
+# Clone and build nghttp2
+WORKDIR /root
+RUN git clone https://github.com/tatsuhiro-t/nghttp2.git && \
+cd nghttp2 && \
+git reset --hard $NGHTTP2_VER && \
+autoreconf -i && \
+automake && \
+autoconf && \
+./configure && \
+make && \
+
+# Download, extract and build Curl
+WORKDIR /root
+RUN wget http://curl.haxx.se/download/curl-7.45.0.tar.gz && \
+tar -zxvf curl-7.45.0.tar.gz && \
+cd curl-7.45.0 && \
+./configure --with-ssl --with-nghttp2=/usr/local && \
+make && \
+make install && \
+
+# Set entrypoint
+ENTRYPOINT ["/usr/local/bin/curl"]
+
+# Set default parameters for entrypoint
+CMD ["-h"]

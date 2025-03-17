@@ -1,0 +1,1817 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".github",
+            "type": "tree"
+        },
+        {
+            "path": ".github/ISSUE_TEMPLATE",
+            "type": "tree"
+        },
+        {
+            "path": ".github/ISSUE_TEMPLATE/bug_report.md",
+            "type": "blob"
+        },
+        {
+            "path": ".github/ISSUE_TEMPLATE/feature_request.md",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": ".vscode",
+            "type": "tree"
+        },
+        {
+            "path": ".vscode/settings.json",
+            "type": "blob"
+        },
+        {
+            "path": "LICENSE",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "airgapped-install.md",
+            "type": "blob"
+        },
+        {
+            "path": "architecture",
+            "type": "tree"
+        },
+        {
+            "path": "architecture/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "architecture/openRMF-Tool-Architecture.png",
+            "type": "blob"
+        },
+        {
+            "path": "architecture/openRMF-Tool-Architecture.xml",
+            "type": "blob"
+        },
+        {
+            "path": "architecture/phase1-architecture-whiteboard.jpg",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image",
+            "type": "tree"
+        },
+        {
+            "path": "base-container-image/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root",
+            "type": "tree"
+        },
+        {
+            "path": "base-container-image/ca-root/0-DoD_Interoperability_Root_CA_1_SS.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/0-DoD_Interoperability_Root_CA_2_SS.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/0-DoD_Root_CA_2.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/0-US_DoD_CCEB_Interoperability_Root_CA_1.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/0-US_DoD_CCEB_Interoperability_Root_CA_2.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-DERILITY-CA-1.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-DERILITY-CA-3.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-DERILITY-CA-4.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-EMAIL-CA-59.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-EMAIL-CA-62.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-EMAIL-CA-63.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-EMAIL-CA-64.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-EMAIL-CA-65.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-EMAIL-CA-70.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-EMAIL-CA-71.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-EMAIL-CA-72.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-EMAIL-CA-73.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-ID-CA-59.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-ID-CA-62.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-ID-CA-63.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-ID-CA-64.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-ID-CA-65.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-ID-CA-70.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-ID-CA-71.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-ID-CA-72.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-ID-CA-73.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-SW-CA-60.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-SW-CA-61.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-SW-CA-66.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-SW-CA-67.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-SW-CA-68.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-SW-CA-69.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-SW-CA-74.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-SW-CA-75.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-SW-CA-76.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DOD-SW-CA-77.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DoDRoot3.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DoDRoot4.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DoDRoot5.crt",
+            "type": "blob"
+        },
+        {
+            "path": "base-container-image/ca-root/DoDRoot6.crt",
+            "type": "blob"
+        },
+        {
+            "path": "create-users-by-hand.md",
+            "type": "blob"
+        },
+        {
+            "path": "database",
+            "type": "tree"
+        },
+        {
+            "path": "database/Dockerfile.MongoDB",
+            "type": "blob"
+        },
+        {
+            "path": "database/makeDatabase.sh",
+            "type": "blob"
+        },
+        {
+            "path": "deployments",
+            "type": "tree"
+        },
+        {
+            "path": "deployments/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/awseks",
+            "type": "tree"
+        },
+        {
+            "path": "deployments/awseks/keycloak",
+            "type": "tree"
+        },
+        {
+            "path": "deployments/awseks/keycloak/keycloak-deployment.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/awseks/keycloak/keycloak-postgres-persistentvolumeclaim.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/awseks/keycloak/keycloak-service.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/awseks/keycloak/namespace.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/awseks/keycloak/postgres-deployment.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/awseks/keycloak/postgres-service.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart",
+            "type": "tree"
+        },
+        {
+            "path": "deployments/chart/openrmf",
+            "type": "tree"
+        },
+        {
+            "path": "deployments/chart/openrmf/Chart.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/OWNERS",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates",
+            "type": "tree"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/NOTES.txt",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/_helpers.tpl",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/audit-db-connection-policy.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/audit.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/auditdb.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/auditmsg.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/checklist-db-connection-policy.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/checklistdb.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/checklistmsg.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/compliancemsg.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/controls.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/controlsmsg.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/keycloak.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/nats.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/read.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/report-db-connection-policy.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/report.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/reportdb.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/reportmsg.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/score-db-connection-policy.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/scoredb.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/scoremsg.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/scoring.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/systemmsg.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/template-db-connection-policy.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/templatedb.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/templatemsg.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/values.nginx-ingress.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/templates/web.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/chart/openrmf/values.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/eksctl",
+            "type": "tree"
+        },
+        {
+            "path": "deployments/eksctl/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/eksctl/bottlerocket.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/eksctl/eks-admin-service-account.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/eksctl/example-iam-policy.json",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/eksctl/servicemonitors.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/kubernetes",
+            "type": "tree"
+        },
+        {
+            "path": "deployments/kubernetes/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/kubernetes/namespace.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/kubernetes/pv.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "deployments/kubernetes/setup-realm.sh",
+            "type": "blob"
+        },
+        {
+            "path": "docs",
+            "type": "tree"
+        },
+        {
+            "path": "docs/_config.yml",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets",
+            "type": "tree"
+        },
+        {
+            "path": "docs/assets/OpenRMF-SCAP-Process.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/https",
+            "type": "tree"
+        },
+        {
+            "path": "docs/assets/https/step2-keycloakhttps.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/https/step4-sslcert.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/https/step5-dhparam.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/https/step7-metricshttps.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/https/step7-webhttps.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/install",
+            "type": "tree"
+        },
+        {
+            "path": "docs/assets/install/step1-env.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/install/step2-grafana.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/install/step3-finishrunning.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/install/step3-start.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/install/step4-keycloakdone.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/install/step4-keycloaksetup.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/install/step5-keycloakconfig.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/install/step5-keycloaklogouturl.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/install/step5-keycloakrealm.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/install/step6-userconfig.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/install/step6-userpassword.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/install/step7-login.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/install/step8-useopenrmfoss.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/keycloak",
+            "type": "tree"
+        },
+        {
+            "path": "docs/assets/keycloak/authentication-password-policy.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/keycloak/dotnet-core-keycloak-reference.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/keycloak/keycloak-openrmf-client-mapper-roles.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/keycloak/keycloak-openrmf-settings.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/keycloak/keycloak-roles.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/keycloak/keycloak-setup-realm.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/keycloak/realm-login-settings.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/keycloak/realm-theme-settings.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/metrics-api-controller-summary.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/metrics-aspnet-core-default.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/metrics-nats-clients.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/metrics-nats-server.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/metrics",
+            "type": "tree"
+        },
+        {
+            "path": "docs/assets/metrics/metrics-api-controller-summary.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/metrics/metrics-aspnet-core-default.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/metrics/metrics-nats-clients.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/metrics/metrics-nats-server.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/openRMF-Tool-Architecture.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/assets/sslsetup.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/checklists.md",
+            "type": "blob"
+        },
+        {
+            "path": "docs/cleanup.md",
+            "type": "blob"
+        },
+        {
+            "path": "docs/domainkeycloak.md",
+            "type": "blob"
+        },
+        {
+            "path": "docs/https.md",
+            "type": "blob"
+        },
+        {
+            "path": "docs/index.md",
+            "type": "blob"
+        },
+        {
+            "path": "docs/install.md",
+            "type": "blob"
+        },
+        {
+            "path": "docs/minimim-requirements.md",
+            "type": "blob"
+        },
+        {
+            "path": "docs/patchscan.md",
+            "type": "blob"
+        },
+        {
+            "path": "docs/scapscans.md",
+            "type": "blob"
+        },
+        {
+            "path": "docs/whatsnew.md",
+            "type": "blob"
+        },
+        {
+            "path": "img",
+            "type": "tree"
+        },
+        {
+            "path": "img/UI-auditing.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/UI-checklist-graphs.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/UI-checklist-scoring-vulns.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/UI-checklist-upload.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/UI-dashboard copy.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/UI-dashboard.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/UI-system-compliance-generator.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/UI-system-listing.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/UI-system-view.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/UI_reports.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/checklist-export-xlsx.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/checklist-listing.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/checklist-view.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/checklist-vulnerability.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/compliance-listing.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/https",
+            "type": "tree"
+        },
+        {
+            "path": "img/https/step2-keycloakhttps.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/https/step4-sslcert.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/https/step5-dhparam.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/https/step7-metricshttps.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/https/step7-webhttps.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/install",
+            "type": "tree"
+        },
+        {
+            "path": "img/install/step1-env.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/install/step2-grafana.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/install/step3-finishrunning.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/install/step3-start.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/install/step4-keycloakdone.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/install/step4-keycloaksetup.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/install/step5-keycloakconfig.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/install/step5-keycloaklogouturl.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/install/step5-keycloakrealm.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/install/step6-userconfig.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/install/step6-userpassword.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/install/step7-login.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/install/step8-useopenrmfoss.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/keycloak",
+            "type": "tree"
+        },
+        {
+            "path": "img/keycloak/authentication-password-policy.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/keycloak/dotnet-core-keycloak-reference.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/keycloak/keycloak-openrmf-client-mapper-roles.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/keycloak/keycloak-openrmf-settings.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/keycloak/keycloak-roles.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/keycloak/keycloak-setup-realm.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/keycloak/keycloak-setup-users.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/keycloak/setup-script.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/keycloak/user-credentials.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/metrics",
+            "type": "tree"
+        },
+        {
+            "path": "img/metrics/metrics-api-controller-summary.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/metrics/metrics-aspnet-core-default.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/metrics/metrics-nats-clients.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/metrics/metrics-nats-server.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/nessus-export-xlsx.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/poam-export.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/rar-export.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/setup-add-a-system.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/test-plan-summary-export.png",
+            "type": "blob"
+        },
+        {
+            "path": "img/upload-checklists-result.png",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/cli_splash.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/code.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/delete-account-confirm.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/delete-credential.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/error.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/footer.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/frontchannel-logout.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/idp-review-user-profile.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/info.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/login-config-totp.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/login-idp-link-confirm-override.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/login-idp-link-confirm.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/login-idp-link-email.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/login-oauth-grant.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/login-oauth2-device-verify-user-code.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/login-otp.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/login-page-expired.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/login-passkeys-conditional-authenticate.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/login-password.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/login-recovery-authn-code-config.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/login-recovery-authn-code-input.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/login-reset-otp.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/login-reset-password.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/login-update-password.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/login-update-profile.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/login-username.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/login-verify-email.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/login-x509-info.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/login.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/logout-confirm.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/messages",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/messages/messages_en.properties",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/password-commons.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/register-commons.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/register.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/resources",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/resources/js",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/resources/js/authChecker.js",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/resources/js/common.js",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/resources/js/kcMultivalued.js",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/resources/js/kcNumberFormat.js",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/resources/js/kcNumberUnFormat.js",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/resources/js/menu-button-links.js",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/resources/js/passkeysConditionalAuth.js",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/resources/js/passwordVisibility.js",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/resources/js/userProfile.js",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/resources/js/webauthnAuthenticate.js",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/resources/js/webauthnRegister.js",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/saml-post-form.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/select-authenticator.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/template.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/terms.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/update-email.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/user-profile-commons.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/webauthn-authenticate.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/webauthn-error.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/keycloakbase/login/webauthn-register.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/account",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/account/index.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/account/messages",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/account/messages/messages_en.properties",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/account/resources",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/account/resources/.gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/account/resources/content.json",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/account/resources/css",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/account/resources/css/styles.css",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/account/resources/img",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/account/resources/img/socialmedia",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/account/resources/img/socialmedia/socialmedia_icons_facebook_transparent.svg",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/account/resources/img/socialmedia/socialmedia_icons_github_transparent.svg",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/account/resources/img/socialmedia/socialmedia_icons_google_transparent.svg",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/account/resources/img/socialmedia/socialmedia_icons_instagram_transparent.svg",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/account/resources/img/socialmedia/socialmedia_icons_linkedin_transparent.svg",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/account/resources/img/socialmedia/socialmedia_icons_microsoft_transparent.svg",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/account/resources/img/socialmedia/socialmedia_icons_openshift_transparent.svg",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/account/resources/img/socialmedia/socialmedia_icons_stack_transparent.svg",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/account/resources/img/socialmedia/socialmedia_icons_twitter_transparent.svg",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/account/resources/public",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/account/resources/public/favicon.ico",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/account/resources/public/layout.css",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/account/resources/public/logo.png",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/account/resources/public/logo.svg",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/account/theme.properties",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/admin",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/admin/resources",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/admin/resources/css",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/admin/resources/css/styles.css",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/admin/resources/img",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/admin/resources/img/favicon.ico",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/admin/resources/img/keyclok-logo.png",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/admin/resources/img/keyclok-logo.svg",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/admin/resources/img/logo.png",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/admin/resources/img/select-arrow.png",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/admin/theme.properties",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/common",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/common/resources",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/common/resources/img",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/common/resources/img/favicon.ico",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/common/resources/lib",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/common/resources/lib/pficon",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/common/resources/lib/pficon/pficon.css",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/common/resources/lib/pficon/pficon.woff2",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/common/resources/package.json",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/buttons.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/field.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/login.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/messages",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/messages/messages_en.properties",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/register-commons.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/register.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/resources",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/resources/css",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/resources/css/login.css",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/resources/img",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/resources/img/logo.png",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/resources/img/logosmall.png",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/resources/js",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/resources/js/authChecker.js",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/resources/js/common.js",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/resources/js/kcMultivalued.js",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/resources/js/kcNumberFormat.js",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/resources/js/kcNumberUnFormat.js",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/resources/js/menu-button-links.js",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/resources/js/password-policy.js",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/resources/js/passwordVisibility.js",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/resources/js/userProfile copy.js",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/resources/js/userProfile.js",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/resources/js/webauthnAuthenticate.js",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/resources/js/webauthnRegister.js",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/template.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/theme.properties",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/login/user-profile-commons.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/welcome",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/welcome/index.ftl",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/welcome/resources",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/welcome/resources/admin-console.png",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/welcome/resources/alert.png",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/welcome/resources/bg.png",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/welcome/resources/bug.png",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/welcome/resources/css",
+            "type": "tree"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/welcome/resources/css/welcome.css",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/welcome/resources/keycloak-project.png",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/welcome/resources/keycloak_logo.png",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/welcome/resources/logo.jpg",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/welcome/resources/logo.png",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/welcome/resources/logosmall.png",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/welcome/resources/mail.png",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/welcome/resources/user.png",
+            "type": "blob"
+        },
+        {
+            "path": "keycloak-image/themes/openrmf/welcome/theme.properties",
+            "type": "blob"
+        },
+        {
+            "path": "metrics.md",
+            "type": "blob"
+        },
+        {
+            "path": "minimim-requirements.md",
+            "type": "blob"
+        },
+        {
+            "path": "postgres-16-upgrade.md",
+            "type": "blob"
+        },
+        {
+            "path": "running-https.md",
+            "type": "blob"
+        },
+        {
+            "path": "scripts",
+            "type": "tree"
+        },
+        {
+            "path": "scripts/.env",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/.grafana",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/database",
+            "type": "tree"
+        },
+        {
+            "path": "scripts/database/v1.10.0",
+            "type": "tree"
+        },
+        {
+            "path": "scripts/database/v1.10.0/addChecklistIndexes.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/database/v1.10.0/addReportIndexes.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/database/v1.10.0/addScoreIndexes.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/database/v1.10.0/addTemplateIndexes.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/database/v1.13.0",
+            "type": "tree"
+        },
+        {
+            "path": "scripts/database/v1.13.0/updateAuditDBCompatibility.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/database/v1.13.0/updateChecklistDBCompatibility.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/database/v1.13.0/updateReportDBCompatibility.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/database/v1.13.0/updateScoreDBCompatibility.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/database/v1.13.0/updateTemplateDBCompatibility.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/database/v1.13.0/upgradepostgres16.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/grafana",
+            "type": "tree"
+        },
+        {
+            "path": "scripts/grafana/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/grafana/dashboards",
+            "type": "tree"
+        },
+        {
+            "path": "scripts/grafana/dashboards/dashboard.yml",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/grafana/dashboards/dotnet-core-api-dashboard.json",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/grafana/dashboards/dotnet-core-dashboard.json",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/grafana/dashboards/nats-clients-dashboard.json",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/grafana/dashboards/nats-servers-dashboard.json",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/grafana/dashboards/nginx-dashboard.json",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/grafana/datasources",
+            "type": "tree"
+        },
+        {
+            "path": "scripts/grafana/datasources/openrmfpro.yml",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/initializeAudit.js",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/initializeChecklist.js",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/initializeReport.js",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/initializeScore.js",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/initializeTemplate.js",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/keycloak",
+            "type": "tree"
+        },
+        {
+            "path": "scripts/keycloak/defaultroles.json",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/keycloak/rolemapper.json",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/keycloak/setup-realm-linux.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/keycloak/setup-realm-mac.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/keycloak/setup-realm-windows.cmd",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/local",
+            "type": "tree"
+        },
+        {
+            "path": "scripts/local/.grafana",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/local/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/local/initializedbs.js",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/local/local-dev-images.yml",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/local/nginx.conf",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/local/prometheus.yml",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/nginx.conf",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/prometheus.yml",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/ssl",
+            "type": "tree"
+        },
+        {
+            "path": "scripts/ssl/certs",
+            "type": "tree"
+        },
+        {
+            "path": "scripts/ssl/certs/dhparam.pem",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/start.cmd",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/start.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/stop.cmd",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/stop.sh",
+            "type": "blob"
+        },
+        {
+            "path": "securing-openrmf.md",
+            "type": "blob"
+        },
+        {
+            "path": "software-bom.md",
+            "type": "blob"
+        },
+        {
+            "path": "step-by-step.md",
+            "type": "blob"
+        }
+    ]
+}

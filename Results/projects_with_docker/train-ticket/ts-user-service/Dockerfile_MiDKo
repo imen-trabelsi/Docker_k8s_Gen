@@ -1,0 +1,14 @@
+# Starting from a base image
+FROM java:8-jre
+
+# Copy JAR file into application directory
+COPY ./target/ts-user-service-1.0.jar /app/
+
+# Execution command
+CMD ["java","-Xmx200m","-jar","/app/ts-user-service-1.0.jar"]
+
+# Expose port
+EXPOSE 12346
+
+# Run commands
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \

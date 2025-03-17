@@ -1,0 +1,43 @@
+{
+    "docker_info": {
+        "base_image": "harbor.nymte.ch/dockerhub/rust:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ./ /usr/src/nym",
+            "WORKDIR /usr/src/nym/nym-node",
+            "WORKDIR /nym",
+            "COPY --from=builder /usr/src/nym/target/release/nym-node ./",
+            "COPY ./nym-node/entrypoint.sh ./"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"./entrypoint.sh\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "cargo build --release",
+                ""
+            ],
+            [
+                "apt update && apt install -y wget",
+                ""
+            ],
+            [
+                "wget https://builds.ci.nymte.ch/develop/nym-cli",
+                "RUN chmod +x nym-cli"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,44 @@
+# Base Image
+FROM node:12.22.12
+
+# Labels
+LABEL version="2.0.0"
+LABEL description="This"
+
+# Create App Directory
+RUN mkdir -p /usr/src/common
+WORKDIR /usr/src/common
+
+# Copy package*
+COPY package.json /usr/src/common
+
+# Install App Dependencies
+RUN npm install
+
+# Create Synccontroller Directory
+RUN mkdir -p /usr/src/synccontroller
+
+# Install grunt globally
+RUN npm install grunt-cli -g
+
+# Create synccontroller src Directory
+RUN mkdir -p /usr/src/synccontroller/src
+WORKDIR /usr/src/synccontroller/src
+
+# Install Synccontroller Dependencies
+RUN npm install
+RUN grunt build_lib
+
+# Copy project file from synccontroller
+COPY synccontroller/src /usr/src/synccontroller/src
+COPY synccontroller/Gruntfile.js /usr/src/synccontroller/
+COPY synccontroller/package.json /usr/src/synccontroller/
+
+# Working Directory
+WORKDIR /usr/src/synccontroller
+
+# Expose Port
+EXPOSE 3002
+
+# Command to start the application
+CMD [ "npm", "start" ]

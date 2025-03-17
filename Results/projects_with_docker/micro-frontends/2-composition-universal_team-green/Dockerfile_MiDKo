@@ -1,0 +1,31 @@
+# Start from base image: node:20
+FROM node:20
+
+# Create application directory
+RUN mkdir -p /code
+WORKDIR /code
+
+# Copy application files
+COPY package.json /code/
+COPY package-lock.json /code/
+COPY ./src /code/src
+
+# Install application dependencies
+RUN npm install
+
+# Copy other files
+COPY ./images /code/images
+
+# Expose the application on port 3002
+EXPOSE 3002
+
+# Set environment variables
+# Add any necessary environment variables here
+# ENV VARIABLE_NAME=variable_value
+
+# Run the application
+CMD [ "npm", "start" ]
+
+# Label
+# Add any necessary labels here
+# LABEL key=value

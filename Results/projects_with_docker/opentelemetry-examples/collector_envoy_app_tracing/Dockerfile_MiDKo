@@ -1,0 +1,19 @@
+# BC: Use base image
+FROM flask_service:python-3.10-slim-bullseye
+
+# BC: Copy envoyproxy envoy
+COPY --from=envoyproxy/envoy-dev:latest /usr/local/bin/envoy /usr/local/bin/envoy
+
+# BC: Copy requirements and install dependencies
+COPY requirements.txt /tmp/
+RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
+
+# BC: Copy necessary code.
+COPY ./service.py /code/
+COPY ./start_service.sh /usr/local/bin/
+
+# BC: Make service.sh executable
+RUN chmod +x /usr/local/bin/start_service.sh
+
+# BC: Set the ENTRYPOINT to start service
+ENTRYPOINT ["/usr/local/bin/start_service.sh"]

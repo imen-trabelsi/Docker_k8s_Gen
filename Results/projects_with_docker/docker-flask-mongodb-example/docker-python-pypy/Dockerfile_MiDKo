@@ -1,0 +1,23 @@
+# Use pypy:3-slim as base image
+FROM pypy:3-slim
+
+# Set environment variable 
+ENV PYTHONPATH "/root/flask-mongodb-example/python/common"
+
+# Ensure updated environment
+RUN apt-get update && apt install git -y
+
+# Clone repository
+RUN git clone https://github.com/danionescu0/docker-flask-mongodb-example.git flask-mongodb-example
+
+# Set working directory
+WORKDIR /root/flask-mongodb-example/python
+
+# Install requirements
+RUN pip install -qr requirements.txt
+
+# Expose required port
+EXPOSE 5000
+
+# Specify entry point
+ENTRYPOINT ["pypy3", "app.py"]

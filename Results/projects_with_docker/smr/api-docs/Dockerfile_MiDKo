@@ -1,0 +1,49 @@
+# A Dockerfile for a Spring Boot Microservice might look like this. However, it supports the PHP environment suggested in the extracted inputs
+
+FROM php:8.3.8-cli-alpine
+WORKDIR /smr
+
+# Create application subdirectories
+RUN mkdir -p src/lib
+
+# Copy Files
+COPY src/lib src/lib
+COPY phpdoc.dist.xml .
+COPY --from=builder /smr/api-docs/build/ /usr/share/nginx/html/
+
+# Install composer (you can use existing bash scripts from the composer website)
+COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+
+# Install necessary packages, yiisoft/yii2-composer is a required dependency for yii2. rest is for making sure composer and git works properly in our docker container
+RUN apk add --no-cache \
+    git \
+    curl \
+    icu-libs \
+    nodejs \
+    yarn \
+    unzip \
+    libzip-dev \
+    zip \
+    libpng-dev \
+    icu-dev \
+
+# Use the default production configuration
+RUN mv "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini"
+
+# install the PHP extensions we need
+RUN docker-php-ext-configure intl
+RUN docker-php-ext-install -j$(nproc) pdo_mysql zip gd bcmath intl
+
+# Gets the PHPDocumentor
+RUN curl -L -O https://github.com/phpDocumentor/phpDocumentor/releases/download/v3.7.1/phpDocumentor.phar
+RUN chmod +x phpDocumentor.phar
+RUN mv phpDocumentor.phar /usr/local/bin/phpdoc
+
+# Install application
+RUN composer install
+
+# Port to expose (You can change this If needed, this is just an example)
+EXPOSE 8080
+
+# The command to start the server
+CMD ["php", "-S", "0.0.0.0:8080", "-t", "public"]

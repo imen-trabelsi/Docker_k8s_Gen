@@ -1,0 +1,65 @@
+{
+    "docker_info": {
+        "base_image": "python:3.10-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8000"
+        ],
+        "user": [],
+        "labels": [
+            "maintainer=\"barcus@tou.nu\"",
+            "org.label-schema.schema-version=\"1.0\""
+        ],
+        "health_checks": [],
+        "build_args": [
+            "BUILD_DATE",
+            "NAME",
+            "VCS_REF",
+            "VERSION"
+        ],
+        "envs": [
+            "ENV PATH=\"/home/bareos/.local/bin:${PATH}\""
+        ],
+        "copy_instructions": [
+            "WORKDIR /home/bareos",
+            "COPY --chown=bareos docker-entrypoint.sh /docker-entrypoint.sh"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/docker-entrypoint.sh\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"uvicorn\",\"--log-level\",",
+                    "\"debug\",",
+                    "\"--host\",",
+                    "\"0.0.0.0\",",
+                    "\"bareos_restapi:app\",",
+                    "\"--reload\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "pip install --no-cache-dir --upgrade pip==22.0.4",
+                ""
+            ],
+            [
+                "adduser -D bareos",
+                "USER bareos"
+            ],
+            [
+                "pip install --no-cache-dir \"bareos-restapi>=22*,<23*\"",
+                ""
+            ],
+            [
+                "chmod a+x /docker-entrypoint.sh",
+                ""
+            ]
+        ]
+    }
+}

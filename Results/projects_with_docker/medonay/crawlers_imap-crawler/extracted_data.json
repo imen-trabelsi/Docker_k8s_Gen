@@ -1,0 +1,26 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "requirements.txt": "python-dateutil\nimbox\nrequests\n"
+        },
+        "database": null,
+        "build_system": "pip",
+        "config_files": {
+            "crawlers/imap-crawler/docker-compose.yml": "version: '2'\nservices:\n  main:\n    build: .\n    volumes:\n      - .:/usr/src/app\n    environment:\n      IMAP_URL: my.iamthefij.com\n      IMAP_USER: iamthefij@iamthefij.com\n      IMAP_PASS: \"${IMAP_PASS}\"\n",
+            "crawlers/imap-crawler/Dockerfile": "FROM python:3.6-onbuild\n\nCMD python -m crawler\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "docker-compose.yml",
+            "requirements.txt"
+        ],
+        "folders": [
+            "imapCrawler"
+        ]
+    }
+}

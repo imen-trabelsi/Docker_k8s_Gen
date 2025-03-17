@@ -1,0 +1,30 @@
+#Using base image
+FROM mcr.microsoft.com/vscode/devcontainers/rust:1-${VARIANT}
+
+#Set Environment variable
+ARG VARIANT="bullseye"
+ENV DEBIAN_FRONTEND=noninteractive
+
+#Upgrade and install dependencies
+RUN apt-get update && apt-get -y install clang lld jq \
+
+#Creating work directory
+WORKDIR /usr/app
+
+#Copy package.json
+COPY package.json ./
+
+#Install npm dependencies
+RUN npm install
+
+#Copy static assets
+COPY assets/demo-cloud-native.xml ./assets/
+
+#Copy remaining files
+COPY . .
+
+#Expose ports
+EXPOSE 8080
+
+#Build and start the application 
+CMD ["npm", "run", "start"]

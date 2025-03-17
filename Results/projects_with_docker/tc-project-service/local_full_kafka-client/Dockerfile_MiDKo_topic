@@ -1,0 +1,23 @@
+# Start with a base image containing Java runtime
+FROM openjdk:8-jdk-alpine
+
+# Add the application's jar to the container
+ARG JAR_FILE=target/*.jar
+COPY target/*.jar app.jar
+
+# Copy necessary shell scripts and text files
+WORKDIR /app/
+COPY topics.txt .
+COPY create-topics.sh .
+
+# Provide necessary permission to scripts
+RUN chmod +x /app/create-topics.sh
+
+# Entry point instruction
+ENTRYPOINT ["/app/create-topics.sh"]
+
+# Expose the default web server port
+EXPOSE 8080
+
+# Run the jar file 
+CMD ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]

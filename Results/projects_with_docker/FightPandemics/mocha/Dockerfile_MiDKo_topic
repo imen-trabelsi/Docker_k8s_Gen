@@ -1,0 +1,28 @@
+# Use the official Node.js 12 runtime as the base image
+FROM node:12-alpine
+
+# Set environment variables
+ENV DOCKERIZE_VERSION v0.6.0
+
+# Update & upgrade system and install necessary tools
+RUN apk update \
+  && apk upgrade \
+  && apk add --no-cache bash wget tar \
+  && wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+  && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+  && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+
+# Set working directory in the Docker image filesystem
+WORKDIR /app
+
+# Copy package.json & package-lock.json files into the Docker image
+COPY package.json package-lock.json ./
+
+# Install global dependencies
+RUN npm install --global mocha mochawesome
+
+# Install local dev dependencies
+RUN npm install --save-dev should supertest chai http-status
+
+# Run the application
+CMD [ "npm", "start" ]

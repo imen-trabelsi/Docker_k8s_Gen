@@ -1,0 +1,24 @@
+# Set the base image
+FROM openjdk:8-alpine
+
+# Install maven
+RUN apk add maven
+
+# Create working directory
+WORKDIR /app
+
+# Copying pom.xml and source code to the container 
+COPY pom.xml .
+COPY src ./src
+
+# Building the application
+RUN mvn clean install
+
+# Add an application jar to the container
+COPY target/SpaRestBackend.jar .
+
+# Expose the port
+EXPOSE <port-number>
+
+# Command line to execute the application
+ENTRYPOINT ["java", "-jar", "SpaRestBackend.jar"]

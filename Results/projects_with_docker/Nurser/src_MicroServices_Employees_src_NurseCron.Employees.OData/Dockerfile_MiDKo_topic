@@ -1,0 +1,17 @@
+# stage 1: build
+FROM mcr.microsoft.com/dotnet/sdk AS builder
+WORKDIR /app
+
+# copy csproj and restore
+COPY . .
+RUN dotnet restore
+
+# build the application
+RUN dotnet publish --configuration Release --output ./out   
+
+# stage 2: runtime image
+FROM mcr.microsoft.com/dotnet/aspnet
+WORKDIR /app
+
+EXPOSE 80
+ENTRYPOINT ["dotnet", "NurseCron.Employees.Api.dll"]

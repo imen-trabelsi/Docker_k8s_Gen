@@ -1,0 +1,23 @@
+FROM lgd-build-nominatim:4.0.1
+
+WORKDIR /srv/nominatim/nominatim-project/website
+COPY nominatim.conf /etc/apache2/conf-available/
+COPY target/nominatim-ui.tar.gz .
+
+RUN mkdir -p /srv/nominatim/nominatim-project/website \
+   && chmod -R a+x /srv \
+   && tar --strip-components 1 -xf nominatim-ui.tar.gz \
+   && echo "Nominatim_Config.Nominatim_API_Endpoint='../../nominatim/'" > dist/theme/config.theme.js \
+   && service apache2 stop \
+   && a2enmod rewrite \
+
+WORKDIR /lgd/nominatim
+COPY wait-for-postgres.sh .
+COPY start.sh .
+RUN chmod +x ./wait-for-postgres.sh ./start.sh 
+
+# Port exposure
+EXPOSE 
+
+# Set the entry point
+ENTRYPOINT ["./wait-for-postgres.sh", "./start.sh"]

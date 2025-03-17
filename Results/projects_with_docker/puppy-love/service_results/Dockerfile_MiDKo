@@ -1,0 +1,34 @@
+# Basic Setup
+FROM golang:alpine
+
+#Installing dependencies
+RUN apk --no-cache add openssl wget git
+
+# Setting working directory
+WORKDIR /go/src/github.com/pclubiitk/puppy-love/service/results
+
+# Setting environment variable
+ENV GOPATH=/go
+
+# Copy instructions as per user provided
+COPY Gopkg.toml Gopkg.lock ./
+COPY . .
+
+# Install necessary dependencies
+RUN go get -u github.com/golang/dep/cmd/dep && dep ensure -v -vendor-only
+
+# Building the source
+RUN go build
+
+# Creating directory and moving build output
+RUN mkdir -p /go/bin
+RUN cp /go/src/github.com/pclubiitk/puppy-love/service/results/results /go/bin
+
+# Additional dependencies
+RUN apk --no-cache add ca-certificates
+
+# Exposing designated port
+EXPOSE 3001
+
+# Setting the command for container to execute
+ENTRYPOINT ["/go/bin/results"]

@@ -1,0 +1,28 @@
+# Base Image
+FROM eclipse-temurin:11
+
+# Working Directory
+WORKDIR /app
+
+# Copy pom.xml separately, to prevent unnecessary Maven re-invocations for unrelated changes in the rest of the codebase
+COPY ./pom.xml ./pom.xml
+
+# Copy other files
+COPY ./ ./
+
+# Build the application
+RUN mvn clean install -DskipTests
+
+# Copy Application JAR and Scripts
+COPY *.jar /app.jar
+COPY wait-for-it.sh /wait-for-it.sh
+
+# Add necessary permissions
+RUN bash -c 'touch /app.jar'
+RUN bash -c 'chmod 777 /wait-for-it.sh'
+
+# Expose the application on port 8761
+EXPOSE 8761
+
+# Indicate the spring profile to be used
+ENTRYPOINT ["java","-Dspring.profiles.active=docker","-jar","/app.jar"]

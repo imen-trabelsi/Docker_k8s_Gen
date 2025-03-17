@@ -1,0 +1,1197 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".editorconfig",
+            "type": "blob"
+        },
+        {
+            "path": ".gitattributes",
+            "type": "blob"
+        },
+        {
+            "path": ".github",
+            "type": "tree"
+        },
+        {
+            "path": ".github/workflows",
+            "type": "tree"
+        },
+        {
+            "path": ".github/workflows/dotnet.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "LICENSE",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "build.ps1",
+            "type": "blob"
+        },
+        {
+            "path": "cake",
+            "type": "tree"
+        },
+        {
+            "path": "cake/build.cake",
+            "type": "blob"
+        },
+        {
+            "path": "cake/tools",
+            "type": "tree"
+        },
+        {
+            "path": "cake/tools/nuget.exe",
+            "type": "blob"
+        },
+        {
+            "path": "cake/tools/packages.config",
+            "type": "blob"
+        },
+        {
+            "path": "cake/website.cake",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "example-oidc.sln",
+            "type": "blob"
+        },
+        {
+            "path": "src",
+            "type": "tree"
+        },
+        {
+            "path": "src/_shared",
+            "type": "tree"
+        },
+        {
+            "path": "src/_shared/GlobalConfig.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/aspnetcore.filters.permissions",
+            "type": "tree"
+        },
+        {
+            "path": "src/aspnetcore.filters.permissions/ForbiddenResult.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/aspnetcore.filters.permissions/IPermissionHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/aspnetcore.filters.permissions/IPermissionHandlerProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/aspnetcore.filters.permissions/PermissionAttribute.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/aspnetcore.filters.permissions/aspnetcore.filters.permissions.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/console.oauth2.client.resource-owner-password-credentials",
+            "type": "tree"
+        },
+        {
+            "path": "src/console.oauth2.client.resource-owner-password-credentials/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/console.oauth2.client.resource-owner-password-credentials/console.oauth2.client.resource-owner-password-credentials.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/console.oidc.client.client-credentials",
+            "type": "tree"
+        },
+        {
+            "path": "src/console.oidc.client.client-credentials/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/console.oidc.client.client-credentials/console.oauth2.client.client-credentials.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/http.diagnostic",
+            "type": "tree"
+        },
+        {
+            "path": "src/http.diagnostic/HttpDefaultObserver.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/http.diagnostic/HttpDiagnosticListenerObserver.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/http.diagnostic/http.diagnostic.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.github.aspnetcore",
+            "type": "tree"
+        },
+        {
+            "path": "src/oauth2.github.aspnetcore/ApplicationBuilderExtension.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.github.aspnetcore/GithubClaimsAction.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.github.aspnetcore/GithubOAuthHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.github.aspnetcore/GithubOAuthOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.github.aspnetcore/oauth2.github.aspnetcore.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.qqconnect.aspnetcore",
+            "type": "tree"
+        },
+        {
+            "path": "src/oauth2.qqconnect.aspnetcore/ApplicationBuilderExtension.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.qqconnect.aspnetcore/QQConnectOAuthHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.qqconnect.aspnetcore/QQConnectOAuthOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.qqconnect.aspnetcore/oauth2.qqconnect.aspnetcore.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.qqconnect.owin",
+            "type": "tree"
+        },
+        {
+            "path": "src/oauth2.qqconnect.owin/AppBuilderExtensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.qqconnect.owin/QQConnectOAuthHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.qqconnect.owin/QQConnectOAuthMiddleware.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.qqconnect.owin/QQConnectOAuthOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.qqconnect.owin/oauth2.qqconnect.owin.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.qqconnect",
+            "type": "tree"
+        },
+        {
+            "path": "src/oauth2.qqconnect/Extensions",
+            "type": "tree"
+        },
+        {
+            "path": "src/oauth2.qqconnect/Extensions/ClaimExtension.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.qqconnect/Extensions/DictionaryExtension.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.qqconnect/Extensions/JObjectExtension.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.qqconnect/Extensions/QQConnectPropertiesExtension.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.qqconnect/Extensions/SetExtension.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.qqconnect/Extensions/StringExtension.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.qqconnect/QQConnectClient.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.qqconnect/QQConnectOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.qqconnect/QQConnectProfile.ClaimTypes.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.qqconnect/QQConnectProfile.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.qqconnect/QQConnectProperties.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.qqconnect/Response",
+            "type": "tree"
+        },
+        {
+            "path": "src/oauth2.qqconnect/Response/OpenIdResponse.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.qqconnect/Response/TokenResponse.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.qqconnect/Response/UserResponse.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/oauth2.qqconnect/oauth2.qqconnect.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code",
+            "type": "tree"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/App.xaml",
+            "type": "blob"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/App.xaml.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/Assets",
+            "type": "tree"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/Assets/LockScreenLogo.scale-200.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/Assets/SplashScreen.scale-200.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/Assets/Square150x150Logo.scale-200.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/Assets/Square44x44Logo.scale-200.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/Assets/Square44x44Logo.targetsize-24_altform-unplated.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/Assets/StoreLogo.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/Assets/Wide310x150Logo.scale-200.png",
+            "type": "blob"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/LoginPage.xaml",
+            "type": "blob"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/LoginPage.xaml.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/MainPage.xaml",
+            "type": "blob"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/MainPage.xaml.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/Models/JwtModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/Models/TokenModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/Oidc",
+            "type": "tree"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/Oidc/OidcClient.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/Oidc/OidcOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/Oidc/TokenFile.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/Package.appxmanifest",
+            "type": "blob"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/Properties/AssemblyInfo.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/Properties/Default.rd.xml",
+            "type": "blob"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/uwp.oidc.client.authorization-code.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/uwp.oidc.client.authorization-code/uwp.pfx",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.aspnetcore.dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.aspnetcore",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.client.aspnetcore/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.client.aspnetcore/Controllers/AccountController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.aspnetcore/Controllers/HomeController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.aspnetcore/OAuth2",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.client.aspnetcore/OAuth2/OAuth2Constants.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.aspnetcore/OAuth2/OAuth2Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.aspnetcore/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.aspnetcore/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.aspnetcore/Views",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.client.aspnetcore/Views/Home",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.client.aspnetcore/Views/Home/Index.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.aspnetcore/Views/Shared",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.client.aspnetcore/Views/Shared/_Layout.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.aspnetcore/Views/_ViewImports.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.aspnetcore/Views/_ViewStart.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.aspnetcore/web.config",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.aspnetcore/web.oauth2.client.aspnetcore.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.owin",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.client.owin/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.client.owin/Controllers/AccountController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.owin/Controllers/HomeController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.owin/Global.asax",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.owin/Global.asax.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.owin/OAuth2",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.client.owin/OAuth2/OAuth2Constants.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.owin/OAuth2/OAuth2Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.owin/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.client.owin/Properties/AssemblyInfo.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.owin/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.owin/Views",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.client.owin/Views/Home",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.client.owin/Views/Home/Index.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.owin/Views/Shared",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.client.owin/Views/Shared/_Layout.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.owin/Views/_ViewStart.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.owin/Views/web.config",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.owin/Web.config",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.owin/packages.config",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.client.owin/web.oauth2.client.owin.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.aspnetcore.dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.aspnetcore",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.resources.aspnetcore/Apis",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.resources.aspnetcore/Apis/Book.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.aspnetcore/Apis/BooksController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.aspnetcore/Apis/HomeController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.aspnetcore/Permissions",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.resources.aspnetcore/Permissions/PermissionExtension.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.aspnetcore/Permissions/PermissionHandlerProvider.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.aspnetcore/Permissions/RolePermissionHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.aspnetcore/Permissions/ScopePermissionHandler.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.aspnetcore/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.aspnetcore/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.aspnetcore/Web.config",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.aspnetcore/web.oauth2.resources.aspnetcore.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.java.dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.java",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.resources.java/.gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.java/.mvn",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.resources.java/.mvn/wrapper",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.resources.java/.mvn/wrapper/MavenWrapperDownloader.java",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.java/.mvn/wrapper/maven-wrapper.jar",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.java/.mvn/wrapper/maven-wrapper.properties",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.java/mvnw",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.java/mvnw.cmd",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.java/pom.xml",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.java/src",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.resources.java/src/main",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.resources.java/src/main/java",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.resources.java/src/main/java/api",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.resources.java/src/main/java/api/ApiApplication.java",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.java/src/main/java/api/configuration",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.resources.java/src/main/java/api/configuration/WebConfiguration.java",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.java/src/main/java/api/configuration/WebSecurityConfiguration.java",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.java/src/main/java/api/controller",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.resources.java/src/main/java/api/controller/ApiController.java",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.java/src/main/java/api/handler",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.resources.java/src/main/java/api/handler/CustomizedAccessDeniedHandler.java",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.java/src/main/java/api/handler/CustomizedAuthenticationEntryPoint.java",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.java/src/main/resources",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.resources.java/src/main/resources/application.yml",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.nodejs.dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.nodejs",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.resources.nodejs/app.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.nodejs/authentication.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.nodejs/package-lock.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.nodejs/package.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.owin",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.resources.owin/Apis",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.resources.owin/Apis/IndexApiController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.owin/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oauth2.resources.owin/Properties/AssemblyInfo.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.owin/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.owin/Web.config",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.owin/packages.config",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oauth2.resources.owin/web.oauth2.resources.owin.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.hybrid.dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.hybrid",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oidc.client.hybrid/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oidc.client.hybrid/Controllers/AccountController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.hybrid/Controllers/HomeController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.hybrid/Oidc",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oidc.client.hybrid/Oidc/Constants.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.hybrid/Oidc/OidcExtentions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.hybrid/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.hybrid/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.hybrid/Views",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oidc.client.hybrid/Views/Home",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oidc.client.hybrid/Views/Home/Index.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.hybrid/Views/Shared",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oidc.client.hybrid/Views/Shared/_Layout.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.hybrid/Views/_ViewImports.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.hybrid/Views/_ViewStart.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.hybrid/web.config",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.hybrid/web.oidc.client.hybrid.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.implicit",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oidc.client.implicit/App_Start",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oidc.client.implicit/App_Start/RouteConfig.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.implicit/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oidc.client.implicit/Controllers/AccountController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.implicit/Controllers/HomeController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.implicit/Global.asax",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.implicit/Global.asax.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.implicit/Oidc",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oidc.client.implicit/Oidc/Constants.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.implicit/Oidc/OidcController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.implicit/Oidc/OidcExtentions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.implicit/Properties",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oidc.client.implicit/Properties/AssemblyInfo.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.implicit/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.implicit/Views",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oidc.client.implicit/Views/Home",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oidc.client.implicit/Views/Home/Index.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.implicit/Views/Shared",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oidc.client.implicit/Views/Shared/_Layout.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.implicit/Views/_ViewStart.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.implicit/Views/web.config",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.implicit/Web.config",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.implicit/packages.config",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.implicit/web.oidc.client.implicit.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.js.dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.js",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oidc.client.js/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.js/index.html",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.js/oidc",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oidc.client.js/oidc/login-callback.html",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.client.js/oidc/refresh-token.html",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.server.ids4.dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.server.ids4",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Controllers",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Controllers/DebugController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Controllers/HomeController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Ids4",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Ids4/Account",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Ids4/Account/AccountController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Ids4/Account/ExternalLoginViewModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Ids4/Account/LoginFormModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Ids4/Account/LoginViewModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Ids4/Account/NewUserViewModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Ids4/Clients.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Ids4/Ids4Extensions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Ids4/Resources.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Ids4/Shared",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Ids4/Shared/SharedController.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Ids4/Users.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Startup.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Views",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Views/Account",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Views/Account/ExternalLoginNewUser.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Views/Account/LoggedOut.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Views/Account/Login.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Views/Shared",
+            "type": "tree"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Views/Shared/Error.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Views/Shared/_Layout.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Views/_ViewImports.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/Views/_ViewStart.cshtml",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/tempkey.jwk",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/web.config",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.oidc.server.ids4/web.oidc.server.ids4.csproj",
+            "type": "blob"
+        },
+        {
+            "path": "src/web.traefik.dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "src/wpf.oidc.client.authorization-code",
+            "type": "tree"
+        },
+        {
+            "path": "src/wpf.oidc.client.authorization-code/App.xaml",
+            "type": "blob"
+        },
+        {
+            "path": "src/wpf.oidc.client.authorization-code/App.xaml.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/wpf.oidc.client.authorization-code/Login.xaml",
+            "type": "blob"
+        },
+        {
+            "path": "src/wpf.oidc.client.authorization-code/Login.xaml.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/wpf.oidc.client.authorization-code/Main.xaml",
+            "type": "blob"
+        },
+        {
+            "path": "src/wpf.oidc.client.authorization-code/Main.xaml.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/wpf.oidc.client.authorization-code/Models",
+            "type": "tree"
+        },
+        {
+            "path": "src/wpf.oidc.client.authorization-code/Models/JwtModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/wpf.oidc.client.authorization-code/Models/TokenModel.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/wpf.oidc.client.authorization-code/Oidc",
+            "type": "tree"
+        },
+        {
+            "path": "src/wpf.oidc.client.authorization-code/Oidc/OidcClient.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/wpf.oidc.client.authorization-code/Oidc/OidcOptions.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/wpf.oidc.client.authorization-code/Oidc/TokenFile.cs",
+            "type": "blob"
+        },
+        {
+            "path": "src/wpf.oidc.client.authorization-code/wpf.oidc.client.authorization-code.csproj",
+            "type": "blob"
+        }
+    ]
+}

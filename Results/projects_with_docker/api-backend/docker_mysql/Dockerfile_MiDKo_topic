@@ -1,0 +1,51 @@
+# Use the official PHP image with Apache server from the Docker Hub
+FROM php:7.4-apache
+
+# Metadata
+LABEL maintainer="Reconmap"
+
+# Specify working directory
+WORKDIR /var/www/html
+
+# Install MySQL extension for PHP
+RUN docker-php-ext-install pdo_mysql
+
+# Copy composer file
+COPY composer.json /var/www/html
+
+# Install dependencies with Composer
+RUN curl -Ss https://getcomposer.org/installer | php \
+    && mv composer.phar /usr/local/bin/ \
+
+RUN composer install
+
+# Copy the application source code from the current directory to /var/www/html in the container
+COPY . /var/www/html
+
+# Add user and group
+RUN groupadd -g ${HOST_GID} reconmappers && \
+
+# Change ownership to the new user and group
+RUN chown -R reconmapper:reconmappers /var/www/html
+
+# Set the Dockerised the Apache configuration
+RUN a2enmod rewrite && service apache2 restart
+
+COPY database/ /docker-entrypoint-initdb.d/
+COPY docker/mysql/overrides.cnf /etc/mysql/conf.d/overrides.cnf
+
+# Set the server’s listening address to 0.0.0.0
+ENV APACHE_RUN_USER=a reconmapper
+ENV APACHE_RUN_GROUP= reconmappers
+ENV APACHE_PID_FILE=/var/run/apache2/apache2$SUFFIX.pid
+ENV APACHE_RUN_DIR=/var/run/apache2$SUFFIX
+ENV APACHE_LOCK_DIR=/var/lock/apache2$SUFFIX
+ENV APACHE_LOG_DIR=/var/log/apache2$SUFFIX
+ENV LANG=C
+
+# Expose Apache
+EXPOSE 80
+
+# Set the correct entry point and CMD/ENTRYPOINT instructions.
+
+CMD ["apache2", "-D", "FOREGROUND"]

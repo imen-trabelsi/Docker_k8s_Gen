@@ -1,0 +1,38 @@
+# Use the specified base image
+FROM python:3.9
+
+# Create the app user and group
+RUN addgroup --gid 10001 app && adduser --disabled-password --uid 10001 --gid 10001 --home /app --gecos "app,,," app
+
+# Setting up the environment variables
+ENV PYTHONUNBUFFERED=1
+ENV MOZBUILD_STATE_PATH /app/.mozbuild
+ENV UWSGI_MODULE landoapi.wsgi:app
+ENV PYTHONPATH /app
+
+# Copy the requirements and other necessary files into Docker
+COPY requirements.txt /python_requirements.txt
+COPY migrations /migrations
+COPY . /app
+
+# Changing the working directory
+WORKDIR /app
+
+# Update pip and install the dependencies
+RUN pip install pip --upgrade
+RUN pip install --no-cache -r /python_requirements.txt
+
+# Change the ownership of /app for security
+RUN chown -R app:app /app
+
+# Switch to the user-created
+USER app
+
+# Expose port 9000 for the app to run on
+EXPOSE 9000
+
+# Set the entrypoint for the container
+ENTRYPOINT ["lando-cli"]
+
+# Set the CMD instruction 
+CMD ["uwsgi"]

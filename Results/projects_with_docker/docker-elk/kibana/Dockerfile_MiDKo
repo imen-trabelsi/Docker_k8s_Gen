@@ -1,0 +1,19 @@
+# Use the provided base image
+FROM docker.elastic.co/kibana/kibana:${ELASTIC_VERSION:-8.17.3}
+
+# Copy the kibana config file
+COPY kibana/config/kibana.yml /usr/share/kibana/config/kibana.yml
+
+# Allow for environment variables to be provided during building
+ARG ELASTIC_VERSION
+
+# Set the environment variable in the image
+ENV ELASTIC_VERSION ${ELASTIC_VERSION:-8.17.3}
+
+# Kibana's default port is 5601, so expose this port
+EXPOSE 5601
+
+# Kibana is a front-end application with an HTTP server, so no need for fatal file permission options
+USER kibana
+
+# No need for CMD or ENTRYPOINT as base image will take care of starting Kibana

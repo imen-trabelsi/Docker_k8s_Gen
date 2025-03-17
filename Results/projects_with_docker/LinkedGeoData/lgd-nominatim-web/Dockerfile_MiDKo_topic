@@ -1,0 +1,23 @@
+# Set base image
+FROM lgd-build-nominatim:4.0.1
+
+# Copy configuration and scripts
+COPY nominatim.conf /etc/apache2/conf-available/
+COPY target/nominatim-ui.tar.gz /srv/nominatim/nominatim-ui/
+COPY wait-for-postgres.sh /lgd/nominatim/
+COPY start.sh /lgd/nominatim/
+
+# Set working directory
+WORKDIR /lgd/nominatim
+
+# Run commands
+RUN mkdir -p /srv/nominatim/nominatim-project/website && \
+    chmod -R a+x /srv && \
+    tar --strip-components 1 -xf /srv/nominatim/nominatim-ui/nominatim-ui.tar.gz && \
+    echo "Nominatim_Config.Nominatim_API_Endpoint='../../nominatim/'" > /lgd/nominatim/dist/theme/config.theme.js && \
+    service apache2 stop && \
+    a2enmod rewrite && \
+    a2enconf nominatim && \
+
+# Set the start script as the entry point
+ENTRYPOINT ["./wait-for-postgres.sh", "./start.sh"]

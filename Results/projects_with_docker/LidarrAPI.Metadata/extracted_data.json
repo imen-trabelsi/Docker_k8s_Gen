@@ -1,0 +1,46 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Flask",
+        "dependencies": {
+            "requirements.txt": "aiocache==0.11.1\naiofiles==0.6.0\naiohttp==3.7.3\naioredis==1.3.1\nasync-timeout==3.0.1\nasyncpg==0.26.0\nattrs==21.4.0\nbeautifulsoup4==4.9.3\nbillboard.py==7.0.0\nblinker==1.5\ncertifi==2022.12.7\nchardet==3.0.4\nclick==7.1.2\nFlask==1.1.2\ngunicorn==20.0.4\nh11==0.11.0\nh2==4.0.0\nhiredis==1.1.0\nhpack==4.0.0\nhttptools==0.1.1\nHypercorn==0.13.2\nhyperframe==6.0.1\nidna==2.10\nitsdangerous==2.0.0a1\nJinja2==3.0.0a1\nMarkupSafe==2.0.0a1\nmultidict==5.1.0\npriority==1.3.0\npylast==4.3.0\npytelegraf==0.3.3\npython-dateutil==2.8.2\npython-Levenshtein==0.12.2\npytz==2022.7\nQuart==0.14.1\nredis==3.5.3\nrequests==2.25.1\nsentry-sdk==0.19.5\nsix==1.15.0\nsoupsieve==2.3.2.post1\nspotipy==2.16.1\ntoml==0.10.2\ntyping-extensions==3.7.4.3\nurllib3==1.26.9\nuvicorn==0.20.0\nuvloop==0.14.0\nWerkzeug==1.0.1\nwsproto==1.1.0\nyarl==1.6.3\n"
+        },
+        "database": "PostgreSQL",
+        "build_system": "pip",
+        "config_files": {
+            "docker-compose.yml": "version: \"3\"\n\nvolumes:\n  pgdata:\n    driver: local\n  dbdump:\n    driver: local\n  searchdump:\n    driver: local\n  solrdata:\n    driver: local\n  rabbitdata:\n    driver: local\n  redisdata:\n    driver: local\n\nservices:\n  redis:\n    image: redis:6.0\n    command: redis-server /usr/local/etc/redis/redis.conf\n    restart: unless-stopped\n\n    volumes:\n      - redisdata:/data\n      - $PWD/redis.conf:/usr/local/etc/redis/redis.conf\n\n  db:\n    image: ghcr.io/lidarr/mb-postgres:1.0.10\n    restart: unless-stopped\n    \n    volumes:\n      - pgdata:/var/lib/postgresql/data\n\n    env_file:\n      - ./postgres.env\n    \n  musicbrainz:\n    image: ghcr.io/lidarr/mb-server:1.0.10\n    restart: unless-stopped\n\n    volumes:\n      - dbdump:/media/dbdump\n      - searchdump:/media/searchdump\n\n    env_file:\n      - ./postgres.env\n\n    depends_on:\n      - db\n      - redis\n\n  search:\n    image: ghcr.io/lidarr/mb-solr:3.3.1.9\n    restart: unless-stopped\n  \n    volumes:\n      - solrdata:/opt/solr/server/solr/data\n      - searchdump:/media/searchdump\n    \n  indexer:\n    image: ghcr.io/lidarr/mb-sir:1.0.10\n    restart: unless-stopped\n\n    entrypoint: python -m sir -d amqp_watch --entity-type artist --entity-type release-group\n\n    volumes:\n      - $PWD/sir/config.ini:/code/config.ini\n\n    depends_on:\n      - db\n      - rabbit\n      - search\n    \n  rabbit:\n    image: rabbitmq:3.8\n    restart: unless-stopped\n\n    volumes:\n      - rabbitdata:/var/lib/rabbitmq/mnesia\n    \n    hostname: rabbit\n  \n    environment:\n      RABBITMQ_DEFAULT_USER: \"abc\"\n      RABBITMQ_DEFAULT_PASS: \"abc\"\n",
+            "Dockerfile": "FROM python:3.9-alpine\n\nARG UID=1000\nARG COMMIT_HASH=''\nARG GIT_BRANCH=''\n\nENV COMMIT_HASH $COMMIT_HASH\nENV GIT_BRANCH $GIT_BRANCH\n\nWORKDIR /metadata\nCOPY . /metadata\n\nENV POETRY_VIRTUALENVS_CREATE=false \\\n        POETRY_NO_INTERACTION=1 \\\n        POETRY_CACHE_DIR='/var/cache/pypoetry' \\\n        POETRY_HOME='/usr/local'\n\nRUN apk update && \\\n        apk add postgresql-libs && \\\n        apk add --virtual .build-deps alpine-sdk musl-dev postgresql-dev && \\\n        pip --disable-pip-version-check --no-cache-dir install poetry && \\\n        poetry install && \\\n        apk --purge del .build-deps\n\nRUN adduser --system -u $UID metadata\n\nUSER metadata\n\nENTRYPOINT [\"lidarr-metadata-server\"]\n",
+            "azure-pipelines.yml": "# Starter pipeline\n# Start with a minimal pipeline that you can customize to build and deploy your code.\n# Add steps that build, run tests, deploy, and more:\n# https://aka.ms/yaml\n\ntrigger:\n- master\n- develop\n\npr:\n- master\n- develop\n\nvariables:\n  majorVersion: '0.4'\n  minorVersion: $[counter('minorVersion', 29)]\n  lidarrVersion: '$(majorVersion).$(minorVersion)'\n  buildName: '$(Build.SourceBranchName).$(lidarrVersion)'\n  imageName: 'lidarr/lidarrapi.metadata'\n  sentryOrg: 'servarr'\n  sentryUrl: 'https://sentry.servarr.com'\n\njobs:\n  - job:\n    displayName: Build\n\n    pool:\n      vmImage: 'Ubuntu-20.04'\n\n    steps:\n    - powershell: Write-Host \"##vso[build.updatebuildnumber]$($env:LIDARRVERSION)\"\n      displayName: 'Set Build Name'\n\n    - bash: sed -i'' -e \"s/10.0.0.0/$LIDARRVERSION/g\" lidarrmetadata/__init__.py\n      displayName: 'Set Code Version'\n\n    - task: UsePythonVersion@0\n      displayName: 'Set Python Version 3.9'\n      inputs:\n        versionSpec: '3.9'\n\n    - task: SonarCloudPrepare@1\n      inputs:\n        SonarCloud: 'SonarCloud'\n        organization: 'lidarr'\n        scannerMode: 'CLI'\n        configMode: 'manual'\n        cliProjectKey: 'lidarr_LidarrAPI.Metadata'\n        cliProjectName: 'LidarrAPI.Metadata'\n        cliProjectVersion: $(lidarrVersion)\n        cliSources: 'lidarrmetadata'\n        extraProperties: |\n          sonar.python.coverage.reportPath=$(System.DefaultWorkingDirectory)/coverage.xml\n\n    # - script: python -m pip install -U -Iv pypandoc==1.5 tox==3.23.0 poetry\n    #   displayName: 'Install tools'\n\n    # - script: tox -e py39\n    #   displayName: 'Run Tests'\n\n    # - task: PublishTestResults@2\n    #   inputs:\n    #     testResultsFiles: '**/test-*.xml'\n    #     testRunTitle: 'Linux - Python 3.9'\n    #   condition: succeededOrFailed()\n\n    # - publish: $(System.DefaultWorkingDirectory)/htmlcov\n    #   artifact: 'PyTestCoverageReport'\n    #   displayName: Publish PyTest Coverage Report\n    #   condition: succeededOrFailed()\n\n    # - task: PublishCodeCoverageResults@1\n    #   inputs:\n    #     codeCoverageTool: Cobertura\n    #     summaryFileLocation: '$(System.DefaultWorkingDirectory)/**/coverage.xml'\n    #     reportDirectory: '$(System.DefaultWorkingDirectory)/**/htmlcov'\n    #   condition: succeededOrFailed()\n\n    # - task: SonarCloudAnalyze@1\n    #   displayName: 'Run Sonarcloud Analysis'\n\n    - task: Docker@2\n      displayName: Build image\n      condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false))\n      inputs:\n        command: build\n        Dockerfile: Dockerfile\n        arguments: --build-arg GIT_BRANCH=$(Build.SourceBranchName) --build-arg COMMIT_HASH=$(Build.SourceVersion) -t ghcr.io/$(imageName):latest -t ghcr.io/$(imageName):$(Build.SourceBranchName)\n\n    - task: Docker@2\n      displayName: Push image\n      condition: and(succeeded(), eq(variables['system.pullrequest.isfork'], false))\n      inputs:\n        containerRegistry: 'ghcr'\n        repository: $(imageName)\n        command: push\n        tags: |\n          latest\n          $(Build.SourceBranchName)\n\n    - bash: |\n        echo \"Creating sentry release\"\n        SENTRYRELEASE=\"lidarr-metadata-${LIDARRVERSION}\"\n        curl -sL https://sentry.io/get-cli/ | bash\n        sentry-cli releases new --finalize -p lidarr-metadata \"${SENTRYRELEASE}\"\n        sentry-cli releases set-commits --auto \"${SENTRYRELEASE}\"\n        sentry-cli releases deploys \"${SENTRYRELEASE}\" new -e production\n      displayName: Create sentry release\n      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/develop'), eq(variables['system.pullrequest.isfork'], false))\n      env:\n        SENTRY_AUTH_TOKEN: $(sentryAuthTokenServarr)\n        SENTRY_ORG: $(sentryOrg)\n        SENTRY_URL: $(sentryUrl)\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            ".gitignore",
+            "Dockerfile",
+            "MANIFEST.in",
+            "README.rst",
+            "azure-pipelines.yml",
+            "docker-compose.crawler.yml",
+            "docker-compose.dev.yml",
+            "docker-compose.prod.yml",
+            "docker-compose.yml",
+            "poetry.lock",
+            "postgres.env",
+            "pyproject.toml",
+            "redis.conf",
+            "requirements.txt",
+            "tox.ini"
+        ],
+        "folders": [
+            ".github",
+            "admin",
+            "lidarrmetadata",
+            "rewrite",
+            "scripts",
+            "sir",
+            "tests"
+        ]
+    }
+}

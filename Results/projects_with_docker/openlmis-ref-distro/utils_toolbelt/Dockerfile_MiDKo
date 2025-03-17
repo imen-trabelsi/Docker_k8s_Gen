@@ -1,0 +1,26 @@
+# Use Alpine Linux as the base image
+FROM alpine:3.9
+
+# Install necessary packages
+RUN apk add --no-cache python3-dev \
+
+# Install Curl and jq
+RUN apk add --no-cache bash curl jq
+
+# Work in /app directory
+WORKDIR /app
+
+# Copy the requirements file into the docker image
+COPY ./requirements.txt ./app/requirements.txt
+
+# Install Python dependencies
+RUN pip3 install -r app/requirements.txt
+
+# Copy the rest of the application files to /app
+COPY . /app
+
+# Expose application port (required port should be added here)
+EXPOSE <APP PORT HERE>
+
+# Run the application:
+CMD ["/bin/bash"]

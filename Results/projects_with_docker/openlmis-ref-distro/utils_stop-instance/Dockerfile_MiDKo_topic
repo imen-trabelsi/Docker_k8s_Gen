@@ -1,0 +1,45 @@
+#start with base
+FROM openlmis/awscli
+
+# Install dependencies needed for psycopg2-binary
+RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev
+
+# Set working directory in Docker
+WORKDIR /app
+
+# Copy all files
+COPY . /app
+
+# Install python pip 
+RUN apk add py-pip
+
+# Upgrade pip
+RUN pip install --upgrade pip
+
+# Install dependencies
+RUN pip install -r requirements.txt
+
+# Add entrypoint.sh
+COPY entrypoint.sh /app/entrypoint.sh
+
+# Make the shell file executable
+RUN chmod +x /app/entrypoint.sh
+
+# Set environment variables
+ENV FLASK_APP run.py
+ENV FLASK_RUN_HOST 0.0.0.0
+
+# Copy stop-instance.sh as instructed
+COPY stop-instance.sh /stop-instance.sh
+
+# Set permissions on the file
+RUN chmod u+x /stop-instance.sh
+
+# Expose the required ports
+EXPOSE 5000
+
+# Set entrypoint to the shell script
+ENTRYPOINT ["./entrypoint.sh"]
+
+# Execute command
+CMD ["/stop-instance.sh"]

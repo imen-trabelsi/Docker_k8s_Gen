@@ -1,0 +1,26 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-grpc-demo-d-gray
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: go-grpc-demo-d
+  template:
+    metadata:
+      labels:
+        alicloud.service.tag: gray
+        aliyun.com/app-language: golang
+        app: go-grpc-demo-d
+        mseNamespace: mse-go-demo-multiframe
+        msePilotAutoEnable: 'on'
+        msePilotCreateAppName: go-grpc-demo-d
+    spec:
+      containers:
+      - image: registry.cn-hangzhou.aliyuncs.com/mse-governance-demo/go-grpc-demo-d:1.0-multiframe
+        imagePullPolicy: Always
+        name: go-grpc-demo-d
+        ports:
+        - containerPort: 50053
+          name: grpc

@@ -1,0 +1,31 @@
+# Use base image
+FROM httpd:2.4-alpine
+
+# Make necessary directories for our application
+RUN mkdir -p /usr/src/app
+
+# Set the correct working directory
+WORKDIR /usr/src/app
+
+# Copy the current directory contents into the container at /usr/src/app
+COPY . .
+
+# Copy necessary files to their respective locations
+COPY ./docker/httpd/conf/httpd.conf.esh /usr/local/apache2/conf/httpd.conf.esh
+COPY ./docker/httpd/msoffice.html /usr/local/apache2/htdocs/msoffice.html
+COPY ./docker/httpd/httpd-foreground /usr/local/bin/
+
+# Install necessary dependencies
+RUN apk add --no-cache esh
+
+# Switch to non-root user
+USER nobody
+
+# Change permissions
+RUN chmod +x /usr/local/bin/httpd-foreground
+
+# Run the CMD
+CMD ["httpd-foreground"]
+
+# Expose necessary ports
+EXPOSE 80 443

@@ -1,0 +1,32 @@
+# Base Image
+FROM node:14
+
+# Working Directory
+WORKDIR /app
+
+# Adding source files
+COPY . /app
+
+# Snapshot of the project's dependencies
+COPY package.json ./
+
+# Install all dependencies
+RUN npm install
+
+# Copy source files
+COPY . .
+
+# Build the app for dev environment
+RUN npm run build
+
+# Expose Port- Usually this is port 80 for a default Nginx install
+EXPOSE 80
+
+# Copy Nginx default configuration
+COPY default.conf /etc/nginx/conf.d/default.conf
+
+# Copy the compiled code to Nginx
+COPY dist/ /usr/share/nginx/html/manage
+
+# start the application
+CMD ["npm", "start"]

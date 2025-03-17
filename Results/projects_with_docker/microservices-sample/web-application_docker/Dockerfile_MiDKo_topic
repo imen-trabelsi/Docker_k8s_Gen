@@ -1,0 +1,22 @@
+# Use base image
+FROM node:18-alpine
+
+# Label
+LABEL author="Vijayendra"
+
+# Create app directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# Install dependencies
+COPY package.json /usr/src/app
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Expose port
+EXPOSE 4200
+
+# Start application
+CMD [ "npm", "start" ]

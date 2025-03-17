@@ -1,0 +1,26 @@
+# Start with the base image
+FROM python:3.8-slim
+
+# Set environment variables
+ENV PORT=8080 DATABASE_HOST=postgresql
+
+# Create app directory
+WORKDIR /usr/share/app
+
+# Install app dependencies
+COPY requirements.txt .
+
+RUN apt-get update \
+    && /usr/local/bin/python -m pip install --upgrade pip \
+
+# Copy app source to the image
+COPY . /usr/share/app/
+
+# Adding a non-root user
+RUN useradd -r -u 1001 -g root profanity-user
+USER profanity-user
+
+# Expose the port and start the application
+EXPOSE 8080
+
+CMD ["python","-W", "ignore", "main.py"]

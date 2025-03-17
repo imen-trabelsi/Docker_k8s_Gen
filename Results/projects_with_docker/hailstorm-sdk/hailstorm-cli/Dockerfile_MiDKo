@@ -1,0 +1,35 @@
+# Set base image
+FROM jruby:9.2.11.1-jre8
+
+# Set environment variables
+ENV DOCKERIZE_VERSION v0.6.1
+ENV HAILSTORM_ENV production
+
+# Set work directory
+WORKDIR /usr/local/lib/hailstorm-cli
+
+# Copy files to work directory
+COPY . .
+
+# Install dependencies
+RUN gem update bundler \
+
+# Create new user and group
+RUN groupadd hailstorm \
+
+# Update system and install necessary packages
+RUN apt-get update \
+&& apt-get install -y default-mysql-client git vim \
+
+# Install Dockerize
+RUN wget -q https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+&& tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+
+# Install Ruby dependencies
+RUN bundle install
+
+# Expose necessary port
+EXPOSE 3000
+
+# Command to start the application
+CMD ["/bin/bash"]

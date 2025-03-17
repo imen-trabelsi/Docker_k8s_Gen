@@ -1,0 +1,38 @@
+# Use the base image provided by the user
+FROM adoptopenjdk/openjdk11:alpine AS builder
+
+# Set the work directory in the Docker image
+WORKDIR /app
+
+# Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy the pom.xml file
+COPY pom.xml .
+
+# Build all the dependencies in preparation to go offline.
+RUN chmod +x ./mvnw
+RUN ./mvnw dependency:go-offline -B
+
+# Copy application source code
+COPY src src
+
+# Package the application
+RUN ./mvnw package -DskipTests
+RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+
+# Runtime Stage
+FROM adoptopenjdk/openjdk11:alpine
+ARG DEPENDENCY=/app/target/dependency
+
+# Copy from builder stage
+
+# Expose the port
+EXPOSE 8080
+
+# Set the entry point
+ENTRYPOINT ["java","-cp","app:app/lib/*","org.springframework.boot.loader.JarLauncher"]
+
+# Specify the command to run the application  
+CMD ["java","-Dspring.profiles.active=FakeData","-jar","scores.jar"]

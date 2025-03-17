@@ -1,0 +1,33 @@
+{
+    "docker_info": {
+        "base_image": "oryd/hydra:v1.0.8-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "HOST_NAME"
+        ],
+        "envs": [
+            "ENV SUPPORTING_FILES /app"
+        ],
+        "copy_instructions": [
+            "WORKDIR $SUPPORTING_FILES",
+            "COPY . $SUPPORTING_FILES"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apk update && apk add --update alpine-sdk bash nano",
+                ""
+            ],
+            [
+                "mkdir -p $SUPPORTING_FILES",
+                ""
+            ]
+        ]
+    }
+}

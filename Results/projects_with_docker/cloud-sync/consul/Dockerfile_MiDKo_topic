@@ -1,0 +1,31 @@
+# Base Image
+FROM ubuntu:16.04
+
+# Labels
+LABEL maintainer="you@yourmail.com"
+
+# Environment variables
+ENV REFRESHED_AT=2017-09-13
+ENV LANG=C.UTF-8
+
+# Build system
+RUN apt-get -qq update && apt-get -qq -y install curl unzip
+
+# Adding source files
+ADD https://releases.hashicorp.com/consul/0.8.0/consul_0.8.0_linux_amd64.zip /tmp/consul.zip
+COPY consul.json /config/
+
+# Run Commands
+RUN cd /usr/sbin && \
+    unzip /tmp/consul.zip && \
+    chmod +x /usr/sbin/consul && \
+
+RUN mkdir -p /webui/
+ADD https://releases.hashicorp.com/consul/0.8.0/consul_0.8.0_web_ui.zip /webui/webui.zip
+RUN cd /webui && unzip webui.zip && rm webui.zip
+
+# Ports
+EXPOSE 53/udp
+
+# Default CMD
+CMD ["/usr/sbin/consul", "agent", "-ui", "-config-dir=/config"]

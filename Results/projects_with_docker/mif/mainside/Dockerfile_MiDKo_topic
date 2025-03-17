@@ -1,0 +1,31 @@
+# Use openjdk image from DockerHub
+FROM openjdk:11-jre
+
+# Update and Install required tools / packages
+RUN apt-get update && \
+    apt-get install -y dnsutils && \
+    apt-get install -y net-tools && \
+
+# Set Work Directory
+WORKDIR /app
+
+# Copy pom.xml and wait script file
+COPY pom.xml ./pom.xml
+COPY target/classes/dockerize/wait-for-flyway-migration-completes.sh /waiting.sh
+RUN chmod +x /waiting.sh
+
+# Build the project
+COPY . .
+RUN mvn package -DskipTests 
+
+# Copy built war file
+COPY target/mainside-1.0-SNAPSHOT.war /app.war
+
+# Set required environment variables
+ENV SPRING_PROFILES_ACTIVE=docker
+
+# Expose port
+EXPOSE 8080
+
+# Start the application
+CMD ["sh", "-c", "./waiting.sh; java -jar -Dspring.profiles.active=docker /app.war"]

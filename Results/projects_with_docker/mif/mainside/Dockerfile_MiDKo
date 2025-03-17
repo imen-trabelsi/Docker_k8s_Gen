@@ -1,0 +1,27 @@
+# Use the base image provided by the user
+FROM openjdk:11-jre
+
+# Update and install the required packages in the base image
+RUN apt update && \
+    apt install -y dnsutils && \
+    apt install -y net-tools && \
+    
+# Set the working directory in the docker image
+WORKDIR /app
+
+# Copy the Build files and other needed files
+COPY target/classes/dockerize/wait-for-flyway-migration-completes.sh /waiting.sh
+COPY target/mainside-1.0-SNAPSHOT.war /app.war
+
+# Give necessary permissions to scripts
+RUN chmod +x /waiting.sh
+
+# Expose the necessary ports
+EXPOSE 8080
+
+# Set the environment variables (if any) 
+
+# Set labels (if any)
+
+# CMD / ENTRYPOINT instructions with execution command 
+CMD ["sh", "-c", "./waiting.sh; java -jar -Dspring.profiles.active=docker /app.war"]

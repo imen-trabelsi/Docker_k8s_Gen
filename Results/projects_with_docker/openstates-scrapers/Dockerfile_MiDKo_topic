@@ -1,0 +1,46 @@
+#Base Image
+FROM python:3.9-slim AS build 
+
+# Labels
+LABEL maintainer="James"
+
+# Install system dependencies
+RUN apt-get update -qq \
+
+# Install Stable GitHub CLI
+RUN curl -fsSL https://cli.github.com/packages/githubcli-archive-keyring.gpg -o /usr/share/keyrings/githubcli-archive-keyring.gpg \
+&& chmod go+r /usr/share/keyrings/githubcli-archive-keyring.gpg \
+&& echo "deb [arch=$(dpkg --print-architecture) signed-by=/usr/share/keyrings/githubcli-archive-keyring.gpg] https://cli.github.com/packages stable main" > /etc/apt/sources.list.d/github-cli.list \
+
+# Install Python dependencies
+RUN pip --no-cache-dir --disable-pip-version-check install wheel \
+&& pip --no-cache-dir --disable-pip-version-check install crcmod poetry \
+
+# Cleanup
+RUN rm -r /root/.cache/pypoetry/cache /root/.cache/pypoetry/artifacts/ \
+&& apt-get remove -y -qq build-essential libpq-dev \
+&& apt-get autoremove -y -qq \
+&& apt-get clean \
+
+#Set Environment
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONIOENCODING='utf-8'
+ENV LANG='C.UTF-8'
+ENV PYTHONPATH=./scrapers
+ENV OPENSSL_CONF=/opt/openstates/openstates/openssl.cnf
+
+# Set Work Directory
+WORKDIR /opt/openstates/openstates/
+
+# Copy the necessary files
+COPY poetry.lock /opt/openstates/openstates/
+COPY pyproject.toml /opt/openstates/openstates/
+COPY . /opt/openstates/openstates/
+COPY docker_entrypoint.sh /opt/openstates/entrypoint.sh
+
+# Set execution permissions
+RUN chmod +x /opt/openstates/entrypoint.sh
+
+# Run the application
+ENTRYPOINT ["/bin/bash", "/opt/openstates/entrypoint.sh"]

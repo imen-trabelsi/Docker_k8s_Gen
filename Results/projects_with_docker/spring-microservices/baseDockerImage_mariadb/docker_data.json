@@ -1,0 +1,21 @@
+{
+    "docker_info": {
+        "base_image": "mariadb",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "bash /usr/local/bin/docker-entrypoint.sh"
+            ]
+        ]
+    }
+}

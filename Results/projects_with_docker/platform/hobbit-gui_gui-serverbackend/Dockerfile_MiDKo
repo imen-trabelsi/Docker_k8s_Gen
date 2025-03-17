@@ -1,0 +1,36 @@
+# Stage 1 : Build the application
+FROM maven:3-eclipse-temurin-11 AS build
+WORKDIR /usr/src/hobbit-platform
+
+# Copy necessary files and configurations
+COPY hobbit-gui/gui-client/package*.json ./hobbit-gui/gui-client/
+COPY parent-pom/pom.xml ./parent-pom/
+COPY hobbit-gui/gui-serverbackend/configure-auth.sh $JETTY_BASE/configure-auth.sh
+COPY hobbit-gui/gui-serverbackend/messages /var/lib/jetty/webapps/messages
+
+RUN npm --prefix hobbit-gui/gui-client ci --omit=dev
+COPY hobbit-gui/gui-client ./hobbit-gui/gui-client
+RUN npm --prefix hobbit-gui/gui-client run build-prod
+
+RUN mvn --file parent-pom -Dmaven.test.skip=true install
+COPY hobbit-gui/gui-serverbackend/pom.xml ./hobbit-gui/gui-serverbackend/
+RUN mvn --file ./hobbit-gui/gui-serverbackend/ dependency:go-offline
+COPY hobbit-gui/gui-serverbackend/src ./hobbit-gui/gui-serverbackend/src
+RUN mvn --file ./hobbit-gui/gui-serverbackend/ -Dmaven.test.skip=true package
+
+RUN curl -L -O http://hobbitdata.informatik.uni-leipzig.de/hobbit/keycloak-jetty93-adapter-for-hobbit-dist-2.4.0.Final.zip && \
+    unzip keycloak-jetty93-adapter-for-hobbit-dist-2.4.0.Final.zip && \
+    rm -f keycloak-jetty93-adapter-for-hobbit-dist-2.4.0.Final.zip && \
+
+# Copy the built application
+COPY --chown=jetty --chmod=777 --from=build /usr/src/hobbit-platform/hobbit-gui/gui-serverbackend/target/gui-serverbackend $JETTY_BASE/webapps/ROOT
+
+# Run Stage 2 : Setup the execution environment
+FROM maven:3-eclipse-temurin-11 as runner
+WORKDIR /usr/src/hobbit-platform
+
+# Copying built application from stage 1
+
+# Set running commands
+CMD ["./configure-auth.sh"]
+ENTRYPOINT ["/docker-entrypoint.sh"]

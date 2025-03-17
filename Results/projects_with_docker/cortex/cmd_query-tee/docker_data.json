@@ -1,0 +1,32 @@
+{
+    "docker_info": {
+        "base_image": "alpine:3.19",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [
+            "org.opencontainers.image.title=\"query-tee\""
+        ],
+        "health_checks": [],
+        "build_args": [
+            "TARGETARCH",
+            "revision"
+        ],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/query-tee\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --no-cache ca-certificates",
+                "COPY       query-tee-$TARGETARCH /query-tee"
+            ]
+        ]
+    }
+}

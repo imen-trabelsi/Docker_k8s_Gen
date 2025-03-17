@@ -1,0 +1,21 @@
+# Set the Base Image
+FROM golang:1.9.1
+
+# Label
+LABEL maintainer="admin@example.com"
+
+# Set Work Directory
+WORKDIR /usr/src/app
+
+# Install Dependencies
+COPY Gemfile Gemfile.lock ./
+RUN bundle install
+
+# Copy the Source Code into the Container
+COPY . .
+
+# Expose Ports
+EXPOSE 8080
+
+# Default command
+CMD ["ruby", "app.rb"]

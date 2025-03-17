@@ -1,0 +1,28 @@
+# Dockerfile
+
+# Stage1 - Base Image - Node.js LTS version on Alpine 
+FROM node:lts-alpine
+
+# Set default working directory
+WORKDIR /app
+
+# Copy package.json and package-lock.json to the working directory
+COPY package*.json ./
+
+# Install http-server globally
+RUN npm install -g http-server
+
+# Install all dependencies from package.json
+RUN npm install 
+
+# Copy all files from the current directory to the docker image
+COPY . .
+
+# Generate the build of the application 
+RUN npm run build 
+
+# Expose port 3000
+EXPOSE 3000
+
+# Command to start the application
+CMD [ "http-server", "dist" ]

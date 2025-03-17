@@ -1,0 +1,34 @@
+{
+    "docker_info": {
+        "base_image": "python:3.7.2-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY . /code",
+            "WORKDIR /code"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"python\",\"server.py\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && apt-get install -y \\",
+                "git"
+            ],
+            [
+                "pip install git+https://github.com/aleju/imgaug --no-deps &&\\",
+                "pip install -r requirements.txt"
+            ]
+        ]
+    }
+}

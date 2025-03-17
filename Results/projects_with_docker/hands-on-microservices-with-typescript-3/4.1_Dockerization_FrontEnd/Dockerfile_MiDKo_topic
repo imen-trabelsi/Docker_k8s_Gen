@@ -1,0 +1,39 @@
+# Base Image
+FROM node:8.13-slim as build-env
+
+# Create app directory
+RUN mkdir -p /opt/my-musik/
+
+WORKDIR /opt/my-musik/
+
+#Install global dependencies
+RUN npm install typescript -g && \
+    npm install -g @vue/cli && \
+    npm install node-static -g && \
+
+# Install app dependencies
+COPY package.json ./
+RUN npm install --no-optional
+
+# Bundle app source
+COPY ./src ./src
+COPY ./public ./public
+COPY ./tsconfig.json .
+COPY ./tslint.json .
+
+RUN npm run build
+
+FROM node:8.13-slim
+
+# Create app directory
+RUN mkdir -p /opt/my-musik/
+WORKDIR /opt/my-musik/
+
+# copying over necessary files from previous build stage
+RUN npm install --no-optional --only=prod
+
+# Expose port
+EXPOSE 3001
+
+# Start command
+CMD ["static", "./dist", "-a", "0.0.0.0", "-p", "3001"]

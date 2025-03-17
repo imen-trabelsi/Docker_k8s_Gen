@@ -1,0 +1,36 @@
+# Use scomm/php5.6-apache as base image
+FROM scomm/php5.6-apache
+
+# Update system packages
+RUN apt-get update && apt-get upgrade -y
+
+# Install MongoDB extension
+RUN pecl install mongodb && echo "extension=mongodb.so" > /usr/local/etc/php/conf.d/mongo.ini
+
+# Switch to the /var/www/html directory
+WORKDIR /var/www/html
+
+# Copy app files to /var/www/html directory
+COPY app /var/www/html/app
+COPY bin /var/www/html/bin
+COPY src /var/www/html/src
+COPY var /var/www/html/var
+COPY vendor /var/www/html/vendor
+COPY web /var/www/html/web
+
+# Change ownership and permissions of /var directory
+RUN chown -R www-data:www-data /var && chmod -R 0755 /var
+
+# Set environment variables
+ENV SYMFONY_ENV=prod
+ENV APP_ENV=prod
+
+# Install PHP dependencies with Composer
+COPY composer.json ./
+RUN composer install --no-dev --no-scripts --no-autoloader
+
+# Generate classmap autoloader with Composer
+RUN composer dump-autoload --optimize
+
+# Define command to run app
+CMD ["apache2-foreground"]

@@ -1,0 +1,31 @@
+{
+    "docker_info": {
+        "base_image": "rabbitmq",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY rabbitmqadmin /",
+            "COPY definitions.json /etc/rabbitmq/",
+            "COPY definitions.json /",
+            "COPY import_config.sh /",
+            "COPY entrypoint.sh /"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "set -ex && \\",
+                "apt-get update &&",
+                "apt-get --no-install-recommends --yes install",
+                "python"
+            ],
+            [
+                "rabbitmq-plugins enable rabbitmq_management"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,32 @@
+# Setting up base image
+FROM buildpack-deps:bullseye
+
+# Setting environment variables
+ENV GOVUK_TEST_CHROME_NO_SANDBOX 1
+ENV BUNDLE_SILENCE_ROOT_WARNING 1
+ENV PATH /root/.rbenv/shims:/rbenv/bin:$PATH
+
+# Starting to Run commands and install packages
+RUN apt-get update -qq && apt-get install -y chromium chromium-driver
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
+RUN echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list
+RUN apt-get update -qq && apt-get install -y yarn nodejs
+RUN yarn config set cache-folder /root/.yarn/
+RUN apt-get update -qq && apt-get install -y default-mysql-client ghostscript less
+
+# Cloning git repositories and setting up rbenv
+RUN git clone https://github.com/rbenv/rbenv.git /rbenv
+RUN git clone https://github.com/rbenv/ruby-build.git /rbenv/plugins/ruby-build
+RUN /rbenv/plugins/ruby-build/install.sh
+
+# Setting up the project directory
+WORKDIR /file
+COPY . .
+
+# Installing Bundle
+COPY Gemfile Gemfile.lock ./
+RUN bundle install
+
+# Adding other Project file and folders
+COPY . /file

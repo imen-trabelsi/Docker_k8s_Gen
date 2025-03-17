@@ -1,0 +1,27 @@
+FROM python:3.10-slim-bullseye
+
+# Set Environment variables
+ENV PATH="/opt/poetry/bin:$PATH"
+ENV POETRY_HOME=/opt/poetry
+
+# Installing the required packages
+RUN apt -y update && apt -y upgrade && apt install -y curl
+
+# Creating the required directories
+RUN mkdir -p /usr/local/app/vcell/installDir && \
+
+# Install poetry package manager
+RUN curl -sSL https://install.python-poetry.org | python3 -
+
+# Set the working directory
+WORKDIR /usr/local/app/vcell/installDir/python/vcell_opt
+
+# Copying the required files
+COPY ./vcell-opt /usr/local/app/vcell/installDir/python/vcell_opt/
+COPY ./docker_run.sh /usr/local/app/vcell/installDir/
+
+# Configuring Poetry and installing the Python dependencies
+RUN poetry config cache-dir "/poetry/.cache" --local && chmod 755 poetry.toml && poetry install
+
+# Set the entrypoint
+ENTRYPOINT ["/usr/local/app/vcell/installDir/docker_run.sh"]

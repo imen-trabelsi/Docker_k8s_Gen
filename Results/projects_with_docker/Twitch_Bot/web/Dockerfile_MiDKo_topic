@@ -1,0 +1,24 @@
+# Defines the base image with a precise sha256
+FROM python:3.9@sha256:5caa9a0f034e56693e096ac4562097d9167a2509d22fb970cb4a2b5465a48d95
+
+# Creates a non-root user
+RUN useradd --uid 1000 -U -m twitch_bot
+
+# Specify the user to avoid running the container as root
+USER twitch_bot
+
+# Disables pip cache and sets the path for pip to twitch_bot home directory
+ENV PIP_NO_CACHE_DIR=false \
+
+# Sets the working directory
+WORKDIR /workspace/web
+
+# Copies the project
+COPY --chown=twitch_bot:twitch_bot ./ /workspace/web
+
+# Copies the requirements, installs them and cleans the cache
+COPY --chown=twitch_bot:twitch_bot ./requirements.txt /workspace/web/
+RUN pip install --upgrade -r /workspace/web/requirements.txt 
+
+# Run the application
+CMD ["./wait_for_it.sh", "mysql:3306", "--timeout=60", "--strict", "--", "python", "main.py"]

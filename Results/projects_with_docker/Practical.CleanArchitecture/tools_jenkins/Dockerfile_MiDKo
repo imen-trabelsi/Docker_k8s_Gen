@@ -1,0 +1,29 @@
+# Starting from the Jenkins LTS image
+FROM jenkins/jenkins:lts
+
+# Switch to root to allow package installation
+USER root
+
+# Updating and installing necessary dependencies
+RUN apt-get update \
+&& apt-get install -y --no-install-recommends curl libunwind8 gettext apt-transport-https build-essential python nodejs \
+&& curl https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor > microsoft.gpg \
+&& mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg \
+&& sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/microsoft-debian-stretch-prod stretch main" > /etc/apt/sources.list.d/dotnetdev.list' \
+&& apt-get update \
+&& apt-get install -y dotnet-sdk-5.0 \
+
+# Copying files into the container
+COPY . /var/jenkins_home
+
+# Setting the working directory
+WORKDIR /var/jenkins_home
+
+# Exposing ports
+EXPOSE 8080
+
+# Switching back to the jenkins user
+USER jenkins
+
+# Running the app
+CMD ["npm", "start"]

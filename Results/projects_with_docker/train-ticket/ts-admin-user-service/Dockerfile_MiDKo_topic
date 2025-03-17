@@ -1,0 +1,30 @@
+# Use the official Maven image to create a build artifact.
+FROM maven:3.8-jdk-8 AS build
+
+# Copy pom.xml and source code to the container
+COPY ./pom.xml /build/
+COPY ./src /build/src/
+
+# Package the application
+WORKDIR /build/
+RUN mvn package -DskipTests
+
+# Use a minimal JRE base image.
+FROM java:8-jre
+
+# Set the working directory in the Docker image filesystem.
+WORKDIR /app
+
+# Copy build artifact from the Builder stage
+
+# Copy other file like .env, docker-compose.yml to /app
+COPY .env /app
+COPY docker-compose.yml /app
+
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone 
+
+# Expose the application on port 16115.
+EXPOSE 16115
+
+# Run the application when the Docker container has been started.
+CMD ["java", "-Xmx200m", "-jar", "/app/ts-admin-user-service-1.0.jar"]

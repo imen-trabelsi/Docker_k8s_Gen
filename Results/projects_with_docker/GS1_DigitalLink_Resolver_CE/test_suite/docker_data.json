@@ -1,0 +1,35 @@
+{
+    "docker_info": {
+        "base_image": "python:3.10-bullseye",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "5000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY requirements.txt .",
+            "COPY testHarness.py .",
+            "COPY public ./public"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"python\",",
+                    "\"testHarness.py\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "pip install --no-cache-dir -r requirements.txt",
+                ""
+            ]
+        ]
+    }
+}

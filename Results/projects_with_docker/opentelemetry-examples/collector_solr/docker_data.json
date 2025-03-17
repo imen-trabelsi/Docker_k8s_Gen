@@ -1,0 +1,55 @@
+{
+    "docker_info": {
+        "base_image": "curlimages/curl:7.82.0",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "JMX_JAR_VERSION=v1.14.0"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /",
+            "COPY certificate.pem /usr/local/share/ca-certificates/certificate.crt",
+            "COPY --from=curler /opentelemetry-jmx-metrics.jar /opt/opentelemetry-jmx-metrics.jar",
+            "COPY --from=curler /otelcol-contrib /otelcol-contrib"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"/otelcol-contrib\"",
+                    "]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"--config\",",
+                    "\"/etc/otel/config.yaml\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "curl -L \\",
+                "--output /opentelemetry-jmx-metrics.jar",
+                "\"https://github.com/open-telemetry/opentelemetry-java-contrib/releases/download/${JMX_JAR_VERSION}/opentelemetry-jmx-metrics.jar\""
+            ],
+            [
+                "curl -L -s \\",
+                "\"https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.81.0/otelcol-contrib_0.81.0_linux_amd64.tar.gz\" |",
+                "tar -xvz -C /"
+            ],
+            [
+                "cat /usr/local/share/ca-certificates/certificate.crt >> /etc/ssl/certs/ca-certificates.crt",
+                ""
+            ]
+        ]
+    }
+}

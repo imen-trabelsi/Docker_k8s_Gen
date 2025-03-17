@@ -1,0 +1,34 @@
+# Use the official Node.js image
+FROM node:12
+
+# Set the working directory in the Docker image
+WORKDIR /usr/src/app
+
+# Add metadata to the image
+LABEL maintainer="email@domain.com"
+
+# Copy the package.json and package-lock.json file to the working directory
+COPY package*.json ./
+
+# Install app dependencies
+RUN npm install
+
+# Copy the entire codebase to the work directory in the docker image
+COPY . .
+
+# Open up the correct port
+EXPOSE 8080
+
+# Use the official Python base image specified by the user
+FROM python:2-alpine
+
+# Copy the mavproxy/entrypoint.sh script
+COPY mavproxy/entrypoint.sh .
+
+# Install necessary Python libraries
+RUN apk --no-cache add py-lxml gcc libxml2 libxml2-dev libxslt libxslt-dev libc-dev \
+  && sed -i 's/, int,/, unsigned int,/' /usr/include/assert.h \
+
+# Specify the command to be run when the Docker container starts
+ENTRYPOINT ["sh", "entrypoint.sh"]
+

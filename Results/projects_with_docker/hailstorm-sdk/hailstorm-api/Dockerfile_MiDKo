@@ -1,0 +1,27 @@
+# Dockerfile
+FROM jruby:9.2.11.1-jre8
+
+ENV DOCKERIZE_VERSION v0.6.1
+ENV HAILSTORM_ENV production
+
+WORKDIR /usr/local/lib/hailstorm-api
+
+RUN groupadd rack && \
+    useradd -g rack -mr rack && \
+
+RUN apt-get update && apt-get install -y default-mysql-client git wget && rm -rf /var/lib/apt/lists/*
+
+RUN wget -q https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+    && tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \
+
+RUN gem update bundler \
+    && bundle config --global frozen 1 \
+    && bundle install \
+
+COPY . .
+
+USER rack:rack
+
+CMD ["rackup", "-o", "0.0.0.0", "-p", "8080"]
+
+EXPOSE 8080

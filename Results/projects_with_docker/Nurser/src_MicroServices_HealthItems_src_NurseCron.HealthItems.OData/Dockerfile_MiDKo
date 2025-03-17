@@ -1,0 +1,14 @@
+# Use an official Microsoft .NET runtime as a parent image
+FROM mcr.microsoft.com/dotnet/aspnet
+
+# Set the working directory in the Docker image
+WORKDIR /app
+
+# Copy compiled source code into the working directory within the Docker image
+COPY ./pub .
+
+# Expose port 80 so it can be mapped by Docker 
+EXPOSE 80
+
+# Define how this Docker image should start 
+ENTRYPOINT ["dotnet", "NurseCron.HealthItems.Api.dll"]

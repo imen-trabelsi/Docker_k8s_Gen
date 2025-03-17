@@ -1,0 +1,45 @@
+{
+    "docker_info": {
+        "base_image": "onap/integration-java11:7.1.0",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root",
+            "onap"
+        ],
+        "labels": [
+            "Description=\"This"
+        ],
+        "health_checks": [],
+        "build_args": [
+            "http_proxy",
+            "https_proxy"
+        ],
+        "envs": [
+            "ENV HTTP_PROXY=$http_proxy",
+            "ENV HTTPS_PROXY=$https_proxy",
+            "ENV http_proxy=$HTTP_PROXY",
+            "ENV https_proxy=$HTTPS_PROXY"
+        ],
+        "copy_instructions": [
+            "COPY --chown=onap:onap onap-clamp-backend/clamp.jar /opt/clamp/app.jar",
+            "WORKDIR /opt/clamp/"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"java\",\"-Djava.security.egd=file:/dev/./urandom\",\"-XX:MinRAMPercentage=50",
+                    "-XX:MaxRAMPercentage=75\",\"-jar\"",
+                    ",\"./app.jar\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir /opt/clamp",
+                "RUN chown -R onap:onap /opt/clamp"
+            ]
+        ]
+    }
+}

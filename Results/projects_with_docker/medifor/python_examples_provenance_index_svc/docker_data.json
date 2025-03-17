@@ -1,0 +1,52 @@
+{
+    "docker_info": {
+        "base_image": "ubuntu:18.04",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8080"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY *.py *.txt ./"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"python3\",",
+                    "\"./faisssvc.py\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"--index\",",
+                    "\"/data/index.faiss\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt update && apt upgrade -y python3",
+                "RUN apt install -y python3-pip"
+            ],
+            [
+                "apt install -y libopenblas-base libomp5 libomp-dev",
+                "RUN apt-get install -y git"
+            ],
+            [
+                "pip3 install -r requirements.txt",
+                "RUN pip3 install --no-cache-dir git+https://github.com/mediaforensics/medifor.git@feature/provenance"
+            ],
+            [
+                "python3 -c 'import faiss'",
+                ""
+            ]
+        ]
+    }
+}

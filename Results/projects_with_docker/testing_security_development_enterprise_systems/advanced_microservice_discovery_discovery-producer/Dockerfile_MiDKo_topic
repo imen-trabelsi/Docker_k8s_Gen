@@ -1,0 +1,37 @@
+# Use the provided base image
+FROM adoptopenjdk/openjdk11:alpine AS build
+
+WORKDIR /workspace/app
+
+# Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy the pom.xml file
+COPY pom.xml .
+
+# Batch mode makes Maven less verbose
+RUN ./mvnw dependency:go-offline -B
+
+# Copy the source code
+COPY src src
+
+# Package the application
+RUN ./mvnw package -DskipTests
+RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+
+# Use multi-stage build to create a minimal image 
+FROM adoptopenjdk/openjdk11:alpine
+
+VOLUME /tmp
+ARG DEPENDENCY=/workspace/app/target/dependency
+
+# Set the active profile to docker
+ENV SPRING_PROFILES_ACTIVE=docker
+
+# Expose the correct port(s)
+# Note: If the service runs on a different port (say 8085), then expose that instead.
+EXPOSE 8080
+
+# Set the command to start the service 
+ENTRYPOINT ["java","-cp","app:app/lib/*","com.example.Application","--spring.profiles.active=docker"]

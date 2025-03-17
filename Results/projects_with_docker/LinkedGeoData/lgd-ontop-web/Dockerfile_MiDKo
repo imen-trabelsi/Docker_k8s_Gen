@@ -1,0 +1,16 @@
+# Dockerfile
+FROM ontop/ontop-endpoint:latest
+
+WORKDIR /opt/ontop
+
+ADD https://repo1.maven.org/maven2/org/postgresql/postgresql/42.2.19/postgresql-42.2.19.jar jdbc/
+COPY lgd.obda input/lgd.obda
+COPY lgd.owl input/lgd.owl
+COPY lgd.portal.toml input/lgd.portal.toml
+COPY catalog-v001.xml input/catalog-v001.xml
+COPY library input/library
+
+EXPOSE 8080
+
+RUN sleep 3
+CMD ["env"]

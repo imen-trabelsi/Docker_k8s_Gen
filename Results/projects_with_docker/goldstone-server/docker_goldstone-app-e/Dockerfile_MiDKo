@@ -1,0 +1,21 @@
+# Use the specified base image
+FROM solinea/goldstone-base:1.1.3
+
+# Set the environment variables
+ENV DJANGO_ADMIN_EMAIL=root@localhost \
+
+# Installation of dependencies
+COPY setup.py ./
+RUN python setup.py install
+
+# Copy the entire application inside the container
+COPY goldstone-server/ /app/
+
+# Switch to non-root user for better security practices
+USER 1001
+
+# Expose the specified port
+EXPOSE 8000
+
+# Set the command to execute for the application
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

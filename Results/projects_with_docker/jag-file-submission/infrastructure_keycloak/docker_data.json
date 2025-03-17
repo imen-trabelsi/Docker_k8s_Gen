@@ -1,0 +1,49 @@
+{
+    "docker_info": {
+        "base_image": "ubuntu:18.04",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "KEYCLOAK_URL",
+            "DOCKERIZE_VERSION=v0.6.1"
+        ],
+        "envs": [
+            "ENV KEYCLOAK_URL=$KEYCLOAK_URL"
+        ],
+        "copy_instructions": [
+            "COPY createuser.sh /tmp/createuser.sh"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/tmp/createuser.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "echo \"Acquire::Check-Valid-Until \\\"false\\\";\\nAcquire::Check-Date \\\"false\\\";\" | cat > /etc/apt/apt.conf.d/10no--check-valid-until",
+                ""
+            ],
+            [
+                "apt-get update && \\",
+                "apt-get install -y curl jq wget &&",
+                "apt-get clean &&",
+                "rm -rf /var/lib/apt/lists"
+            ],
+            [
+                "wget https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz && \\",
+                "tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz &&",
+                "rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz"
+            ],
+            [
+                "chmod +x /tmp/createuser.sh",
+                ""
+            ]
+        ]
+    }
+}

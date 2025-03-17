@@ -1,0 +1,21 @@
+# vulnerable system components
+FROM openjdk:14-alpine as builder
+
+RUN apk --no-cache add curl
+WORKDIR /app
+COPY . /app
+
+# Use Gradle to build our application
+RUN ./gradlew clean build
+
+CMD ["/app/gradlew", "bootRun"]
+
+FROM openjdk:14-alpine
+
+WORKDIR /app
+
+# Copy the jar file built in the first stage
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "/bin/app.jar"]

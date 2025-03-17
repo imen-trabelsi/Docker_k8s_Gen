@@ -1,0 +1,20 @@
+# Use Base Image
+FROM codefarm/appnodebase:0.0.0
+
+# Set current work directory
+WORKDIR /usr/src/app
+
+# Copy package.json to the docker image
+COPY package.json .
+
+# Install all dependencies
+RUN npm install
+
+# Copy all other source code excluding listed in .dockerignore
+COPY . .
+
+# Expose port for the app to run
+EXPOSE 8080
+
+# Define the command that should be run in the container
+CMD ["npm", "start"]

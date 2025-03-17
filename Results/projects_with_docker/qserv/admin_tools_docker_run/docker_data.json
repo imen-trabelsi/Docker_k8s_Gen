@@ -1,0 +1,32 @@
+{
+    "docker_info": {
+        "base_image": "${QSERV_RUN_BASE}",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "qserv"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "QSERV_RUN_BASE=qserv/lite-run-base:latest"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "COPY --chown=qserv:qserv bin/ /usr/local/bin/",
+            "COPY --chown=qserv:qserv lib64/ /usr/local/lib64/",
+            "COPY --chown=qserv:qserv lua/ /usr/local/lua/",
+            "COPY --chown=qserv:qserv python/ /usr/local/python/",
+            "COPY --chown=qserv:qserv qserv/ /usr/local/qserv/",
+            "COPY --chown=qserv:qserv etc/ /usr/local/etc/",
+            "COPY --chown=qserv:qserv log/log.cnf /config-etc/log/log.cnf"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "ldconfig",
+                ""
+            ]
+        ]
+    }
+}

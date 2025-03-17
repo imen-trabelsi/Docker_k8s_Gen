@@ -1,0 +1,23 @@
+# Set the base image
+FROM alpine:3.11
+
+# Ensure pip3 & other dependencies are available
+RUN apk add --no-cache entr py3-pip git zip
+
+# Set working directory in the container
+WORKDIR /app
+
+# Copy requirement file in the working directory for further usage
+COPY requirements.txt .
+
+# Install the deployment dependencies
+RUN pip3 install -r requirements.txt
+
+# Copy the rest of your app's source code from the local source directory to the working directory in the python container
+COPY . .
+
+# Expose the default application port (replace the "XXXX" with your application port)
+# EXPOSE XXXX
+
+# Start the application (this could vary depending on how your application starts)
+# CMD ["python", "your_app_start_command.py"]

@@ -1,0 +1,33 @@
+# Set base image
+FROM oryd/hydra:$HYDRA_VERSION
+
+# Set environment variable
+ENV BUILD_DEPS="gettext"  \
+
+# Install packages and dependencies
+RUN set -x && \
+    apk add --no-cache --update $TIME_DEPS && \
+    apk add --virtual build_deps $BUILD_DEPS && \
+    cp /usr/bin/envsubst /usr/local/bin/envsubst && \
+    apk del build_deps && \
+    pip install --upgrade pip && \
+
+# Copy necessary files
+COPY --from=0 /usr/bin/hydra /usr/bin/hydra
+COPY --from=1 /usr/bin/keto /usr/bin/keto
+COPY --from=2 /usr/bin/oathkeeper /usr/bin/oathkeeper
+COPY ./config /config
+COPY ./supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY ./scripts /scripts
+
+# Set the working directory
+WORKDIR /usr/src/app
+
+# Copy the application
+COPY . .
+
+# Expose necessary ports
+EXPOSE 
+
+# Specify the command to run
+ENTRYPOINT ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]

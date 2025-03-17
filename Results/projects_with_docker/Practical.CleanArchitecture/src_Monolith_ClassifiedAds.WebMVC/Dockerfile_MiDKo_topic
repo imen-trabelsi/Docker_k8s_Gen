@@ -1,0 +1,34 @@
+# Set base image
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
+
+# Set working directory
+WORKDIR /ClassifiedAds.Monolith
+
+# Copy csproj and restore dependencies
+COPY ./ClassifiedAds.Application/*.csproj ./ClassifiedAds.Application/
+COPY ./ClassifiedAds.CrossCuttingConcerns/*.csproj ./ClassifiedAds.CrossCuttingConcerns/
+COPY ./ClassifiedAds.Domain/*.csproj ./ClassifiedAds.Domain/
+COPY ./ClassifiedAds.Infrastructure/*.csproj ./ClassifiedAds.Infrastructure/
+COPY ./ClassifiedAds.Persistence/*.csproj ./ClassifiedAds.Persistence/
+COPY ./ClassifiedAds.WebMVC/*.csproj ./ClassifiedAds.WebMVC/
+RUN dotnet restore ./ClassifiedAds.Application/ClassifiedAds.Application.csproj
+RUN dotnet restore ./ClassifiedAds.Infrastructure/ClassifiedAds.Infrastructure.csproj
+RUN dotnet restore ./ClassifiedAds.WebMVC/ClassifiedAds.WebMVC.csproj
+
+# Copy everything else and build
+COPY . ./
+RUN dotnet publish ./ClassifiedAds.WebMVC/ClassifiedAds.WebMVC.csproj -c Release -o out
+
+# Use runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
+
+# Set working directory
+WORKDIR /ClassifiedAds.Monolith
+
+# Copy build results from build stage
+
+# Set entrypoint
+ENTRYPOINT ["dotnet", "ClassifiedAds.WebMVC.dll"]
+
+# Set health check
+HEALTHCHECK CMD curl --fail http://localhost:80/healthcheck || exit 1

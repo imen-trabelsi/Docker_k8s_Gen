@@ -1,0 +1,30 @@
+# Set the base Image
+FROM maven:3.6.0-jdk-8-alpine
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Add necessary packages 
+RUN apk add git wget
+
+# Clone source code 
+RUN git clone --single-branch -b tcat-map https://github.com/cuappdev/ithaca-transit-backend.git /usr/src/app
+RUN git clone --single-branch -b 0.11 https://github.com/graphhopper/map-matching.git 
+
+# Build the microservice 
+RUN mvn package -e -DskipTests
+
+# Set another working directory 
+WORKDIR /usr/src/app/map-matching
+
+# Copy required configuration files
+COPY config.yml .
+
+# Run import command 
+RUN java -jar matching-web/target/graphhopper-map-matching-web-0.11-SNAPSHOT.jar import ../map.osm --vehicle=car,foot
+
+# Expose the required port 
+EXPOSE 8989
+
+# Set the start-up command
+CMD ["java", "-jar", "matching-web/target/graphhopper-map-matching-web-0.11-SNAPSHOT.jar", "server", "config.yml"]

@@ -1,0 +1,31 @@
+# Dockerfile
+# Use the official image as a parent image.
+FROM mcr.microsoft.com/dotnet/sdk:5.0 as build
+
+# Set the working directory.
+WORKDIR /src
+
+# Copy the csproj and restore
+COPY ["LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Domain.UnitTests/LogCorner.EduSync.Speech.Domain.UnitTests.csproj", "LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Domain.UnitTests/"]
+COPY ["LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.SharedKernel/LogCorner.EduSync.Speech.Command.SharedKernel.csproj", "LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.SharedKernel/"]
+COPY ["LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Domain/LogCorner.EduSync.Speech.Domain.csproj", "LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Domain/"]
+
+RUN dotnet restore "LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Domain.UnitTests/LogCorner.EduSync.Speech.Domain.UnitTests.csproj"
+
+# Copy the source
+COPY . .
+
+# Change the working directory
+WORKDIR "/src/LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Domain.UnitTests"
+
+# Build the application
+RUN dotnet build "LogCorner.EduSync.Speech.Domain.UnitTests.csproj" -c Release -o /app/build
+
+# Start from a clean stage to ensure a small image size
+FROM build as publish
+RUN dotnet publish "LogCorner.EduSync.Speech.Domain.UnitTests.csproj" -c Release -o /app/publish
+
+# Final stage / image
+FROM mcr.microsoft.com/dotnet/aspnet:5.0
+WORKDIR /app
+ENTRYPOINT ["dotnet", "LogCorner.EduSync.Speech.Domain.UnitTests.dll"]

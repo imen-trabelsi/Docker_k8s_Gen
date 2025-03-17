@@ -1,0 +1,25 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "requirements.txt": "# This is for netlify\nPyYAML\njinja2\n"
+        },
+        "database": null,
+        "build_system": "pip",
+        "config_files": {
+            "webhooks/admission/docker-compose.yml": "# Note: Ngrok doesn't have an \"anonymous\" mode anymore.\n# This means that it requires an authentication token.\n# That said, all you need is a free account; so if you're\n# doing the labs on admission webhooks and want to try\n# this Compose file, I highly recommend that you create\n# an Ngrok account and set the NGROK_AUTHTOKEN environment\n# variable to your authentication token.\n\nversion: \"3\"\n\nservices:\n\n  ngrok-echo:\n    image: ngrok/ngrok\n    command: http --log=stdout localhost:3000\n    environment:\n    - NGROK_AUTHTOKEN\n    ports:\n    - 3000\n\n  echo:\n    network_mode: service:ngrok-echo\n    image: node\n    command: npx http-echo-server\n\n  ngrok-flask:\n    image: ngrok/ngrok\n    command: http --log=stdout localhost:5000\n    environment:\n    - NGROK_AUTHTOKEN\n    ports:\n    - 5000\n\n  flask:\n    network_mode: service:ngrok-flask\n    build: flask\n    volumes:\n    - ./flask:/src\n    working_dir: /src\n    environment:\n      FLASK_APP: webhook.py\n      FLASK_ENV: development\n    command: flask run --host=0.0.0.0\n\n",
+            "webhooks/admission/flask/Dockerfile": "FROM python\nRUN pip install Flask IPython PyYAML\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "webui.js"
+        ],
+        "folders": [
+            "files"
+        ]
+    }
+}

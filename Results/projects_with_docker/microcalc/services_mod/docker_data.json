@@ -1,0 +1,39 @@
+{
+    "docker_info": {
+        "base_image": "maven:3-jdk-8-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8080"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY pom.xml /app/",
+            "WORKDIR /app",
+            "COPY --from=builder /app/target/mod.jar /mod.jar"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"java\",",
+                    "\"-jar\",",
+                    "\"/mod.jar\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mvn -B verify -fn",
+                "COPY . /app"
+            ],
+            [
+                "mvn -B clean package",
+                ""
+            ]
+        ]
+    }
+}

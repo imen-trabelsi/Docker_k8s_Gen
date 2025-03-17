@@ -1,0 +1,31 @@
+# Use the official Go image from the Docker Hub
+FROM golang:1.12-alpine AS builder 
+
+# Add maintainer information
+LABEL maintainer="example@example.com"
+
+# Set the current working directory inside the container 
+WORKDIR /go-palletone 
+
+# Copy the entire project and change to this directory which will contain the build output
+COPY . /go-palletone 
+
+# Install the necessary packages
+RUN apk add make gcc musl-dev linux-headers git
+
+# Make gptn
+RUN cd /go-palletone && make gptn
+
+# Start a new stage from scratch
+FROM alpine:latest
+
+# Install ca-certificates
+RUN apk add --no-cache ca-certificates
+
+# Copy the pre-built binary file from the previous stage
+
+# Expose the port
+EXPOSE 8545
+
+# Entry point to start the service
+ENTRYPOINT ["gptn"]

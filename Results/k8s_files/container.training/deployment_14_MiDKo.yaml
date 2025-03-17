@@ -1,0 +1,72 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: px-csi-ext
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: px-csi-ext
+  template:
+    metadata:
+      labels:
+        app: px-csi-ext
+    spec:
+      containers:
+      - image: quay.io/openstorage/csi-provisioner:v1.6.0-1
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+        name: px-csi-ext
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 80
+        resources:
+          limits:
+            cpu: 500m
+            ephemeral-storage: 1Gi
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            ephemeral-storage: 500Mi
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 1000
+          runAsUser: 1000
+        volumeMounts:
+        - mountPath: /csi
+          name: socket-dir
+      serviceAccountName: default
+      volumes:
+      - hostPath:
+          path: /var/lib/kubelet/plugins/pxd.portworx.com
+          type: DirectoryOrCreate
+        name: socket-dir
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: px-csi-ext-svc
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: px-csi-ext
+  type: ClusterIP
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: default

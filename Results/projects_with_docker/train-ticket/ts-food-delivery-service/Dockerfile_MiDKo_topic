@@ -1,0 +1,17 @@
+# Use the official lightweight Java base image
+FROM java:8-jre
+
+# Add the service to this path
+WORKDIR /app
+
+# Copy the jar file into the image
+COPY ./target/ts-food-delivery-service-1.0.jar /app/
+
+# Update timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Expose the application on port 18957
+EXPOSE 18957
+
+# Start the service
+ENTRYPOINT ["java", "-Xmx200m", "-jar", "/app/ts-food-delivery-service-1.0.jar"]

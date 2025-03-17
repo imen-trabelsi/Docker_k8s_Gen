@@ -1,0 +1,32 @@
+# Start from the base image
+FROM nvidia/cuda:11.8.0-devel-ubuntu20.04
+
+ENV DEBIAN_FRONTEND=noninteractive 
+ENV VCPKG_FORCE_SYSTEM_BINARIES 1
+ENV LD_LIBRARY_PATH="$LD_LIBRARY_PATH:/usr/lib"
+ENV GOPATH /go
+ENV GOROOT /usr/local/go
+ENV GO111MODULE on
+ENV PATH $GOPATH/bin:$GOROOT/bin:$PATH
+ENV PATH=/root/.cargo/bin:$PATH
+
+# Installing dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends wget curl ca-certificates gnupg2 ninja-build
+RUN wget -qO- "https://cmake.org/files/v3.27/cmake-3.27.5-linux-`uname -m`.tar.gz" | tar --strip-components=1 -xz -C /usr/local
+
+# Building the Go source code
+WORKDIR $GOPATH
+COPY . $GOPATH
+
+RUN apt-get update && apt-get install -y --no-install-recommends g++ gcc gfortran git make ccache libssl-dev zlib1g-dev zip unzip
+RUN apt-get install -y --no-install-recommends clang-format-12 clang-tidy-12 lcov libtool m4 autoconf automake python3 python3-pip pkg-config uuid-dev libaio-dev libgoogle-perftools-dev libopenblas-dev 
+RUN rm -rf /var/lib/apt/lists/*
+RUN pip3 install conan==1.64.1
+RUN ./build.sh
+
+COPY --chown=0:0 build/docker/builder/entrypoint.sh /
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT [ "sh", "-c", "/entrypoint.sh" ]
+
+EXPOSE 8080
+CMD ["tail", "-f", "/dev/null"]

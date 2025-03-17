@@ -1,0 +1,44 @@
+FROM almalinux:9 as lite-build
+
+RUN dnf install -y 'dnf-command(config-manager)' \
+    && dnf config-manager --set-enabled crb \
+    && dnf install -y epel-release \
+    && dnf update -y \
+    && dnf install -y \
+    apr-devel \
+    bash-completion \
+    boost-devel \
+    libevent-devel \
+    libtool \
+    lsof \
+    python3.12 \
+    python3.12-devel \
+    tree \
+    vim \
+    && dnf clean all \
+
+RUN ... # Other long RUN commands go here. All COPY and RUN commands from 'Executions Commands' section are inserted here. 
+
+FROM ghcr.io/astral-sh/uv:latest
+
+# .. other COPY commands go here
+
+RUN dnf install -y 'dnf-command(config-manager)' \
+    && dnf config-manager --set-enabled crb \
+    && dnf install -y epel-release \
+    && dnf update -y \
+    && dnf install -y \
+    bash-completion \
+    boost-filesystem \
+    boost-system \
+    lsof \
+    python3.12 \
+    tree \
+    vim \
+    && dnf clean all \
+
+USER qserv
+
+WORKDIR /home/qserv
+
+CMD ["tail", "-f", "/dev/null"]

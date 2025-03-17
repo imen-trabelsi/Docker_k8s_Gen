@@ -1,0 +1,65 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: workshopmanagementeventhandler
+    version: 1.0
+  name: workshopmanagementeventhandler
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: workshopmanagementeventhandler
+  template:
+    metadata:
+      labels:
+        app: workshopmanagementeventhandler
+        version: 1.0
+    spec:
+      containers:
+      - image: pitstop/workshopmanagementeventhandler:1.0
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+        name: workshopmanagementeventhandler
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 80
+        resources:
+          limits:
+            cpu: 500m
+            ephemeral-storage: 1Gi
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            ephemeral-storage: 500Mi
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 1000
+          runAsUser: 1000
+        volumeMounts: []
+      serviceAccountName: default
+      volumes: []
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: workshopmanagementeventhandler
+  name: workshopmanagementeventhandler-service
+spec:
+  ports:
+  - port: 80
+  selector:
+    app: workshopmanagementeventhandler
+  type: ClusterIP

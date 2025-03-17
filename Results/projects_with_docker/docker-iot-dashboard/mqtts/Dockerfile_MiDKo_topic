@@ -1,0 +1,16 @@
+# Using the base image provided by the user
+FROM phusion/baseimage:master-amd64
+
+# Updating the Ubuntu and Installing necessary software
+RUN apt-add-repository ppa:mosquitto-dev/mosquitto-ppa \
+    && apt-get update \
+
+# Creating a new directory for the service
+RUN mkdir /etc/service/mosquitto
+
+# Copy the configuration file provided by the user to the mosquitto directory
+COPY mosquitto.conf /etc/mosquitto/mosquitto.conf
+
+# Copy the mosquitto.sh file to the run directory and give it executable permissions
+COPY mosquitto.sh /etc/service/mosquitto/run
+RUN chmod +x /etc/service/mosquitto/run

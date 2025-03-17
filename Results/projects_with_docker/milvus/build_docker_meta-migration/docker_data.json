@@ -1,0 +1,20 @@
+{
+    "docker_info": {
+        "base_image": "ubuntu:focal-20220426",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV PATH=/milvus/bin:$PATH"
+        ],
+        "copy_instructions": [
+            "COPY ./bin/meta-migration /milvus/bin/",
+            "WORKDIR /milvus/"
+        ],
+        "execution": [],
+        "run": []
+    }
+}

@@ -1,0 +1,25 @@
+# Base Image
+FROM openjdk:8-jre
+
+# Add a user to run our application
+RUN addgroup --system spring && adduser --system spring --ingroup spring
+RUN chown -R spring:spring /tmp && chmod -R 770 /tmp  
+
+# Copy Application into Image
+COPY abixen-platform-business-intelligence-service.jar app.jar
+
+# Switch to Non-Root User
+USER spring:spring
+
+# Entrypoint and Command to boot the Application
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=docker","-Dabixen.services.eureka.uri=discovery"]
+CMD ["-jar","/app.jar"]
+
+# Health Check
+HEALTHCHECK --interval=30s --timeout=10s --retries=3 CMD curl --silent --fail http://localhost:8080/actuator/health || exit 1
+
+# Expose the Application Port
+EXPOSE 8080
+
+# Labels
+LABEL maintainer="Abixen" version="1.0"

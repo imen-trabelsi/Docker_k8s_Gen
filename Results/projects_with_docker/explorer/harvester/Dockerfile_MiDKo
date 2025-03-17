@@ -1,0 +1,29 @@
+# Base Image
+FROM python:3.8-buster
+
+# Set Correct Environment Variables
+ENV PYTHONUNBUFFERED 1
+
+# Set the Working Directory in the Container
+WORKDIR /usr/src/app
+
+# Copy over the requirements file
+COPY ./requirements.txt /usr/src/app/requirements.txt
+
+# Install any needed dependencies
+RUN pip3 install --upgrade pip && \
+
+# Copy the application files
+COPY . /usr/src/app
+
+# Configure health check
+# Here make sure to replace '/health' and '9000' with your actual health check end point and port if they are different. 
+HEALTHCHECK --interval=5m --timeout=3s CMD curl -f http://localhost:9000/health || exit 1
+
+# Ensure correct entry point and CMD instructions
+# Replace 'main.py' with your actual application entry point Python file.
+CMD ["python", "main.py"]
+
+# Expose correct port
+# Replace '9000' with your actual application port if it is different.
+EXPOSE 9000

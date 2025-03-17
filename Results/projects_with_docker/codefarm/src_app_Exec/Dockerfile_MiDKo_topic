@@ -1,0 +1,20 @@
+# Use the specified base image
+FROM codefarm/appnodebase:0.0.0
+
+# Create a working directory
+WORKDIR /usr/src/app
+
+# Copy package.json
+COPY package.json yarn.lock ./
+
+# Install dependencies
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Given user-provided run command
+RUN yarn compile -- --env.global_modules_dir ${farmerHome}/.node_modules && \
+
+# Default command to execute on container boot
+ENTRYPOINT [ "npm", "start" ]

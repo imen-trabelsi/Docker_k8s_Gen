@@ -1,0 +1,24 @@
+# Use base image
+FROM openjdk:21-slim
+
+# Set working directory
+WORKDIR /usr/local/branding
+
+# Copy project files to container
+COPY . /usr/local/branding
+
+# Set environment variables
+ENV profile=dev
+ENV authDomain=rbp-auth
+
+# Copy the target directory to the working directory
+COPY target ./
+
+# Build the application with maven
+RUN mvn clean install
+
+# Expose the application on the relevant port, Replace 8080 with the relevant port
+EXPOSE 8080
+
+# Start the Spring Boot app
+ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=$profile", "-Dhoneycomb.beeline.write-key=${HONEYCOMB_API_KEY}", "target/restful-booker-platform-branding-*.jar", "-D"]

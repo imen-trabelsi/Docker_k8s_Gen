@@ -1,0 +1,21 @@
+##Stage 1: Build with Maven Builder
+FROM maven:3.6.0-jdk-11-slim AS builder
+COPY pom.xml /workdir/server/pom.xml
+COPY src /workdir/server/src 
+WORKDIR /workdir/server
+#Sources downloading to local repository
+RUN mvn dependency:go-offline
+#Package application
+RUN mvn install && mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+
+##Stage 2: Spring boot application
+FROM openjdk:11-jre-slim
+ARG DEPENDENCY=/workdir/server/target/dependency
+#Set application's base path
+WORKDIR /app
+#Copy dependency libraries
+#Copy compiled classes
+#Copy application properties like SSL certificates
+
+EXPOSE 8080
+ENTRYPOINT ["java","-cp","app:app/lib/*","otel.example.micrometer.Application"]

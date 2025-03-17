@@ -1,0 +1,93 @@
+{
+    "docker_info": {
+        "base_image": "chef",
+        "multi_stage_build": true,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "RUST_VERSION=\"1.84.0\"",
+            "ALPINE_VERSION=\"3.20\"",
+            "CARGO_CHEF_VERSION=\"0.1.67\"",
+            "PACKAGE",
+            "CARGO_CHEF_VERSION",
+            "PACKAGE",
+            "TARGET",
+            "PACKAGE",
+            "PACKAGE",
+            "TARGET",
+            "PACKAGE",
+            "PACKAGE",
+            "PACKAGE"
+        ],
+        "envs": [
+            "ENV LANG=C.UTF-8 \\",
+            "ENV PACKAGE=${PACKAGE}"
+        ],
+        "copy_instructions": [
+            "COPY rust-toolchain.toml rust-toolchain.toml",
+            "WORKDIR /build",
+            "COPY . .",
+            "COPY --from=planner /build/recipe.json .",
+            "COPY . .",
+            "WORKDIR /bin",
+            "COPY ./docker-init-relay.sh ./docker-init.sh",
+            "COPY ./docker-init.sh ./docker-init.sh",
+            "COPY ./docker-init.sh ./docker-init.sh",
+            "COPY --from=builder /build/target/${TARGET}/debug/${PACKAGE} .",
+            "COPY ${PACKAGE} .",
+            "COPY ${PACKAGE} ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"docker-init.sh\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "${PACKAGE}"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "set -xe \\",
+                "&& apk add --no-cache musl-dev",
+                "&& cargo install cargo-chef --locked --version=${CARGO_CHEF_VERSION}",
+                "&& rm -rf $CARGO_HOME/registry/"
+            ],
+            [
+                "rustup show",
+                ""
+            ],
+            [
+                "cargo chef prepare --recipe-path recipe.json",
+                ""
+            ],
+            [
+                "set -xe \\",
+                "&& cargo chef cook --recipe-path recipe.json --bin ${PACKAGE}"
+            ],
+            [
+                "cargo build -p ${PACKAGE} $([ -n \"${TARGET}\" ] && \"--target ${TARGET}\")",
+                ""
+            ],
+            [
+                "apk add --no-cache curl",
+                ""
+            ],
+            [
+                "apk add --no-cache iptables ip6tables",
+                "COPY ./docker-init-gateway.sh ./docker-init.sh"
+            ],
+            [
+                "apk add --no-cache iperf3 bind-tools iproute2 jq procps",
+                ""
+            ]
+        ]
+    }
+}

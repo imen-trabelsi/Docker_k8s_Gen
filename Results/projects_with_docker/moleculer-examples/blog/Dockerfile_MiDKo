@@ -1,0 +1,25 @@
+# Base Image
+FROM node:12
+
+# Create app directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# Blog configurations
+RUN mkdir -p /usr/src/app/blog
+COPY blog/Dockerfile /usr/src/app/blog
+
+# Environment Variables
+ENV NODE_ENV=production
+
+# Dependencies
+COPY package*.json ./
+RUN npm install --silent --progress=false --production
+
+# Bundle app source
+COPY . .
+
+# Exposed Ports
+
+# Execution Commands
+CMD [ "npm", "start" ]

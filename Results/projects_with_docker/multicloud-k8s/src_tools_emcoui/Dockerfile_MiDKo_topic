@@ -1,0 +1,39 @@
+# Dockerfile
+FROM node:alpine as builder
+
+# Create the working directory
+RUN mkdir /app
+WORKDIR /app 
+
+# Copy the package.json and package-lock.json
+COPY package.json .
+COPY package-lock.json .
+
+# Install dependencies
+RUN npm install
+
+# Copy rest of the application code
+COPY src ./src
+COPY public ./public
+
+# Set environment variable
+ENV REACT_APP_VERSION=v1.2.0
+
+# Build the application
+RUN npm run build
+
+# ----
+
+# Final stage
+FROM nginx:alpine
+
+# Copy the build output from the previous stage
+
+# Copy the nginx configuration file
+COPY default.conf /etc/nginx/conf.d/
+
+# Expose the port
+EXPOSE 80
+
+# Start the nginx server
+ENTRYPOINT ["nginx", "-g", "daemon off;"]

@@ -1,0 +1,38 @@
+# Use the official Golang image from the Docker Hub
+FROM golang:1.23-alpine3.20 as builder
+
+# Set the Current Working Directory inside the container
+WORKDIR /go/src/github.com/golang-migrate/migrate
+
+# Copy the source code from the current directory to the Working Directory inside the container
+COPY go.mod go.sum ./
+COPY . ./
+
+# Set Environment Variable required by the application
+ENV GO111MODULE=on
+
+# Download dependencies
+RUN apk add --no-cache git gcc musl-dev make \
+
+# Build the application
+RUN make build-docker
+
+# Start a new stage from scratch
+FROM alpine:latest  
+
+WORKDIR /root/
+
+# Install ca-certificates
+RUN apk --no-cache add ca-certificates
+
+# Copy the Pre-built binary file from the previous stage
+
+# Create a link to the migrate executable
+RUN ln -s /usr/local/bin/migrate /migrate
+
+# This container exposes port to the outside world
+EXPOSE 
+
+# Command to run the executable
+ENTRYPOINT ["migrate"]
+CMD ["--help"]

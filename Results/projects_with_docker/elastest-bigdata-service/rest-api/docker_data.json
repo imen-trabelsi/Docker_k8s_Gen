@@ -1,0 +1,39 @@
+{
+    "docker_info": {
+        "base_image": "gliderlabs/alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "5000"
+        ],
+        "user": [],
+        "labels": [
+            "maintainer=\"ns.gavalas@gmail.com\"",
+            "version=\"0.1.0\"",
+            "description=\"Builds"
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV EBS_PORT 5000"
+        ],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY . /app"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/usr/bin/python\",",
+                    "\"/app/src/runebs.py\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk --update add python py-pip openssl ca-certificates xz \\",
+                "&& pip install -r /app/src/requirements.txt"
+            ]
+        ]
+    }
+}

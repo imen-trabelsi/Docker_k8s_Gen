@@ -1,0 +1,33 @@
+# Base image
+FROM adoptopenjdk/openjdk14:jre-14.0.2_12-alpine as builder
+
+WORKDIR application
+
+# Copy pom.xml and source code to the container
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+COPY src src
+
+# Package the application
+RUN chmod +x ./mvnw
+RUN ./mvnw package -DskipTests
+
+# Extract the jar file
+RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+
+# Create a slim layer with the base image
+FROM adoptopenjdk/openjdk14:jre-14.0.2_12-alpine
+
+WORKDIR application
+
+# VOLUME instruction to set the location where volumes could mount when the docker image runs.
+VOLUME /tmp
+
+# Copy files from the builder to our new container
+
+# Expose the port
+EXPOSE 8080
+
+# Execute the application
+ENTRYPOINT ["java","-cp","app:app/lib/*","com.example.MyApplication"]

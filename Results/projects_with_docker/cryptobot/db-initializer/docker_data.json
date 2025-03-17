@@ -1,0 +1,32 @@
+{
+    "docker_info": {
+        "base_image": "python:slim",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY init_db.py ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"python\",",
+                    "\"init_db.py\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "pip install rethinkdb",
+                "WORKDIR /usr/local/src"
+            ]
+        ]
+    }
+}

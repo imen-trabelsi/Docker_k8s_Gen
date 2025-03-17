@@ -1,0 +1,37 @@
+# Use golang base image
+FROM golang:1.12-alpine3.9 as builder
+
+# Set the Current Working Directory inside the container
+WORKDIR /go/src/github.com/pelletier/go-toml
+
+# Allow Go to retrieve the dependencies for the build step
+RUN apk add --no-cache git
+
+# Copy go mod and sum files 
+COPY go.mod go.sum ./
+
+# Download all dependencies. Dependencies will be cached if the go.mod and the go.sum files are not changed 
+RUN go mod download
+
+# Copy the source from the current directory to the Working Directory inside the container 
+COPY . .
+
+# Build the Go app for a smaller binary
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o toml .
+
+# Starting a new stage from scratch
+FROM alpine:3.9 
+
+# Adding ca-certificates 
+RUN apk --no-cache add ca-certificates
+
+# Adding tzdata for timezone data
+RUN apk add --no-cache tzdata
+
+# Copy the pre-built binary file from /go/bin/
+
+# This container exposes port 8080
+EXPOSE 8080
+
+# Command to run the executable
+CMD ["toml"]

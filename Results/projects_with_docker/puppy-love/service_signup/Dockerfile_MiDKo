@@ -1,0 +1,43 @@
+# Start from golang:alpine base image
+FROM golang:alpine
+
+# Installing git
+RUN apk --no-cache add openssl wget git
+
+# Set the Current Working Directory inside the container to $GOPATH
+ENV GOPATH=/go
+WORKDIR $GOPATH
+
+# Downloading dependencies
+RUN go get -u github.com/golang/dep/cmd/dep
+
+# Create app directory
+RUN mkdir -p /go/src/github.com/pclubiitk/puppy-love/service/signup
+WORKDIR /go/src/github.com/pclubiitk/puppy-love/service/signup
+
+# Coping Gopkg.toml and Gopkg.lock 
+COPY Gopkg.toml Gopkg.lock ./
+
+# Install dependencies
+RUN dep ensure -v -vendor-only
+
+# Copy the source from the current directory to the Working Directory inside the container
+COPY . .
+
+# Building the app
+RUN go build
+
+# create output location
+RUN mkdir -p /go/bin
+
+# Copy executables
+COPY --from=builder /go/src/github.com/pclubiitk/puppy-love/service/signup/signup /go/bin
+
+# Installing ca-certificates
+RUN apk --no-cache add ca-certificates
+
+# Expose ports
+EXPOSE 3001
+
+# Set startup command
+ENTRYPOINT ["/go/bin/signup"]

@@ -1,0 +1,37 @@
+# Using the specified base image
+FROM xebialabs/xl-release:9.5.1
+
+# Setting the work directory in the container
+WORKDIR /opt/xebialabs
+
+# Copying necessary configuration files into the work directory
+COPY docker-compose/docker-compose.yml .
+COPY docker-compose/xebialabs/xl-release/Dockerfile .
+COPY default-conf/* xl-release-server/default-conf/
+
+# Copying the gradle build file
+COPY build.gradle .
+
+# Exposing the specified ports
+EXPOSE 8080 8888
+
+# Giving permissions to execute gradle builds
+RUN chmod +x gradlew
+
+RUN mkdir -p /home/user/app
+
+# Setting the current working directory
+WORKDIR /home/user/app
+
+# Copying the source code to the container
+COPY . .
+
+# Running the gradle boot build
+RUN ./gradlew bootJar
+
+# Define environment variables
+ENV DB_HOST=mongodb
+ENV DB_PORT=27017
+
+# Running the jar file
+CMD ["java","-jar","/home/user/app/build/libs/app-0.0.1-SNAPSHOT.jar"]

@@ -1,0 +1,32 @@
+# Stage 1 - the build process
+FROM --platform=${BUILDPLATFORM} as builder
+# Set the working directory
+WORKDIR /go/src/github.com/lightningnetwork/loop
+
+# Set environment variables 
+ENV GODEBUG netdns=cgo
+ENV GO111MODULE on
+
+# Install dependencies
+COPY go.mod go.sum ./
+RUN go mod download
+COPY . /go/src/github.com/lightningnetwork/loop
+
+# Build the Go app
+RUN apk add --no-cache --update alpine-sdk git make
+RUN cd /go/src/github.com/lightningnetwork/loop && make install
+
+# Stage 2 - the production environment
+FROM --platform=${BUILDPLATFORM}
+# Set the working directory
+RUN apk add --no-cache bash ca-certificates
+WORKDIR /app
+
+# Copy the binary from builder
+
+# Expose the application on port 8081
+EXPOSE 8081
+
+# Run the binary
+ENTRYPOINT ["./loopd"]
+CMD ["./loop"]

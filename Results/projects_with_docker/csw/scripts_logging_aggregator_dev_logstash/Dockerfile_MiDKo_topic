@@ -1,0 +1,25 @@
+# Using base image
+FROM docker.elastic.co/logstash/logstash:${ELK_VERSION} as base
+
+# Set Workng Directory in the container
+WORKDIR /usr/share/logstash/
+
+# Copy necessary files
+COPY ./ ./
+
+# Healthcheck
+HEALTHCHECK --interval=5s --timeout=3s --retries=3 CMD curl --fail http://localhost:9600 || exit 1
+
+# Setting necessary environment variables
+ENV PATH /usr/share/logstash/bin:$PATH
+
+# Install necessary plugins
+RUN logstash-plugin install logstash-input-beats
+RUN logstash-plugin install logstash-filter-json
+RUN logstash-plugin install logstash-filter-kv
+
+# Expose ports
+EXPOSE 9600
+
+# Entrypoint
+CMD ["logstash"]

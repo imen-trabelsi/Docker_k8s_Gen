@@ -1,0 +1,44 @@
+# ------- Builder stage -------
+FROM mozillabteam/bmo-perl-slim:20240822.1 as builder
+WORKDIR /app
+
+# Install System Dependencies
+RUN apt-get update && apt-get upgrade -y && \
+    apt-get install -y rsync curl firefox-esr lsof && \
+
+# Copy Application & Install Perl Dependencies
+COPY . /app
+RUN perl -I/app -I/app/local/lib/perl5 -c -E 'use Bugzilla; BEGIN { Bugzilla->extensions }' && \
+    perl checksetup.pl --no-database --default-localconfig && \
+    rm -rf /app/data /app/localconfig && \
+
+# Download and Install geckodriver
+RUN curl -L https://github.com/mozilla/geckodriver/releases/download/v0.33.0/geckodriver-v0.33.0-linux64.tar.gz -o /tmp/geckodriver.tar.gz \
+
+# ------- Application stage -------
+FROM mozillabteam/bmo-perl-slim:20240822.1
+WORKDIR /app
+
+# Copy From Builder
+
+# Environment Variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV CI=${CI}
+ENV CIRCLE_BUILD_URL=${CIRCLE_BUILD_URL}
+ENV CIRCLE_SHA1=${CIRCLE_SHA1}
+ENV LOG4PERL_CONFIG_FILE=log4perl-json.conf
+ENV LOGGING_PORT=5880
+ENV LOCALCONFIG_ENV=1
+
+# Expose Port
+EXPOSE 8000
+
+# Users
+USER app
+
+# Health Check
+HEALTHCHECK CMD curl -sfk http://localhost -o/dev/null || exit 1
+
+# Run Application
+ENTRYPOINT ["/app/scripts/entrypoint.pl"]
+CMD ["httpd"]

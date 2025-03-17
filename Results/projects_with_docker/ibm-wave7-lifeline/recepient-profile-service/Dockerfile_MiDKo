@@ -1,0 +1,20 @@
+# Base Image
+FROM openjdk:11
+
+# Setting up working directory
+WORKDIR /usr/src/app
+
+# Copying pom.xml and Source code to Work directory
+COPY ./pom.xml ./src ./ 
+
+# Installing dependencies and building the application
+RUN mvn clean install
+
+# Copying the JAR file to the container
+COPY ./target/recepient-profile-service-0.0.1-SNAPSHOT.jar /usr/src/recepient-profile-service-0.0.1-SNAPSHOT.jar
+
+# Let Docker know about the port that the application will be exposed to
+EXPOSE 8080
+
+# Command to run the Spring boot application
+ENTRYPOINT ["java","-jar","recepient-profile-service-0.0.1-SNAPSHOT.jar"]

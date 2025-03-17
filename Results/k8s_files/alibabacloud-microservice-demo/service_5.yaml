@@ -1,0 +1,17 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: go-kratos-demo-b
+spec:
+  ports:
+  - name: http
+    port: 80
+    protocol: TCP
+    targetPort: 8001
+  - name: grpc
+    port: 9001
+    protocol: TCP
+    targetPort: 9001
+  selector:
+    app: go-kratos-demo-b
+  type: ClusterIP

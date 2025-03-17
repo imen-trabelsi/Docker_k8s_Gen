@@ -1,0 +1,35 @@
+# Set base image
+FROM rust:1.67 as builder
+
+# Set the environment variable
+ENV RUST_LOG info
+
+# Set the work directory in the docker
+WORKDIR /usr/src/zksync
+
+# Copy the current directory contents into the container
+COPY . .
+
+# Run commands
+RUN cargo install sccache && \
+    echo 'export RUSTC_WRAPPER="/usr/local/cargo/bin/sccache"' >> ~/.bashrc && \
+    source ~/.bashrc && \
+
+# Stage 2: Setup command to run your Java service using ENTRYPOINT or CMD
+FROM rust:1.67
+
+WORKDIR /usr/src/zksync
+
+#Expose necessary port 
+EXPOSE 9975
+
+# Copy the build artifact from the previous stage and sets the user
+#COPY --from=builder /usr/src/zksync/target/release/dev-liquidity-token-watcher /bin/
+USER root
+
+
+# Set the environment variable
+ENV RUST_LOG info
+
+# Execution Command
+ENTRYPOINT ["dev-liquidity-token-watcher"]

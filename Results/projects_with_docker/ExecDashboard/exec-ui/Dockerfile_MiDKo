@@ -1,0 +1,45 @@
+# Use base image
+FROM node:8.11
+
+# Create app directory
+WORKDIR /var/app
+
+# Update and clean all
+RUN apt-get update && apt-get clean
+
+# Install app dependencies, only package.json and pom.xml are required here.
+COPY package.json ./ 
+COPY package-lock.json ./
+COPY pom.xml ./ 
+
+# Install npm and build
+RUN npm install \
+    && npm cache clean --force \
+
+# Copy local code to the container
+COPY .angular-cli.json ./.angular-cli.json
+COPY tsconfig.json ./tsconfig.json
+COPY src ./src
+
+# Build with Maven
+RUN mvn clean package -DskipTests
+
+# Copy the distributed files
+COPY --from=build /var/app/dist /usr/local/apache2/htdocs/
+
+# Environment variable
+ENV API_URL=http://localhost:8080
+
+# Ensure the start script is executable
+COPY docker-util/docker-entrypoint.sh /usr/local/bin/
+RUN chmod +x /usr/local/bin/docker-entrypoint.sh
+
+# User
+USER node
+
+# Expose the port
+EXPOSE 8080
+
+# Run the app
+ENTRYPOINT ["docker-entrypoint.sh"]
+CMD ["httpd-foreground"]

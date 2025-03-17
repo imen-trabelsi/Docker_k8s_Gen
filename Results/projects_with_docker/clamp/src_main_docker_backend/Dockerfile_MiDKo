@@ -1,0 +1,39 @@
+# Base Image
+FROM onap/integration-java11:7.1.0
+
+# Build Arguments
+ARG http_proxy
+ARG https_proxy
+
+# Environment variables
+ENV HTTP_PROXY=$http_proxy
+ENV HTTPS_PROXY=$https_proxy
+ENV http_proxy=$HTTP_PROXY
+ENV https_proxy=$HTTPS_PROXY
+ENV JAVA_OPTS=""
+
+# Labels
+LABEL Description="This Dockerfile deploys a Spring Boot microservice" 
+
+# Expose Ports
+# Add the necessary ports based on the application requirement. Example: Expose port 8080
+EXPOSE 8080
+
+# Creating user
+RUN addgroup onap && adduser --ingroup onap onap
+USER onap
+
+# Set Working Directory
+WORKDIR /opt/clamp/
+
+# Copy Files
+COPY --chown=onap:onap src/main/resources/clds/ /opt/clamp/resources/
+COPY --chown=onap:onap src/main/docker/backend/Dockerfile /opt/clamp/Dockerfile
+COPY --chown=onap:onap onap-clamp-backend/clamp.jar /opt/clamp/app.jar
+
+# Run Commands
+RUN mkdir /opt/clamp
+RUN chown -R onap:onap /opt/clamp
+
+# Entry Point
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom", "-XX:MinRAMPercentage=50, -XX:MaxRAMPercentage=75","-jar","./app.jar"]

@@ -1,0 +1,34 @@
+# As per the user inputs and extracted information
+
+# base image is provided by user
+FROM balenalib/raspberry-pi-node:12.11-buster
+
+# Add the source files to the container
+COPY . /opt/fruitnanny
+
+# Set the working directory
+WORKDIR /opt/fruitnanny
+
+# Install the required packages
+RUN \
+	buildDeps="build-essential python-dev python3-dev python-setuptools python3-setuptools" && \
+	echo 'APT::Install-Recommends "false";' >/etc/apt/apt.conf.d/00recommends && \
+	echo 'APT::Install-Suggests "false";' >>/etc/apt/apt.conf.d/00recommends && \
+	apt-get update && \
+	apt-get install -y python-pip python3-pip dos2unix && \
+	apt-get install -y $buildDeps && \
+	pip install wheel && pip install --install-option="--force-pi2" Adafruit-DHT && \
+	pip3 install wheel && pip3 install --install-option="--force-pi2" Adafruit-DHT && \
+	apt-get --purge remove -y $buildDeps && apt-get --purge -y autoremove && \
+	apt-get clean && \
+	rm -rf /tmp/* && \
+	rm -rf /var/lib/apt/lists/* && \
+
+# Install node packages
+RUN npm install
+
+# Expose node server port 
+EXPOSE 7000
+
+# Entry point for the application
+CMD ["node", "server/app.js"]

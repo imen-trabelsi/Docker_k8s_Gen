@@ -1,0 +1,58 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"private\": true,\n  \"name\": \"spryker-demoshop\",\n  \"version\": \"1.0.0\",\n  \"description\": \"Spryker Demoshop project\",\n  \"author\": {\n    \"name\": \"Spryker\",\n    \"email\": \"info@spryker.com\",\n    \"url\": \"http://spryker.com/\"\n  },\n  \"scripts\": {\n    \"yves\": \"node ./assets/Yves/default/build\",\n    \"yves:dev\": \"node ./assets/Yves/default/build --dev\",\n    \"yves:prod\": \"node ./assets/Yves/default/build --prod\",\n    \"zed\": \"node ./node_modules/@spryker/oryx-for-zed/build\",\n    \"zed:dev\": \"node ./node_modules/@spryker/oryx-for-zed/build --dev\",\n    \"zed:prod\": \"node ./node_modules/@spryker/oryx-for-zed/build --prod\"\n  },\n  \"engines\": {\n    \"node\": \"^6.0.0\"\n  },\n  \"dependencies\": {\n    \"es6-promise\": \"~4.1.0\",\n    \"font-awesome\": \"~4.7.0\",\n    \"foundation-sites\": \"~6.3.1\",\n    \"jquery\": \"~3.2.0\",\n    \"slick-carousel\": \"~1.6.0\",\n    \"lodash\": \"~4.17.2\",\n    \"motion-ui\": \"~1.2.2\",\n    \"jquery-bar-rating\": \"^1.2.2\"\n  },\n  \"devDependencies\": {\n    \"@spryker/oryx\": \"^1.0.0\",\n    \"@spryker/oryx-for-zed\": \"^1.0.0\",\n    \"autoprefixer\": \"~6.7.6\",\n    \"copy-webpack-plugin\": \"~4.0.1\",\n    \"css-loader\": \"~0.27.1\",\n    \"extract-text-webpack-plugin\": \"~2.1.0\",\n    \"file-loader\": \"~0.10.1\",\n    \"node-sass\": \"~4.5.0\",\n    \"postcss-loader\": \"~1.3.3\",\n    \"sass-loader\": \"~6.0.3\",\n    \"style-loader\": \"~0.13.1\",\n    \"webpack\": \"~2.3.0\",\n    \"yargs\": \"~7.0.2\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "Dockerfile": "\nFROM claranet/php:1.1.14-php7.2.11\n\nLABEL org.label-schema.name=\"claranet/spryker-demoshop\" \\\n      org.label-schema.version=\"2.32.3\" \\\n      org.label-schema.description=\"Dockerized Spyker Demoshop\" \\\n      org.label-schema.vendor=\"Claranet GmbH\" \\\n      org.label-schema.schema-version=\"1.0\" \\\n      org.label-schema.vcs-url=\"https://github.com/claranet/spryker-demoshop\" \\\n      author1=\"Fabian D\u00f6rk <fabian.doerk@de.clara.net>\" \\\n      author2=\"Tony Fahrion <tony.fahrion@de.clara.net>\"\n\n# Override claranet/php image settings\nENV NPM_ARGS=\"--with-dev\" \\\n    PHP_EXTENSIONS=\"redis\" \\\n    SYSTEM_PACKAGES=\"graphviz redis-tools\" \\\n    PHP_EXTENSIONS_STARTUP_ONLY=\"xdebug\" \\\n    NODEJS_VERSION=\"10\" \\\n    CODECEPTION_ARGS=\"-x CheckoutAvailabilityCest -x CmsGuiCreatePageCest -x NavigationCRUDCest -x NavigationTreeCest -x ProductRelationCreateRelationCest -x Smoke\" \\\n    COMPOSER_ARGS=\"\" \\\n    PHP_INI_OPCACHE_ENABLE=\"0\"\n\n\n# STATIC_FILES_YVES:\n#   be aware, this list will be used to sync those files on a public object store\n#   each reference should be relative to the repos path\n#   php files will be omitted\n#   result is e.g.: https://storage.googleapis.com/my-uniq-bucket-name/maintenance/index.html\n#   ASSET_ENV = prod|dev or empty\nENV STATIC_FILES_YVES=\"path/within/repo path2/within/repo\" \\\n    ASSET_ENV=\"\" \\\n    ENABLE_DEMO_DATA=\"true\" \\\n    CLOUDSDK_KEY_FILE=\"/mnt/gcloudServiceAccount/key.json\" \\\n    ASSET_BUCKET_NAME=\"to-be-defined-on-gcp\" \\\n    ENABLE_GOOGLE_ASSET_BUCKET=\"false\"\n\n\n# spryker\n# disabled env vars: (so users are foced to set them in docker-compose/k8)\n#    REDIS_STORAGE_PASSWORD=\"\" \\\n#    REDIS_SESSION_PASSWORD=\"\" \\\n#    ZED_DB_PASSWORD=\"\" \\\n#    RABBITMQ_PASSWORD=\"\" \\\nENV APPLICATION_ENV=\"development\" \\\n    STORES=\"DE AT US\" \\\n    DEFAULT_STORE=\"DE\" \\\n    DEFAULT_ZED_API_HOST=\"zed-nginx\" \\\n    INIT_COLLECTOR_CHUNK_SIZE=\"2000\"\n\n# database\nENV ENABLE_PROPEL_DIFF=\"true\" \\\n    ZED_DATABASE_HOST=\"database\" \\\n    ZED_DATABASE_PORT=\"5432\" \\\n    ZED_DATABASE_USERNAME=\"spryker\" \\\n    ZED_DATABASE_DATABASE=\"spryker\"\n\n# rabbitmq\nENV RABBITMQ_HOST=\"rabbitmq\" \\\n    RABBITMQ_PORT=\"5672\" \\\n    RABBITMQ_USERNAME=\"spryker\" \\\n    RABBITMQ_VIRTUAL_HOST=\"spryker\"\n\n# jenkins\nENV JENKINS_HOST=\"jenkins\" \\\n    JENKINS_WORKDIR=\"/home/jenkins/agent\" \\\n    JENKINS_HOME=\"/home/jenkins\" \\\n    JENKINS_JRE_PACKAGE=\"openjdk-8-jre\" \\\n    destination_release_dir=\"${WORKDIR}\"\n\n# redis\nENV STORAGE_REDIS_HOST=\"storage-redis\" \\\n    STORAGE_REDIS_PORT=\"6379\" \\\n    YVES_SESSION_REDIS_HOST=\"yves-session-redis\" \\\n    YVES_SESSION_REDIS_PORT=\"6379\" \\\n    ZED_SESSION_REDIS_HOST=\"zed-session-redis\" \\\n    ZED_SESSION_REDIS_PORT=\"6379\" \\\n    REDIS_STORE_DB_FACTOR=\"3\"\n\n# elasticsearch\nENV ELASTICSEARCH_HOST=\"elasticsearch\" \\\n    ELASTICSEARCH_PROTOCOL=\"http\" \\\n    ELASTICSEARCH_PORT=\"9200\" \\\n    ES_INDEX_NUMBER_OF_SHARDS=\"1\" \\\n    ES_INDEX_NUMBER_OF_REPLICAS=\"0\"\n\nCOPY docker/etc /etc/\nCOPY . ${WORKDIR}/\n\nRUN /entrypoint.sh build deps\n\n# Only build jenkins on demand\nARG ENABLE_JENKINS_BUILD=false\nRUN if [ \"${ENABLE_JENKINS_BUILD}\" = \"true\" ]; then /entrypoint.sh build jenkins; fi\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".bumpversion.cfg",
+            ".dockerignore",
+            ".editorconfig",
+            ".gitattributes",
+            ".githook",
+            ".gitignore",
+            ".license",
+            ".scrutinizer.yml",
+            ".travis.yml",
+            "CHANGELOG-claranet.md",
+            "Dockerfile",
+            "LICENSE",
+            "Procfile",
+            "README.md",
+            "VERSION",
+            "codeception.yml",
+            "composer.json",
+            "composer.lock",
+            "newrelic.ini",
+            "package-lock.json",
+            "package.json",
+            "phpstan-bootstrap.php",
+            "phpstan.neon",
+            "setup",
+            "setup_test",
+            "test-autoload.php",
+            "yarn.lock"
+        ],
+        "folders": [
+            "assets",
+            "config",
+            "data",
+            "deploy",
+            "docker",
+            "docs",
+            "public",
+            "scripts",
+            "src",
+            "tests"
+        ]
+    }
+}

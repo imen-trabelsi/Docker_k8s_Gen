@@ -1,0 +1,25 @@
+# Start with the ruby base image  
+FROM alpine:3
+
+# Define the working directory  
+WORKDIR /app 
+
+# Copy the Gemfile to install dependencies
+COPY Gemfile Gemfile.lock ./ 
+RUN apk add --no-cache build-base postgresql-dev tzdata libxml2-dev libxslt-dev \
+    && bundle config build.nokogiri --use-system-libraries \  
+    && bundle install --jobs 4 --retry 5 \  
+    && rm -rf /usr/local/bundle/cache/*.gem \
+    && find /usr/local/bundle/gems/ -name "*.c" -delete \
+
+# Copy the main application.
+COPY . ./
+
+# Expose the port of the app
+EXPOSE
+
+# Run necessary commands 
+RUN apk add --no-cache iptables
+
+# The default command that gets ran will be to start the Spring microservice
+CMD ["bundle", "exec", "rackup", "-p", "80", "-o", "0.0.0.0"]

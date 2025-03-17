@@ -1,0 +1,22 @@
+## Start with Eclipse Temurin base image
+FROM eclipse-temurin:11
+
+## Create a directory in the container for the application
+RUN mkdir /app
+
+## Copy the project's jar file and the wait-for-it shell script into the container
+COPY *.jar /app.jar
+COPY wait-for-it.sh /app/wait-for-it.sh
+
+## Set the working directory
+WORKDIR /app
+
+## Update the file permissions for the shell scripts
+RUN bash -c 'touch /app.jar'
+RUN bash -c 'chmod 777 /wait-for-it.sh'
+
+## Expose the port 9000 on the container
+EXPOSE 9000
+
+## Set the entrypoint / command to execute when the container is started
+ENTRYPOINT ["java", "-Dspring.profiles.active=docker", "-jar", "/app.jar"]

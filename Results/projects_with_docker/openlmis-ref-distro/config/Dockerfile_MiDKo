@@ -1,0 +1,46 @@
+#---------------------------------------------------------------------
+# Dockerfile for Flask Microservice (Python)
+#---------------------------------------------------------------------
+FROM alpine:3.11
+
+# Ensure pip is updated and install necessary Python packages
+RUN apk add --no-cache bash && \
+    apk add --update alpine-sdk gcc libffi-dev openssl-dev python3 python3-dev postgresql-libs postgresql-dev && \
+    python3 -m ensurepip && \
+    pip3 install --upgrade PIP setuptools wheel && \
+    rm -r /usr/lib/python*/ensurepip && \
+
+# Create the working directory (including necessary subdirectories)
+RUN mkdir -p /app/config/log
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the requirements.txt to the container
+COPY requirements.txt .
+
+# Install the Python requirements
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+# Copy the source code into the container
+COPY . .
+
+# Copy log configuration
+COPY log/logback.xml /config/log/logback.xml
+
+# Set Environment Variables
+ENV FLASK_APP=flaskapp.py
+ENV FLASK_RUN_HOST=0.0.0.0
+
+# Set up permissions and user
+RUN adduser -D user
+RUN chown -R user:user /app && chmod -R 755 /app
+
+# Switch to a non-root user
+USER user
+
+# Expose the microservice port
+EXPOSE 5000
+
+# Run the application
+CMD ["python3", "-m", "flask", "run"]

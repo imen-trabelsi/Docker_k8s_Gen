@@ -1,0 +1,41 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"hailstorm-web-client\",\n  \"version\": \"1.9.11\",\n  \"private\": true,\n  \"dependencies\": {\n    \"date-fns\": \"^2.6.0\",\n    \"formik\": \"^1.5.8\",\n    \"lodash\": \"^4.17.15\",\n    \"react\": \"^16.9.0\",\n    \"react-dom\": \"^16.9.0\",\n    \"react-dropzone\": \"^10.1.10\",\n    \"react-router-dom\": \"^5.0.1\",\n    \"rsocket-core\": \"0.0.18\",\n    \"rsocket-websocket-client\": \"0.0.18\",\n    \"rxjs\": \"^6.5.2\"\n  },\n  \"scripts\": {\n    \"start\": \"react-scripts start\",\n    \"build\": \"react-scripts build\",\n    \"test\": \"react-scripts test\",\n    \"eject\": \"react-scripts eject\",\n    \"clean\": \"rimraf build\"\n  },\n  \"eslintConfig\": {\n    \"extends\": \"react-app\"\n  },\n  \"browserslist\": {\n    \"production\": [\n      \">0.2%\",\n      \"not dead\",\n      \"not op_mini all\"\n    ],\n    \"development\": [\n      \"last 1 chrome version\",\n      \"last 1 firefox version\",\n      \"last 1 safari version\"\n    ]\n  },\n  \"devDependencies\": {\n    \"@fortawesome/fontawesome-free\": \"^5.8.2\",\n    \"@testing-library/react\": \"^9.1.3\",\n    \"@types/chai\": \"^4.2.8\",\n    \"@types/cucumber\": \"^6.0.1\",\n    \"@types/enzyme\": \"^3.10.2\",\n    \"@types/enzyme-adapter-react-16\": \"^1.0.5\",\n    \"@types/jest\": \"^24.0.13\",\n    \"@types/lodash\": \"^4.14.151\",\n    \"@types/node\": \"^12.0.4\",\n    \"@types/react\": \"^16.8.19\",\n    \"@types/react-dom\": \"^16.8.4\",\n    \"@types/react-router\": \"^5.0.3\",\n    \"@types/react-router-dom\": \"^4.3.5\",\n    \"@types/rimraf\": \"^2.0.3\",\n    \"@types/rsocket-core\": \"0.0.3\",\n    \"@types/rsocket-websocket-client\": \"0.0.3\",\n    \"@types/testing-library__react\": \"^9.1.1\",\n    \"@types/yaml\": \"^1.2.0\",\n    \"@wdio/cli\": \"^5.18.6\",\n    \"@wdio/cucumber-framework\": \"^5.18.6\",\n    \"@wdio/local-runner\": \"^5.18.6\",\n    \"@wdio/selenium-standalone-service\": \"^5.16.10\",\n    \"@wdio/spec-reporter\": \"^5.18.6\",\n    \"@wdio/sync\": \"^5.18.6\",\n    \"aws-sdk\": \"^2.610.0\",\n    \"axios\": \"^0.21.1\",\n    \"bulma-3pillar\": \"https://github.com/3pillarlabs/bulma-3pillar.git\",\n    \"chai\": \"^4.2.0\",\n    \"enzyme\": \"^3.10.0\",\n    \"enzyme-adapter-react-16\": \"^1.14.0\",\n    \"jest-enzyme\": \"^7.1.0\",\n    \"node-sass\": \"^4.12.0\",\n    \"npm-run-all\": \"^4.1.5\",\n    \"react-scripts\": \"3.0.1\",\n    \"reinspect\": \"^1.0.2\",\n    \"rimraf\": \"^3.0.1\",\n    \"ts-node\": \"^8.6.2\",\n    \"tsconfig-paths\": \"^3.9.0\",\n    \"typescript\": \"^3.5.1\",\n    \"yaml\": \"^1.7.2\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "docker-compose.yml": "version: '3.2'\nservices:\n  web:\n    image: \"hailstorm3/hailstorm-web-client:1.9.11\"\n    ports:\n      - \"8080:80\"\n    networks:\n      - dmz\n    tty:\n      true\n    depends_on:\n      - file-server\n      - hailstorm-api\n    entrypoint:\n      - \"dockerize\"\n      - \"-wait\"\n      - \"http://hailstorm-api:8080\"\n      - \"-wait\"\n      - \"tcp://file-server:8080\"\n      - \"-timeout\"\n      - \"60s\"\n      - \"start.sh\"\n\n  hailstorm-api:\n    image: \"hailstorm3/hailstorm-api:1.0.21\"\n    ports:\n      - \"4567:8080\"\n    environment:\n      HAILSTORM_DATABASE_PASSWORD: hailstorm\n      HAILSTORM_ENV: production\n      REDIS_URL: redis://hailstorm-mq/\n    networks:\n      - dmz\n      - hailstorm\n    depends_on:\n      - hailstorm-db\n      - client-exchange\n    volumes:\n      - type: volume\n        source: hailstorm-home\n        target: /home\n    entrypoint:\n      - \"dockerize\"\n      - \"-wait\"\n      - \"tcp://hailstorm-db:3306\"\n      - \"-wait\"\n      - \"tcp://client-exchange:8080\"\n      - \"-timeout\"\n      - \"60s\"\n      - \"rackup\"\n      - \"-o\"\n      - \"0.0.0.0\"\n      - \"-p\"\n      - \"8080\"\n\n  file-server:\n    image: \"hailstorm3/hailstorm-file-server:1.1.0\"\n    hostname: \"file-server\"\n    ports:\n      - \"9000:8080\"\n    networks:\n      - dmz\n    volumes:\n      - type: volume\n        source: hailstorm-file-store\n        target: /hailstorm\n\n  hailstorm-db:\n    image: \"hailstorm3/hailstorm-db:2.0.0\"\n    hostname: \"hailstorm-db\"\n    ports:\n      - \"3306:3306\"\n    networks:\n      - hailstorm\n    volumes:\n      - type: volume\n        source: hailstorm-db\n        target: /var/lib/mysql\n    environment:\n      MYSQL_RANDOM_ROOT_PASSWORD: \"true\"\n\n  hailstorm-mq:\n    image: \"redis:5.0.7-alpine\"\n    hostname: \"hailstorm-mq\"\n    ports:\n      - \"6379:6379\"\n    networks:\n      - hailstorm\n\n  client-exchange:\n    image: \"hailstorm3/hailstorm-client-exchange:1.0.0\"\n    hostname: \"client-exchange\"\n    ports:\n      - \"9100:8080\"\n    networks:\n      - hailstorm\n      - dmz\n    depends_on:\n      - hailstorm-mq\n    entrypoint:\n      - \"dockerize\"\n      - \"-wait\"\n      - \"tcp://hailstorm-mq:6379\"\n      - \"-timeout\"\n      - \"60s\"\n      - \"java\"\n      - \"-jar\"\n      - \"/app.jar\"\n      - \"--redisHost=hailstorm-mq\"\n\nnetworks:\n  dmz:\n  hailstorm:\n\nvolumes:\n  hailstorm-file-store:\n  hailstorm-db:\n  hailstorm-home:\n",
+            "hailstorm-web-client/Dockerfile": "FROM sebp/lighttpd\n\nRUN apk add --no-cache openssl\n\nENV DOCKERIZE_VERSION v0.6.1\n\nRUN wget -q https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \\\n    && tar -C /usr/local/bin -xzvf dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz \\\n    && rm dockerize-alpine-linux-amd64-$DOCKERIZE_VERSION.tar.gz\n\nCOPY BUILD_ID .\n\nCOPY build /var/www/localhost/htdocs\n\nCMD [ \"start.sh\" ]\n"
+        },
+        "static_files": {
+            "hailstorm-web-client/public/manifest.json": "{\n  \"short_name\": \"Hailstorm\",\n  \"name\": \"Hailstorm Web App\",\n  \"icons\": [\n    {\n      \"src\": \"favicon.ico\",\n      \"sizes\": \"64x64 32x32 24x24 16x16\",\n      \"type\": \"image/x-icon\"\n    }\n  ],\n  \"start_url\": \".\",\n  \"display\": \"standalone\",\n  \"theme_color\": \"#000000\",\n  \"background_color\": \"#ffffff\"\n}\n"
+        }
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            ".editorconfig",
+            ".gitignore",
+            ".rspec",
+            ".rubocop.yml",
+            ".simplecov",
+            "Dockerfile",
+            "Gemfile",
+            "Gemfile.lock",
+            "Makefile",
+            "README.md",
+            "app.rb",
+            "boot.rb",
+            "config.ru"
+        ],
+        "folders": [
+            "app",
+            "config",
+            "spec"
+        ]
+    }
+}

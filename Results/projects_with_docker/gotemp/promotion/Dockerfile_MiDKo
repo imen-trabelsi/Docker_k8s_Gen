@@ -1,0 +1,44 @@
+# First stage: Build Go binary
+FROM golang:1.15-alpine as build
+
+# Set working directory
+WORKDIR /go/src/app
+
+# Copy Go dependencies and download them
+COPY go.mod go.sum ./
+RUN go mod download 
+
+# Copy application code
+COPY ./$SRVDIR ./$SRVDIR
+
+# Environment Variables
+ENV SRVDIR=promotion
+ENV SRVNAME=${SRVDIR}Server
+ENV SRVDIR=promotion
+ENV SRVNAME=${SRVDIR}ServerAlp
+ENV SRVDIR=promotion
+ENV SRVNAME=${SRVDIR}ServerAlp
+
+#Build the Go app
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o $SRVNAME ./$SRVDIR/server/
+
+# Second stage: Build final small and secured image 
+FROM scratch as final
+
+# Set working directory
+WORKDIR /goTemp
+
+# Copy static files
+COPY ./user/proto ./user/proto
+COPY ./customer/proto ./customer/proto
+COPY ./globalProtos ./globalProtos
+COPY ./globalerrors ./globalerrors
+COPY ./globalUtils ./globalUtils
+COPY ./globalMonitoring ./globalMonitoring
+
+# Expose ports
+EXPOSE 50051
+EXPOSE 2112
+
+# Run binary
+CMD ["./$SRVNAME"]

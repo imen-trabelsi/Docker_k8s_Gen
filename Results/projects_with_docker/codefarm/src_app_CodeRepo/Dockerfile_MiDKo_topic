@@ -1,0 +1,28 @@
+FROM codefarm/appnodebase:0.0.0
+
+# Define the User to root
+USER root
+
+# Copy our static executable
+COPY . /app/
+
+# Change Working Directory into the /app directory
+WORKDIR /app
+
+# Install Dependencies
+RUN npm install
+
+# Build Instructions, Run Commands
+RUN git config --global user.email "farmer@nowhere.all" \
+    && git config --global user.name "The Farmer" \
+    && set -x \
+    && apt-get update \
+
+# Expose Port
+EXPOSE 8080
+
+# Set health checks
+HEALTHCHECK --interval=5m --timeout=3s --start-period=30s --retries=3 CMD curl -f http://localhost/ || exit 1
+
+# Command to execute the Node.js app
+CMD ["npm", "start"]

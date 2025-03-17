@@ -1,0 +1,17 @@
+# Set base image.
+FROM java:8-jre
+
+# Set working directory in the container
+WORKDIR /app
+
+# Set exposed port
+EXPOSE 11178
+
+# Copy the application's .jar to the container
+COPY ./target/ts-route-service-1.0.jar /app/
+
+# Set necessary environment and timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Specify the command to run
+CMD ["java", "-Xmx200m", "-jar", "/app/ts-route-service-1.0.jar"]

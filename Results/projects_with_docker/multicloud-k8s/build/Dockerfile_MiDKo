@@ -1,0 +1,44 @@
+#Using base image
+FROM golang:1.14.1
+
+# Setting up working directory
+WORKDIR /go/src/github.com/onap/multicloud-k8s
+
+# Copying the current directory contents to Container
+COPY ./ ./
+WORKDIR /opt/emco
+
+# Copying from specified directories to Container
+COPY --chown=emco ./src/orchestrator/orchestrator ./
+COPY --chown=emco ./src/ncm/ncm ./
+COPY --chown=emco ./src/dcm/dcm ./
+COPY --chown=emco ./src/rsync/rsync ./
+COPY --chown=emco ./src/ovnaction/ovnaction ./
+COPY --chown=emco ./src/clm/clm ./
+COPY --chown=emco ./build/entrypoint ./
+
+# Copying JSON schemas
+COPY --chown=emco ./src/orchestrator/json-schemas ./json-schemas
+COPY --chown=emco ./src/ncm/json-schemas ./json-schemas
+COPY --chown=emco ./src/clm/json-schemas ./json-schemas
+COPY --chown=emco ./src/ovnaction/json-schemas ./json-schemas
+
+# Adding a user
+RUN groupadd -r emco && useradd -r -g emco emco
+
+# Changing ownership
+RUN chown emco:emco /opt/emco -R
+
+# Commands to be run after building the image
+RUN cd src/orchestrator && make all
+RUN cd src/ncm && make all
+RUN cd src/dcm && make all
+RUN cd src/rsync && make all
+RUN cd src/ovnaction && make all
+RUN cd src/clm && make all
+
+# Set user to emco
+USER emco
+
+# Define default command
+ENTRYPOINT ["./entrypoint"]

@@ -1,0 +1,36 @@
+# Base image
+FROM debian:10
+
+# Update the system 
+RUN apt-get update && \
+    apt-get install -y systemd && \
+    apt-get clean && \
+
+# Remove unnecessary files
+RUN rm -f /lib/systemd/system/multi-user.target.wants/* \
+/etc/systemd/system/*.wants/* \
+/lib/systemd/system/local-fs.target.wants/* \
+/lib/systemd/system/sockets.target.wants/*udev* \
+/lib/systemd/system/sockets.target.wants/*initctl* \
+/lib/systemd/system/sysinit.target.wants/systemd-tmpfiles-setup* \
+
+# Set environment variables
+ENV container docker
+ENV LC_ALL C
+ENV DEBIAN_FRONTEND noninteractive
+
+# Copy necessary files for the project
+COPY . /go/src/myapp
+WORKDIR /go/src/myapp
+
+# Get dependencies
+RUN go mod download
+
+# Build the application
+RUN go build -o main .
+
+# Expose port
+EXPOSE 8080
+
+# Final command
+CMD ["/lib/systemd/systemd"]

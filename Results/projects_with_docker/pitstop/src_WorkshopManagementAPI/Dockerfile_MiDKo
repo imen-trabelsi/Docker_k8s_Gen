@@ -1,0 +1,37 @@
+# Use the base image provided by the user
+FROM pitstop-dotnet-sdk-base:1.0 AS build-env
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the Project files into the Docker image
+COPY *.csproj ./
+
+# Run the dotnet restore
+RUN dotnet restore
+
+# Copy everything else and build
+COPY . ./
+
+# Run the publish command
+RUN dotnet publish -c Release -o out
+
+# Start a new stage from scratch
+FROM build-env
+
+# Set the working directory
+WORKDIR /app
+
+# Copy everything from the /out directory in the build-env to the working directory in the new stage
+
+# Set the ASPNETCORE_URLS environment variable
+ENV ASPNETCORE_URLS=http://*:5200
+
+# Expose the required ports
+EXPOSE 5200/tcp
+
+# Add a health check
+HEALTHCHECK --interval=30s --timeout=3s --retries=1 CMD curl --silent --fail http://localhost:5200/hc || exit 1
+
+# Set the entrypoint
+ENTRYPOINT ["dotnet", "Pitstop.WorkshopManagementAPI.dll"]

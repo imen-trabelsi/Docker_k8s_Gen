@@ -1,0 +1,35 @@
+# Using multi-stage build
+# First stage
+FROM rust AS base
+WORKDIR /app
+ENV MISE_DATA_DIR="/mise" \
+    MISE_CACHE_DIR="/mise/cache" \
+    MISE_INSTALL_PATH="/usr/local/bin/mise" \
+    PATH="/mise/shims:$PATH" \
+    MISE_CARGO_HOME="/usr/local/cargo" \
+    COREPACK_HOME=/usr/local/src/var/corepack-cache \
+
+COPY . .
+
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl ca-certificates && \
+    curl https://mise.run | sh && apt-get clean && \
+    rm -rf /var/lib/apt/lists/* && \
+    eval "$(mise activate bash)"  && \
+    mise install node npm:turbo yq rust[profile=minimal]@$(yq '.toolchain.channel' rust-toolchain.toml) && \
+    groupadd --system --gid 60000 hash useradd --system api -G hash && \
+    install -d -m 0775 -o api -g hash /log /home/api officeParserTemp/tempfiles $COREPACK_HOME && \
+
+WORKDIR /usr/local/
+
+# Second stage
+FROM rust as builder
+WORKDIR /usr/local/src/
+
+# Final stage
+FROM rust as final
+
+WORKDIR /usr/local/src/apps/hash-api
+HEALTHCHECK --interval=5s --timeout=3s --start-period=10s --retries=3 CMD curl -f http://localhost:5001/health-check || exit 1
+ENTRYPOINT ["yarn"]
+CMD ["start"]

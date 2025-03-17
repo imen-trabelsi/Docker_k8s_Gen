@@ -1,0 +1,26 @@
+# Use amazonlinux as base image
+FROM amazonlinux
+
+# Create directory for the app
+RUN mkdir -p /deploy
+WORKDIR /deploy
+
+# Install Node.js and npm
+RUN yum -y install make gcc*
+RUN curl --silent --location https://rpm.nodesource.com/setup_8.x | bash -
+RUN yum -y install nodejs
+
+# Globally install serverless
+RUN npm install -g serverless
+
+# Add app
+COPY . .
+
+# Install app dependencies
+RUN npm ci --only=production
+
+# Make deploy.sh executable
+RUN ["chmod", "+x", "deploy.sh"]
+
+# Sleep for 2 minutes
+CMD ./deploy.sh ; sleep 2m

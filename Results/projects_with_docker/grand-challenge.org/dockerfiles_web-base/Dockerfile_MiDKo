@@ -1,0 +1,47 @@
+# Define base image
+FROM python:${PYTHON_VERSION}-slim-buster as build-stage
+
+# Create and set working directory
+WORKDIR /app
+
+# Create Django user and group
+RUN groupadd -r django && useradd -m -r -g django django 
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+
+# Install system dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends \
+    libpng-dev \
+    libjpeg-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    libxft-dev \
+    libffi-dev \
+    wget \
+
+# Install Python dependencies
+COPY --chown=django:django pyproject.toml /app
+RUN poetry config virtualenvs.in-project true && \
+
+# Copy project files into container
+COPY --chown=django:django . /app
+
+# Start a new stage and copy necessary content
+FROM python:${PYTHON_VERSION}-slim-buster
+
+# Working directory
+WORKDIR /app
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+
+# Expose API service on port 8080
+EXPOSE 8080
+
+# Switch to a non-root user
+USER django
+
+# Default command
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8080"]

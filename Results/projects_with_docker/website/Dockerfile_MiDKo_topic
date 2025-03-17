@@ -1,0 +1,38 @@
+# Start with a base image containing Java runtime
+FROM maven:3.6.3-jdk-11-slim AS build
+
+# The application's .jar file
+ARG JAR_FILE=target/*.jar
+
+# Add Maintainer Info
+LABEL maintainer="youremail@example.com"
+
+# Change current directory inside the Docker image
+WORKDIR /usr/share/website
+
+# For Maven, copy pom.xml and then source code to utilize Docker cache
+COPY pom.xml .
+
+RUN mvn dependency:go-offline -B
+
+COPY src ./src
+
+# Package the application
+RUN mvn clean package -DskipTests
+
+# Use multi-stage build to create a lean executable Docker image
+FROM openjdk:11-jre-slim
+
+WORKDIR /app
+
+# Copy the jar to the production image from the builder stage.
+
+# Expose the ports the app runs in
+EXPOSE 8080
+
+# Add a health check instruction
+HEALTHCHECK --interval=10m --timeout=3s \
+  CMD curl -f http://localhost:8080/actuator/health || exit 1
+  
+# Run the application. 
+ENTRYPOINT ["java","-jar","/app/app.jar"]

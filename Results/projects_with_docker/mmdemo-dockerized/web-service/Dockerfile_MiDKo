@@ -1,0 +1,36 @@
+# Ubuntu base image
+FROM ubuntu:xenial
+
+# Environment Variables
+ENV APACHE_RUN_USER www-data
+ENV APACHE_RUN_GROUP www-data
+ENV APACHE_LOG_DIR /var/log/apache2
+ENV APACHE_LOCK_DIR /var/lock/apache2
+ENV APACHE_PID_FILE /var/run/apache2.pid
+
+# Install necessary software and libraries
+RUN apt-get update && \
+    apt-get -y upgrade && \
+    DEBIAN_FRONTEND=noninteractive apt-get -y install apache2 php7.0-dev libapache2-mod-php7.0 php7.0-mcrypt php7.0-gd libxml2  \
+    php-pear php-apcu php7.0-curl curl lynx-cur memcached php-memcached libcurl4-openssl-dev pkg-config libssl-dev apt-utils python python-dev python-pip php-zip && \
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
+    a2enmod php7.0 && \
+    a2enmod rewrite && \
+    phpenmod mcrypt && \
+    a2enmod headers && \
+    pip install requests && \
+    pecl install mongodb && \
+    sed -i "s/error_reporting = .*$/error_reporting = E_ERROR | E_WARNING | E_PARSE/" /etc/php/7.0/apache2/php.ini && \
+    sed -i "s/variables_order.*/variables_order = \"EGPCS\"/g" /etc/php/7.0/apache2/php.ini && \
+
+# Copy necessary files
+COPY site /var/www/site
+COPY apache-config.conf /etc/apache2/sites-enabled/000-default.conf
+COPY auto_cache.py /
+COPY run.sh /
+
+# Expose port 80
+EXPOSE 80
+
+# Run Command
+CMD ["sh", "run.sh"]

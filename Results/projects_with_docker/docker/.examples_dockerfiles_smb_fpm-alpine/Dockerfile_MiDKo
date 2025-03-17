@@ -1,0 +1,20 @@
+# Reference Image
+FROM nextcloud:fpm-alpine
+
+# Update and install dependencies
+RUN apk update && apk add --no-cache procps samba-client
+
+# Set working directory
+WORKDIR /var/www/html
+
+# Copy configuration files
+COPY .config /var/www/html/.config
+
+# Ensure Nextcloud is executable
+RUN chmod +x /var/www/html/.config
+
+# Port configuration
+EXPOSE 80
+
+# Container command
+CMD ["php", "-S", "0.0.0.0:80"]

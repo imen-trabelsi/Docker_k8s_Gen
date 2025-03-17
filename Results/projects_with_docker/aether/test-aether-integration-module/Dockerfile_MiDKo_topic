@@ -1,0 +1,49 @@
+# Use an official Python runtime as a parent image
+FROM python:3.10-slim as builder
+
+# setup environment variable
+ENV VIRTUAL_ENV=/var/run/aether/venv
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+# updating apt-get and installing gcc
+RUN apt-get update -qq > /dev/null && \
+
+# Add user
+RUN useradd -ms /bin/false aether && \
+    mkdir -p $VIRTUAL_ENV && \
+
+# Set the working directory in the image 
+WORKDIR /code
+
+# Copy setup.py and install dependencies
+COPY --chown=aether:aether setup.py /code/
+RUN pip install -q --upgrade pip && \
+
+# keep only the necessary files, move to next stage
+FROM python:3.10-slim
+
+# setup environment variable
+ENV VIRTUAL_ENV=/var/run/aether/venv
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+# Copy over files from builder stage.
+
+# allow the container to run as an executable
+ENTRYPOINT ["/code/entrypoint.sh"]
+
+# Copy the rest of source code and configs
+COPY --chown=aether:aether . /code
+
+# Provide build arguments 
+ARG VERSION
+ARG GIT_REVISION
+
+# Run Commands
+RUN mkdir -p /var/tmp && \
+    echo $VERSION > /var/tmp/VERSION && \
+
+# Specifying metadata for the image
+LABEL description="Aether"
+
+# The application is running on port 8080
+EXPOSE 8080

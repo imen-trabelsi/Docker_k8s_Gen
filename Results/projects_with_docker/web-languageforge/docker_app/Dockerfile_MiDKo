@@ -1,0 +1,41 @@
+# Stage 1: Prepare
+FROM sillsdev/web-languageforge:base-php AS builder
+COPY package.json pnpm-lock.yaml ./
+COPY typings ./typings/
+COPY webpack.config.js webpack-dev.config.js webpack-prd.config.js tsconfig.json tslint.json ./
+COPY src/angular-app ./src/angular-app
+COPY src/sass ./src/sass
+COPY src/Site/views/languageforge/theme/default/sass/ ./src/Site/views/languageforge/theme/default/sass
+COPY src/Site/views/shared/*.scss ./src/Site/views/shared/
+WORKDIR /composer
+COPY src/composer.json src/composer.lock /composer/
+ENV NPM_BUILD_SUFFIX=dev
+ENV COMPOSER_ALLOW_SUPERUSER=1
+RUN mkdir -p /data
+WORKDIR /data
+RUN npm install -g corepack@latest
+RUN corepack enable
+RUN pnpm install
+RUN pnpm run build:${NPM_BUILD_SUFFIX}
+RUN composer install
+RUN rm /usr/local/bin/install-php-extensions /usr/local/bin/composer
+RUN apt-get remove -y gnupg2 git
+RUN mv $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini
+RUN install-php-extensions xdebug-^3.1
+
+# Stage 2: Production
+FROM sillsdev/web-languageforge:base-php
+COPY --from=sillsdev/web-languageforge:wait-latest /wait /wait
+COPY docker/app/run-with-wait.sh /run-with-wait.sh
+ENV NPM_BUILD_SUFFIX=prd
+WORKDIR /var/www/html/
+COPY docker/app/docker-php-ext-xdebug.ini /usr/local/etc/php/conf.d
+RUN mv $PHP_INI_DIR/php.ini-development $PHP_INI_DIR/php.ini
+RUN ln -s /var/www/html /var/www/src
+RUN chown -R www-data:www-data /var/www/html/assets /var/www/html/cache \
+ARG ENVIRONMENT=production
+ARG BUILD_VERSION=9.9.9
+RUN echo "${BUILD_VERSION}" > build-version.txt \
+ENTRYPOINT ["tini", "-g", "--"]
+CMD ["apache2-foreground"]
+

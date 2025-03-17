@@ -1,0 +1,36 @@
+# Base Image
+FROM $REPOSITORY/gs-cloud-base-jre:$TAG
+
+# Environment Variable
+ENV JAVA_TOOL_OPTIONS="${DEFAULT_JAVA_TOOL_OPTIONS} -XX:SharedArchiveFile=application.jsa"
+
+# Copy pom.xml and source code
+COPY pom.xml .
+COPY src ./src
+
+# Build Arguments
+ARG REPOSITORY=geoservercloud
+ARG TAG=latest
+ARG JAR_FILE=target/gs-cloud-*-bin.jar
+
+# Dependencies installation and Build
+RUN mvn clean install
+
+# Copy Instructions
+COPY ${JAR_FILE} application.jar
+COPY --from=builder dependencies/ ./
+COPY --from=builder snapshot-dependencies/ ./
+COPY --from=builder spring-boot-loader/ ./
+COPY --from=builder application/ ./
+
+# Exposed Ports
+EXPOSE 8080
+
+# Entry Point
+ENTRYPOINT ["java", "-Djarmode=layertools", "-jar", "application.jar", "extract"]
+
+# CMD
+CMD ["java", "-XX:ArchiveClassesAtExit=application.jsa", "-Dspring.context.exit=onRefreshed", "-Dspring.profiles.active=standalone", "-Dserver.port=0", "-Dmanagement.server.port=0", "org.springframework.boot.loader.JarLauncher"]
+
+# Run Command
+RUN rm -rf /tmp/*

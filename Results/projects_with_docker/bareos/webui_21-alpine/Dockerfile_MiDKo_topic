@@ -1,0 +1,27 @@
+# Dockerfile
+FROM alpine:3.16
+
+# Update the system and install necessary packages
+RUN apk update && \
+
+# Copying Necessary Files
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+
+# Making sure our script is executable
+RUN chmod u+x /docker-entrypoint.sh
+
+# Preserving data from Bareos WebUI
+RUN tar cfvz /bareos-webui-config.tgz /etc/bareos-webui
+RUN tar cfvz /bareos-webui-code.tgz /usr/share/bareos-webui
+
+# Prepare Nginx directories
+RUN mkdir -p /run/nginx
+
+# Expose Ports
+EXPOSE 9100
+
+# Set the entrypoint
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
+# Set the default command
+CMD ["/usr/sbin/nginx", "-g", "daemon off;"]

@@ -1,0 +1,52 @@
+# Use rust as base image
+FROM rust:latest as base
+
+# Set up environment
+ENV MISE_DATA_DIR="/mise"
+ENV MISE_CACHE_DIR="/mise/cache"
+ENV MISE_INSTALL_PATH="/usr/local/bin/mise"
+ENV MISE_NODE_COREPACK=1
+ENV PATH="/mise/shims:$PATH"
+ENV MISE_CARGO_HOME="/usr/local/cargo"
+ENV PROFILE="production"
+ENV ENABLE_TEST_SERVER="no"
+
+# Install necessary packages and node, npm
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl ca-certificates && \
+    curl https://mise.run | sh && \
+    rm -rf /var/lib/apt/lists/* && \
+    eval "$(mise activate bash)" && \
+    mise install node npm:turbo && \
+    mise use --global yq && \
+    mise use --global rust[profile=minimal]@$(yq '.toolchain.channel' rust-toolchain.toml) && \
+    rm rust-toolchain.toml && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends build-essential musl-tools && \
+    mise install protoc && \
+    yarn install --immutable && \
+
+WORKDIR /app
+
+# Copy codebase
+COPY . .
+
+# Ensuring caching for subsequent builds, setting USER and User Enable Tests
+RUN --mount=type=cache,target=/usr/local/cargo/registry,sharing=locked \
+    --mount=type=cache,target=/usr/local/cargo/git,sharing=locked \
+    --mount=type=cache,target=/usr/local/src/target,sharing=locked \
+    FEATURES=() && \
+    if [[ ${ENABLE_TEST_SERVER^^} == Y* || ${ENABLE_TEST_SERVER^^} == T* || $ENABLE_TEST_SERVER == 1 ]]; then FEATURES+=("test-server"); fi && \
+    if [[ ${PROFILE} == dev ]]; then export RUSTFLAGS="-C debuginfo=line-tables-only"; export PROFILE=dev-llvm; fi && \
+    FEATURES=${FEATURES[@]} && \
+    rustup target add "$(uname -m)-unknown-linux-musl" && \
+    cargo install --target "$(uname -m)-unknown-linux-musl" --path apps/hash-graph --root /tmp --features "${FEATURES// /,}" --profile $PROFILE --locked && \
+    mkdir -p /out/etc && \
+    cp /tmp/bin/hash-graph /out/hash-graph && \
+    echo 'graph:x:61000:60000:hash-graph:/:' > /out/etc/passwd && \
+    echo 'hash:x:60000:' > /out/etc/group && \
+
+USER graph:hash
+
+# Set default command
+ENTRYPOINT ["/hash-graph"]

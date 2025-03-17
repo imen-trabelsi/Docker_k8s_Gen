@@ -1,0 +1,32 @@
+# Set the base image
+FROM node:8
+
+# Create app directory
+WORKDIR /app
+
+# Set the environment to production
+ENV NODE_ENV production
+
+# Install app dependencies
+# Copy the package.json and package-lock.json, if available, files first
+# This is for best utilization of Docker cache
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install --production
+
+# Add your source files
+COPY . .
+
+# Expose the listening port of your app
+EXPOSE 8100
+
+# Set the user to use when running this image
+USER node
+
+# Health checks
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD curl -f http://localhost:8100/ || exit 1
+
+# Run the command
+CMD [ "node", "src/index.js" ]

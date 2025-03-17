@@ -1,0 +1,28 @@
+# Set the base image
+FROM confluentinc/cp-server-connect-base:$CONFLUENT_DOCKER_TAG
+
+# Copy pom.xml and install dependencies
+COPY pom.xml .
+RUN mvn install
+
+# Copy the other source code files
+COPY src ./src
+COPY configs ./configs
+COPY checkstyle ./checkstyle
+COPY schemas ./schemas
+COPY tests ./tests
+COPY workflows ./workflows
+COPY images ./images
+
+# Copy Docker Compose and Dockerfiles
+COPY cp-all-in-one-security/oauth/docker-compose.yml .
+COPY Dockerfile .
+
+# Build the application
+RUN mvn clean install
+
+# Install the necessary plugins
+RUN confluent-hub install --no-prompt confluentinc/kafka-connect-datagen:0.6.5 \
+
+# Set the command to start the Spring Boot application
+CMD ["java", "-jar", "/target/*.jar"]

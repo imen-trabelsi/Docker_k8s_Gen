@@ -1,0 +1,28 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:17-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "JAR_FILE"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "COPY target/${JAR_FILE} /usr/share/myservice/myservice.jar"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"java\",",
+                    "\"-jar\",",
+                    "\"/usr/share/myservice/myservice.jar\"]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

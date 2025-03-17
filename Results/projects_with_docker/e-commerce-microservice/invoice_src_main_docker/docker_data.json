@@ -1,0 +1,38 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:8-jre-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8081"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \\"
+        ],
+        "copy_instructions": [
+            "ADD entrypoint.sh entrypoint.sh",
+            "ADD *.war app.war"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"./entrypoint.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "adduser -D -s /bin/sh jhipster",
+                "WORKDIR /home/jhipster"
+            ],
+            [
+                "chmod 755 entrypoint.sh && chown jhipster:jhipster entrypoint.sh",
+                "USER jhipster"
+            ]
+        ]
+    }
+}

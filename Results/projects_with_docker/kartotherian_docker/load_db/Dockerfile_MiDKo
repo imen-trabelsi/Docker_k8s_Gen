@@ -1,0 +1,45 @@
+# Set the base image
+FROM python:3.8-bullseye
+
+# Set environment variables
+ENV MAIN_DIR=/srv
+ENV LANG C.UTF-8
+ENV LC_ALL C.UTF-8
+
+# Create directories
+RUN mkdir -p ${MAIN_DIR}/imposm \
+    && mkdir -p ${MAIN_DIR}/import_data/imposm/ \
+    && mkdir -p ${MAIN_DIR}/tilerator \
+
+# Install dependencies and packages
+RUN apt-get update && \
+    apt-get upgrade -y openssl && \
+    apt-get install -y --no-install-recommends git unzip curl osmctools gdal-bin postgis postgresql-client jq \
+    && rm -rf /var/lib/apt/lists/* \
+    && wget https://github.com/omniscale/imposm3/releases/download/v0.11.1/imposm-0.11.1-linux-x86-64.tar.gz \
+    && tar xvfz imposm-0.11.1-linux-x86-64.tar.gz \
+    && ln -sf /imposm-0.11.1-linux-x86-64/imposm /usr/local/bin/imposm3 \
+    && wget -O /usr/local/bin/pgfutter https://github.com/lukasmartinelli/pgfutter/releases/download/v1.2/pgfutter_linux_amd64 \
+    && chmod +x /usr/local/bin/pgfutter \
+    && pip install pipenv \ 
+    && python3 -m pip install git+https://github.com/openmaptiles/openmaptiles-tools \
+    && rm -f /usr/bin/python3 \
+    && ln -s `which python3.8` /usr/bin/python3 \
+
+# Configurations
+WORKDIR ${MAIN_DIR}/import_data
+COPY openmaptiles /opt/openmaptiles
+COPY load_db/config.yml ./config.yml
+COPY load_db/import_data.sh ./import_data.sh
+COPY import_data ${MAIN_DIR}/import_data
+RUN chmod +x ./import_data.sh 
+
+# Build
+RUN CONFIG_DIR=${MAIN_DIR} make qwant
+RUN cd ${MAIN_DIR}/import_data && pipenv install --system --deploy
+
+# Symlink for tilerator
+RUN ln -s ${MAIN_DIR}/import_data/* ${MAIN_DIR}/imposm/
+
+# Command to execute
+ENTRYPOINT ["./import_data.sh"]

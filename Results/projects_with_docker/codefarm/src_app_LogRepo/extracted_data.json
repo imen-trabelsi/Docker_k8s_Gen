@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"logrepo\",\n  \"version\": \"0.0.0\",\n  \"description\": \"Log Repository Service\",\n  \"main\": \"index.js\",\n  \"scripts\": {\n    \"compile\": \"echo 'No compile needed'\",\n    \"build\": \"../../bs/build.sh\",\n    \"extract\": \"../../bs/extract.sh\",\n    \"load\": \"../../bs/load.sh\",\n    \"unload\": \"../../bs/unload.sh\",\n    \"shell\": \"../../bs/run_cmd.sh bash\",\n    \"start\": \"../../bs/start.sh --expose 19696 -p 19696:19696 -d\",\n    \"start-dev\": \"node . --bus amqp://localhost/codefarm\",\n    \"start-rel\": \"npm run start-dev\",\n    \"stop\": \"../../bs/stop.sh\",\n    \"test\": \"mocha --exit --recursive\",\n    \"lint\": \"git ls-files \\\"*.js\\\" | xargs eslint\",\n    \"install\": \"if [ -n \\\"$gitroot\\\" ]; then $gitroot/src/bs/linklibs.sh; else ../../bs/linklibs.sh; fi\",\n    \"deepinstall\": \"if [ -n \\\"$gitroot\\\" ]; then FORCE_INSTALL_LIBS=1 $gitroot/src/bs/linklibs.sh; else FORCE_INSTALL_LIBS=1 ../../bs/linklibs.sh; fi\"\n  },\n  \"author\": \"Mattias Runge <mattias.runge@combitech.se>\",\n  \"license\": \"MIT\",\n  \"engines\": {\n    \"node\": \">= 7.0.0\"\n  },\n  \"libraries\": [\n    \"database\",\n    \"typelib\",\n    \"msgbus\",\n    \"emitter\",\n    \"log\",\n    \"service\",\n    \"misc\",\n    \"web\",\n    \"version\",\n    \"backend\",\n    \"testsupport\",\n    \"servicecom\",\n    \"loglib\"\n  ],\n  \"dependencies\": {\n    \"async-busboy\": \"^0.4.0\",\n    \"fs-extra-promise\": \"^0.4.1\",\n    \"read-last-lines\": \"^1.1.2\",\n    \"yargs\": \"^7.0.2\"\n  },\n  \"devDependencies\": {\n    \"babel-eslint\": \"^7.2.1\",\n    \"chai\": \"^3.5.0\",\n    \"eslint\": \"^3.19.0\",\n    \"get-port\": \"^3.1.0\",\n    \"mocha\": \"^6.0.0\",\n    \"request\": \"^2.81.0\",\n    \"request-promise\": \"^4.2.0\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "src/app/LogRepo/Dockerfile": "FROM codefarm/appnodebase:0.0.0\nCMD [ \\\n    \"node\", \\\n    \".\", \\\n    \"--bus\", \"amqp://rabbitmq:5672/codefarm\" \\\n]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            "Dockerfile",
+            "package.json",
+            "yarn.lock"
+        ],
+        "folders": []
+    }
+}

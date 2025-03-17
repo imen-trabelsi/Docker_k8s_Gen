@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: smtp-server
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: inbucket
+  template:
+    metadata:
+      labels:
+        app: inbucket
+        tier: backend
+        type: smtp
+    spec:
+      containers:
+      - image: jhillyerd/inbucket
+        name: smtp-server
+        ports:
+        - containerPort: 8888
+        - containerPort: 2500

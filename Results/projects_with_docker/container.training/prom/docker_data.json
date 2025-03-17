@@ -1,0 +1,17 @@
+{
+    "docker_info": {
+        "base_image": "prom/prometheus:v1.4.1",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY prometheus.yml /etc/prometheus/prometheus.yml"
+        ],
+        "execution": [],
+        "run": []
+    }
+}

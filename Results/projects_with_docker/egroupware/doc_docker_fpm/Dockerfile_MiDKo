@@ -1,0 +1,45 @@
+# Set the base image
+FROM $ARCHubuntu:20.04
+
+# Build args
+ARG ARCH=
+ARG VERSION=dev-master
+ARG PHP_VERSION=8.2
+ARG DEBIAN_FRONTEND=noninteractive
+ARG TARGETPLATFORM
+
+# Environment variables
+ENV VERSION=$VERSION
+ENV PHP_VERSION=$PHP_VERSION
+
+# Run commands
+RUN set -e \
+&& apt-get update \
+&& apt-get install -y software-properties-common \
+&& LC_ALL=C.UTF-8 add-apt-repository -y ppa:ondrej/php \
+&& apt-get update \
+&& bash -c "apt-get install -y php$PHP_VERSION-{cli,mysql,gd,xsl,bz2,opcache,tidy,zip,bcmath,mbstring,smbclient,ldap,curl,fpm,pgsql,gmp,memcached}" \
+&& cd /usr/share/egroupware\
+&& if [ "$TARGETPLATFORM" = "linux/ppc64le" ]; then \
+dist_node_v20=https://nodejs.org/dist/latest-v20.x/ \
+dist_node_v20_ppc64le=$(curl $dist_node_v20|grep ppc64le.tar.xz|cut -d'"' -f2) \
+curl -L $dist_node_v20$dist_node_v20_ppc64le | tar --directory=/usr/local/ -xJvf - ; \
+else \
+mkdir -p /etc/apt/keyrings \
+&& curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+&& echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" | tee /etc/apt/sources.list.d/nodesource.list \
+&& apt-get update \
+&& apt-get install -y nodejs libatomic1 ; \
+fi \
+&& npm config set fetch-retries 5 \
+&& mkdir chunks \
+
+# Copy Instructions
+COPY entrypoint.sh /
+
+# Exposed Ports
+EXPOSE 9000
+
+# Command Execution
+CMD ["php-fpm",, "--nodaemonize"]
+ENTRYPOINT ["/entrypoint.sh"]

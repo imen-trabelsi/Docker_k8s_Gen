@@ -1,0 +1,54 @@
+{
+    "docker_info": {
+        "base_image": "ubuntu:16.04",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "39000"
+        ],
+        "user": [],
+        "labels": [
+            "maintainer=\"TerraMA\u00b2"
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV BDQLIGHT_INSTALL_PATH=/opt/bdqueimadas-light"
+        ],
+        "copy_instructions": [
+            "COPY files/install_bdqlight.sh .",
+            "WORKDIR ${BDQLIGHT_INSTALL_PATH}",
+            "COPY docker-entrypoint.sh /"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "/docker-entrypoint.sh"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && \\",
+                "apt-get install -y curl",
+                "git",
+                "unzip",
+                "sudo",
+                "openssh-server",
+                "gdal-bin"
+            ],
+            [
+                "curl -sL https://deb.nodesource.com/setup_6.x | sudo -E bash - && \\",
+                "apt-get install -y nodejs"
+            ],
+            [
+                "npm install -g grunt-cli",
+                ""
+            ],
+            [
+                "./install_bdqlight.sh && rm install_bdqlight.sh",
+                ""
+            ]
+        ]
+    }
+}

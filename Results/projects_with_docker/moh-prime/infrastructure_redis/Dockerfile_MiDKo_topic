@@ -1,0 +1,36 @@
+# Use Red Hat's Redis Image as the base
+FROM rhel8/redis-6
+
+# Set the Environment Variables
+ENV TINI_VERSION v0.19.0
+ENV FLASK_APP parse_api_response.py
+
+# Install Flask and other dependencies
+COPY requirements.txt /
+RUN pip install -r requirements.txt && rm -f requirements.txt
+
+# Copy the Application
+COPY . /app
+WORKDIR /app
+
+# Edit Permissions to ensure the container runs correctly
+RUN chmod +x /tini
+COPY docker-compose.yml infrastructure/redis/Dockerfile .
+
+# Add Tini
+ADD https://github.com/krallin/tini/releases/download/${TINI_VERSION}/tini /tini
+
+# Make Tini executable and set it as entrypoint
+RUN chmod +x /tini
+ENTRYPOINT ["/tini", "--"]
+
+# Add the run command for the application
+CMD ["run-redis"]
+
+# Expose the specified ports
+EXPOSE 6379
+
+# Run as root
+USER root
+
+# Healthchecks and networking are implemented at runtime depending on the orchestrator(kubernetes, docker swarm etc), not at build time.

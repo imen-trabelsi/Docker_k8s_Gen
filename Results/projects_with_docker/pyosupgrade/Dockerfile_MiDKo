@@ -1,0 +1,25 @@
+# Base Image
+FROM python:2.7-onbuild
+
+# Set working directory in the container
+WORKDIR /usr/src/app
+
+# Copy everything into the container
+COPY . /usr/src/app
+
+# Run commands
+RUN git clone https://github.com/kecorbin/flower \
+    && cd /tmp/flower \
+    && python setup.py install \
+
+# Set the current directory
+WORKDIR /tmp
+
+# Install dependencies
+RUN pip install -r requirements.txt
+
+# Expose the application on port 8000
+EXPOSE 8000
+
+# CMD/ENTRYPOINT instructions
+CMD ["gunicorn", "app:app", "-b", "0.0.0.0:8000"]

@@ -1,0 +1,38 @@
+# Using Python Alpine base image
+FROM python:3.10-alpine
+
+# Information about the person who maintains this Docker Image
+LABEL maintainer="barcus@tou.nu" \
+org.label-schema.schema-version="1.0" \
+org.label-schema.build-date=$BUILD_DATE \
+org.label-schema.name=$NAME \
+org.label-schema.vcs-ref=$VCS_REF \
+
+# Set the working directory in the Docker image
+WORKDIR /home/bareos
+
+# Add a non-root user
+RUN adduser -D bareos
+
+# Environment variable
+ENV PATH="/home/bareos/.local/bin:${PATH}"
+
+# Python is cached on Docker, update pip 
+RUN pip install --no-cache-dir --upgrade pip==22.0.4 
+
+# Install necessary dependencies
+RUN pip install --no-cache-dir "bareos-restapi>=21*,<22*"
+
+# Switch to non-root user
+USER bareos
+
+# Copy necessary files
+COPY --chown=bareos docker-entrypoint.sh /docker-entrypoint.sh
+RUN chmod a+x /docker-entrypoint.sh 
+
+# Expose necessary ports
+EXPOSE 8000
+
+# Set the execution commands
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["uvicorn","--log-level", "debug", "--host", "0.0.0.0", "bareos_restapi:app", "--reload"]

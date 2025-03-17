@@ -1,0 +1,64 @@
+{
+    "docker_info": {
+        "base_image": "node:14-alpine3.13",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "API_URL"
+        ],
+        "envs": [
+            "ENV CORS_ALLOW=\"*\"",
+            "ENV FLAVOR=\"bitcoin-regtest\"",
+            "ENV BASE_HREF=\"/\"",
+            "ENV API_URL=$API_URL"
+        ],
+        "copy_instructions": [
+            "WORKDIR /workdir",
+            "WORKDIR esplora",
+            "COPY --from=build /workdir/esplora/dist /usr/share/nginx/html"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"nginx\",",
+                    "\"-g\",",
+                    "\"daemon",
+                    "off;\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --update --no-cache \\",
+                "git",
+                "bash"
+            ],
+            [
+                "git clone --no-checkout https://github.com/Blockstream/esplora.git",
+                ""
+            ],
+            [
+                "git checkout f6da494a9a0080ae2ae13842bcf53b259e3a3360",
+                ""
+            ],
+            [
+                "npm install --unsafe-perm",
+                ""
+            ],
+            [
+                "npm run dist $FLAVOR",
+                ""
+            ],
+            [
+                "rm /etc/nginx/conf.d/default.conf",
+                "COPY nginx.conf /etc/nginx/conf.d"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,71 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"crates-io\",\n  \"version\": \"0.0.0\",\n  \"private\": true,\n  \"homepage\": \"https://github.com/rust-lang/crates.io#readme\",\n  \"bugs\": {\n    \"url\": \"https://github.com/rust-lang/crates.io/issues\"\n  },\n  \"repository\": {\n    \"type\": \"git\",\n    \"url\": \"git+https://github.com/rust-lang/crates.io.git\"\n  },\n  \"license\": \"(MIT OR Apache-2.0)\",\n  \"author\": \"\",\n  \"directories\": {\n    \"doc\": \"docs\",\n    \"test\": \"tests\"\n  },\n  \"scripts\": {\n    \"build\": \"ember build --environment=production && node ./script/precompress-assets.mjs\",\n    \"lint:deps\": \"ember dependency-lint\",\n    \"lint:hbs\": \"ember-template-lint app\",\n    \"lint:js\": \"eslint . --cache\",\n    \"precompress\": \"node ./script/precompress-assets.mjs\",\n    \"prettier:check\": \"prettier --check package.json '**/*.js' '**/*.mjs' '**/*.ts' '**/*.md'\",\n    \"prettier:write\": \"prettier --write package.json '**/*.js' '**/*.mjs' '**/*.ts' '**/*.md'\",\n    \"start\": \"ember serve\",\n    \"start:docker\": \"ember serve --proxy http://backend:8888\",\n    \"start:live\": \"ember serve --proxy https://crates.io\",\n    \"start:local\": \"ember serve --proxy http://127.0.0.1:8888\",\n    \"start:staging\": \"ember serve --proxy https://staging-crates-io.herokuapp.com\",\n    \"test\": \"ember exam --split=2 --parallel\",\n    \"test-coverage\": \"COVERAGE=true npm run test && ember coverage-merge && rm -rf coverage_* coverage/coverage-summary.json && nyc report\",\n    \"e2e\": \"playwright test\"\n  },\n  \"prettier\": {\n    \"arrowParens\": \"avoid\",\n    \"printWidth\": 120,\n    \"singleQuote\": true,\n    \"tabWidth\": 2,\n    \"trailingComma\": \"all\"\n  },\n  \"dependencies\": {\n    \"@floating-ui/dom\": \"1.6.13\",\n    \"@juggle/resize-observer\": \"3.4.0\",\n    \"@sentry/ember\": \"9.3.0\",\n    \"chart.js\": \"4.4.8\",\n    \"date-fns\": \"4.1.0\",\n    \"highlight.js\": \"11.11.1\",\n    \"macro-decorators\": \"0.1.2\",\n    \"mermaid\": \"11.4.1\",\n    \"pretty-bytes\": \"6.1.1\",\n    \"semver\": \"7.7.1\"\n  },\n  \"devDependencies\": {\n    \"@axe-core/playwright\": \"4.10.1\",\n    \"@babel/core\": \"7.26.9\",\n    \"@babel/eslint-parser\": \"7.26.8\",\n    \"@babel/plugin-proposal-decorators\": \"7.25.9\",\n    \"@crates-io/msw\": \"workspace:*\",\n    \"@ember/optional-features\": \"2.2.0\",\n    \"@ember/render-modifiers\": \"3.0.0\",\n    \"@ember/string\": \"4.0.1\",\n    \"@ember/test-helpers\": \"5.1.0\",\n    \"@ember/test-waiters\": \"3.1.0\",\n    \"@embroider/compat\": \"3.8.3\",\n    \"@embroider/core\": \"3.5.2\",\n    \"@embroider/webpack\": \"4.1.0\",\n    \"@eslint/eslintrc\": \"3.3.0\",\n    \"@eslint/js\": \"9.21.0\",\n    \"@glimmer/component\": \"2.0.0\",\n    \"@glimmer/tracking\": \"1.1.2\",\n    \"@mainmatter/ember-api-actions\": \"0.6.0\",\n    \"@percy/cli\": \"1.30.7\",\n    \"@percy/ember\": \"4.2.0\",\n    \"@percy/playwright\": \"1.0.7\",\n    \"@playwright/test\": \"1.50.1\",\n    \"@sinonjs/fake-timers\": \"14.0.0\",\n    \"@types/ember\": \"4.0.11\",\n    \"@types/node\": \"22.13.9\",\n    \"@types/sinonjs__fake-timers\": \"8.1.5\",\n    \"@zestia/ember-auto-focus\": \"5.1.0\",\n    \"broccoli-asset-rev\": \"3.0.0\",\n    \"broccoli-funnel\": \"3.0.8\",\n    \"ember-a11y-testing\": \"7.1.0\",\n    \"ember-auto-import\": \"2.10.0\",\n    \"ember-cli\": \"6.2.2\",\n    \"ember-cli-babel\": \"8.2.0\",\n    \"ember-cli-bundle-analyzer\": \"1.0.0\",\n    \"ember-cli-code-coverage\": \"3.1.0\",\n    \"ember-cli-dependency-checker\": \"3.3.3\",\n    \"ember-cli-dependency-lint\": \"2.0.1\",\n    \"ember-cli-head\": \"2.0.0\",\n    \"ember-cli-htmlbars\": \"6.3.0\",\n    \"ember-cli-inject-live-reload\": \"2.1.0\",\n    \"ember-cli-notifications\": \"9.1.0\",\n    \"ember-click-outside\": \"6.1.1\",\n    \"ember-concurrency\": \"4.0.3\",\n    \"ember-css-modules\": \"2.1.0\",\n    \"ember-data\": \"5.3.11\",\n    \"ember-disable-prototype-extensions\": \"1.1.3\",\n    \"ember-error-route\": \"0.2.0\",\n    \"ember-event-helpers\": \"0.1.1\",\n    \"ember-exam\": \"9.0.0\",\n    \"ember-fetch\": \"8.1.2\",\n    \"ember-inflector\": \"5.0.2\",\n    \"ember-keyboard\": \"9.0.1\",\n    \"ember-link\": \"3.3.0\",\n    \"ember-load-initializers\": \"3.0.1\",\n    \"ember-modifier\": \"4.2.0\",\n    \"ember-page-title\": \"9.0.1\",\n    \"ember-qunit\": \"9.0.1\",\n    \"ember-resolver\": \"13.1.0\",\n    \"ember-router-scroll\": \"4.1.2\",\n    \"ember-source\": \"6.0.1\",\n    \"ember-svg-jar\": \"2.6.2\",\n    \"ember-template-lint\": \"7.0.1\",\n    \"ember-test-selectors\": \"7.0.0\",\n    \"ember-truth-helpers\": \"4.0.3\",\n    \"ember-web-app\": \"5.0.1\",\n    \"ember-window-mock\": \"1.0.2\",\n    \"eslint\": \"9.21.0\",\n    \"eslint-config-prettier\": \"10.0.2\",\n    \"eslint-plugin-ember\": \"12.5.0\",\n    \"eslint-plugin-ember-concurrency\": \"0.5.1\",\n    \"eslint-plugin-import-helpers\": \"2.0.1\",\n    \"eslint-plugin-prettier\": \"5.2.3\",\n    \"eslint-plugin-qunit\": \"8.1.2\",\n    \"eslint-plugin-qunit-dom\": \"0.2.0\",\n    \"eslint-plugin-unicorn\": \"57.0.0\",\n    \"globals\": \"16.0.0\",\n    \"globby\": \"14.1.0\",\n    \"loader.js\": \"4.7.0\",\n    \"match-json\": \"1.3.7\",\n    \"msw\": \"2.7.3\",\n    \"normalize.css\": \"8.0.1\",\n    \"nyc\": \"17.1.0\",\n    \"playwright-msw\": \"3.0.1\",\n    \"postcss-preset-env\": \"10.1.5\",\n    \"prettier\": \"3.5.3\",\n    \"qunit\": \"2.24.1\",\n    \"qunit-console-grouper\": \"0.3.0\",\n    \"qunit-dom\": \"3.4.0\",\n    \"tracked-built-ins\": \"4.0.0\",\n    \"typescript\": \"5.8.2\",\n    \"webpack\": \"5.98.0\"\n  },\n  \"resolutions\": {\n    \"ember-auto-import\": \"2.10.0\",\n    \"ember-get-config\": \"2.1.1\",\n    \"ember-inflector\": \"5.0.2\",\n    \"ember-modifier\": \"4.2.0\",\n    \"ember-svg-jar>cheerio\": \"1.0.0-rc.12\"\n  },\n  \"pnpm\": {\n    \"peerDependencyRules\": {\n      \"allowAny\": [\n        \"eslint\"\n      ],\n      \"ignoreMissing\": [\n        \"@babel/core\",\n        \"postcss\"\n      ]\n    },\n    \"onlyBuiltDependencies\": [\n      \"msw\"\n    ]\n  },\n  \"engines\": {\n    \"node\": \"22.14.0\",\n    \"pnpm\": \"10.5.2\"\n  },\n  \"ember\": {\n    \"edition\": \"octane\"\n  },\n  \"volta\": {\n    \"node\": \"22.14.0\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "docker-compose.yml": "x-backend: &backend\n  build:\n    context: .\n    dockerfile: backend.Dockerfile\n  environment:\n    DEV_DOCKER: \"true\"\n    DATABASE_URL: postgres://postgres:password@postgres/cargo_registry\n    SESSION_KEY: badkeyabcdefghijklmnopqrstuvwxyzabcdef\n    GIT_REPO_URL: file:///app/tmp/index-bare\n    GH_CLIENT_ID: \"\"\n    GH_CLIENT_SECRET: \"\"\n    WEB_ALLOWED_ORIGINS: http://localhost:8888,http://localhost:4200\n  links:\n    - postgres\n  volumes:\n    # Mount the src/ directory so we don't have to rebuild the Docker image\n    # when we want to change some code\n    - ./src:/app/src:ro\n\n    - index:/app/tmp\n    - cargo-cache:/usr/local/cargo/registry\n    - target-cache:/app/target\n    - local-uploads:/app/local_uploads\n\nservices:\n  postgres:\n    image: postgres:16@sha256:1bf73ccae25238fa555100080042f0b2f9be08eb757e200fe6afc1fc413a1b3c\n    environment:\n      POSTGRES_USER: postgres\n      POSTGRES_PASSWORD: password\n    ports:\n      - 127.0.0.1:5432:5432\n    volumes:\n      - ./docker/docker-entrypoint-initdb.d:/docker-entrypoint-initdb.d\n      - postgres-data:/var/lib/postgresql/data\n\n  backend:\n    <<: *backend\n    ports:\n      - 8888:8888\n    depends_on:\n      - postgres\n\n  worker:\n    <<: *backend\n    entrypoint: cargo run --bin background-worker\n    depends_on:\n      - backend\n\n  frontend:\n    build:\n      context: .\n      dockerfile: frontend.Dockerfile\n    entrypoint: pnpm start:docker\n    links:\n      - backend\n    ports:\n      - 4200:4200\n    volumes:\n      # Mount the app/ directory so live reload works\n      - ./app:/app/app:ro\n\nvolumes:\n  postgres-data:\n  cargo-cache:\n  target-cache:\n  index:\n  local-uploads:\n"
+        },
+        "static_files": {
+            "public/opensearch.xml": "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n<OpenSearchDescription xmlns=\"http://a9.com/-/spec/opensearch/1.1/\">\n    <ShortName>crates.io</ShortName>\n    <Description>Search for crates in the official Rust package registry</Description>\n    <Image type=\"image/png\">https://crates.io/assets/cargo.png</Image>\n    <Url type=\"text/html\" method=\"get\" template=\"https://crates.io/search?q={searchTerms}\"/>\n</OpenSearchDescription>\n"
+        }
+    },
+    "project_structure": {
+        "files": [
+            ".buildpacks",
+            ".dockerignore",
+            ".editorconfig",
+            ".ember-cli",
+            ".env.sample",
+            ".gitignore",
+            ".npmrc",
+            ".nycrc",
+            ".prettierignore",
+            ".template-lintrc.js",
+            ".watchmanconfig",
+            "Cargo.lock",
+            "Cargo.toml",
+            "Justfile",
+            "LICENSE-APACHE",
+            "LICENSE-MIT",
+            "Procfile",
+            "README.md",
+            "backend.Dockerfile",
+            "codecov.yml",
+            "deny.toml",
+            "diesel.toml",
+            "docker-compose.yml",
+            "docker_entrypoint.sh",
+            "ember-cli-build.js",
+            "eslint.config.mjs",
+            "frontend.Dockerfile",
+            "package.json",
+            "playwright.config.ts",
+            "pnpm-lock.yaml",
+            "pnpm-workspace.yaml",
+            "rust-toolchain.toml",
+            "testem.js",
+            "triagebot.toml"
+        ],
+        "folders": [
+            ".github",
+            "app",
+            "config",
+            "crates",
+            "docker",
+            "docs",
+            "e2e",
+            "migrations",
+            "packages",
+            "public",
+            "script",
+            "src",
+            "tests",
+            "vendor"
+        ]
+    }
+}

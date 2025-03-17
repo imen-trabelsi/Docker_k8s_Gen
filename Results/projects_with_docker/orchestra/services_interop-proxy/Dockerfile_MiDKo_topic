@@ -1,0 +1,40 @@
+# The following Dockerfile is generated according to user-provided inputs and extracted information from the source code.
+
+FROM elixir:1.8-alpine as builder
+
+# Set the working directory
+WORKDIR /builder
+
+# Set the environment variables
+ENV MIX_ENV=prod
+ENV LANG="C.UTF-8"
+
+# Install/update necessary libraries and clear the cache 
+RUN apk --no-cache add \
+    bash \
+
+# Install Hex and Rebar
+RUN mix local.hex --force && mix local.rebar --force
+
+# Copy the code and fetch the application dependencies
+COPY interop-proxy/mix.exs .
+COPY interop-proxy .
+COPY common/messages lib/messages
+
+RUN mix deps.get && mix deps.compile
+RUN mix compile && mix deps.clean mime --build && mix release
+
+# Copy the tar file to working directory
+RUN cp _build/prod/rel/interop_proxy/releases/*/interop_proxy.tar.gz .
+
+# Change the working directory
+WORKDIR /app
+
+# Copy the tar file and extract it from the builder image
+RUN tar -xzf interop_proxy.tar.gz && \
+
+# Expose port 8000
+EXPOSE 8000
+
+# CMD/ENTRYPOINT Instructions
+CMD ["/app/bin/interop_proxy", "foreground"]

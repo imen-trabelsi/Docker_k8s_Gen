@@ -1,0 +1,36 @@
+# Use official base image of Node.js
+FROM node:8.13-slim
+
+# Set environment variables
+ENV NODE_ENV production
+
+# Set the application directory in the container
+WORKDIR /opt/my-musik/
+
+# Install dependencies using npm
+# Copy package.json and package-lock.json
+COPY package*.json ./
+RUN npm install typescript -g
+RUN npm install --no-optional 
+
+# Copy source code
+COPY gulpfile.js .
+COPY tsconfig.json .
+COPY tslint.json .
+COPY songs.json .
+COPY config.json .
+COPY Dockerfile .
+COPY ./src ./src
+
+# Build the app
+RUN node_modules/.bin/gulp
+RUN mkdir -p dist/ && cp -r src/* dist/
+
+# Remove dev dependencies
+RUN npm install --no-optional --only=prod
+
+# Expose the app port
+EXPOSE 3000
+
+# Instantiate the app command
+CMD [ "node", "dist/app.js" ]

@@ -1,0 +1,22 @@
+{
+    "docker_info": {
+        "base_image": "brisedev/event-service-dev:2.5.0",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "49153"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV RABBITMQ_LOGS=/var/log/rabbitmq/warning_log.log"
+        ],
+        "copy_instructions": [
+            "COPY ./bin/definitions.json /etc/rabbitmq/",
+            "COPY ./bin/rabbitmq.config /etc/rabbitmq/"
+        ],
+        "execution": [],
+        "run": []
+    }
+}

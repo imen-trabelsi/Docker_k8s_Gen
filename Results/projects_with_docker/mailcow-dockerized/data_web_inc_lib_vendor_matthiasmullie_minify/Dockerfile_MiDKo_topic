@@ -1,0 +1,34 @@
+# Use an official PHP runtime as a parent image
+ARG version=cli
+FROM php:$version
+
+# Set the working directory in the image to /app
+WORKDIR /var/www
+
+# Install any needed packages & PHP Extensions
+RUN apt-get update && \
+    apt-get install -y zip unzip libzip-dev git && \
+    docker-php-ext-install zip && \
+
+# Install Composer
+RUN curl -sS https://getcomposer.org/installer | php && \
+
+# Copy the current directory contents into the container at /app
+COPY . /var/www
+
+# Install project dependencies
+RUN composer install
+
+# This dockerfile does not specify an EXPOSE command because this application does not listen on a specified network port
+
+# Define environment variable
+# Dummy variable, replace with appropriate environment variables
+ENV NAME World
+
+# Set Labels
+# Dummy label, replace with appropriate labels
+LABEL maintainer="maintainer@example.com"
+
+# Set command or entrypoint
+# Dummy command, Based on input replace it with appropriate command
+CMD [ "php", "index.php" ]

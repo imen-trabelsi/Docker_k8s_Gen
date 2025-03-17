@@ -1,0 +1,33 @@
+# Start with a base image containing Node.js
+FROM node:12-alpine
+
+# Define environment variable
+ENV SUPPORTING_FILES=/app
+
+# Create app directory and use as working directory
+WORKDIR $SUPPORTING_FILES
+
+# Install system dependencies
+RUN apk update && apk add --update alpine-sdk build-base bash python nano postgresql-client
+
+# Install global node dependencies
+RUN npm i -g pnpm
+
+# Create supporting directories
+RUN mkdir -p $SUPPORTING_FILES /node_modules
+
+# Bundle app source by copying from local to inside the container
+COPY package.json .
+COPY . $SUPPORTING_FILES
+
+# Install node dependencies
+RUN pnpm install
+
+# Build the application
+RUN npm run build
+
+# Expose port
+EXPOSE 8080
+
+# Command to run the application
+CMD [ "npm", "start" ]

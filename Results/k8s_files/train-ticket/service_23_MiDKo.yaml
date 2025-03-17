@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: ts-order-service
+  name: ts-order-service
+spec:
+  ports:
+  - port: 12031
+    protocol: TCP
+    targetPort: 12031
+  selector:
+    app: ts-order-service
+  type: ClusterIP

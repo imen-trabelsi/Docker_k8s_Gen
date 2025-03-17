@@ -1,0 +1,37 @@
+# Use a specific version of the rust base image
+FROM rust:1.67 as builder
+
+# Set the working directory in the container
+WORKDIR /usr/src/zksync
+
+# Copy the current directory contents into the container at /usr/src/zksync
+COPY . .
+
+# Install dependencies required for the build
+RUN cargo install sccache && \
+    --mount=type=cache,target=/usr/local/cargo/registry && \
+    --mount=type=cache,target=/root/.cache/sccache && \
+    apt update && \
+
+# Environment Variables
+ENV RUST_LOG info
+ENV RUSTC_WRAPPER /usr/local/cargo/bin/sccache
+
+# Compile the project
+RUN cargo build --bin dev-ticker-server --release
+
+# Copy the statically-linked binary into a scratch container.
+FROM scratch
+
+
+WORKDIR /usr/src/zksync
+
+# Health checks
+
+# Deploy environment
+
+# Expose port 9876
+EXPOSE 9876
+
+# Command to start the service
+ENTRYPOINT ["dev-ticker-server"]

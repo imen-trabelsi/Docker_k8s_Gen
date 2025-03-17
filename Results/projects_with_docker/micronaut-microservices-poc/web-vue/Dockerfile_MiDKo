@@ -1,0 +1,29 @@
+# Use the official lightweight Node.js image 
+FROM node:14-alpine
+
+# Directory in container for all project files
+WORKDIR /app/
+
+# Copies package.json and package-lock.json to Docker environment
+COPY package*.json ./
+
+# Installs all node packages
+RUN npm install
+
+# Copies everything over to Docker environment
+COPY . . 
+
+# Application's default port
+EXPOSE 80
+
+# Replace the default nginx configuration files with our custom configuration 
+COPY ./nginx-app.conf /etc/nginx/conf.d/default.tmpl
+
+# Copy the startup script into the image 
+COPY entrypoint.sh / 
+
+# We make /entrypoint.sh executable
+RUN chmod +x /entrypoint.sh
+
+# Dockerfile 'CMD' command specifies the default command to run when a container is launched
+CMD [ "/entrypoint.sh" ]

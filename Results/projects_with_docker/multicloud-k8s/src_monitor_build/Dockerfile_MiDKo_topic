@@ -1,0 +1,36 @@
+# Use the official Go image from the Docker Hub
+FROM golang:1.14.1 as builder
+
+# Add Maintainer Info
+LABEL maintainer="your_email@example.com"
+
+# Set the Current Working Directory inside the container
+WORKDIR /go/src/github.com/onap/multicloud-k8s/src/monitor
+
+# Copy everything from the current directory to the PWD (Present Working Directory) inside the container
+COPY ./ ./
+
+# Build the Go app
+RUN go mod download
+RUN make all
+
+# Start a new stage from scratch
+FROM alpine:latest  
+
+RUN apk --no-cache add ca-certificates
+
+# Create a group and user
+RUN addgroup -S monitor && adduser -S monitor -G monitor
+
+# Change to non-root privilege
+USER monitor
+
+WORKDIR /opt/monitor/
+
+# Copy files from builder stage
+
+# Chown all the files to the app user.
+RUN chown monitor:monitor /opt/monitor
+
+# Run the executable
+ENTRYPOINT ["/opt/monitor/monitor"]

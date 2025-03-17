@@ -1,0 +1,32 @@
+# Base Image
+FROM node:20.17-alpine
+
+# Set working directory in the container
+WORKDIR /web
+
+# Copy package.json to install dependencies
+COPY package.json .
+
+# Install necessary packages
+RUN apk add --no-cache \
+    chromium \
+    python3 \
+    make \
+    g++ \
+    nss \
+    freetype \
+    freetype-dev \
+    harfbuzz \
+    ca-certificates \
+
+# Install app dependencies
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Your app binds to port, so you will use the EXPOSE instruction to have it mapped by the Docker daemon
+EXPOSE 
+
+# Command to run the app
+CMD [ "npm", "start" ]

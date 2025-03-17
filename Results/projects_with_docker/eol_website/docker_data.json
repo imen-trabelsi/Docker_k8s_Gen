@@ -1,0 +1,88 @@
+{
+    "docker_info": {
+        "base_image": "encoflife/eol_seabolt_rails:2024.05.09.01",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "3000"
+        ],
+        "user": [],
+        "labels": [
+            "maintainer=\"Jeremy",
+            "maintainer=\"Jeremy"
+        ],
+        "health_checks": [],
+        "build_args": [
+            "rails_secret_key",
+            "rails_env",
+            "traitbank_url",
+            "neo4j_driver_url",
+            "neo4j_user",
+            "neo4j_password",
+            "eol_github_email",
+            "eol_github_user"
+        ],
+        "envs": [
+            "ENV NODE_OPTIONS=\"--openssl-legacy-provider npm run start\"\\",
+            "ENV NODE_OPTIONS=\"--openssl-legacy-provider npm run start\"\\"
+        ],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY . /app",
+            "WORKDIR /app",
+            "COPY --chown=ruby:ruby bin/ ./bin",
+            "COPY . /app",
+            "COPY --from=assets /usr/local/bundle /usr/local/bundle",
+            "COPY --from=assets /gems /gems",
+            "COPY --from=assets /app/public/assets /app/public/assets",
+            "COPY --from=assets /app/public/packs /app/public/packs",
+            "COPY --from=assets /app/Gemfile /app/Gemfile.lock /app/.",
+            "COPY config/.vimrc /root/.vimrc"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/app/bin/entrypoint.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "ln -s /tmp /app/tmp",
+                "# This removes a problem with asset compiling (SSL within node):"
+            ],
+            [
+                "gem install `grep -A 1 'BUNDLED WITH' Gemfile.lock | tail -n 1 | sed 's/^\\s\\+/bundler:/'`\\",
+                "&& bundle config set without 'test development staging'",
+                "&& bundle install --jobs 10 --retry 1",
+                "&& bundle config set --global path /gems",
+                "&& yarn install"
+            ],
+            [
+                "RAILS_MASTER_KEY=${rails_secret_key} RAILS_ENV=${rails_env}\\",
+                "TRAITBANK_URL=${traitbank_url} NEO4J_DRIVER_URL=${neo4j_driver_url}",
+                "NEO4J_USER=${neo4j_user} NEO4J_PASSWORD=${neo4j_password}",
+                "&& RAILS_MASTER_KEY=${rails_secret_key} RAILS_ENV=${rails_env}",
+                "TRAITBANK_URL=${traitbank_url} NEO4J_DRIVER_URL=${neo4j_driver_url}",
+                "NEO4J_USER=${neo4j_user} NEO4J_PASSWORD=${neo4j_password}",
+                "bundle exec rails assets:precompile"
+            ],
+            [
+                "chmod 0755 bin/*",
+                ""
+            ],
+            [
+                "bundle install --jobs 10 --retry 1\\",
+                "&& bundle config set --global path /gems"
+            ],
+            [
+                "git config --global user.email ${eol_github_email}",
+                "RUN git config --global user.name ${eol_github_user}"
+            ],
+            [
+                "git config --global pull.rebase false",
+                ""
+            ]
+        ]
+    }
+}

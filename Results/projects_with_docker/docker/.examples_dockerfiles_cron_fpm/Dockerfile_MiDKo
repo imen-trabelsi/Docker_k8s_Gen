@@ -1,0 +1,23 @@
+# Base Image
+FROM nextcloud:fpm
+
+# Environment Variables
+ENV NEXTCLOUD_UPDATE=1
+
+# Update and install dependencies
+RUN apt-get update && apt-get install -y \
+supervisor \
+
+# Create necessary directories
+RUN mkdir /var/log/supervisord /var/run/supervisord
+
+# Set Working Directory
+WORKDIR /var/www/html
+
+# Copy Config files
+COPY supervisord.conf /
+
+# Expose Ports
+
+# Execution Command
+CMD ["/usr/bin/supervisord", "-c", "/supervisord.conf"]

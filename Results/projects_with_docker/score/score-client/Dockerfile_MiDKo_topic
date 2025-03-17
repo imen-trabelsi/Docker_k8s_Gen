@@ -1,0 +1,31 @@
+# Use base image from the user's preference
+FROM ubuntu:16.04
+
+# Update ubuntu and install necessary tools
+RUN apt-get update && \
+    apt-get -y upgrade && \
+
+# Install OpenJDK-11
+RUN apt install -y openjdk-11-jdk
+
+# Setting up environment variable
+ENV JAVA_HOME /usr/lib/jvm/java-11-openjdk-amd64
+
+# Workspace to operate in
+WORKDIR /score-client
+
+# Download and install score-client
+RUN mkdir -p /score-client && \
+    cd /score-client && \
+
+# Copy project files into the docker image
+COPY . /score-client
+
+# Build the app. This will download all Maven dependencies, which can be cached for subsequent builds
+RUN mvn clean package -B
+
+# Expose the port
+EXPOSE 8080
+
+# Run the Jar file
+CMD ["java", "-jar", "target/score-client.jar"]

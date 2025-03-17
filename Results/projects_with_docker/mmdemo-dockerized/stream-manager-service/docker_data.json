@@ -1,0 +1,55 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/java/jdk:11u6-zulu-debian8",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD conf /stream_manager/conf",
+            "WORKDIR /stream_manager"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "java",
+                    "-DMONGO_USER=$MONGO_USER",
+                    "-DMONGO_PASSWORD=$MONGO_PASSWORD",
+                    "-jar",
+                    "mklab-stream-manager.jar"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"conf/streams.conf.xml\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y git maven",
+                ""
+            ],
+            [
+                "mkdir /stream_manager",
+                "RUN git clone --single-branch --branch no-deps-sm https://github.com/MKLab-ITI/mklab-stream-manager.git &&",
+                "cd mklab-stream-manager\t&&",
+                "mvn clean package &&",
+                "cd /"
+            ],
+            [
+                "cp mklab-stream-manager/target/mklab-stream-manager-0.3-lightweight-with-dependencies.jar /stream_manager/mklab-stream-manager.jar",
+                ""
+            ],
+            [
+                "cp -r mklab-stream-manager/src/main/resources/profiles.sm /stream_manager && \\",
+                "cp mklab-stream-manager/english.all.3class.distsim.crf.ser.gz /stream_manager"
+            ]
+        ]
+    }
+}

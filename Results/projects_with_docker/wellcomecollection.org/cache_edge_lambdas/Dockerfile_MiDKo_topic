@@ -1,0 +1,32 @@
+# Base Image
+FROM public.ecr.aws/docker/library/node:20-bookworm-slim
+
+# Set working directory
+WORKDIR /usr/src/app
+
+# Install apt dependencies
+RUN apt-get update && apt-get install -yq --no-install-recommends git zip
+
+# Copy package.json and install dependencies
+COPY package.json .
+RUN npm install
+
+# Copy the rest of the code
+COPY . .
+
+# Copy instructions
+COPY .git /repo/.git
+COPY cache/edge_lambdas /repo/cache/edge_lambdas
+WORKDIR /repo/cache/edge_lambdas
+
+# Build
+RUN yarn && yarn build && yarn cache clean
+
+# Zip the build results
+RUN cd dist && zip -r ../edge_lambda_origin.zip .
+
+# Expose port
+EXPOSE 3000
+
+# Runtime command
+CMD ["npm", "start"]

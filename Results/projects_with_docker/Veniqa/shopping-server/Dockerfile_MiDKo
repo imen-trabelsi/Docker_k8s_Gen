@@ -1,0 +1,23 @@
+# Use Node.js v8 as Base Image 
+FROM mhart/alpine-node:8 
+
+# Set Working Directory Inside the Container
+WORKDIR /app 
+
+# Copy package.json and package-lock.json 
+COPY package*.json ./ 
+
+# Install all Dependencies 
+RUN npm install 
+
+# Copy the rest of the source code
+COPY . . 
+
+# Build the project
+RUN npm run build
+
+# Expose 3000 port to access the server outside the Container
+EXPOSE 3000 
+
+# Command to Run the Node.js App
+CMD ["npm", "start"]

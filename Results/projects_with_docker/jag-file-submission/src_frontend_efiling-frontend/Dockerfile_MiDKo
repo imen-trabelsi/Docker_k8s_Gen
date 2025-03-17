@@ -1,0 +1,50 @@
+# Set the base image
+FROM node:18-alpine
+
+# Set the working directory
+WORKDIR /app
+
+# Add the '/app/node_modules/.bin' to the $PATH
+ENV PATH /app/node_modules/.bin:$PATH
+ENV NODE_ENV=production
+
+# Copy package.json and package-lock.json
+COPY package.json yarn.lock ./
+
+# Install application dependencies
+RUN yarn install && yarn add --dev react-app-rewired
+
+COPY . .
+
+# Move to the nginx directory
+WORKDIR /etc/nginx/html/efilinghub
+
+COPY env.sh .
+COPY .env.template .env
+
+# Build the application
+RUN yarn build
+RUN rm -rf /usr/share/nginx/html/
+COPY --from=build /app/build /etc/nginx/html/efilinghub
+
+# Remove default nginx configuration file
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Copy nginx configuration
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
+# Give read/write/execute permissions to nginx directories
+RUN chmod g+rwx /var/cache/nginx /var/run /var/log/nginx
+RUN chmod g+rwx /etc/nginx/html/efilinghub
+
+# Give the right permissions to the script
+RUN chmod g+rwx env.sh
+
+# Install bash
+RUN apk add --no-cache bash
+
+# Expose port
+EXPOSE 80
+
+# Provide the container start command
+CMD ["/bin/bash", "-c", "/etc/nginx/html/efilinghub/env.sh && nginx -g \"daemon off;\""]

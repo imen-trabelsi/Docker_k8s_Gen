@@ -1,0 +1,18 @@
+{
+    "docker_info": {
+        "base_image": "jupyter/minimal-notebook:55d5ca6be183",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root",
+            "$NB_UID"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": []
+    }
+}

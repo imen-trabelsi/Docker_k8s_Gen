@@ -1,0 +1,45 @@
+# Use the base image specified by the user
+FROM alpine:3.19
+
+# Arguments provided by user
+ARG revision
+
+# Maintainability and identification label
+LABEL org.opencontainers.image.title="fpm" \
+
+# set up dependencies and tools required
+RUN apk add --no-cache \
+    ruby \
+    ruby-dev \
+    ruby-etc \
+    gcc \
+    git \
+    libc-dev \
+    libffi-dev \
+    make \
+    rpm \
+    tar && \
+
+# Setting up working directory
+WORKDIR /app
+
+# Copying the source code into the Docker container
+COPY . .
+
+# Copy the specific user's instruction
+COPY package.sh /
+
+# Install Golang dependencies
+RUN go mod download
+
+# Compile the Go code
+RUN go build -o main .
+
+# Expose ports as instructed
+EXPOSE ${PORT}
+
+# Set the healthcheck
+HEALTHCHECK CMD curl --fail http://localhost:${PORT}/health || exit 1
+
+# Run the microservice when the Docker container has started
+ENTRYPOINT ["/package.sh"]

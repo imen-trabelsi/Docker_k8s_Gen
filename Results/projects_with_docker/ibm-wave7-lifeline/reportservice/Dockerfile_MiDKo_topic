@@ -1,0 +1,26 @@
+# Start with a base image containing Java runtime
+FROM openjdk:11
+
+# Maintainer
+LABEL maintainer="your-email@domain.com"
+
+# Application Jar name parameter
+ARG JAR_FILE=target/reportservice-0.0.1-SNAPSHOT.jar
+
+# Add the application's jar to the container
+COPY ${JAR_FILE} app.jar
+
+# Create a user group and user
+RUN groupadd spring && useradd -g spring spring
+
+# Set the created user as the owner of app.jar and change permissions
+RUN chown spring:spring app.jar && chmod +x app.jar
+
+# Set the user for further commands
+USER spring:spring
+
+# Indicate we'll expose the specified port
+EXPOSE 8080
+
+# Execute the jar at container startup
+ENTRYPOINT ["java","-jar","app.jar"]

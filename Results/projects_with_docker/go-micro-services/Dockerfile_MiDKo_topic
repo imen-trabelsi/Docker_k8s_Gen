@@ -1,0 +1,24 @@
+# Choose the base image
+FROM golang:1.19.4
+
+# Set the maintainer information
+LABEL maintainer="you@example.com"
+
+# Set the working directory inside the Docker image
+WORKDIR /go/src/github.com/harlow/go-micro-services
+
+# Copy all the files from the current directory (on your system) to the image
+COPY . .
+
+# Execute commands during the image building
+RUN go mod download
+RUN go install -ldflags="-s -w" ./cmd/...
+
+# Expose a port that the app runs on
+EXPOSE 8080
+
+# Define an environment variable
+ENV NAME World
+
+# Provide a command to run when the image is run as a container
+CMD ["./your-app-name"]

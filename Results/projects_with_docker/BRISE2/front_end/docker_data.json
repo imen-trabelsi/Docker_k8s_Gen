@@ -1,0 +1,28 @@
+{
+    "docker_info": {
+        "base_image": "brisedev/front-end-prod:2.5.0",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "configuration=production"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ./ /app/",
+            "COPY --from=build-stage /app/dist/out/ /usr/share/nginx/html",
+            "COPY --from=build-stage /nginx.conf /etc/nginx/conf.d/default.conf"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "npm run build -- --output-path=./dist/out --configuration $configuration",
+                ""
+            ]
+        ]
+    }
+}

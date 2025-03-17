@@ -1,0 +1,39 @@
+FROM $BASE_CONTAINER
+
+USER root
+
+# Update the system, install required libraries and clean up
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends fonts-dejavu gfortran gcc && \
+    apt-get clean && \
+
+# User ID to use when running this image
+ENV NB_UID $NB_UID
+ENV R_LIBS_USER $SPARK_HOME/R/lib
+
+# Install required R packages
+RUN conda install --quiet --yes \
+    'r-base=4.0.3' \
+    'r-ggplot2=3.3*' \
+    'r-irkernel=1.1*' \
+    'r-rcurl=1.98*' \
+    'r-sparklyr=1.5*' && \
+    conda clean --all -f -y && \
+    fix-permissions "${CONDA_DIR}" && \
+
+# Install spylon-kernel
+RUN conda install --quiet --yes 'spylon-kernel=0.4*' && \
+    conda clean --all -f -y && \
+    python -m spylon_kernel install --sys-prefix && \
+    rm -rf "/home/${NB_USER}/.local" && \
+    fix-permissions "${CONDA_DIR}" && \
+
+# Bundler installs Ruby dependencies
+COPY Gemfile* ./
+RUN bundle install
+
+COPY . .
+
+LABEL maintainer="Jupyter"
+
+CMD ["rackup", "-o", "0.0.0.0", "-p", "3000"]

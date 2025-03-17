@@ -1,0 +1,31 @@
+# Base Image
+FROM node:12-alpine
+ 
+# Create app directory
+WORKDIR /usr/src/app
+
+# Add a new user and assign rights to directory
+RUN adduser -D appuser
+RUN chown -R appuser:appuser /usr/src/app
+
+# Copy package.json and install dependencies
+COPY package*.json ./
+RUN npm install --production
+
+# Copy rest of the source code
+COPY . .
+
+# Switch to non-root user
+USER appuser 
+
+# Set Environment variable
+ENV NODE_ENV production
+
+# Build the app
+RUN npm run build
+
+# Expose the app on port 50054
+EXPOSE 50054
+
+# Command to start the app
+CMD [ "node", "main.js" ]

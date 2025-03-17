@@ -1,0 +1,42 @@
+# Use base image from Ubuntu 16.04
+FROM ubuntu:16.04
+
+# Set environment variable
+ENV DEBIAN_FRONTEND noninteractive
+
+# Make directories
+RUN mkdir -p /app/linkedgeodata
+
+# Change working directory
+WORKDIR /app/linkedgeodata
+
+# Configure apt
+RUN apt-get -y update --fix-missing
+
+# Install dependencies
+RUN apt-get install -y \
+    postgresql-9.5-postgis-2.2 \
+    wget \
+    sudo \
+    curl \
+    osmosis \
+    gettext-base \
+
+# Add GPG key and repository
+RUN wget -qO - http://cstadler.aksw.org/repos/apt/conf/packages.precise.gpg.key | sudo apt-key add - \
+    && echo 'deb http://cstadler.aksw.org/repos/apt precise main contrib non-free' | sudo tee -a /etc/apt/sources.list.d/cstadler.aksw.org.list \
+    && apt update \
+
+# Copy files into container
+COPY configuration.txt.dist .
+COPY start.sh .
+COPY wait-for-postgres.sh .
+
+# Set file permissions
+RUN chmod +x ./start.sh ./wait-for-postgres.sh
+
+# Allow for some initialization
+RUN sleep 3
+
+# CMD instruction
+CMD [ "./wait-for-postgres.sh", "./start.sh" ]

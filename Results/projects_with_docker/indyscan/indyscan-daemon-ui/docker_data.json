@@ -1,0 +1,65 @@
+{
+    "docker_info": {
+        "base_image": "node:12.14.0-alpine3.9",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "${PORT}"
+        ],
+        "user": [
+            "node",
+            "node"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV PORT ${PORT:-\"3710\"}",
+            "ENV PROXY_API_URL ${PROXY_API_URL:-\"http://host.docker.internal:3001\"}"
+        ],
+        "copy_instructions": [
+            "WORKDIR /home/node/indyscan-daemon-api-client",
+            "COPY ./indyscan-daemon-api-client ./",
+            "WORKDIR /home/node/indyscan-daemon-ui",
+            "COPY --chown=node:node ./indyscan-daemon-ui/package.json ./",
+            "COPY --chown=node:node ./indyscan-daemon-ui/package-lock.json ./",
+            "COPY --chown=node:node ./indyscan-daemon-ui/public ./public",
+            "COPY --chown=node:node ./indyscan-daemon-ui/src ./src",
+            "WORKDIR /home/node/indyscan-daemon-ui",
+            "COPY --from=BASE --chown=node:node /home/node/indyscan-daemon-ui/build ./build",
+            "COPY --from=BASE --chown=node:node /home/node/indyscan-daemon-ui/node_modules ./node_modules",
+            "COPY --from=BASE --chown=node:node /home/node/indyscan-daemon-ui/package.json ./"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "npm",
+                    "run",
+                    "serve"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk update && apk upgrade && \\",
+                "apk add --no-cache bash git openssh python make g++"
+            ],
+            [
+                "mkdir -p /home/node/indyscan-daemon-ui && chown -R node:node /home/node/indyscan-daemon-ui",
+                ""
+            ],
+            [
+                "chown -R node:node /home/node/indyscan-daemon-api-client",
+                ""
+            ],
+            [
+                "npm install",
+                "RUN npm run build"
+            ],
+            [
+                "npm prune --production",
+                ""
+            ]
+        ]
+    }
+}

@@ -1,0 +1,31 @@
+# Step 1: Use golang alpine as build image
+FROM golang:1.23-alpine3.21 AS builder
+ARG UPSTREAM_REPO
+ARG UPSTREAM_TAG
+ARG LAGOON_VERSION
+
+# Set work directory
+WORKDIR /go/src/github.com/uselagoon/lagoon/services/backup-handler/
+
+# Set environment variable
+ENV LAGOON_VERSION $LAGOON_VERSION
+ENV LAGOON backup-handler
+ENV JWT_SECRET super-secret-string
+
+# Copy local package code to the container workspace
+COPY . .
+
+# Compile the application
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o backup-handler .
+
+# Step 2: Use scratch as the base image for the second build stage
+FROM scratch
+
+# Copy artifacts from builder stage
+
+# Switch working directory
+WORKDIR /app/
+
+# Set the entrypoint and command to execute when starting the container
+ENTRYPOINT ["/sbin/tini", "--", "/lagoon/entrypoints.sh"]
+CMD ["/app/backup-handler"]

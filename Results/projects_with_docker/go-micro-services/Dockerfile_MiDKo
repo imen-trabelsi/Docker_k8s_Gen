@@ -1,0 +1,23 @@
+# Set base image (host OS)
+FROM golang:1.19.4
+
+# Set the Current Working Directory inside the container
+WORKDIR /go/src/github.com/harlow/go-micro-services
+
+# Copy the entire source code from the current directory to the Working Directory inside the container
+COPY . /go/src/github.com/harlow/go-micro-services
+
+# Download dependencies
+RUN go mod download
+
+# Set environment variable
+ENV GODEBUG=x509ignoreCN=0
+
+# Install the go application
+RUN go install -ldflags="-s -w" ./cmd/...
+
+# This container exposes port 8080 to the outside world
+EXPOSE 8080
+
+# Command to run the executable
+CMD ["go-micro-services"]

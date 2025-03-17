@@ -1,0 +1,22 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Flask",
+        "dependencies": {
+            "requirements.txt": "flask\nflask-cors\nrequests\npyyaml\ngunicorn\ngevent\npytest\npython-jose[cryptography]"
+        },
+        "database": null,
+        "build_system": "pip",
+        "config_files": {
+            "issuer_controller/Dockerfile": "FROM python:3\n\nARG HOME=\"/app/controller\"\n\nWORKDIR $HOME\n\nADD . .\n\nRUN pip3 install --no-cache-dir -r requirements.txt\n\nENV HOST_IP 0.0.0.0\nENV HOST_PORT 8000\nENV INDY_GENESIS_PATH \"${HOME}/genesis\"\n\nENTRYPOINT [\"bash\", \"./docker-entrypoint.sh\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "1-init-dbs.sh",
+            "Dockerfile"
+        ],
+        "folders": []
+    }
+}

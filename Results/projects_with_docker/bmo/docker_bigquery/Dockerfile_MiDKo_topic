@@ -1,0 +1,36 @@
+# Dockerfile
+FROM ghcr.io/goccy/bigquery-emulator:0.6.5
+
+# Set environment variable for Mojolicious
+ENV MOJO_MODE production
+
+# Update packages and install make, PostgreSQL client and other necessary dependencies
+RUN apt-get update -yqq && \
+    apt-get install -yqq --no-install-recommends \
+    make \
+
+# Set work directory
+WORKDIR /usr/src/app
+
+# Install Perl/CPAN dependencies
+COPY Makefile.PL /usr/src/app/
+RUN cpanm --installdeps --notest .
+
+# Change permissions
+RUN chmod -R 777 /usr/src/app
+
+# Copy app source to image
+COPY . /usr/src/app
+
+# Setup command to run your application
+CMD ["morbo", "-m", "production", "-l", "http://*:5000", "/usr/src/app/script/app"]
+
+# Expose port
+EXPOSE 5000
+
+# Healthcheck
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD curl -f http://localhost:5000/health || exit 1
+
+# Copy instruction provided by the user
+COPY data.yaml /data.yaml

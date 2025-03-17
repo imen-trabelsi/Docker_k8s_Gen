@@ -1,0 +1,57 @@
+# Set base image
+FROM python:3.6-buster
+
+# Set environment variables
+ENV LIBRARY_PATH=/lib:/usr/lib
+ENV PIPENV_VENV_IN_PROJECT=true
+ENV LC_ALL C.UTF-8
+ENV LANG C.UTF-8
+
+# Install necessary packages
+RUN apt-get update && \
+    apt-get -y install \
+    build-essential \
+    libjpeg-dev \
+    zlib1g-dev \
+    libtiff-dev \
+    libpoppler-cpp-dev \
+    pkg-config \
+    python3-dev \
+    libvips-dev \
+    ghostscript \
+    tesseract-ocr-deu \
+    tesseract-ocr-ita \
+    tesseract-ocr-fra \
+    tesseract-ocr-spa \
+    tesseract-ocr-ell \
+    tesseract-ocr-rus \
+    tesseract-ocr-ara \
+    libyaml-dev \
+    python-setuptools \
+    python-watchdog \
+    ocrmypdf \
+    pngquant \
+    mupdf-tools \
+
+WORKDIR /app
+
+# Copy necessary files and directories
+COPY docker/cilantro-convert-worker/pyproject.toml docker/cilantro-convert-worker/poetry.lock ./
+COPY service ./service
+COPY utils ./utils
+COPY workers ./workers
+COPY docker/cilantro-convert-worker/entrypoint.sh /entrypoint.sh
+COPY docker/cilantro-convert-worker/VERSION .
+
+# Modify Image Magick policy
+RUN sed -i '/disable ghostscript format types/,+6d' /etc/ImageMagick-6/policy.xml
+
+# Run poetry
+WORKDIR /poetry
+RUN poetry config virtualenvs.create false \
+
+# Change workdir back to /app
+WORKDIR /app
+
+# Set the entrypoint
+ENTRYPOINT ["bash", "/entrypoint.sh"]

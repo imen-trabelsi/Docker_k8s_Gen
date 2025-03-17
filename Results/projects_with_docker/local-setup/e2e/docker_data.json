@@ -1,0 +1,51 @@
+{
+    "docker_info": {
+        "base_image": "node:14.3.0-alpine3.11",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV TBTCJS_VERSION 0.18.0-rc.2"
+        ],
+        "copy_instructions": [
+            "WORKDIR /e2e",
+            "COPY . ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"node\",",
+                    "\"--experimental-json-modules\",",
+                    "\"e2e-test.js\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --no-cache \\",
+                "jq",
+                "git",
+                "python3",
+                "build-base"
+            ],
+            [
+                "jq '.dependencies.\"@keep-network/tbtc.js\" = env.TBTCJS_VERSION' \\",
+                "package.json >package.json.tmp && mv package.json.tmp package.json"
+            ],
+            [
+                "npm install",
+                ""
+            ]
+        ]
+    }
+}

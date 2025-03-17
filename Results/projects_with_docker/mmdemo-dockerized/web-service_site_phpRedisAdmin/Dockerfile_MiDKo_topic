@@ -1,0 +1,28 @@
+# Start from the base image
+FROM composer/composer:latest as builder
+
+# Setting working directory in the container
+WORKDIR /src/app
+
+# Copy local code to the container image.
+COPY . /src/app/
+
+# Install composer dependencies
+RUN composer install && \
+
+# Start the second stage of Dockerfile
+FROM php:7.4-fpm-alpine
+
+# Copy over the artifacts from the builder stage
+
+# Expose port 80 for the app
+EXPOSE 80
+
+# Set the dockerized entry-point application
+ENTRYPOINT [ "php", "-S", "0.0.0.0:80" ]
+
+# Copy the Redis configuration file
+COPY web-service/site/phpRedisAdmin/Dockerfile docker-compose.yml ./
+
+# Define the command to run your app
+CMD [ "php", "-S", "0.0.0.0:80" ]

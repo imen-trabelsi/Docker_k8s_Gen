@@ -1,0 +1,38 @@
+# Use Rocky Linux as Base Image
+FROM rockylinux/rockylinux:8
+
+# Install necessary build tools
+RUN dnf -y install curl wget tar zip unzip git \
+gcc gcc-c++ make cmake \
+perl-IPC-Cmd perl-Digest-SHA \
+dnf -y update && \
+dnf -y install dnf-plugins-core \
+ninja-build \
+libaio libuuid-devel wget python3 python3-pip \
+pkg-config perl-IPC-Cmd perl-Digest-SHA libatomic libtool \
+
+# Install Conan
+RUN pip3 install conan==1.64.1
+
+# Install Go
+RUN mkdir -p /usr/local/go && wget -qO- "https://go.dev/dl/go1.21.11.linux-$TARGETARCH.tar.gz" | tar --strip-components=1 -xz -C /usr/local/go
+
+# Install Rust
+RUN curl https://sh.rustup.rs -sSf | sh -s -- --default-toolchain=1.83 -y
+
+# Install vcpkg
+RUN mkdir /opt/vcpkg && \
+wget -qO- https://github.com/microsoft/vcpkg/archive/master.tar.gz | tar --strip-components=1 -xz -C /opt/vcpkg && \
+
+# Set the environment variables
+ENV VCPKG_FORCE_SYSTEM_BINARIES 1
+ENV PATH="/root/.cargo/bin:/usr/local/bin:/usr/local/go/bin:${PATH}"
+ENV VCPKG_FORCE_SYSTEM_BINARIES 1
+
+# Copy necessary scripts
+COPY --from=vcpkg-installer /root/.cache/vcpkg /root/.cache/vcpkg
+COPY --chown=0:0 build/docker/builder/entrypoint.sh /
+
+# Set the entrypoints
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["tail", "-f", "/dev/null"]

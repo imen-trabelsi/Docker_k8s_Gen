@@ -1,0 +1,61 @@
+{
+    "docker_info": {
+        "base_image": "jruby:9.2.11.1-jre8",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8080"
+        ],
+        "user": [
+            "rack:rack"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV DOCKERIZE_VERSION v0.6.1",
+            "ENV HAILSTORM_ENV production"
+        ],
+        "copy_instructions": [
+            "WORKDIR /usr/local/lib/hailstorm-api",
+            "COPY . ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"rackup\",",
+                    "\"-o\",",
+                    "\"0.0.0.0\",",
+                    "\"-p\",",
+                    "\"8080\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "gem update bundler \\",
+                "&& bundle config --global frozen 1"
+            ],
+            [
+                "groupadd rack && \\",
+                "useradd -g rack -mr rack &&",
+                "chown -R rack:rack /usr/local/lib/hailstorm-api"
+            ],
+            [
+                "apt-get update && apt-get install -y default-mysql-client git wget && rm -rf /var/lib/apt/lists/*",
+                ""
+            ],
+            [
+                "wget -q https://github.com/jwilder/dockerize/releases/download/$DOCKERIZE_VERSION/dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz \\",
+                "&& tar -C /usr/local/bin -xzvf dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz",
+                "&& rm dockerize-linux-amd64-$DOCKERIZE_VERSION.tar.gz"
+            ],
+            [
+                "bundle install && chown -R rack:rack /usr/local/lib/hailstorm-api",
+                ""
+            ]
+        ]
+    }
+}

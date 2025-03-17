@@ -1,0 +1,23 @@
+# Stage 1
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+COPY ["eShop-Learn.sln", "./"]
+COPY ["docker-compose.dcproj", "./"]
+COPY *.csproj ./
+RUN dotnet restore "eShop-Learn.sln"
+
+# Copy everything else
+COPY . .
+
+WORKDIR "/src/src/Services/Ordering/Ordering.BackgroundTasks"
+
+# Build the libraries
+RUN dotnet publish --no-restore "Ordering.BackgroundTasks.csproj" -c Release -o /app/publish
+
+# Stage 2
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS publish
+WORKDIR /app
+
+ENV ASPNETCORE_ENVIRONMENT=Production
+
+ENTRYPOINT ["dotnet", "Ordering.BackgroundTasks.dll"]

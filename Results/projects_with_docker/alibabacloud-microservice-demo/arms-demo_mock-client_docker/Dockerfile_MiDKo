@@ -1,0 +1,23 @@
+# Define base image
+FROM reg.docker.alibaba-inc.com/fuyi_docker/arms-baseline:1.0
+
+# Set workdir
+WORKDIR /home/admin/arms-prometheus-gateway
+
+# Copy server and dependencies
+COPY ./server/target/arms-prometheus-gateway  /home/admin/arms-prometheus-gateway
+COPY admin /home/admin
+COPY alidata /alidata
+
+# Add necessary files
+COPY build.sh .
+
+# Use maven to compile and build the project
+RUN chmod +x ./build.sh
+RUN ./build.sh
+
+# Set the permissions
+RUN chown -R admin:admin /home/admin/arms-prometheus-gateway
+
+# Define entry point
+ENTRYPOINT ["./bin/app.sh", "start"]

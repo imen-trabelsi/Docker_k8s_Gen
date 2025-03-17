@@ -1,0 +1,34 @@
+# Use the official maven/Java 8 image to create a build artifact.
+FROM maven:3.5-jdk-8 as builder
+
+# Copy local code to the container image.
+WORKDIR /app
+COPY pom.xml .
+COPY src ./src
+
+# Build and package the application
+RUN mvn clean package -DskipTests
+
+# Use official nginx image as a parent image.
+FROM nginx:1.13
+
+# Environment Variables
+ENV SERVICE_PROJECT_NAME=SkaLogs
+
+# Set improbable user to run our worker to avoid running it with root privileges
+RUN addgroup --system spring && \ 
+
+# Copy startup script and make it executable
+COPY startup.sh /usr/bin/startup.sh
+RUN chmod 777 /usr/bin/startup.sh
+
+# Copy necessary files from builder image to current image
+
+# Switching to a non-root user, spring
+USER spring:spring
+
+# Expose application at port 8080
+EXPOSE 8080
+
+# Specify the command to run the application
+ENTRYPOINT ["bash", "-c", "/usr/bin/startup.sh"]

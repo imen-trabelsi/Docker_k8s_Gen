@@ -1,0 +1,38 @@
+# Use the base image with Java
+FROM @docker.account@/java-base
+
+# The application's jar file
+ARG JAR_FILE=target/*.jar
+
+# Create application directory
+RUN mkdir -p /opt/artemis
+
+# Add a user
+RUN useradd -u 1002 -g 0 -d '/opt/artemis' -s '/sbin/nologin' artemis && \
+chown -R artemis:root /opt/artemis && \
+chmod -R g=u /opt/artemis && \
+
+# Add the application's jar to the container
+COPY ${JAR_FILE} /opt/artemis/app.jar
+
+# Copy maven dependencies
+COPY maven / 
+
+# Set environment variables
+ENV BROKER_HOST=message-broker 
+ENV BROKER_ID=broker-id 
+ENV DATASTORE_ADDR=es:9200 
+ENV DATASTORE_CLIENT=org.eclipse.kapua.service.elasticsearch.client.rest.RestElasticsearchClientProvider 
+ENV SQL_DB_ADDR=db 
+ENV SQL_DB_PORT=3306 
+ENV SERVICE_BROKER_ADDR=failover:(amqp://events-broker:5672)?jms.sendTimeout=1000 
+ENV JAVA_ARGS="-Dcommons.db.schema.update=true"
+
+# Expose the ports
+EXPOSE 1883
+
+# Switch to the user
+USER 1002
+
+# Set the start command for the container
+ENTRYPOINT ["/opt/artemis/run-broker"]

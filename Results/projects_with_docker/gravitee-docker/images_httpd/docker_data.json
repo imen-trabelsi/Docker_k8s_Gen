@@ -1,0 +1,34 @@
+{
+    "docker_info": {
+        "base_image": "centos:7",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [
+            "maintainer=\"contact@graviteesource.com\""
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "yum -y update && \\",
+                "yum install -y",
+                "wget",
+                "zip",
+                "unzip",
+                "nc",
+                "httpd &&",
+                "yum clean all &&",
+                "rm -rf",
+                "/tmp/*",
+                "/var/tmp/*",
+                "/var/www/html/*"
+            ]
+        ]
+    }
+}

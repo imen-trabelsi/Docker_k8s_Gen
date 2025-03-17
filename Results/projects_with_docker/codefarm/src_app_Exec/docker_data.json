@@ -1,0 +1,28 @@
+{
+    "docker_info": {
+        "base_image": "codefarm/appnodebase:0.0.0",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\\"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "yarn compile -- --env.global_modules_dir ${farmerHome}/.node_modules && \\",
+                "rm -rf babel_cache"
+            ]
+        ]
+    }
+}

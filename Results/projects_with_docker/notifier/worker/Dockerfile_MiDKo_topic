@@ -1,0 +1,26 @@
+# Start with a base image containing Java runtime
+FROM openjdk:11-jre
+
+# Add a volume pointing to /tmp
+VOLUME /tmp
+
+# Install maven
+RUN apt-get update && 
+
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
+
+# The application's jar file
+ARG JAR_FILE=target/*.jar
+
+# The application's pom file
+COPY pom.xml .
+
+# Install dependencies
+RUN mvn install
+
+# Add the application's jar to the container
+COPY ${JAR_FILE} worker.jar
+
+# Run the jar file
+ENTRYPOINT ["java","-jar","/worker.jar"]

@@ -1,0 +1,33 @@
+# Dockerfile
+
+FROM ghcr.io/goccy/bigquery-emulator:0.6.5
+
+#Initialize environment
+ENV MOJO_MODE production
+ENV POSTGRES_DB mydb
+ENV POSTGRES_USER myuser
+ENV POSTGRES_PASSWORD secret
+
+# Update and install dependencies
+RUN apt-get update 
+RUN apt-get -y install curl cpanminus build-essential 
+RUN cpanm Mojolicious 
+
+# Create application directory
+WORKDIR /app
+
+# Copy Makefile.PL into the image and install dependencies
+COPY . /app
+RUN cpanm --installdeps .
+
+# Copy application code into the image
+COPY . .
+
+# Copy data.yaml
+COPY data.yaml /data.yaml
+
+# expose port
+EXPOSE 8080
+
+# run the service
+CMD ["morbo", "script/my_app"]

@@ -1,0 +1,20 @@
+# Base Image
+FROM openjdk:8-jdk-alpine
+
+# Maintainer
+LABEL maintainer="you@example.com"
+
+# copy jar file into container
+COPY target/discovery-service.jar discovery-service.jar
+
+# Specify the Project's Working Directory Inside the Docker Container
+WORKDIR /
+
+# Sets environment variable
+ENV JAVA_OPTS=""
+
+# Expose the port
+EXPOSE 8761
+
+# Command to execute  
+ENTRYPOINT exec java $JAVA_OPTS -jar discovery-service.jar

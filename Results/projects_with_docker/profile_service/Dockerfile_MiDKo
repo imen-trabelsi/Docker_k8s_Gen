@@ -1,0 +1,29 @@
+# Use the official Node.js 10 image from Docker Hub as the base image
+FROM node:10
+
+# Update and upgrade the packages
+RUN apt-get update && apt-get -y upgrade
+
+# Specify the working directory in the container
+WORKDIR /usr/src/app        
+
+# Copy package.json and package-lock.json to the working directory
+COPY package*.json ./
+
+# Run npm install (or your preferred package manager)
+RUN npm install                
+
+# Copy the rest of your application's source code from your host to your image filesystem.
+COPY . .
+
+# Copy our local start.sh to the container's /usr/src/app directory
+COPY ./docker/start.sh /usr/src/app
+
+# Change the permission to make start.sh an executable
+RUN chmod +x start.sh
+
+# The container will listen on the specified network ports at runtime
+EXPOSE 4000
+
+# Run the start.sh script when the container starts.
+CMD [ "./start.sh" ]

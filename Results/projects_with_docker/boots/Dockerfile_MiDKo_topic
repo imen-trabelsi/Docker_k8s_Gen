@@ -1,0 +1,30 @@
+#Dockerfile
+FROM alpine:3.21 AS builder
+
+# Explicitly setting GO111MODULE to on for the case where the Go version in the image is < 1.13
+ENV GO111MODULE=on
+WORKDIR /app
+
+# Dependencies will be downloaded only if the go.mod and go.sum files change
+COPY go.mod go.sum ./
+RUN go mod download
+
+# Copy the rest of your app's source code
+COPY . .
+
+# Build the binary
+RUN CGO_ENABLED=0 GOOS=linux go build -mod=readonly -v -o smee
+
+FROM alpine:3.21
+
+WORKDIR /app
+
+# Copy binary from build stage
+
+# Add necessary security, networking and other configurations
+RUN apk add --update --upgrade --no-cache ca-certificates
+COPY cmd/smee/smee-linux-${TARGETARCH:-amd64}${TARGETVARIANT} /usr/bin/smee
+EXPOSE 67
+
+# Run the binary
+ENTRYPOINT ["/usr/bin/smee"]

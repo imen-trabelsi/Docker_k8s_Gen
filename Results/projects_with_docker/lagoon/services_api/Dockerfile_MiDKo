@@ -1,0 +1,30 @@
+# Use specified base image
+FROM ${IMAGE_REPO:-lagoon}/yarn-workspace-builder as BUILD
+
+# Copy project files
+COPY --from=yarn-workspace-builder /app /app
+WORKDIR /app/services/api/
+COPY --from=yarn-workspace-builder /app/.env.defaults .
+COPY . .
+COPY wait-for-mariadb.sh /lagoon/entrypoints/99-wait-for-mariadb.sh
+
+# Set build arguments
+ARG LAGOON_GIT_BRANCH
+ARG IMAGE_REPO
+ARG UPSTREAM_REPO
+ARG UPSTREAM_TAG
+ARG LAGOON_VERSION
+
+# Set environment variables
+ENV LAGOON_VERSION=$LAGOON_VERSION
+ENV NODE_ENV=production
+
+# Build the microservice
+RUN yarn check --verify-tree
+RUN yarn build
+
+# Start the service
+CMD ["node", "-r", "dotenv-extended/config", "dist/index"]
+
+# Healthchecks, networking and security can be defined at runtime using docker-compose.yml or Kubernetes configuration. 
+# As they are not specified in the provided inputs, they are not included in this Dockerfile.

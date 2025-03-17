@@ -1,0 +1,1789 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".coveragerc",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": ".travis.yml",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "app.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain",
+            "type": "tree"
+        },
+        {
+            "path": "brain/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/cache",
+            "type": "tree"
+        },
+        {
+            "path": "brain/cache/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/cache/hset.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/cache/model.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/cache/query.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/cache/session.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/cache/settings.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/converter",
+            "type": "tree"
+        },
+        {
+            "path": "brain/converter/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/converter/crypto.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/converter/format",
+            "type": "tree"
+        },
+        {
+            "path": "brain/converter/format/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/converter/format/csv2dict.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/converter/format/xml2dict.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/converter/md5.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/converter/model.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/converter/operation.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/converter/settings.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/database",
+            "type": "tree"
+        },
+        {
+            "path": "brain/database/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/database/account.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/database/dataset.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/database/entity.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/database/model_type.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/database/prediction.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/database/query.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/database/session.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/database/settings.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/load_data.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/session",
+            "type": "tree"
+        },
+        {
+            "path": "brain/session/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/session/base.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/session/base_data.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/session/data",
+            "type": "tree"
+        },
+        {
+            "path": "brain/session/data/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/session/data/dataset.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/session/data_append.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/session/data_new.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/session/model",
+            "type": "tree"
+        },
+        {
+            "path": "brain/session/model/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/session/model/sv.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/session/model_generate.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/session/model_predict.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/session/predict",
+            "type": "tree"
+        },
+        {
+            "path": "brain/session/predict/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/session/predict/sv.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/validator",
+            "type": "tree"
+        },
+        {
+            "path": "brain/validator/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/validator/dataset.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/validator/email.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/validator/password.py",
+            "type": "blob"
+        },
+        {
+            "path": "brain/validator/settings.py",
+            "type": "blob"
+        },
+        {
+            "path": "contributing.json",
+            "type": "blob"
+        },
+        {
+            "path": "contributing.md",
+            "type": "blob"
+        },
+        {
+            "path": "doc",
+            "type": "tree"
+        },
+        {
+            "path": "doc/configuration",
+            "type": "tree"
+        },
+        {
+            "path": "doc/configuration/setup-clone.rst",
+            "type": "blob"
+        },
+        {
+            "path": "doc/contribution",
+            "type": "tree"
+        },
+        {
+            "path": "doc/contribution/support.rst",
+            "type": "blob"
+        },
+        {
+            "path": "doc/installation",
+            "type": "tree"
+        },
+        {
+            "path": "doc/installation/dependencies.rst",
+            "type": "blob"
+        },
+        {
+            "path": "doc/installation/docker-compose.rst",
+            "type": "blob"
+        },
+        {
+            "path": "doc/installation/rancher.rst",
+            "type": "blob"
+        },
+        {
+            "path": "doc/programmatic-interface",
+            "type": "tree"
+        },
+        {
+            "path": "doc/programmatic-interface/authentication",
+            "type": "tree"
+        },
+        {
+            "path": "doc/programmatic-interface/authentication/login.rst",
+            "type": "blob"
+        },
+        {
+            "path": "doc/programmatic-interface/data-attributes.rst",
+            "type": "blob"
+        },
+        {
+            "path": "doc/programmatic-interface/data",
+            "type": "tree"
+        },
+        {
+            "path": "doc/programmatic-interface/data/data-append.rst",
+            "type": "blob"
+        },
+        {
+            "path": "doc/programmatic-interface/data/data-new.rst",
+            "type": "blob"
+        },
+        {
+            "path": "doc/programmatic-interface/model",
+            "type": "tree"
+        },
+        {
+            "path": "doc/programmatic-interface/model/model-generate.rst",
+            "type": "blob"
+        },
+        {
+            "path": "doc/programmatic-interface/model/parameters",
+            "type": "tree"
+        },
+        {
+            "path": "doc/programmatic-interface/model/parameters/gamma.rst",
+            "type": "blob"
+        },
+        {
+            "path": "doc/programmatic-interface/model/parameters/penalty.rst",
+            "type": "blob"
+        },
+        {
+            "path": "doc/programmatic-interface/predict",
+            "type": "tree"
+        },
+        {
+            "path": "doc/programmatic-interface/predict/model-predict.rst",
+            "type": "blob"
+        },
+        {
+            "path": "doc/programmatic-interface/result",
+            "type": "tree"
+        },
+        {
+            "path": "doc/programmatic-interface/result/retrieve-prediction-titles.rst",
+            "type": "blob"
+        },
+        {
+            "path": "doc/programmatic-interface/result/retrieve-prediction.rst",
+            "type": "blob"
+        },
+        {
+            "path": "doc/programmatic-interface/result/save-prediction.rst",
+            "type": "blob"
+        },
+        {
+            "path": "doc/test",
+            "type": "tree"
+        },
+        {
+            "path": "doc/test/jest.rst",
+            "type": "blob"
+        },
+        {
+            "path": "doc/test/lint.rst",
+            "type": "blob"
+        },
+        {
+            "path": "doc/test/pytest.rst",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.rancher.yml",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "dockerfile",
+            "type": "tree"
+        },
+        {
+            "path": "dockerfile/base.dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "dockerfile/browserify.dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "dockerfile/mariadb.dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "dockerfile/mongodb.dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "dockerfile/nginx.dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "dockerfile/redis.dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "dockerfile/sass.dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "dockerfile/sklearn.dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "dockerfile/webserver.dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "factory.py",
+            "type": "blob"
+        },
+        {
+            "path": "frontend.dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "hiera.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "hiera",
+            "type": "tree"
+        },
+        {
+            "path": "hiera/application.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "hiera/cache.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "hiera/common.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "hiera/database.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "hiera/packages.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "hiera/puppetserver.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "hiera/reverse-proxy",
+            "type": "tree"
+        },
+        {
+            "path": "hiera/reverse-proxy/nginx-api.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "hiera/reverse-proxy/nginx-web.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "hiera/test",
+            "type": "tree"
+        },
+        {
+            "path": "hiera/test/hiera",
+            "type": "tree"
+        },
+        {
+            "path": "hiera/test/hiera/application.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "hiera/webserver",
+            "type": "tree"
+        },
+        {
+            "path": "hiera/webserver/webserver-api.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "hiera/webserver/webserver-web.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "install_rancher",
+            "type": "blob"
+        },
+        {
+            "path": "interface",
+            "type": "tree"
+        },
+        {
+            "path": "interface/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static",
+            "type": "tree"
+        },
+        {
+            "path": "interface/static/data",
+            "type": "tree"
+        },
+        {
+            "path": "interface/static/data/csv",
+            "type": "tree"
+        },
+        {
+            "path": "interface/static/data/csv/bagc-1.csv",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/csv/bagc.csv",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/csv/bagr-1.csv",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/csv/bagr.csv",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/csv/svm-1.csv",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/csv/svm.csv",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/csv/svr-1.csv",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/csv/svr.csv",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json",
+            "type": "tree"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface",
+            "type": "tree"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/bagc",
+            "type": "tree"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/bagc/dataset_url",
+            "type": "tree"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/bagc/dataset_url/bagc-data-append.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/bagc/dataset_url/bagc-data-new.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/bagc/dataset_url/bagc-model-generate.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/bagc/file_upload",
+            "type": "tree"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/bagc/file_upload/bagc-data-append.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/bagc/file_upload/bagc-data-new.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/bagc/file_upload/bagc-model-generate.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/bagr",
+            "type": "tree"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/bagr/dataset_url",
+            "type": "tree"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/bagr/dataset_url/bagr-data-append.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/bagr/dataset_url/bagr-data-new.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/bagr/dataset_url/bagr-model-generate.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/bagr/file_upload",
+            "type": "tree"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/bagr/file_upload/bagr-data-append.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/bagr/file_upload/bagr-data-new.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/bagr/file_upload/bagr-model-generate.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/combined",
+            "type": "tree"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/combined/results",
+            "type": "tree"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/combined/results/retrieve-titles.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svm",
+            "type": "tree"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svm/dataset_url",
+            "type": "tree"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svm/dataset_url/svm-data-append.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svm/dataset_url/svm-data-new.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svm/dataset_url/svm-model-generate.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svm/dataset_url/svm-model-predict.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svm/file_upload",
+            "type": "tree"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svm/file_upload/svm-data-append.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svm/file_upload/svm-data-new.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svm/file_upload/svm-model-generate.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svm/file_upload/svm-model-predict.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svm/results",
+            "type": "tree"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svm/results/retrieve-prediction.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svm/results/retrieve-titles.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svm/results/save-prediction.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svr",
+            "type": "tree"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svr/dataset_url",
+            "type": "tree"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svr/dataset_url/svr-data-append.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svr/dataset_url/svr-data-new.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svr/dataset_url/svr-model-generate.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svr/dataset_url/svr-model-predict.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svr/file_upload",
+            "type": "tree"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svr/file_upload/svr-data-append.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svr/file_upload/svr-data-new.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svr/file_upload/svr-model-generate.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svr/file_upload/svr-model-predict.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svr/results",
+            "type": "tree"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svr/results/retrieve-prediction.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svr/results/retrieve-titles.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/programmatic_interface/svr/results/save-prediction.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/web_interface",
+            "type": "tree"
+        },
+        {
+            "path": "interface/static/data/json/web_interface/bagc-1.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/web_interface/bagc.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/web_interface/bagr-1.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/web_interface/bagr.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/web_interface/svm-1.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/web_interface/svm.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/web_interface/svr-1.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/json/web_interface/svr.json",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/xml",
+            "type": "tree"
+        },
+        {
+            "path": "interface/static/data/xml/bagc-1.xml",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/xml/bagc.xml",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/xml/bagc.xsd",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/xml/bagr-1.xml",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/xml/bagr.xml",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/xml/bagr.xsd",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/xml/svm-1.xml",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/xml/svm.xml",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/xml/svm.xsd",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/xml/svr-1.xml",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/xml/svr.xml",
+            "type": "blob"
+        },
+        {
+            "path": "interface/static/data/xml/svr.xsd",
+            "type": "blob"
+        },
+        {
+            "path": "interface/templates",
+            "type": "tree"
+        },
+        {
+            "path": "interface/templates/index.html",
+            "type": "blob"
+        },
+        {
+            "path": "interface/views_api.py",
+            "type": "blob"
+        },
+        {
+            "path": "interface/views_web.py",
+            "type": "blob"
+        },
+        {
+            "path": "license.md",
+            "type": "blob"
+        },
+        {
+            "path": "log",
+            "type": "tree"
+        },
+        {
+            "path": "log/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "log/logger.py",
+            "type": "blob"
+        },
+        {
+            "path": "puppet",
+            "type": "tree"
+        },
+        {
+            "path": "puppet/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment",
+            "type": "tree"
+        },
+        {
+            "path": "puppet/environment/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker",
+            "type": "tree"
+        },
+        {
+            "path": "puppet/environment/docker/Puppetfile",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules",
+            "type": "tree"
+        },
+        {
+            "path": "puppet/environment/docker/modules/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/mariadb",
+            "type": "tree"
+        },
+        {
+            "path": "puppet/environment/docker/modules/mariadb/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/mariadb/manifests",
+            "type": "tree"
+        },
+        {
+            "path": "puppet/environment/docker/modules/mariadb/manifests/bindings.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/mariadb/manifests/client.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/mariadb/manifests/dependency.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/mariadb/manifests/init.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/mariadb/manifests/params.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/mariadb/manifests/server.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/mariadb/scripts",
+            "type": "tree"
+        },
+        {
+            "path": "puppet/environment/docker/modules/mariadb/scripts/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/mariadb/scripts/setup_tables.py",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/mongodb",
+            "type": "tree"
+        },
+        {
+            "path": "puppet/environment/docker/modules/mongodb/manifests",
+            "type": "tree"
+        },
+        {
+            "path": "puppet/environment/docker/modules/mongodb/manifests/config.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/mongodb/manifests/init.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/mongodb/manifests/install.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/mongodb/manifests/params.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/mongodb/manifests/run.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/mongodb/templates",
+            "type": "tree"
+        },
+        {
+            "path": "puppet/environment/docker/modules/mongodb/templates/create-users.erb",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/mongodb/templates/mongod.conf.erb",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/redis",
+            "type": "tree"
+        },
+        {
+            "path": "puppet/environment/docker/modules/redis/manifests",
+            "type": "tree"
+        },
+        {
+            "path": "puppet/environment/docker/modules/redis/manifests/config.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/redis/manifests/init.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/redis/manifests/install.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/redis/manifests/params.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/redis/manifests/run.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/redis/templates",
+            "type": "tree"
+        },
+        {
+            "path": "puppet/environment/docker/modules/redis/templates/config.erb",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/reverse_proxy",
+            "type": "tree"
+        },
+        {
+            "path": "puppet/environment/docker/modules/reverse_proxy/manifests",
+            "type": "tree"
+        },
+        {
+            "path": "puppet/environment/docker/modules/reverse_proxy/manifests/config.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/reverse_proxy/manifests/init.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/reverse_proxy/manifests/install.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/reverse_proxy/manifests/params.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/reverse_proxy/templates",
+            "type": "tree"
+        },
+        {
+            "path": "puppet/environment/docker/modules/reverse_proxy/templates/ssl.erb",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/sklearn",
+            "type": "tree"
+        },
+        {
+            "path": "puppet/environment/docker/modules/sklearn/manifests",
+            "type": "tree"
+        },
+        {
+            "path": "puppet/environment/docker/modules/sklearn/manifests/config.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/sklearn/manifests/init.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/sklearn/manifests/install.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/sklearn/manifests/params.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/system",
+            "type": "tree"
+        },
+        {
+            "path": "puppet/environment/docker/modules/system/manifests",
+            "type": "tree"
+        },
+        {
+            "path": "puppet/environment/docker/modules/system/manifests/init.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/system/manifests/packages.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/system/manifests/params.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/system/manifests/timezone.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/webserver",
+            "type": "tree"
+        },
+        {
+            "path": "puppet/environment/docker/modules/webserver/manifests",
+            "type": "tree"
+        },
+        {
+            "path": "puppet/environment/docker/modules/webserver/manifests/config.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/webserver/manifests/init.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/webserver/manifests/install.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/webserver/manifests/nodejs.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/webserver/manifests/params.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/webserver/manifests/run.pp",
+            "type": "blob"
+        },
+        {
+            "path": "puppet/environment/docker/modules/webserver/templates",
+            "type": "tree"
+        },
+        {
+            "path": "puppet/environment/docker/modules/webserver/templates/entrypoint.erb",
+            "type": "blob"
+        },
+        {
+            "path": "rancher-template.yml",
+            "type": "blob"
+        },
+        {
+            "path": "src",
+            "type": "tree"
+        },
+        {
+            "path": "src/jsx",
+            "type": "tree"
+        },
+        {
+            "path": "src/jsx/.babelrc",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/__tests__",
+            "type": "tree"
+        },
+        {
+            "path": "src/jsx/__tests__/content",
+            "type": "tree"
+        },
+        {
+            "path": "src/jsx/__tests__/content/login.test.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/__tests__/content/register.test.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/__tests__/layout",
+            "type": "tree"
+        },
+        {
+            "path": "src/jsx/__tests__/layout/analysis.test.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/__tests__/layout/page.test.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/content.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import",
+            "type": "tree"
+        },
+        {
+            "path": "src/jsx/import/animation",
+            "type": "tree"
+        },
+        {
+            "path": "src/jsx/import/animation/animate.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/content",
+            "type": "tree"
+        },
+        {
+            "path": "src/jsx/import/content/home-page.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/content/login.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/content/register.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/formatter",
+            "type": "tree"
+        },
+        {
+            "path": "src/jsx/import/formatter/transpose.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/general",
+            "type": "tree"
+        },
+        {
+            "path": "src/jsx/import/general/ajax-caller.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/general/breakpoints.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/general/colors.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/general/range-slider.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/general/spinner.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/general/submit-button.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/input-data",
+            "type": "tree"
+        },
+        {
+            "path": "src/jsx/import/input-data/supply-dataset-file.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/input-data/supply-dataset-url.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/input-data/supply-predictors.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/kernel",
+            "type": "tree"
+        },
+        {
+            "path": "src/jsx/import/kernel/sv-kernel.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/layout",
+            "type": "tree"
+        },
+        {
+            "path": "src/jsx/import/layout/analysis.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/layout/login.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/layout/page.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/layout/register.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/model",
+            "type": "tree"
+        },
+        {
+            "path": "src/jsx/import/model/model-type.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/navigation",
+            "type": "tree"
+        },
+        {
+            "path": "src/jsx/import/navigation/header-menu.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/navigation/menu-items",
+            "type": "tree"
+        },
+        {
+            "path": "src/jsx/import/navigation/menu-items/current-result.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/navigation/menu-items/home.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/navigation/menu-items/login.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/navigation/menu-items/menu.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/navigation/menu-items/register.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/navigation/menu-items/results.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/navigation/nav-bar.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/navigation/user-menu.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/redux",
+            "type": "tree"
+        },
+        {
+            "path": "src/jsx/import/redux/action",
+            "type": "tree"
+        },
+        {
+            "path": "src/jsx/import/redux/action/current-result.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/redux/action/login.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/redux/action/logout.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/redux/action/page.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/redux/container",
+            "type": "tree"
+        },
+        {
+            "path": "src/jsx/import/redux/container/analysis-layout.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/redux/container/current-result.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/redux/container/data-append.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/redux/container/data-new.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/redux/container/header-menu.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/redux/container/home-page.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/redux/container/login-link.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/redux/container/login.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/redux/container/model-generate.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/redux/container/model-predict.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/redux/container/page.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/redux/container/range-slider.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/redux/container/register-link.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/redux/container/register.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/redux/container/results.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/redux/container/review-results-link.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/redux/container/user-menu.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/redux/reducer",
+            "type": "tree"
+        },
+        {
+            "path": "src/jsx/import/redux/reducer/data.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/redux/reducer/layout.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/redux/reducer/login.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/redux/reducer/page.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/redux/store.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/result",
+            "type": "tree"
+        },
+        {
+            "path": "src/jsx/import/result/current-result.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/result/results.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/route",
+            "type": "tree"
+        },
+        {
+            "path": "src/jsx/import/route/main-route.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/route/result-route.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/route/session-route.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/session-type",
+            "type": "tree"
+        },
+        {
+            "path": "src/jsx/import/session-type/data-append.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/session-type/data-new.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/session-type/model-generate.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/session-type/model-predict.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/svg",
+            "type": "tree"
+        },
+        {
+            "path": "src/jsx/import/svg/svg-books.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/svg/svg-home.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/svg/svg-pencil-note.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/svg/svg-user.jsx",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/validator",
+            "type": "tree"
+        },
+        {
+            "path": "src/jsx/import/validator/valid-email.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/validator/valid-file.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/validator/valid-float.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/validator/valid-int.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/validator/valid-password.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/validator/valid-string.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/import/validator/valid-url.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/jest.config.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/package.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/jsx/setup.js",
+            "type": "blob"
+        },
+        {
+            "path": "src/scss",
+            "type": "tree"
+        },
+        {
+            "path": "src/scss/_animation.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/scss/_bootstrap-3.3.6.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/scss/_layout.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/scss/_navigation.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/scss/_navigation_authenticated.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/scss/_spinner.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/scss/_variables.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/scss/_webform.scss",
+            "type": "blob"
+        },
+        {
+            "path": "src/scss/package.json",
+            "type": "blob"
+        },
+        {
+            "path": "src/scss/style.scss",
+            "type": "blob"
+        },
+        {
+            "path": "test",
+            "type": "tree"
+        },
+        {
+            "path": "test/backend",
+            "type": "blob"
+        },
+        {
+            "path": "test/lint",
+            "type": "tree"
+        },
+        {
+            "path": "test/lint/.scss-lint.yml",
+            "type": "blob"
+        },
+        {
+            "path": "test/lint/eslint.json",
+            "type": "blob"
+        },
+        {
+            "path": "test/lint/markdown.rb",
+            "type": "blob"
+        },
+        {
+            "path": "test/lint/setup.cfg",
+            "type": "blob"
+        },
+        {
+            "path": "test/linter",
+            "type": "blob"
+        },
+        {
+            "path": "test/live_server",
+            "type": "tree"
+        },
+        {
+            "path": "test/live_server/1_authentication",
+            "type": "tree"
+        },
+        {
+            "path": "test/live_server/1_authentication/pytest_1_crypto.py",
+            "type": "blob"
+        },
+        {
+            "path": "test/live_server/1_authentication/pytest_2_account_registration.py",
+            "type": "blob"
+        },
+        {
+            "path": "test/live_server/1_authentication/pytest_3_validate_password.py",
+            "type": "blob"
+        },
+        {
+            "path": "test/live_server/1_authentication/pytest_4_user_login.py",
+            "type": "blob"
+        },
+        {
+            "path": "test/live_server/1_authentication/pytest_5_user_logout.py",
+            "type": "blob"
+        },
+        {
+            "path": "test/live_server/2_database",
+            "type": "tree"
+        },
+        {
+            "path": "test/live_server/2_database/pytest_svm_dbmax.py",
+            "type": "blob"
+        },
+        {
+            "path": "test/live_server/2_database/pytest_svr_dbmax.py",
+            "type": "blob"
+        },
+        {
+            "path": "test/live_server/3_programmatic_interface",
+            "type": "tree"
+        },
+        {
+            "path": "test/live_server/3_programmatic_interface/dataset_url",
+            "type": "tree"
+        },
+        {
+            "path": "test/live_server/3_programmatic_interface/dataset_url/pytest_svm_dataset_url.py",
+            "type": "blob"
+        },
+        {
+            "path": "test/live_server/3_programmatic_interface/dataset_url/pytest_svr_dataset_url.py",
+            "type": "blob"
+        },
+        {
+            "path": "test/live_server/3_programmatic_interface/file_upload",
+            "type": "tree"
+        },
+        {
+            "path": "test/live_server/3_programmatic_interface/file_upload/pytest_svm_file_upload.py",
+            "type": "blob"
+        },
+        {
+            "path": "test/live_server/3_programmatic_interface/file_upload/pytest_svr_file_upload.py",
+            "type": "blob"
+        },
+        {
+            "path": "test/live_server/3_programmatic_interface/results",
+            "type": "tree"
+        },
+        {
+            "path": "test/live_server/3_programmatic_interface/results/pytest_1_svm_prediction.py",
+            "type": "blob"
+        },
+        {
+            "path": "test/live_server/3_programmatic_interface/results/pytest_2_svr_prediction.py",
+            "type": "blob"
+        },
+        {
+            "path": "test/live_server/3_programmatic_interface/results/pytest_3_all_prediction_titles.py",
+            "type": "blob"
+        },
+        {
+            "path": "test/live_server/conftest.py",
+            "type": "blob"
+        },
+        {
+            "path": "test/live_server/pytest.ini",
+            "type": "blob"
+        }
+    ]
+}

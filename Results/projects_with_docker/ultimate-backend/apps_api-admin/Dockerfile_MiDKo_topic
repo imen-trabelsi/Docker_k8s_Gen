@@ -1,0 +1,36 @@
+# Use a lightweight, secure base image
+FROM node:12-alpine
+
+# Install app dependencies
+RUN apk add --no-cache make gcc g++ python && \
+    yarn global add @nestjs/cli && \
+    yarn install --production=false && \
+
+# Copy package json files
+COPY package*.json ./
+
+# Install all dependencies
+RUN yarn install
+
+# Bundle app source
+COPY . .
+
+# Build the application
+RUN nest build proto-schema
+RUN nest build api-admin
+
+# Set working directory
+WORKDIR /nest
+
+# Set environment variable
+ENV NODE_ENV=production
+
+# Set user privileges
+RUN chown -R node:node /nest
+USER node
+
+# Expose the listening port
+EXPOSE 50020
+
+# Set the execution command
+CMD [ "node", "dist/apps/api-admin/main.js" ]

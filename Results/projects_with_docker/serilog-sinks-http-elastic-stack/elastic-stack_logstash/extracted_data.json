@@ -1,0 +1,261 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".editorconfig",
+            "type": "blob"
+        },
+        {
+            "path": ".gitattributes",
+            "type": "blob"
+        },
+        {
+            "path": ".github",
+            "type": "tree"
+        },
+        {
+            "path": ".github/workflows",
+            "type": "tree"
+        },
+        {
+            "path": ".github/workflows/ci-cd.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows/update-copyright-years-in-license-file.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": ".gitmind",
+            "type": "blob"
+        },
+        {
+            "path": ".vscode",
+            "type": "tree"
+        },
+        {
+            "path": ".vscode/settings.json",
+            "type": "blob"
+        },
+        {
+            "path": ".vscode/spellright.dict",
+            "type": "blob"
+        },
+        {
+            "path": "LICENSE",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "doc",
+            "type": "tree"
+        },
+        {
+            "path": "doc/resources",
+            "type": "tree"
+        },
+        {
+            "path": "doc/resources/kibana.png",
+            "type": "blob"
+        },
+        {
+            "path": "elastic-stack",
+            "type": "tree"
+        },
+        {
+            "path": "elastic-stack/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "elastic-stack/.env",
+            "type": "blob"
+        },
+        {
+            "path": "elastic-stack/.gitattributes",
+            "type": "blob"
+        },
+        {
+            "path": "elastic-stack/LICENSE",
+            "type": "blob"
+        },
+        {
+            "path": "elastic-stack/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "elastic-stack/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "elastic-stack/elasticsearch",
+            "type": "tree"
+        },
+        {
+            "path": "elastic-stack/elasticsearch/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "elastic-stack/elasticsearch/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "elastic-stack/elasticsearch/config",
+            "type": "tree"
+        },
+        {
+            "path": "elastic-stack/elasticsearch/config/elasticsearch.yml",
+            "type": "blob"
+        },
+        {
+            "path": "elastic-stack/kibana",
+            "type": "tree"
+        },
+        {
+            "path": "elastic-stack/kibana/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "elastic-stack/kibana/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "elastic-stack/kibana/config",
+            "type": "tree"
+        },
+        {
+            "path": "elastic-stack/kibana/config/kibana.yml",
+            "type": "blob"
+        },
+        {
+            "path": "elastic-stack/logstash",
+            "type": "tree"
+        },
+        {
+            "path": "elastic-stack/logstash/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "elastic-stack/logstash/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "elastic-stack/logstash/config",
+            "type": "tree"
+        },
+        {
+            "path": "elastic-stack/logstash/config/logstash.yml",
+            "type": "blob"
+        },
+        {
+            "path": "elastic-stack/logstash/pipeline",
+            "type": "tree"
+        },
+        {
+            "path": "elastic-stack/logstash/pipeline/logstash.conf",
+            "type": "blob"
+        },
+        {
+            "path": "elastic-stack/setup",
+            "type": "tree"
+        },
+        {
+            "path": "elastic-stack/setup/.dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": "elastic-stack/setup/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "elastic-stack/setup/entrypoint.sh",
+            "type": "blob"
+        },
+        {
+            "path": "elastic-stack/setup/lib.sh",
+            "type": "blob"
+        },
+        {
+            "path": "elastic-stack/setup/roles",
+            "type": "tree"
+        },
+        {
+            "path": "elastic-stack/setup/roles/logstash_writer.json",
+            "type": "blob"
+        },
+        {
+            "path": "renovate.json",
+            "type": "blob"
+        },
+        {
+            "path": "serilog",
+            "type": "tree"
+        },
+        {
+            "path": "serilog/.gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "serilog/.vscode",
+            "type": "tree"
+        },
+        {
+            "path": "serilog/.vscode/launch.json",
+            "type": "blob"
+        },
+        {
+            "path": "serilog/.vscode/tasks.json",
+            "type": "blob"
+        },
+        {
+            "path": "serilog/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "serilog/Generators",
+            "type": "tree"
+        },
+        {
+            "path": "serilog/Generators/Customer.cs",
+            "type": "blob"
+        },
+        {
+            "path": "serilog/Generators/CustomerGenerator.cs",
+            "type": "blob"
+        },
+        {
+            "path": "serilog/Generators/Order.cs",
+            "type": "blob"
+        },
+        {
+            "path": "serilog/Generators/OrderGenerator.cs",
+            "type": "blob"
+        },
+        {
+            "path": "serilog/Program.cs",
+            "type": "blob"
+        },
+        {
+            "path": "serilog/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "serilog/serilog-example.csproj",
+            "type": "blob"
+        }
+    ]
+}

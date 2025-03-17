@@ -1,0 +1,58 @@
+{
+    "docker_info": {
+        "base_image": "circleci/android:api-25-node8-alpha",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "app"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD . /app",
+            "WORKDIR /app"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "/bin/bash",
+                    "-c",
+                    "'/app/sign_test_apk.sh",
+                    "edge",
+                    "8080",
+                    "&&",
+                    "/app/sign_test_xpi.sh",
+                    "edge",
+                    "8080",
+                    "&&",
+                    "/app/verify_apk.sh",
+                    "/tmp/signed.apk'"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "curl -s  -f https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add - 2>/dev/null",
+                ""
+            ],
+            [
+                "sudo sed -i -e 's/deb.debian.org/archive.debian.org/g' \\",
+                "-e 's|security.debian.org|archive.debian.org/|g'",
+                "-e '/stretch-updates/d' /etc/apt/sources.list"
+            ],
+            [
+                "sudo apt-get update && \\",
+                "sudo apt-get install -y curl netcat android-sdk-build-tools"
+            ],
+            [
+                "sudo addgroup --gid 10001 app && \\",
+                "sudo adduser --gid 10001 --uid 10001",
+                "--home /app --shell /sbin/nologin",
+                "--disabled-password app"
+            ]
+        ]
+    }
+}

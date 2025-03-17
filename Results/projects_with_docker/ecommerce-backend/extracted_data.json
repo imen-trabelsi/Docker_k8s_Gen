@@ -1,0 +1,34 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Django",
+        "dependencies": {
+            "pyproject.toml": "[project]\nname = \"eCommerce\"\nversion = \"0.0.1\"\ndependencies = []\nrequires-python = \">=3.13,<3.14\"\nauthors = [\n  { name = \"Kamil Kosiba\", email = \"kamil.kosiba@outlook.com\" }\n]\nmaintainers = [\n  { name = \"Kamil Kosiba\", email = \"kamil.kosiba@outlook.com\" }\n]\ndescription = \"Django backend for eCommerce project\"\nreadme = \"README.md\"\nkeywords = [\"api\", \"backend\", \"payments\", \"newsletter\", \"accounts\", \"stripe\"]\nclassifiers = [\n  \"Development Status :: 4 - Beta\",\n  \"Programming Language :: Python\",\n  \"Programming Language :: Python :: 3\",\n  \"Programming Language :: Python :: 3.13\",\n]\n\n[project.optional-dependencies]\nbase = [\n  # django-webpack-loader\n  \"Django>=5.1,<5.2\",\n  \"Pillow\",\n  \"django-allauth\",\n  \"django-cors-headers\",\n  \"dj-rest-auth\",\n  \"django-taggit\",\n  \"djangorestframework\",\n  \"djangorestframework-simplejwt\",\n  \"psycopg2\",\n  \"python-decouple\",\n  \"stripe\",\n]\ndevelopment = [\n  \"pylint\",\n  \"coverage\",\n  \"pytest\",\n  \"pytest-django\",\n]\nproduction = [\n  \"boto3\",\n  \"django-storages\",\n  \"gunicorn\",\n]\n\n[project.urls]\nRepository = \"https://github.com/kkosiba/ecommerce-backend\"\n\n[tool.setuptools]\npy-modules = []\n"
+        },
+        "database": "PostgreSQL",
+        "build_system": "poetry",
+        "config_files": {
+            "docker-compose.yml": "services:\n  db:\n    image: postgres\n    env_file: .env\n    healthcheck:\n      test: [\"CMD\", \"pg_isready\", \"-d\", $POSTGRES_DB, \"-U\", $POSTGRES_USER]\n      interval: 10s\n      retries: 5\n      start_period: 5s\n    restart: always\n\n  migration:\n    build:\n      dockerfile: development.dockerfile\n    command: [\"python\", \"manage.py\", \"migrate\"]\n    env_file: .env\n    volumes:\n      - .:/opt/project/backend\n    depends_on:\n      db:\n        condition: service_healthy\n\n  load_fixtures:\n    build:\n      dockerfile: development.dockerfile\n    command: [\"python\", \"manage.py\", \"loaddata\", \"src/apps/products/fixture.json\"]\n    env_file: .env\n    volumes:\n      - .:/opt/project/backend\n    depends_on:\n      db:\n        condition: service_healthy\n      migration:\n        condition: service_completed_successfully\n\n  backend:\n    build:\n      dockerfile: development.dockerfile\n    command: [\"python\", \"manage.py\", \"runserver\", \"0.0.0.0:8000\"]\n    env_file: .env\n    volumes:\n      - .:/opt/project/backend\n    ports:\n      - \"8000:8000\"\n    depends_on:\n      db:\n        condition: service_healthy\n      migration:\n        condition: service_completed_successfully\n      load_fixtures:\n        condition: service_completed_successfully\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".gitignore",
+            "Makefile",
+            "README.md",
+            "development.dockerfile",
+            "docker-compose.yml",
+            "gunicorn.conf.py",
+            "manage.py",
+            "production.dockerfile",
+            "pyproject.toml",
+            "update_requirements.sh"
+        ],
+        "folders": [
+            "requirements",
+            "src",
+            "tests"
+        ]
+    }
+}

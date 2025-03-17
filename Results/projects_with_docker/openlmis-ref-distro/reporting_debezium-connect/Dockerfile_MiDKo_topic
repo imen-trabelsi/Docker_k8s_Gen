@@ -1,0 +1,36 @@
+# Use base image
+FROM debezium/connect:1.5
+
+# Install dependencies
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y curl python3 python3-pip && \
+
+# Set the correct environment variables
+ENV KAFKA_CONNECT_JDBC_DIR=$KAFKA_CONNECT_PLUGINS_DIR/kafka-connect-jdbc
+
+# Prepare Files
+COPY requirements.txt /
+
+# Install project dependencies
+RUN pip install --no-cache-dir -r /requirements.txt
+
+# Download required jars
+RUN mkdir -p $KAFKA_CONNECT_JDBC_DIR && cd $KAFKA_CONNECT_JDBC_DIR &&\
+
+RUN cd /kafka/libs && curl -sO https://jdbc.postgresql.org/download/postgresql-42.2.8.jar
+
+# Copy project files
+COPY . /app
+
+# Set working directory
+WORKDIR /app
+
+# Expose service ports
+EXPOSE 8083
+
+# Set docker entrypoint
+ENTRYPOINT ["python"]
+
+# Default command
+CMD ["app.py"]

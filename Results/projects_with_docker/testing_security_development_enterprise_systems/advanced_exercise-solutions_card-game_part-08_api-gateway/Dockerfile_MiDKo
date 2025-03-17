@@ -1,0 +1,20 @@
+# Use alpine-based Java 11 JDK from AdoptOpenJDK
+FROM adoptopenjdk/openjdk11:alpine
+
+# Add application source to a directory named app
+COPY . /app/
+
+# Change working directory
+WORKDIR /app/
+
+# Pack the application
+RUN mvn clean install
+
+# Copy jar file from target to root
+COPY target/api-gateway.jar .
+
+# Expose the port the app runs on
+EXPOSE 8080
+
+# Launch the application
+CMD ["java", "-jar", "api-gateway.jar"]

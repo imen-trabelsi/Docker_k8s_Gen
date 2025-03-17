@@ -1,0 +1,20 @@
+# Use an official Docker image as a parent image
+FROM docker:stable
+
+# Update the system and install necessary packages
+RUN apk update && apk add --no-cache curl bash \
+
+# Set the working directory in the container to /app
+WORKDIR /app
+
+# Copy the entrypoint.sh file from your host to your parent image
+COPY entrypoint.sh /entrypoint.sh
+
+# Ensure entrypoint.sh is executable
+RUN chmod +x /entrypoint.sh
+
+# Make a port available to the world outside this container
+# EXPOSE port (missing port number in the provided information)
+
+# Run the command(s) when the container launches
+ENTRYPOINT ["/entrypoint.sh"]

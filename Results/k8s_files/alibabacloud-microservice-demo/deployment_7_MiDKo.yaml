@@ -1,0 +1,59 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: go-zero-demo-c-gray
+  name: go-zero-demo-c-gray
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: go-zero-demo-c-gray
+  template:
+    metadata:
+      labels:
+        app: go-zero-demo-c-gray
+    spec:
+      containers:
+      - image: registry.cn-hangzhou.aliyuncs.com/mse-governance-demo/go-zero-demo-c:1.0-multiframe
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+        name: go-zero-demo-c-gray-container
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 80
+        resources:
+          limits:
+            cpu: 500m
+            ephemeral-storage: 1Gi
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            ephemeral-storage: 500Mi
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 1000
+          runAsUser: 1000
+      serviceAccountName: default
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: go-zero-demo-c-gray-service
+spec:
+  ports:
+  - port: 80
+  selector:
+    app: go-zero-demo-c-gray
+  type: ClusterIP

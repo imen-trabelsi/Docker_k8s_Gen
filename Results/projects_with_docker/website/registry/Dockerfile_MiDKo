@@ -1,0 +1,14 @@
+# Start with an image that has OpenJDK 11 environment installed
+FROM openjdk:11-jre-slim
+
+# Create and switch to a directory for the service in the Docker container
+WORKDIR /usr/share/website/registry
+
+# Copy the executable jar file into the current directory in the Docker container
+COPY target/*-exec.jar ./registry-exec.jar
+
+# Expose port 8761 to the Docker host
+EXPOSE 8761
+
+# Define the start-up command that should run when the container starts. This is the command to run the Spring Boot service.
+ENTRYPOINT ["java", "-jar", "./registry-exec.jar"]

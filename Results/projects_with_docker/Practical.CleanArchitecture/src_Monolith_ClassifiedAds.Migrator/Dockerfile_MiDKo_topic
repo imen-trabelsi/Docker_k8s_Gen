@@ -1,0 +1,31 @@
+# Use Base Image 
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
+WORKDIR /app
+
+# Copy *.csproj and restore as distinct layers
+COPY ./ClassifiedAds.Application/*.csproj ./ClassifiedAds.Application/
+COPY ./ClassifiedAds.CrossCuttingConcerns/*.csproj ./ClassifiedAds.CrossCuttingConcerns/
+COPY ./ClassifiedAds.Domain/*.csproj ./ClassifiedAds.Domain/
+COPY ./ClassifiedAds.Infrastructure/*.csproj ./ClassifiedAds.Infrastructure/
+COPY ./ClassifiedAds.Persistence/*.csproj ./ClassifiedAds.Persistence/
+COPY ./ClassifiedAds.Migrator/*.csproj ./ClassifiedAds.Migrator/
+RUN dotnet restore ./ClassifiedAds.Application/ClassifiedAds.Application.csproj
+RUN dotnet restore ./ClassifiedAds.Infrastructure/ClassifiedAds.Infrastructure.csproj
+RUN dotnet restore ./ClassifiedAds.Migrator/ClassifiedAds.Migrator.csproj
+
+# Copy everything else and build
+COPY . ./
+RUN dotnet publish ./ClassifiedAds.Migrator/ClassifiedAds.Migrator.csproj -c Release -o out
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+WORKDIR /ClassifiedAds.Monolith
+
+# Set Environment Variables if any
+
+# Expose Ports if any
+
+# Run the app
+ENTRYPOINT ["dotnet", "ClassifiedAds.Migrator.dll"]
+
+

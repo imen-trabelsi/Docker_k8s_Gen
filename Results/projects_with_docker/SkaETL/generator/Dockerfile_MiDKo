@@ -1,0 +1,25 @@
+# We use the jdk image as base image.
+FROM openjdk:8u151-jdk
+
+# Define where our application will live inside the docker image.
+WORKDIR /usr/share/skalogs
+
+# Depending on your build strategy, you might need to add 'mvn clean package' here.
+# RUN mvn clean package
+
+# Copy the jar file and the startup script.
+COPY target/${JAR_FILE} /usr/share/skalogs/generator.jar
+COPY startup.sh /usr/bin/startup.sh
+
+# Provide execute permission for the script.
+RUN chmod +x /usr/bin/startup.sh
+
+# Define the startup script as the entrypoint.
+ENTRYPOINT ["/usr/bin/startup.sh"]
+
+# Expose one or more ports. This should match the application's configuration.
+# e.g. expose port 8080.
+# EXPOSE 8080
+
+# Label the image.
+# LABEL version="1.0"

@@ -1,0 +1,25 @@
+# Specify the base image
+FROM openjdk:8-alpine
+
+# Setting maintainer
+LABEL maintainer="Michael"
+
+# Install dependencies
+RUN apk add --no-cache wget unzip
+
+# Extracting apache ftp server
+RUN wget https://archive.apache.org/dist/mina/ftpserver/1.1.1/dist/apache-ftpserver-1.1.1.zip
+RUN unzip -q apache-ftpserver-1.1.1.zip
+
+# Updating FTP server configuration for defining passive data connection ports
+RUN sed -i 's#<\/ssl>#<\/ssl><data-connection><passive ports="2122-2188"\/><\/data-connection>#g' /apache-ftpserver-1.1.1/res/conf/ftpd-typical.xml
+
+# Copy or mouting files and directories
+COPY . /workspace
+WORKDIR /workspace
+
+# Exposing passive data connection ports
+EXPOSE 2121-2188
+
+# Command to start the service
+CMD ["sh", "-c", "/apache-ftpserver-1.1.1/bin/ftpd.sh /workspace/config-ftp.properties /workspace/config-mcp.properties"]

@@ -1,0 +1,46 @@
+{
+    "docker_info": {
+        "base_image": "alpine:3.20",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "nobody"
+        ],
+        "labels": [
+            "maintainer"
+        ],
+        "health_checks": [],
+        "build_args": [
+            "PIP_BREAK_SYSTEM_PACKAGES=1"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "ADD olefy.py /app/"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"python3\",",
+                    "\"-u\",",
+                    "\"/app/olefy.py\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --virtual .build-deps gcc musl-dev python3-dev libffi-dev openssl-dev cargo \\",
+                "&& apk add --update --no-cache python3 py3-pip openssl tzdata libmagic",
+                "&& pip3 install --upgrade pip",
+                "&& pip3 install --upgrade asyncio python-magic",
+                "&& pip3 install --upgrade https://github.com/decalage2/oletools/archive/master.zip",
+                "&& apk del .build-deps"
+            ],
+            [
+                "chown -R nobody:nobody /app /tmp",
+                ""
+            ]
+        ]
+    }
+}

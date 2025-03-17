@@ -1,0 +1,82 @@
+{
+    "docker_info": {
+        "base_image": "python:3.10-buster",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "beacon"
+        ],
+        "labels": [
+            "maintainer",
+            "org.label-schema.schema-version=\"2.0\"",
+            "org.label-schema.vcs-url=\"https://github.com/EGA-archive/beacon-2.x/\""
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV DEBIAN_FRONTEND noninteractive"
+        ],
+        "copy_instructions": [
+            "COPY --from=BUILD /usr/local/bin      /usr/local/bin",
+            "COPY --from=BUILD /usr/local/lib      /usr/local/lib",
+            "COPY deploy/nginx.conf        /beacon/nginx.conf",
+            "COPY deploy/supervisord.conf  /beacon/supervisord.conf",
+            "COPY deploy/entrypoint.sh     /usr/local/bin/entrypoint.sh",
+            "COPY deploy/permissions.sh     /usr/local/bin/permissions.sh",
+            "COPY beacon                   /beacon/beacon",
+            "COPY ui                       /beacon/ui",
+            "WORKDIR /beacon"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/usr/local/bin/entrypoint.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update",
+                "#RUN apt-get upgrade -y"
+            ],
+            [
+                "apt-get install -y --no-install-recommends \\",
+                "ca-certificates pkg-config make",
+                "libssl-dev libffi-dev libpq-dev"
+            ],
+            [
+                "pip install --upgrade pip",
+                "COPY requirements.txt /tmp/requirements.txt"
+            ],
+            [
+                "pip install -r /tmp/requirements.txt",
+                ""
+            ],
+            [
+                "apt-get update && \\",
+                "#    apt-get upgrade -y &&",
+                "apt-get install -y --no-install-recommends",
+                "nginx",
+                "&&",
+                "rm -rf /var/lib/apt/lists/* /etc/apt/sources.list.d/nginx.list &&",
+                "apt-get purge -y --auto-remove"
+            ],
+            [
+                "groupadd beacon                              && \\",
+                "useradd -M -g beacon beacon                  &&",
+                "#    mkdir /beacon                                &&",
+                "mkdir /var/run/beacon                        &&",
+                "chown -R beacon:beacon /beacon               &&",
+                "#    chmod 400 /beacon/beacon/conf.py             &&",
+                "chown -R beacon:beacon /var/log/nginx        &&",
+                "chown -R beacon:beacon /var/lib/nginx        &&",
+                "chown -R beacon:beacon /etc/nginx            &&",
+                "chown -R beacon:beacon /var/run/beacon       &&",
+                "mkdir -p /var/log/supervisord                &&",
+                "chown -R beacon:beacon /var/log/supervisord  &&",
+                "chmod +x /usr/local/bin/entrypoint.sh"
+            ]
+        ]
+    }
+}

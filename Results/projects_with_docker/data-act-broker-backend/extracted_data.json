@@ -1,0 +1,47 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Flask",
+        "dependencies": {
+            "requirements.txt": "# explicit\nalembic==1.13.1\nbackoff==2.2.1\nbeautifulsoup4==4.12.3\nboto3==1.34.58\ncoverage==7.4.3\nfactory-boy==3.3.0\nflake8==7.0.0\nFlask==3.0.2\nFlask-Bcrypt==1.0.1\nFlask-Cors==4.0.0\nFlask-Deprecate==0.1.3\nFlask-Login==0.6.3\nfuture==1.0.0\nmarshmallow==3.21.1\nnumpy==1.26.4\n# Need to run 'opentelemetry-bootstrap -a install' after doing pip install for the first time and with any additional\n# opentelemetry imports. It is a CLI tool installed from the distro that reads through the list of packages installed in\n# your active site-packages folder and installs the corresponding instrumentation libraries for these packages.\nopentelemetry-distro==0.47b0\nopentelemetry-exporter-otlp==1.14.0\nopentelemetry-instrumentation==0.47b0\nopentelemetry-instrumentation-flask==0.47b0\nopentelemetry-instrumentation-logging==0.47b0\nopentelemetry-instrumentation-urllib==0.47b0\nopentelemetry-instrumentation-wsgi==0.47b0\nopentelemetry-instrumentation-threading==0.47b0\n# Keeping pandas before 2.2.0 which requires SQLAlchemy to be 2.0.0\npandas==2.1.4\npsutil==5.9.8\npytest==8.0.2\npytest-cov==4.1.0\npython-dateutil==2.9.0\nPyYAML==6.0.1\nratelimit==2.2.1\nrequests==2.31.0\n# Keeping SQLAlchemy before 2.0.0 before major changes\nSQLAlchemy==1.4.52\nSQLAlchemy-Utils==0.41.1\nsuds-py3==1.4.5.0\nwebargs==8.4.0\nWerkzeug==3.0.1\nxmltodict==0.13.0\n\n# implicit\namqp==5.2.0\nawscli==1.32.58\nbcrypt==4.1.2\nbilliard==4.2.0\nblinker==1.7.0\nbz2file==0.98\ncffi==1.16.0\nclick==8.1.7\ncolorama==0.4.4\ndecorator==5.1.1\ndocutils==0.16\nfaker==24.0.0\nfreezegun==1.5.1\nimportlib_metadata==7.0.2\niso3166==2.1.1\nitsdangerous==2.1.2\nJinja2==3.1.3\njmespath==1.0.1\nMako==1.3.2\nMarkupSafe==2.1.5\nmccabe==0.7.0\nparamiko==3.4.0\npep8-naming==0.13.3\npsycopg2==2.9.9\npy==1.11.0\npycodestyle==2.11.1\npycparser==2.21\npyflakes==3.2.0\npython-editor==1.0.4\npython-json-logger==2.0.7\npython-logstash==0.4.8\npytz==2024.1\ns3transfer==0.10.0\nsix==1.16.0\nunittest-xml-reporting==3.2.0\nwaitress==3.0.0\nWebOb==1.8.7\nWebTest==3.0.0\n\n\n# botocore hasn't been updated with a fix for md5s and python3.9\ngit+https://github.com/fedspendingtransparency/botocore-python39-md5.git@md5-fix-1-34-58#egg=botocore\n"
+        },
+        "database": "PostgreSQL",
+        "build_system": "pip",
+        "config_files": {
+            "docker-compose.yml": "version: '3'\nservices:\n  dataact-broker-db:\n    container_name: dataact-broker-db\n    image: postgres:13.8-alpine\n    restart: on-failure:3 # 3 max attempt, and then it will stop restarting\n    environment:\n      POSTGRES_USER: admin\n      POSTGRES_PASSWORD: root\n      POSTGRES_DB: data_broker\n    ports:\n      - \"5435:5432\"\n\n  # init-container, that runs its \"init\" task and terminates\n  # The task is to run migrations on the other container/service: dataact-broker-db\n  # This leverages the pip dependencies built into the dataact-broker-backend image in order to run alembic\n  dataact-broker-init-db:\n    container_name: dataact-broker-init-db\n    #init: true # init not compatible with docker compose earlier than v3.7, which Travis CI requires\n    image: dataact-broker-backend\n    build:\n      context: ./\n    depends_on:\n      - dataact-broker-db\n    command: /bin/sh -x -c \"sleep 9s; cd ./dataactcore; alembic upgrade head\"\n    volumes:\n      - ./:/data-act/backend\n\n  dataact-broker-backend:\n    container_name: dataact-broker-backend\n    image: dataact-broker-backend\n    build:\n      context: ./\n    depends_on:\n      - dataact-broker-db\n    restart: on-failure:3 # 3 max attempt, and then it will stop restarting\n    command: /bin/sh -c \"sleep 9s; python dataactbroker/app.py\"\n    ports:\n      - \"9999:9999\"\n    volumes:\n      - ./:/data-act/backend\n\n  dataact-broker-validator:\n    container_name: dataact-broker-validator\n    image: dataact-broker-backend\n    restart: on-failure:5 # 5 max attempt, and then it will stop restarting\n    command: /bin/sh -c \"sleep 17s; python dataactvalidator/app.py\"\n    ports:\n      - \"8889:8889\"\n    volumes:\n      - ./:/data-act/backend\n",
+            "Dockerfile": "FROM python:3.12\n\nRUN apt-get -y update\nRUN apt-get install -y gcc libpq-dev\nRUN apt-get install -y postgresql-client\nRUN apt-get install -y netcat-openbsd\nRUN apt-get install -y libsqlite3-dev\n\nRUN pip install unittest-xml-reporting setuptools==68.1.2\n\nCOPY requirements.txt /data-act/backend/requirements.txt\nCOPY server_requirements.txt /data-act/backend/server_requirements.txt\n\nRUN pip install --upgrade pip==24.0\nRUN pip install -r /data-act/backend/requirements.txt\n# uwsgi fails to build its wheel on Alpine Linux without CPUCOUNT=1 - https://github.com/unbit/uwsgi/issues/1318\nRUN CPUCOUNT=1 pip install -r /data-act/backend/server_requirements.txt\n\nRUN opentelemetry-bootstrap -a install\n\nENV PYTHONPATH /data-act/backend\nWORKDIR /data-act/backend\n\nVOLUME /data-act/backend\nADD . /data-act/backend\n\nCMD /bin/sh\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".codeclimate.yml",
+            ".gitattributes",
+            ".gitignore",
+            ".travis.yml",
+            "APISubmissionGuide.md",
+            "Dockerfile",
+            "LICENSE",
+            "LICENSE.md",
+            "README.md",
+            "StyleGuide.md",
+            "Using_Digital_Certificates_for_MAX_Authentication.pdf",
+            "__init__.py",
+            "docker-compose.frontend.yml",
+            "docker-compose.yml",
+            "pull_request_template.md",
+            "requirements.txt",
+            "server_requirements.txt",
+            "setup.bash",
+            "setup.cfg",
+            "setup.py"
+        ],
+        "folders": [
+            "dataactbroker",
+            "dataactcore",
+            "dataactvalidator",
+            "doc",
+            "tests"
+        ]
+    }
+}

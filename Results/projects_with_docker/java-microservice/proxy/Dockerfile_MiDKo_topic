@@ -1,0 +1,33 @@
+# Fetch base image
+FROM nginx:latest
+
+# Set environment variables
+ENV REFRESHED_AT 2016-09-17
+ENV GITHUB_REPO https://github.com/garystafford/spring-music/raw/build-artifacts
+ENV STATIC_FILE spring-music-static.zip
+ENV FILEBEAT_VERSION=filebeat_1.2.3_amd64.deb
+
+# Updating packages and installing necessary tools
+RUN apt-get update -qq &&\
+    apt-get install -qqy curl wget unzip nano &&\
+
+# Downloading static file and installing Filebeat
+RUN wget -O /tmp/${STATIC_FILE} ${GITHUB_REPO}/${STATIC_FILE} &&\
+    unzip /tmp/${STATIC_FILE} -d /usr/share/nginx/assets/ &&\
+    rm /var/log/nginx/access.log /var/log/nginx/error.log &&\
+    curl -L -O https://download.elastic.co/beats/filebeat/${FILEBEAT_VERSION} &&\
+    dpkg -i ${FILEBEAT_VERSION} &&\
+    rm ${FILEBEAT_VERSION} &&\
+
+# Copying necessary files
+COPY default.conf /etc/nginx/conf.d/default.conf
+COPY filebeat.yml /etc/filebeat/filebeat.yml
+ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh wait-for-it.sh
+COPY ./start.sh /usr/local/bin/start.sh
+COPY logstash-beats.crt /etc/pki/tls/certs/logstash-beats.crt
+
+# Granting permission for execution
+RUN chmod +x wait-for-it.sh &&\
+
+# Starting the application
+CMD [ "/usr/local/bin/start.sh" ]

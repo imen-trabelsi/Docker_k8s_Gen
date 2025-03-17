@@ -1,0 +1,17 @@
+# Use specified base image 
+FROM python:3.8-slim
+
+# Create a project directory
+ENV PROJECT_DIR /usr/local/src/myapp
+WORKDIR ${PROJECT_DIR}
+
+# Install pipenv and project dependencies
+COPY Pipfile Pipfile.lock ${PROJECT_DIR}/
+
+RUN pip install pipenv \
+
+# Copy src directory to project directory
+COPY src/ ${PROJECT_DIR}/
+
+# Default command, run the application
+ENTRYPOINT ["python", "./cryptobot_api.py"]

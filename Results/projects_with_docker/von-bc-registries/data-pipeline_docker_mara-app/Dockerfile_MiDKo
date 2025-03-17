@@ -1,0 +1,56 @@
+#Dockerfile
+FROM ubuntu:18.04
+ARG python_version=3.8
+ARG SOURCE_REPO=webdevops
+ARG GOCROND_VERSION=22.9.1
+ARG uid=1001
+ARG user=mara
+ARG entrypoint=/data-pipeline/docker-entrypoint.sh
+ENV HOME="/data-pipeline"
+ENV PYENV_ROOT=$HOME/.venv
+ENV APP_ROOT=$HOME
+
+# Update Ubuntu Software repository
+RUN apt-get update \
+  && apt-get install -y \
+  build-essential \
+  git \
+  dialog \
+  coreutils \
+  graphviz \
+  software-properties-common \
+  postgresql-client \
+
+# Adding repo and updating again
+RUN add-apt-repository ppa:deadsnakes/ppa \
+ && apt-get update \
+ && apt-get install -y \
+ python$python_version \
+ python${python_version}-dev \
+ python${python_version}-venv \
+ python3-venv \
+ python-psycopg2 \
+
+ADD https://github.com/$SOURCE_REPO/go-crond/releases/download/$GOCROND_VERSION/go-crond.linux.amd64 /usr/bin/go-crond 
+COPY . $APP_ROOT 
+COPY ./.scripts $APP_ROOT 
+COPY ./docker/mara-app/docker-entrypoint.sh $APP_ROOT 
+
+WORKDIR $APP_ROOT
+
+RUN chmod ug+x /usr/bin/go-crond
+RUN useradd -U -ms /bin/bash -u $uid $user 
+RUN usermod -a -G root $user
+RUN make install-packages
+RUN pip install sqlalchemy==1.3.23
+RUN pip install sqlalchemy_utils==0.36.7
+RUN chown -R mara:root $APP_ROOT \
+ && chmod -R ug+rw $APP_ROOT \
+ && chmod ug+x $APP_ROOT/scripts/*.sh \
+ && chmod ug+x $APP_ROOT/.scripts/mara-app/*.sh \
+ && chmod ug+x $APP_ROOT/.scripts/mara-app/makeshell \
+ && chmod ug+x $entrypoint \
+ && chmod g+rw /etc/passwd \
+
+USER $user
+CMD ["bash",,"docker-entrypoint.sh"]

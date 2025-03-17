@@ -1,0 +1,37 @@
+# Use base image
+FROM hexpm/elixir:${VARIANT}
+
+# Environment variables
+ENV NVM_DIR=/usr/local/share/nvm
+ENV NVM_SYMLINK_CURRENT=true
+ENV PATH=${NVM_DIR}/current/bin:${PATH}
+
+# Build arguments
+ARG VARIANT="1.17.3-erlang-27.1-debian-bullseye-20240926"
+ARG PHOENIX_VERSION="1.7.10"
+ARG NODE_VERSION="20"
+ARG USERNAME=vscode
+ARG USER_UID=1000
+ARG USER_GID=$USER_UID
+ARG INSTALL_ZSH="true"
+ARG UPGRADE_PACKAGES="true"
+ARG COMMON_SCRIPT_SOURCE="https://raw.githubusercontent.com/microsoft/vscode-dev-containers/main/script-library/common-debian.sh"
+ARG NODE_SCRIPT_SOURCE="https://raw.githubusercontent.com/microsoft/vscode-dev-containers/main/script-library/node-debian.sh"
+
+# Update and install dependencies
+RUN apt-get update \
+&& export DEBIAN_FRONTEND=noninteractive \
+&& apt-get -y install --no-install-recommends curl ca-certificates 2>&1 \
+&& curl -sSL ${COMMON_SCRIPT_SOURCE} -o /tmp/common-setup.sh \
+&& /bin/bash /tmp/common-setup.sh "${INSTALL_ZSH}" "${USERNAME}" "${USER_UID}" "${USER_GID}" "${UPGRADE_PACKAGES}" \
+&& su ${USERNAME} -c "mix local.hex --force \
+&& mix local.rebar --force \
+
+# Setting up working directory
+WORKDIR /app
+
+# Copy files to working directory
+COPY . .
+
+# Application start command 
+CMD ["/app/bin/start"]

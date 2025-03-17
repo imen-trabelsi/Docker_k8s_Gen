@@ -1,0 +1,36 @@
+{
+    "docker_info": {
+        "base_image": "owasp/zap2docker-bare",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /zap",
+            "COPY ./scripts/ /scripts"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"zap-cli\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk upgrade \\",
+                "&& apk add python3 py3-pip",
+                "&& rm -rf /var/cache/apk/*",
+                "&& pip3 install --no-cache-dir --upgrade zapcli"
+            ]
+        ]
+    }
+}

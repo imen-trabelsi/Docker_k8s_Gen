@@ -1,0 +1,38 @@
+{
+    "docker_info": {
+        "base_image": "alpine:3.19",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [
+            "org.opencontainers.image.title=\"cortex\""
+        ],
+        "health_checks": [],
+        "build_args": [
+            "TARGETARCH",
+            "revision"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "COPY       cortex-$TARGETARCH /bin/cortex"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"/bin/cortex\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --no-cache ca-certificates",
+                "COPY       migrations /migrations/"
+            ]
+        ]
+    }
+}

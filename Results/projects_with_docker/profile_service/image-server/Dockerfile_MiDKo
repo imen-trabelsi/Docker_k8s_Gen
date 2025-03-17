@@ -1,0 +1,84 @@
+# Using user-provided base image
+FROM shito/alpine-nginx:edge
+
+# Set working directory
+WORKDIR /usr/share/nginx/html
+
+# Start installing necessary dependencies
+RUN set -x \
+&& apk upgrade -U \
+&& apk --update \
+add \
+openssl \
+nano \
+ffmpeg \
+file \
+unzip \
+bash \
+curl \
+php7 \
+php7-pdo \
+php7-exif \
+php7-mcrypt \
+php7-curl \
+php7-gd \
+php7-json \
+php7-fpm \
+php7-openssl \
+php7-ctype \
+php7-opcache \
+php7-mbstring \
+php7-sodium \
+php7-xml \
+php7-ftp \
+php7-simplexml \
+php7-session \
+php7-fileinfo \
+php7-pcntl \
+git \
+
+RUN /bin/bash -c 'set -ex && \
+ARCH="$(apk --print-arch)" && \
+case "${ARCH##*-}" in \
+x86_64) S6_PLATFORM="amd64" ;; \
+armv7l) S6_PLATFORM="armhf" ;; \
+armv7) S6_PLATFORM="armhf" ;; \
+armv6) S6_PLATFORM="armhf" ;; \
+armhf) S6_PLATFORM="armhf" ;; \
+arm) S6_PLATFORM="arm" ;; \
+aarch64) S6_PLATFORM="aarch64" ;; \
+i386) S6_PLATFORM="x86" ;; \
+*) echo >&2 "unsupported architecture: ${ARCH}"; exit 1 ;; \
+esac; \
+
+# Performing operations and setting up permissions
+RUN rm /usr/bin/php && \
+ln -s /etc/php7 /etc/php && \
+ln -s /usr/bin/php7 /usr/bin/php &&\
+ln -s /usr/sbin/php-fpm7 /usr/bin/php-fpm &&\
+ln -s /usr/lib/php7 /usr/lib/php &&\
+rm -fr /var/cache/apk/* &&\
+mkdir -p /var/log/php-fpm &&\
+ln -s /dev/stderr /var/log/php-fpm/fpm-error.log &&\
+mkdir -p /var/lib/php7/sessions &&\
+chown nginx:nginx /var/lib/php7/sessions &&\
+mkdir -p /usr/share/nginx/html &&\
+chown -Rf nginx:nginx /usr/share/nginx/html &&\
+git clone https://github.com/gctools-outilsgc/Image-Resource-Server.git . &&\
+git checkout master &&\
+git pull &&\
+mv inc/example.config.inc.php inc/config.inc.php &&\
+chown -R nginx:nginx /usr/share/nginx/html &&\
+chmod +x bin/ffmpeg &&\
+chmod +x bin/ffmpeg &&\
+chown -Rf nginx:nginx /usr/share/nginx/html &&\
+chmod -R 777 /usr/share/nginx/html/ &&\
+
+# Coping files/instructions
+COPY /rootfs /
+
+# Expose port 80
+EXPOSE 80
+
+# Set the command that would be executed at runtime 
+ENTRYPOINT ["/etc/pictshare.sh"]

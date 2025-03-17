@@ -1,0 +1,36 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:8-jre-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8081"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \\"
+        ],
+        "copy_instructions": [
+            "ADD *.war /app.war"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "echo",
+                    "\"The",
+                    "application",
+                    "will",
+                    "start",
+                    "in",
+                    "${JHIPSTER_SLEEP}s...\"",
+                    "&&",
+                    "\\"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

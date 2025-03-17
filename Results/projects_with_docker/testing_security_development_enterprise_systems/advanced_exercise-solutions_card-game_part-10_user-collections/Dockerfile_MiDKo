@@ -1,0 +1,31 @@
+# Pull base image. 
+FROM adoptopenjdk/openjdk11:alpine AS build
+
+# Set working directory in image
+WORKDIR /app
+
+# Copy pom.xml file to the image
+COPY pom.xml .
+
+# Copy directory to the image
+COPY src src
+
+# Install required dependencies and build .jar file
+RUN mvn install clean
+
+# Set build image
+FROM adoptopenjdk/openjdk11:alpine
+
+# Set working directory in image
+WORKDIR /app
+
+# Copy jar file from build image to new image
+
+# Expose port
+EXPOSE 8080
+
+# Set database environment variable
+ENV DATABASE_URL=jdbc:postgresql://localhost:5432/test
+
+# Run application
+CMD ["java", "-jar", "user-collections.jar"]

@@ -1,0 +1,38 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.14.1",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "monitor"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /go/src/github.com/onap/multicloud-k8s/src/monitor",
+            "COPY ./ ./",
+            "WORKDIR /opt/monitor",
+            "COPY --chown=monitor --from=0 /go/src/github.com/onap/multicloud-k8s/src/monitor/monitor ./"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/opt/monitor/monitor\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "make all",
+                ""
+            ],
+            [
+                "groupadd -r monitor && useradd -r -g monitor monitor",
+                "RUN chown monitor:monitor /opt/monitor -R"
+            ]
+        ]
+    }
+}

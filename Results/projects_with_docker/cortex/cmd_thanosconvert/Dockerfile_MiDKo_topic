@@ -1,0 +1,32 @@
+# Use the base image specified by the user
+FROM alpine:3.19 as builder
+
+# Install necessary packages
+RUN apk add --no-cache ca-certificates && \
+    apk add --no-cache --virtual .build-deps \
+
+# Copy the Go modules manifests
+COPY go.mod go.sum /build/
+
+# Cache the Go modules
+RUN cd /build && go mod download
+
+# Copy all source code to the current directory
+COPY . /build
+
+# Build the Go application
+RUN cd /build && go build -o thanosconvert
+
+# Start a new stage from the base image to create a smaller final image
+FROM alpine:3.19
+
+# Add labels as requested by the user
+LABEL org.opencontainers.image.title="thanosconvert"
+
+# Copy necessary files
+
+# Set the execution command
+ENTRYPOINT ["/thanosconvert"]
+
+# Expose necessary ports
+EXPOSE 8080

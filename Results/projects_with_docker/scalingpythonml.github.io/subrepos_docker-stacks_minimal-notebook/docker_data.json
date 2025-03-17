@@ -1,0 +1,40 @@
+{
+    "docker_info": {
+        "base_image": "$BASE_CONTAINER",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root",
+            "$NB_UID"
+        ],
+        "labels": [
+            "maintainer=\"Jupyter"
+        ],
+        "health_checks": [],
+        "build_args": [
+            "BASE_CONTAINER=jupyter/base-notebook"
+        ],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "apt-get update && apt-get install -yq --no-install-recommends \\",
+                "build-essential",
+                "vim-tiny",
+                "git",
+                "inkscape",
+                "libsm6",
+                "libxext-dev",
+                "libxrender1",
+                "lmodern",
+                "netcat",
+                "# ---- nbconvert dependencies ----"
+            ],
+            [
+                "update-alternatives --install /usr/bin/nano nano /bin/nano-tiny 10",
+                ""
+            ]
+        ]
+    }
+}

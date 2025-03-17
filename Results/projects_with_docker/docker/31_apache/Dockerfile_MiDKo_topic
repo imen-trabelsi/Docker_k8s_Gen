@@ -1,0 +1,57 @@
+# Base Image
+FROM php:8.3-apache-bookworm
+
+
+# Environment Variables
+ENV IMAGICK_COMMIT_HASH d7d3c24af1b4f599897408f1714600b69a56473b
+ENV PHP_MEMORY_LIMIT 512M
+ENV PHP_UPLOAD_LIMIT 512M
+ENV PHP_OPCACHE_MEMORY_CONSUMPTION 128
+ENV APACHE_BODY_LIMIT 1073741824
+ENV NEXTCLOUD_VERSION 31.0.0
+
+# Set work directory
+WORKDIR /var/www/html
+
+# Execute essential commands
+RUN set -ex; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+    busybox-static \
+    bzip2 \
+    libldap-common \
+    libmagickcore-6.q16-6-extra \
+    rsync \
+    ; \
+    rm -rf /var/lib/apt/lists/*; \
+    mkdir -p /var/spool/cron/crontabs; \
+
+# Continue executing commands
+RUN set -ex; \
+    savedAptMark="$(apt-mark showmanual)"; \
+    apt-get update; \
+    apt-get install -y --no-install-recommends \
+    libcurl4-openssl-dev \
+    libevent-dev \
+    libfreetype6-dev \
+    libgmp-dev \
+    libicu-dev \
+    libjpeg-dev \
+    libldap2-dev \
+    libmagickwand-dev \
+    libmcrypt-dev \
+    libmemcached-dev \
+    libpng-dev \
+    libpq-dev \
+    libwebp-dev \
+    libxml2-dev \
+    libzip-dev \
+
+# Copy Configs
+COPY *.sh upgrade.exclude /
+COPY config/* /usr/src/nextcloud/config/
+
+# Run Endpoint script
+ENTRYPOINT ["/entrypoint.sh"]
+
+CMD ["apache2-foreground"]

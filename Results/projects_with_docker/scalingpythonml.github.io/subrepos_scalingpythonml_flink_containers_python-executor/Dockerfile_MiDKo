@@ -1,0 +1,47 @@
+# Use base image provided by the user
+FROM $base_img
+
+# Setting Environment variable
+ENV PATH /opt/conda/bin:$PATH
+ENV LANG C.UTF-8 LC_ALL=C.UTF-8
+
+# Adding user
+RUN useradd -u 999 myuser -M
+USER myuser
+
+# Create working directory
+WORKDIR /
+
+# Copy files
+COPY pysetup.sh /pysetup.sh
+
+# Install dependencies
+RUN apt-get update --fix-missing && \
+    apt-get install -yq graphviz git build-essential cmake telnet && \
+    apt install -y bash tini libc6 libpam-modules libnss3 procps ca-certificates p11-kit wget bzip2 git mercurial subversion && \
+    rm /bin/sh && \
+
+# Running the pysetup.sh file
+RUN chmod a+x /pysetup.sh && ./pysetup.sh
+
+# Installing python packages
+RUN conda install -c conda-forge --yes mamba && \
+    mamba install --yes python==3.8.6 && \
+    pip install --upgrade pip setuptools && \
+    mamba install --yes numpy==1.19.2 pandas cytoolz numba lz4 scikit-build python-blosc=1.9.2 && \
+
+# Change back to root
+USER root
+
+# Copy the application's Gemfile and run bundle to set up gems
+COPY Gemfile* ./
+RUN bundle install
+
+# Copy the application into the container
+COPY . .
+
+# Default command
+CMD ["bundle", "exec", "ruby", "app.rb"]
+
+
+

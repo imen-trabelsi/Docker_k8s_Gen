@@ -1,0 +1,34 @@
+# Use an official nginx alpine base image
+FROM nginx:${NGINX_VERSION}-alpine
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the current directory contents into the container at /app
+COPY . /app
+
+# Set the maintainer
+LABEL maintainer="contact@graviteesource.com"
+
+# Add the configuration files
+COPY nginx.conf /etc/nginx
+COPY run.sh /run.sh
+
+# Set the environment variables
+ENV WWW_TARGET /usr/share/nginx/html
+ENV HTTP_PORT 8080
+ENV HTTPS_PORT 8443
+ENV SERVER_NAME _
+
+# Run commands
+RUN mkdir -p /rw.mount/nginx/logs; \
+ln -sf /dev/stdout /var/log/nginx/access.log; \
+ln -sf /dev/stderr /var/log/nginx/error.log; \
+chown -R 101:0 /usr/share/nginx /var/log/nginx /var/cache/nginx /rw.mount /var/run; \
+
+# Expose port
+EXPOSE 8080
+EXPOSE 8443
+
+# Command to execute
+CMD ["sh", "/run.sh"]

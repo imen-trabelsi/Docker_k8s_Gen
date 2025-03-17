@@ -1,0 +1,49 @@
+# Base image.
+FROM elixir:${ALPINE_VERSION} as BASE
+LABEL maintainer="<your-email>"
+
+# Installing dependencies.
+RUN \
+  set -xe && \
+
+# Setting work directory.
+WORKDIR /app
+
+# Copy files from the mix.exs file. 
+COPY mix.exs mix.lock ./
+
+# Copying other necessary files.
+COPY apps/domain/mix.exs ./apps/domain/mix.exs
+COPY apps/web/mix.exs ./apps/web/mix.exs
+COPY apps/api/mix.exs ./apps/api/mix.exs
+COPY config config
+COPY priv priv
+
+# Installing hex and rebar.
+RUN mix local.hex --force && \
+
+# RUN apk del build-dependencies
+
+# Set environment variables.
+ENV MIX_ENV=prod \
+  GIT_SHA \
+  APPLICATION_NAME \
+  ERLANG_VERSION=${ERLANG_VERSION} \
+  ERLANG_DOWNLOAD_SHA256=${ERLANG_DOWNLOAD_SHA256} \
+  ERLIXIR_VERSION=${ELIXIR_VERSION} \
+  ELIXIR_DOWNLOAD_SHA256=${ELIXIR_DOWNLOAD_SHA256} \
+
+USER default
+WORKDIR /app
+# Ensure logs writes are output immediately instead of being buffered.
+ENV PYTHONUNBUFFERED=1
+
+# Expose the listening port.
+EXPOSE <port_number>
+
+# Set entry point.
+ENTRYPOINT ["/sbin/tini", "--"]
+
+# Running the app.
+CMD ["bin/server"]
+

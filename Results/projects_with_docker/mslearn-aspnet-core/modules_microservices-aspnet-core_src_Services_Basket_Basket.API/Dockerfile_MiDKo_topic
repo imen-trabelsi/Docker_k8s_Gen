@@ -1,0 +1,41 @@
+# Using the specified Microsoft dotnet SDK as the base image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+# Work directory set to /src
+WORKDIR /src
+
+# Copying all csproj files to their individual services and building them
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+COPY ["src/BuildingBlocks/EventBus/EventBus/EventBus.csproj", "src/BuildingBlocks/EventBus/EventBus/"]
+# {Other .csproj COPY commands here}
+COPY ["src/Web/WebStatus/WebStatus.csproj", "src/Web/WebStatus/"]
+COPY ["NuGet.config", "./"]
+
+# Copy the solution file
+COPY ["eShop-Learn.sln", "./"]
+
+# Restore the solution file
+RUN dotnet restore "eShop-Learn.sln"
+
+# Copy all other files
+COPY . .
+
+# Work directory set to Basket.API
+WORKDIR "/src/src/Services/Basket/Basket.API"
+
+# Publish the Basket.API project
+RUN dotnet publish --no-restore "Basket.API.csproj" -c Release -o /app/publish
+
+# Final stage/base image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
+
+# Work directory set to /app
+WORKDIR /app
+
+# Copy built files from previous stage to current stage
+
+# Expose port 80
+EXPOSE 80
+
+# Set the Docker Image's ENTRYPOINT
+ENTRYPOINT ["dotnet", "Basket.API.dll"]

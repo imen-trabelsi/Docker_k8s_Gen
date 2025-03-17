@@ -1,0 +1,39 @@
+# Base Image
+FROM eventuateio/eventuate-mysql8:$EVENTUATE_COMMON_VERSION
+
+# Identify the maintainer of an image
+LABEL maintainer="your_email@example.com"
+
+# Set the working directory in the container 
+WORKDIR /home/app
+
+# Copy the build file to the working directory
+COPY build.gradle .
+
+# Download all required dependencies
+RUN gradle build --no-daemon
+
+# Copy across our app code
+COPY . .
+
+# Set necessary environment variable required for our image
+ENV EVENTUATE_COMMON_VERSION=$EVENTUATE_COMMON_VERSION
+ENV EVENTUATE_SAGA_VERSION=$EVENTUATE_SAGA_VERSION
+
+# Run Compile Schema Per Service
+COPY compile-schema-per-service.sh /docker-entrypoint-initdb.d/4.compile-schema-per-service.sh
+
+# Add necessary templates
+ADD https://raw.githubusercontent.com/eventuate-foundation/eventuate-common/$EVENTUATE_COMMON_VERSION/mysql/1.initialize-database.sql /docker-entrypoint-initdb.d/template1
+ADD https://raw.githubusercontent.com/eventuate-foundation/eventuate-common/$EVENTUATE_COMMON_VERSION/mysql/2.initialize-database.sql /docker-entrypoint-initdb.d/template2
+ADD https://raw.githubusercontent.com/eventuate-tram/eventuate-tram-sagas/$EVENTUATE_SAGA_VERSION/mysql/tram-saga-schema.sql /docker-entrypoint-initdb.d/template3
+
+# Run necessary commands
+RUN cat /docker-entrypoint-initdb.d/template? | sed -e 's/eventuate.offset_store/offset_store/' -e /eventuate/d > /docker-entrypoint-initdb.d/template && \
+    touch /docker-entrypoint-initdb.d/5.schema-per-service.sql && \
+
+# Expose necessary port
+EXPOSE 8081
+
+# CMD or ENTRYPOINT Instruction
+CMD ["gradle", "run"]

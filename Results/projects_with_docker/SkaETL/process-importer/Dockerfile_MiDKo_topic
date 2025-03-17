@@ -1,0 +1,38 @@
+# Base Image
+FROM openjdk:8u151-jdk as BUILD
+
+# Set volume point to /tmp
+VOLUME /tmp
+
+# Copy the pom.xml file and download the dependencies
+COPY ./pom.xml ./pom.xml
+RUN mvn dependency:go-offline -B
+
+# Copy your other files
+COPY . .
+
+# Build the project
+RUN mvn clean package
+
+# Add the startup script to the image and make it executable
+COPY startup.sh /usr/bin/startup.sh
+RUN chmod +x /usr/bin/startup.sh
+
+# Add the application's jar file to the container
+COPY target/${JAR_FILE} /usr/share/skalogs/process-importer.jar
+
+
+# Set working directory
+WORKDIR /app
+
+# Copy necessary files and directories
+
+# Set the application's main class type as a parameter
+ARG JAR_FILE
+COPY target/${JAR_FILE} app.jar
+
+# Expose the application's port to the docker host
+EXPOSE 8080
+
+# Run command
+ENTRYPOINT ["/usr/bin/startup.sh"]

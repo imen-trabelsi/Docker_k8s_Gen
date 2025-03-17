@@ -1,0 +1,21 @@
+# Based on grafana/grafana:8.1.5-ubuntu image
+FROM grafana/grafana:8.1.5-ubuntu
+
+# Run commands
+RUN apt-get update && apt-get install -y curl gettext-base && rm -rf /var/lib/apt/lists/*
+
+# Set WORKDIR and copy files
+WORKDIR /etc/grafana
+COPY datasources ./datasources
+
+WORKDIR /app
+COPY entrypoint.sh ./
+
+# Set permissions for entrypoint script
+RUN chmod u+x entrypoint.sh
+
+# Set user
+USER root
+
+# Set entry point
+ENTRYPOINT ["/app/entrypoint.sh"]

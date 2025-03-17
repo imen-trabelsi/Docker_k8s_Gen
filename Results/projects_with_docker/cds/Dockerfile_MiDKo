@@ -1,0 +1,48 @@
+FROM golang:alpine
+
+#Install necessary packages for build
+RUN apk update && \
+    apk --no-cache add curl gpg git tzdata openssh-client gpg-agent ca-certificates && \
+RUN update-ca-certificates
+RUN echo "PubkeyAcceptedKeyTypes +ssh-rsa" >> /etc/ssh/ssh_config
+
+# Set the Go working directory inside the docker image
+WORKDIR /app
+
+# Copy go mod and sum files
+COPY go.mod go.sum ./
+
+# Download all dependencies
+RUN go mod download
+
+# Copy the entire application to the container
+COPY . .
+
+# Build the Go app
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o app .
+
+# Start anew with a smaller image
+FROM alpine:3.20
+
+RUN apk --no-cache add ca-certificates
+WORKDIR /root/
+
+# Install user, set permissions, and unpack tar files
+RUN addgroup cds && adduser cds -G cds -D
+RUN mkdir -p /app/sql /app/ui_static_files
+COPY --from=0 /app .
+
+# Set permissions and unpack tar files
+RUN echo "PubkeyAcceptedKeyTypes +ssh-rsa" >> /etc/ssh/ssh_config
+COPY dist/cds-engine-* /app/
+RUN chmod +x /app/cds-engine-linux-amd64 && \
+    tar xzf /app/sql.tar.gz -C /app/sql && \
+    tar xzf /app/ui.tar.gz -C /app/ui_static_files && \
+    tar xzf /app/cds-docs.tar.gz -C /app/ui_static_files && \
+    mv /app/ui_static_files/cds-docs /app/ui_static_files/docs && \
+
+# Set the user to use when running this image
+USER cds
+
+# Application run command
+CMD ["/app/cds-engine-linux-amd64"]

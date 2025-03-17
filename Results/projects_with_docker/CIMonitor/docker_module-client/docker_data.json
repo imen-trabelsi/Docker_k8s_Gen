@@ -1,0 +1,57 @@
+{
+    "docker_info": {
+        "base_image": "${BASE_IMAGE}",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "QEMU_BINARY=notset",
+            "BASE_IMAGE=node:20-slim"
+        ],
+        "envs": [
+            "ENV NODE_PATH=/CIMonitor",
+            "ENV NODE_ENV=production",
+            "ENV NODE_PATH=/CIMonitor/app"
+        ],
+        "copy_instructions": [
+            "WORKDIR /CIMonitor",
+            "COPY ./${QEMU_BINARY}* /usr/bin/",
+            "COPY --from=production-qemu /usr/bin/dumb-init /usr/bin/dumb-init",
+            "COPY . /CIMonitor"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"npm\",",
+                    "\"run\",",
+                    "\"module-client\"]"
+                ]
+            },
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/usr/bin/dumb-init\",",
+                    "\"--\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"npm\",",
+                    "\"run\",",
+                    "\"start-client\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "echo \"deb http://deb.debian.org/debian stable main contrib non-free\" >> /etc/apt/sources.list \\",
+                "&& apt-get --yes update",
+                "&& apt-get --yes install dumb-init"
+            ]
+        ]
+    }
+}

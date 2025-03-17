@@ -1,0 +1,17 @@
+# Use java:8-jre as base image
+FROM java:8-jre
+
+# Create application directory
+WORKDIR /app
+
+# Set timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Add application file
+COPY ./target/ts-travel-plan-service-1.0.jar /app/
+
+# Expose application port
+EXPOSE 14322
+
+# The command to execute application
+CMD ["java", "-Xmx200m", "-jar", "/app/ts-travel-plan-service-1.0.jar"]

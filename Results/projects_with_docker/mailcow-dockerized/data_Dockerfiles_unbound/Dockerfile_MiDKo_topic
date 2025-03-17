@@ -1,0 +1,43 @@
+# Set the base image
+FROM alpine:3.20
+
+LABEL maintainer="your-email@example.com"
+
+# Install necessary packages
+RUN apk add --update --no-cache \
+    curl \
+    bind-tools \
+    coreutils \
+    unbound \
+    bash \
+    openssl \
+    drill \
+    tzdata \
+    syslog-ng \
+    supervisor && \
+    curl -o /etc/unbound/root.hints https://www.internic.net/domain/named.cache && \
+    chown root:unbound /etc/unbound && \
+
+# Copy app and configuration files to the working directory
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+COPY healthcheck.sh /healthcheck.sh
+COPY syslog-ng.conf /etc/syslog-ng/syslog-ng.conf
+COPY supervisord.conf /etc/supervisor/supervisord.conf
+COPY stop-supervisor.sh /usr/local/sbin/stop-supervisor.sh
+
+# Set the permissions for scripts
+RUN chmod +x /docker-entrypoint.sh \
+    /healthcheck.sh \
+
+# Perform health check
+HEALTHCHECK --interval=30s --timeout=10s \
+    CMD sh -c '[ -f /tmp/healthcheck_status ] && [ "$(cat /tmp/healthcheck_status)" -eq 0 ] || exit 1'
+
+# Expose the application port
+EXPOSE 53/udp
+
+# Set the entrypoint
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
+# Set the default command to execute   
+CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]

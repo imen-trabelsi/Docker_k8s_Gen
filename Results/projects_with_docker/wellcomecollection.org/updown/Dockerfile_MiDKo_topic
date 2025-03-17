@@ -1,0 +1,23 @@
+# Dockerfile
+
+# Step 1: Specifying the Base Image
+FROM public.ecr.aws/docker/library/node:20-bookworm-slim 
+
+# Step 2: Setting the Working Directory
+WORKDIR /app 
+
+# Step 3: Installing Dependencies
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile && yarn cache clean
+
+# Step 4: Copying Source Code Files
+COPY . ./
+
+# Step 5: Set Entrypoint
+ENTRYPOINT [ "node", "updown.ts" ]
+
+# Step 6: Exposing The Necessary Ports
+EXPOSE 80 
+
+# Step 7: Run the app
+CMD ["npm", "run", "start"]

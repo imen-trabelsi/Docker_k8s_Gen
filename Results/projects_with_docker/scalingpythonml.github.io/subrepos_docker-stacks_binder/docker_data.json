@@ -1,0 +1,32 @@
+{
+    "docker_info": {
+        "base_image": "$BASE_CONTAINER",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root",
+            "$NB_UID"
+        ],
+        "labels": [
+            "maintainer=\"Jupyter"
+        ],
+        "health_checks": [],
+        "build_args": [
+            "BASE_CONTAINER=jupyter/base-notebook:aec555e49be6"
+        ],
+        "envs": [
+            "ENV TAG=\"aec555e49be6\""
+        ],
+        "copy_instructions": [
+            "COPY binder/README.ipynb .",
+            "WORKDIR $HOME"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "fix-permissions README.ipynb",
+                ""
+            ]
+        ]
+    }
+}

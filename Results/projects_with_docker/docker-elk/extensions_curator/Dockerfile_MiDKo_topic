@@ -1,0 +1,24 @@
+# Base Image
+FROM untergeek/curator:8.0.10
+
+# Maintainer Info
+LABEL maintainer="unspecified-developer"
+
+# Define Environment Variables if any
+# ENV <your-env-variable>
+
+# Run as root user
+USER root
+
+# Add crontab file in the cron directory
+COPY extensions/curator/config/delete_log_files_curator.yml /.curator/delete_log_files_curator.yml
+
+# Give execution rights to the file we just copied
+RUN chmod 0644 /.curator/delete_log_files_curator.yml
+
+# Run the command
+RUN echo "* * * * * /curator/curator /.curator/delete_log_files_curator.yml" >> /var/spool/cron/crontabs/nobody
+
+# Run cron command
+ENTRYPOINT ["crond"]
+CMD ["-f", "-d8"]

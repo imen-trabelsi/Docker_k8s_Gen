@@ -1,0 +1,33 @@
+# Base Image
+FROM debian:buster-slim AS base
+
+# Environment Variables
+ENV PYENV_ROOT /pyenv
+ENV PATH $PYENV_ROOT/shims:$PYENV_ROOT/bin:$PATH
+ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV SCENARIO=base
+
+# Build Arguments
+ARG PYTHON_VERSION=REPLACE_WITH_YOUR_PYTHON_VERSION
+ARG PYENV_VERSION=2.4.1
+
+# Run Commands
+RUN apt-get update && apt-get install --no-install-recommends -y \
+    make build-essential libssl-dev zlib1g-dev libbz2-dev libreadline-dev libsqlite3-dev wget curl llvm libncursesw5-dev xz-utils tk-dev libxml2-dev libxmlsec1-dev libffi-dev liblzma-dev git ca-certificates \
+    && git clone --depth 1 https://github.com/pyenv/pyenv.git --branch "v$PYENV_VERSION" --single-branch "$PYENV_ROOT" \
+    && $PYENV_ROOT/bin/pyenv install "$PYTHON_VERSION" \
+
+# Install Python dependencies
+RUN pip install --upgrade pip
+
+# Copy Instructions
+WORKDIR $PYENV_ROOT
+WORKDIR /app
+COPY ./base/ /app/
+COPY ./bm/ /app/bm/
+COPY ./${SCENARIO}/ /app/
+
+# Execution Command
+ENTRYPOINT ["/app/entrypoint"]
+CMD ["/app/benchmark"]

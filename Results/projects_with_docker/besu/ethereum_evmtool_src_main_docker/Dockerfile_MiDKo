@@ -1,0 +1,43 @@
+# Use the official Ubuntu-based image as the parent image.
+FROM ubuntu:24.04
+
+# Set necessary environment variables for no proxy cache and PATH.
+ENV NO_PROXY_CACHE="-o Acquire::BrokenProxy=true -o Acquire::http::No-Cache=true -o Acquire::http::Pipeline-Depth=0"
+ENV PATH="/opt/besu-evmtool/bin:${PATH}"
+
+# Set the working directory within the Docker image.
+WORKDIR /opt/besu-evmtool
+
+# Add a new user 'besu'.
+RUN useradd -ms /bin/bash besu
+
+# Copy over the necessary files into the Docker image.
+COPY --chown=besu:besu besu-evmtool /opt/besu-evmtool/
+
+# Run commands to update packages and manage dependencies.
+RUN apt-get update $NO_PROXY_CACHE
+
+# Run as 'besu' and not 'root'.
+USER besu
+
+# At build time, break the build if the application has security vulnerabilities. 
+RUN ./gradlew dependencyCheckAnalyze --info
+
+# Use gradle to build the Spring-Boot Project.
+RUN chmod +x gradlew
+RUN ./gradlew build
+
+# Arguments for labels
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VERSION=dev
+
+# Labels for image
+LABEL org.label-schema.build-date=$BUILD_DATE \
+      org.label-schema.vcs-ref=$VCS_REF \
+
+# Expose the app on port 8080 (for web HTTP traffic)
+EXPOSE 8080
+
+# Configure Docker to execute the application
+ENTRYPOINT ["evmtool"]

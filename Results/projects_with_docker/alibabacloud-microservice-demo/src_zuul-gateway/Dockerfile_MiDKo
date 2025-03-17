@@ -1,0 +1,29 @@
+# Using the provided base image
+FROM dragonwell-registry.cn-hangzhou.cr.aliyuncs.com/dragonwell/dragonwell:8-extended-ga-centos
+
+# Setting working directory in the container
+WORKDIR /app
+
+# Copying dependencies
+COPY pom.xml .
+# Build artifact
+RUN mvn dependency:resolve
+RUN mvn verify
+# Copying source code
+COPY src /app/src
+
+# Building the application
+RUN mvn clean package
+
+# Copy files from external image
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+
+# Copying application jar and start.sh 
+COPY /target/zuul-gateway-1.0-SNAPSHOT.jar /app
+COPY /start.sh /app
+
+# Exposing service port
+EXPOSE 8080
+
+# Running the application
+CMD ["/app/start.sh"]

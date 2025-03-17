@@ -1,0 +1,32 @@
+# Use base Image
+FROM xebialabs/xl-deploy:9.5.1
+
+# Set working directory in container
+WORKDIR /opt/xebialabs/xl-deploy-server/
+
+# Copy application dependencies
+COPY build.gradle /opt/xebialabs/xl-deploy-server/
+COPY docker-compose/docker-compose.yml /opt/xebialabs/xl-deploy-server/
+COPY docker-compose/xebialabs/xl-deploy/Dockerfile /opt/xebialabs/xl-deploy-server/
+
+# Install the application dependencies
+RUN gradle clean build
+
+# Add application resources (database connection, application.properties etc.)
+COPY central-server-config/* /opt/xebialabs/xl-deploy-server/central-server-config/
+
+# Copy Application
+COPY default-conf/* /opt/xebialabs/xl-deploy-server/default-conf/
+
+# Expose the application on port 8080
+EXPOSE 8080
+
+# Setting the ENTRYPOINT to start on init
+ENTRYPOINT ["gradle", "run"]
+
+# Failure action
+HEALTHCHECK --interval=5m --timeout=20s \ 
+  CMD curl -f http://localhost:8080/health || exit 1 
+
+# Run the application
+CMD ["gradle", "run"]

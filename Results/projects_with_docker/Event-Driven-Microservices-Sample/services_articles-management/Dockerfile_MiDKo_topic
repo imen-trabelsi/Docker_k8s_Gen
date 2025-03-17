@@ -1,0 +1,29 @@
+# Base Image
+FROM node:11.2.0-alpine
+
+# Working directory within container
+WORKDIR /usr/app
+
+# Copy package.json to the workdir in Docker container
+COPY package.json .
+
+# Installing dependencies
+RUN apk add --no-cache curl \
+    && cd /server \
+
+# Copying the source files
+COPY . /server
+
+# Setting necessary environment variables
+ENV NODE_ENV=production
+ENV PORT=3000
+ENV MONGO_URL=mongodb://mongo:27017
+
+# Expose the required port to run the app
+EXPOSE 3000
+
+# Health check
+HEALTHCHECK CMD curl -f http://localhost:3000/health || exit 1
+
+# Default command or execution of application
+CMD ["node", "/server/src/server.js"]

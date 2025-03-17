@@ -1,0 +1,38 @@
+# Use the specific Node base image provided by the user
+FROM codefarm/nodebase:0.0.0 as base
+
+# Set working directory
+WORKDIR $farmerHome
+
+# Install ssh-server
+RUN apt-get update && apt-get install -y openssh-server
+
+# Create required directories and files for ssh
+RUN mkdir /var/run/sshd && mkdir -p $farmerHome/.ssh && mkdir -p $farmerHome/execKeys
+
+# Copy dependencies definition
+COPY package.json .
+
+# Install project dependencies
+RUN npm install --quiet
+
+# Copy local files to container
+COPY . .
+
+# Copy SSH keys
+COPY ["id_rsa", "id_rsa.pub", "$farmerHome/execKeys/"]
+
+# Assign permission and ownership to keys
+RUN cat $farmerHome/execKeys/id_rsa.pub >> $farmerHome/.ssh/authorized_keys && chown -R $user $farmerHome/execKeys && chgrp -R $user $farmerHome/execKeys
+
+# Set ssh identity file and append public key to authorized_keys
+RUN ssh-keygen -N "" -f $farmerHome/.ssh/id_rsa && cat $farmerHome/.ssh/id_rsa.pub >> $farmerHome/.ssh/authorized_keys
+
+# Setting permissions and ownership for SSH
+RUN chmod 644 $farmerHome/.ssh/authorized_keys && chown -R $user $farmerHome/.ssh && chgrp -R $user $farmerHome/.ssh
+
+# Expose port
+EXPOSE 22
+
+# Default command
+CMD ["/usr/sbin/sshd", "-D"]

@@ -1,0 +1,64 @@
+{
+    "docker_info": {
+        "base_image": "node:22-alpine3.20",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "ODSA_ENV=\"DEV\"",
+            "FLASK_ENV=\"development\"",
+            "FLASK_APP='app.py'"
+        ],
+        "envs": [
+            "ENV ODSA_ENV=${ODSA_ENV}",
+            "ENV FLASK_ENV=${FLASK_ENV}",
+            "ENV FLASK_APP=${FLASK_APP}",
+            "ENV PYTHONUNBUFFERED=1",
+            "ENV TZ=America/New_York"
+        ],
+        "copy_instructions": [
+            "COPY --from=node /usr/lib /usr/lib",
+            "COPY --from=node /usr/local/share /usr/local/share",
+            "COPY --from=node /usr/local/lib /usr/local/lib",
+            "COPY --from=node /usr/local/include /usr/local/include",
+            "COPY --from=node /usr/local/bin /usr/local/bin",
+            "WORKDIR /opendsa",
+            "COPY package.json yarn.lock ./",
+            "COPY requirements.txt requirements.txt"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"make\",",
+                    "\"help\",",
+                    "\"webserver\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone",
+                ""
+            ],
+            [
+                "apk update",
+                "RUN apk add --no-cache bash git curl make"
+            ],
+            [
+                "npm install -g corepack",
+                "COPY .yarnrc.yml ./"
+            ],
+            [
+                "yarn install",
+                ""
+            ],
+            [
+                "pip3 install -r requirements.txt",
+                ""
+            ]
+        ]
+    }
+}

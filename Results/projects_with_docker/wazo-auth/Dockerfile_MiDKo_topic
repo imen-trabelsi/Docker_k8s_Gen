@@ -1,0 +1,47 @@
+# Use the specified base image
+FROM python:3.9-slim-bullseye as compile-image
+
+# Set environment variables
+ENV VIRTUAL_ENV=/opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+ENV PYTHONUNBUFFERED 1
+
+# Create virtual environment and use it
+RUN python3 -m venv $VIRTUAL_ENV
+
+# Set workdir
+WORKDIR /usr/src/wazo-auth
+
+# Copy only requirements and install them
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# Copy project files
+COPY setup.py .
+COPY wazo_auth ./wazo_auth
+COPY ./etc/wazo-auth /etc/wazo-auth
+COPY ./templates /var/lib/wazo-auth/templates
+
+# Build system
+RUN python setup.py install
+
+FROM python:3.9-slim-bullseye AS build-image
+
+# Updating and installing dependencies
+RUN apt-get -q update && apt-get -yq install --no-install-recommends gcc libldap2-dev libsasl2-dev && rm -rf /var/lib/apt/lists/*
+
+# Copy the rest of the project
+
+# Add system user for our application
+RUN adduser --quiet --system --group --home /var/lib/wazo-auth wazo-auth && \
+    mkdir -p /etc/wazo-auth/conf.d && mkdir -p /etc/wazo-auth/templates.d && \
+
+# Expose the port
+EXPOSE 9497
+
+# Set Maintainer
+LABEL maintainer="Wazo"
+
+# Default command, running as non-root user
+USER wazo-auth
+CMD ["wazo-auth", "--db-upgrade-on-startup"]

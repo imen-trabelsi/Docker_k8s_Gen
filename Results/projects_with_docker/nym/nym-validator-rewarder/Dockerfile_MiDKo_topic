@@ -1,0 +1,27 @@
+# Start from the Rust image
+FROM harbor.nymte.ch/dockerhub/rust:latest as builder
+
+WORKDIR /usr/src/nym
+
+# Update and Install necessary dependencies
+RUN apt-get update && apt-get install -y ca-certificates
+
+# Copy files from local directory to Docker
+COPY ./ /usr/src/nym
+WORKDIR /usr/src/nym/nym-validator-rewarder
+
+# Build the program
+RUN cargo build --release
+
+# Start of second stage
+FROM debian:buster-slim
+WORKDIR /nym
+
+# Copy binary and entry script from builder to new image
+COPY ./nym-validator-rewarder/entrypoint.sh /nym/entrypoint.sh
+
+# Expose relevant ports
+EXPOSE 
+
+# Execute entry script
+CMD [ "/nym/entrypoint.sh" ]

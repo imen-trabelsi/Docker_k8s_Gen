@@ -1,0 +1,1077 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": ".pre-commit-config.yaml",
+            "type": "blob"
+        },
+        {
+            "path": ".travis.yml",
+            "type": "blob"
+        },
+        {
+            "path": "Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "backend",
+            "type": "tree"
+        },
+        {
+            "path": "backend/.flake8",
+            "type": "blob"
+        },
+        {
+            "path": "backend/Coviddatabase.sql",
+            "type": "blob"
+        },
+        {
+            "path": "backend/Dockerfile.db",
+            "type": "blob"
+        },
+        {
+            "path": "backend/Dockerfile.dev",
+            "type": "blob"
+        },
+        {
+            "path": "backend/NytLiveCounty",
+            "type": "tree"
+        },
+        {
+            "path": "backend/NytLiveCounty/crud.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/NytLiveCounty/models.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/NytLiveCounty/schemas.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic.ini",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic",
+            "type": "tree"
+        },
+        {
+            "path": "backend/alembic/env.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/script.py.mako",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/seed.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/seed_data",
+            "type": "tree"
+        },
+        {
+            "path": "backend/alembic/seed_data/symptoms.json",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions",
+            "type": "tree"
+        },
+        {
+            "path": "backend/alembic/versions/1b650bab183d_fips_column_changed_from_int_to_string_.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/2551e1a3cb06_add_spam_column_to_stories.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/2fa6e1a3b8df_add_table_for_storing_multiple_stories.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/34a878277c2c_merge_county_data_and_first_user_name.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/475b8d61ec3a_add_latest_my_story_column_in_story_.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/4a3f5b8dfcfc_add_story_table_and_relationship_with_.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/4b97d64fa93d_add_db_for_trending_words.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/4e16c97d06e7_add_table_for_comment_like.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/527194b9fb18_merge_nyt_and_multiple_stories.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/69b610fddc4b_remove_first_name_and_user_name_from_.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/6b6c492a6041_rename_medical_problems_to_medical_.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/743acf97f20b_initial_migration.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/78b6d95e9727_add_comment_model.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/7d4ae3aca2ec_add_created_at_and_updated_at_columns_.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/7da9257097d2_add_nyt_county_model.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/80b579682838_add_timestamp_column_to_nyt_data.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/8bc2e50b6d22_add_close_contact_model.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/8f83994fb19e_add_postal_code_to_stories.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/91a50206245d_add_latitude_and_longtitude.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/93833e7cdbd5_add_travel_model.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/a31bfe8eba6b_create_exposure_notifications_model.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/a34c345b5721_changed_fips_column_type_from_int_to_.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/a784a61625a0_replace_ethnicity_current_location_and_.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/d44a5a5a1fd2_add_name_to_users.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/d8868b76d30f_add_a_commit_hash_column_to_nyt_county_.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/e79af7945498_.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/e96755d19f0c_add_my_story_to_stories.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/edace0efb31c_add_table_for_like_and_dislike.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/alembic/versions/fca850040ebf_add_symptoms_table_and_relationship_.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/app.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/auth",
+            "type": "tree"
+        },
+        {
+            "path": "backend/auth/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/auth/main.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/auth/schemas.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/comments",
+            "type": "tree"
+        },
+        {
+            "path": "backend/comments/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/comments/crud.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/comments/models.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/comments/schemas.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/database.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/emails",
+            "type": "tree"
+        },
+        {
+            "path": "backend/emails/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/emails/contents.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/emails/email_sender.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/init_db.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/likes",
+            "type": "tree"
+        },
+        {
+            "path": "backend/likes/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/likes/crud.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/likes/models.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/likes/schemas.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/pyproject.toml",
+            "type": "blob"
+        },
+        {
+            "path": "backend/requirements.dev.txt",
+            "type": "blob"
+        },
+        {
+            "path": "backend/requirements.txt",
+            "type": "blob"
+        },
+        {
+            "path": "backend/router",
+            "type": "tree"
+        },
+        {
+            "path": "backend/router/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/router/api.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/router/auth.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/router/comments.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/router/data.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/router/likes.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/router/nyt_live_county.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/router/stories.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/router/symptoms.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/router/users.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/static",
+            "type": "tree"
+        },
+        {
+            "path": "backend/static/asset-manifest.json",
+            "type": "blob"
+        },
+        {
+            "path": "backend/static/css",
+            "type": "tree"
+        },
+        {
+            "path": "backend/static/css/background.png",
+            "type": "blob"
+        },
+        {
+            "path": "backend/static/css/main.493aca81.chunk.css",
+            "type": "blob"
+        },
+        {
+            "path": "backend/static/css/main.493aca81.chunk.css.map",
+            "type": "blob"
+        },
+        {
+            "path": "backend/static/favicon.ico",
+            "type": "blob"
+        },
+        {
+            "path": "backend/static/js",
+            "type": "tree"
+        },
+        {
+            "path": "backend/static/js/2.d0cd4023.chunk.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/static/js/2.d0cd4023.chunk.js.LICENSE.txt",
+            "type": "blob"
+        },
+        {
+            "path": "backend/static/js/2.d0cd4023.chunk.js.map",
+            "type": "blob"
+        },
+        {
+            "path": "backend/static/js/main.00da9e06.chunk.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/static/js/main.00da9e06.chunk.js.map",
+            "type": "blob"
+        },
+        {
+            "path": "backend/static/js/runtime-main.84578d5e.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/static/js/runtime-main.84578d5e.js.map",
+            "type": "blob"
+        },
+        {
+            "path": "backend/static/logo192.png",
+            "type": "blob"
+        },
+        {
+            "path": "backend/static/logo512.png",
+            "type": "blob"
+        },
+        {
+            "path": "backend/static/manifest.json",
+            "type": "blob"
+        },
+        {
+            "path": "backend/static/precache-manifest.2255333184b2e9d357fac7d1c488c748.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/static/robots.txt",
+            "type": "blob"
+        },
+        {
+            "path": "backend/static/service-worker.js",
+            "type": "blob"
+        },
+        {
+            "path": "backend/stories",
+            "type": "tree"
+        },
+        {
+            "path": "backend/stories/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/stories/background.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/stories/crud.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/stories/models.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/stories/schemas.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/templates",
+            "type": "tree"
+        },
+        {
+            "path": "backend/templates/.gitkeep",
+            "type": "blob"
+        },
+        {
+            "path": "backend/tests",
+            "type": "tree"
+        },
+        {
+            "path": "backend/tests/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/tests/conftest.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/tests/test_nyt_county.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/tests/test_stories.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/tests/test_symptoms.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/users",
+            "type": "tree"
+        },
+        {
+            "path": "backend/users/__init__.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/users/crud.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/users/models.py",
+            "type": "blob"
+        },
+        {
+            "path": "backend/users/schemas.py",
+            "type": "blob"
+        },
+        {
+            "path": "build.sh",
+            "type": "blob"
+        },
+        {
+            "path": "dev-setup.sh",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "frontend",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/.firebase",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/.firebase/hosting.YnVpbGQ.cache",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/.gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/Dockerfile.dev",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/LICENSE",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/jsconfig.json",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/package.json",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/public",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/public/background.png",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/public/earth2-logo.png",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/public/favicon.ico",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/public/index.html",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/public/logo192.png",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/public/logo512.png",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/public/manifest.json",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/public/robots.txt",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/public/static",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/public/static/background.png",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/public/static/earth2-logo.png",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/App.test.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/actions",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/actions/auth.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/actions/resources.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/actions/story.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/actions/symptoms.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/actions/types.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/components",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/components/AuthPaper",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/components/AuthPaper/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/components/AuthPaper/styles.module.css",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/components/Copyright",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/components/Copyright/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/components/Dialog",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/components/Dialog/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/components/FacebookBtn",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/components/FacebookBtn/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/components/GoogleBtn",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/components/GoogleBtn/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/components/Map",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/components/Map/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/components/Map/styles.module.css",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/components/PopUp",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/components/PopUp/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/components/Select",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/components/Select/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/components/SimpleMap",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/components/SimpleMap/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/components/SimpleMap/styles.module.css",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/components/Widget",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/components/Widget/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/components/Widget/styles.module.css",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/components/Wrapper",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/components/Wrapper/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/components/Wrapper/styles.module.css",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/css",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/css/index.css",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/history.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/reducers",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/reducers/auth.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/reducers/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/reducers/story.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/reducers/symptoms.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/routes/Alert",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/routes/Alert/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/Alert/styles.module.css",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/Confirm",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/routes/Confirm/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/Confirm/styles.module.css",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/CriticalQuestions",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/routes/CriticalQuestions/fields.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/CriticalQuestions/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/CriticalQuestions/styles.module.css",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/Dashboard",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/routes/Dashboard/fields.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/Dashboard/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/Dashboard/styles.module.css",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/Feeling",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/routes/Feeling/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/Feeling/styles.module.css",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/HealthMeasurements",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/routes/HealthMeasurements/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/Home",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/routes/Home/fields.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/Home/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/Home/styles.module.css",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/MyStory",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/routes/MyStory/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/MyStory/styles.module.css",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/Onboard",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/routes/Onboard/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/Onboard/styles.module.css",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/Resources",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/routes/Resources/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/SignIn",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/routes/SignIn/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/SignIn/styles.module.css",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/SignUp",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/routes/SignUp/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/SignUp/styles.module.css",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/StoryHistory",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/routes/StoryHistory/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/StoryHistory/styles.module.css",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/Symptoms",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/routes/Symptoms/index.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/Symptoms/styles.module.css",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/paths.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/routes/types.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/serviceWorker.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/setupTests.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/static",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/static/background.png",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/store",
+            "type": "tree"
+        },
+        {
+            "path": "frontend/src/store/configureStore.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/styles.module.css",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/text.json",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/src/utils.js",
+            "type": "blob"
+        },
+        {
+            "path": "frontend/yarn.lock",
+            "type": "blob"
+        },
+        {
+            "path": "legacy",
+            "type": "tree"
+        },
+        {
+            "path": "legacy/backend",
+            "type": "tree"
+        },
+        {
+            "path": "legacy/backend/Templates",
+            "type": "tree"
+        },
+        {
+            "path": "legacy/backend/Templates/add_user.html",
+            "type": "blob"
+        },
+        {
+            "path": "legacy/backend/activate_this.py",
+            "type": "blob"
+        },
+        {
+            "path": "legacy/backend/app.py",
+            "type": "blob"
+        },
+        {
+            "path": "legacy/backend/app.wsgi",
+            "type": "blob"
+        },
+        {
+            "path": "legacy/backend/data",
+            "type": "tree"
+        },
+        {
+            "path": "legacy/backend/data/states",
+            "type": "tree"
+        },
+        {
+            "path": "legacy/backend/data/states/LICENSE",
+            "type": "blob"
+        },
+        {
+            "path": "legacy/backend/data/states/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "legacy/backend/data/states/countycal.csv",
+            "type": "blob"
+        },
+        {
+            "path": "legacy/backend/data/states/us-counties.csv",
+            "type": "blob"
+        },
+        {
+            "path": "legacy/backend/data/states/us-states.csv",
+            "type": "blob"
+        },
+        {
+            "path": "legacy/backend/data/states/us.csv",
+            "type": "blob"
+        },
+        {
+            "path": "legacy/backend/documentation",
+            "type": "blob"
+        }
+    ]
+}

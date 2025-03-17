@@ -1,0 +1,55 @@
+{
+    "docker_info": {
+        "base_image": "codefarm/nodebase:0.0.0",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root"
+        ],
+        "labels": [
+            "Description=\"Base"
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV depTmpRoot ${farmerHome}/deps",
+            "ENV DISABLE_LINK_LIBS \"npm installation disabled\"",
+            "ENV gitroot ${appRoot}"
+        ],
+        "copy_instructions": [],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"yarn\",",
+                    "\"run\",",
+                    "\"start-rel\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p ${depTmpRoot}/src",
+                "ADD deps/deps.tar ${depTmpRoot}/src"
+            ],
+            [
+                "chown -R ${user} ${depTmpRoot}",
+                "USER ${user}"
+            ],
+            [
+                "cp -r ${depTmpRoot}/src/bs ${appRoot}/src",
+                ""
+            ],
+            [
+                "for i in $(ls -1 ${depTmpRoot}/src/lib/*/package.json); do \\",
+                "moduleDir=$(echo $i|sed -e 's/\\/package\\.json//g');",
+                "echo \"Installing library package $moduleDir globally\";",
+                "yarn global add file:${moduleDir};",
+                "done &&",
+                "rm -rf ${depTmpRoot}"
+            ]
+        ]
+    }
+}

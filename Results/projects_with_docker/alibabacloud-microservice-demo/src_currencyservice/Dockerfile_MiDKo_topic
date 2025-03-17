@@ -1,0 +1,38 @@
+# Use the base image provided by the user
+FROM registry.cn-beijing.aliyuncs.com/edas_unified/jct_dw_8_4_4:0.1 as builder
+
+# Set the working directory in the builder stage
+WORKDIR /app
+
+# Copy just the POM file to install dependencies
+COPY pom.xml .
+
+# Install dependencies in an independent layer for docker caching
+RUN mvn dependency:go-offline -B
+
+# Copy the source code
+COPY src/ src/
+
+# Build the application
+RUN mvn clean package
+
+# Second stage for a smaller final image: Start with a base image containing Java runtime
+FROM openjdk:8-jdk-alpine
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the jar file from the builder stage
+
+# Copy the arthas from hengyunabc/arthas 
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+
+# Copy the currencyservice and start.sh
+COPY /currencyservice-provider/target/currencyservice-provider-1.0.0-SNAPSHOT.jar /app
+COPY /start.sh /app
+
+# Expose the port
+EXPOSE 8080
+
+# Set the entry point or CMD
+CMD ["/app/start.sh"]

@@ -1,0 +1,48 @@
+{
+    "docker_info": {
+        "base_image": "maven:3-eclipse-temurin-11",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /usr/src/hobbit-platform",
+            "COPY parent-pom/pom.xml parent-pom/",
+            "COPY ${project}/pom.xml ${project}/",
+            "COPY --from=build /usr/src/hobbit-platform/platform-controller/target/platform-controller.jar ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"java\",",
+                    "\"-cp\",",
+                    "\"platform-controller.jar\",",
+                    "\"org.hobbit.core.run.ComponentStarter\",",
+                    "\"org.hobbit.controller.PlatformController\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mvn --file parent-pom -Dmaven.test.skip=true install",
+                "ARG project=platform-controller"
+            ],
+            [
+                "mvn --file ${project} dependency:go-offline",
+                "COPY ${project}/src ${project}/src"
+            ],
+            [
+                "mvn --file ${project} -Dmaven.test.skip=true package",
+                ""
+            ],
+            [
+                "mkdir -p /usr/src/app/metadata",
+                ""
+            ]
+        ]
+    }
+}

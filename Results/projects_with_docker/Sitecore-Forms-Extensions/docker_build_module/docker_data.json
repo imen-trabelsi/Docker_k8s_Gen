@@ -1,0 +1,23 @@
+{
+    "docker_info": {
+        "base_image": "${TOOLING_IMAGE}",
+        "multi_stage_build": true,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "BASE_IMAGE",
+            "TOOLING_IMAGE"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "COPY --from=tooling \\tools\\ \\module\\tools\\",
+            "COPY .\\cm \\module\\cm",
+            "COPY .\\cd \\module\\cd",
+            "COPY .\\db \\module\\db"
+        ],
+        "execution": [],
+        "run": []
+    }
+}

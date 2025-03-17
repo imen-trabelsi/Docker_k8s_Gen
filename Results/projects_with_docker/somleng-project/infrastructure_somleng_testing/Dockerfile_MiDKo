@@ -1,0 +1,31 @@
+# Use alpine as the base image
+FROM public.ecr.aws/docker/library/alpine:latest
+
+# set work directory
+WORKDIR /usr/src/app
+
+# Update & install required packages
+RUN apk update \
+  && apk upgrade \
+  && apk add --update --no-cache ruby ruby-irb ruby-rake ruby-io-console ruby-bigdecimal ruby-json ruby-bundler libstdc++ tzdata \
+
+# remove unnecessary files
+RUN rm -rf /var/cache/apk/*
+
+# copy the gemfile to install dependencies
+COPY Gemfile* ./
+RUN bundle install
+
+# copy rest of the source code
+COPY . .
+
+# copy the static files to the right directory
+COPY public/policy_documents/*.md ./public/policy_documents/
+
+# copy tests
+COPY --link tests tests
+WORKDIR /tests
+
+# run the server
+CMD ["ruby", "app.rb"]
+

@@ -1,0 +1,49 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:11.0.5-jre-stretch",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8002"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [
+            "HEALTHCHECK --retries=33 \\"
+        ],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY modules/apps/file-server/build/libs/*.jar /tmp/app.jar"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "mkdir",
+                    "-p",
+                    "/etc/init.d",
+                    "/var/log/",
+                    "\\"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "/bin/bash"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "curl",
+                    "-f",
+                    "http://127.0.0.1:8002/actuator/health",
+                    "||",
+                    "exit",
+                    "1"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

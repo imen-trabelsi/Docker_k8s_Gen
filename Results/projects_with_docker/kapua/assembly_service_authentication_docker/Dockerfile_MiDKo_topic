@@ -1,0 +1,36 @@
+# Start with a base image
+FROM @docker.account@/java-base
+
+# Environment variables
+ENV SERVICE_BROKER_HOST=${SERVICE_BROKER_HOST:-events-broker}
+ENV SERVICE_BROKER_PORT=${SERVICE_BROKER_PORT:-5672}
+ENV SERVICE_BROKER_USERNAME=${SERVICE_BROKER_USERNAME:-kapua-sys}
+ENV SERVICE_BROKER_PASSWORD=${SERVICE_BROKER_PASSWORD:-kapua-password}
+ENV SERVICE_HOST=${SERVICE_HOST:-authentication}
+ENV SQL_DB_ADDR db
+ENV SQL_DB_PORT 3306
+ENV SERVICE_BROKER_ADDR failover:(amqp://events-broker:5672)?jms.sendTimeout=1000
+ENV JAVA_OPTS -Dcommons.db.schema.update=true
+
+# Create a directory for our app
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# Copy the pom.xml file and download the dependencies
+COPY pom.xml .
+RUN mvn -B dependency:resolve dependency:resolve-plugins
+
+# Copy the project files and build our app
+COPY . .
+RUN mvn -B package
+
+# Copy the executable jar to the root directory
+RUN cp ./target/*.jar ./app.jar
+
+# Copy maven
+COPY maven /
+
+# Expose the port the app runs in
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-jar", "/run-service-authentication"]

@@ -1,0 +1,51 @@
+# Start with base Python Image
+FROM python:3.9-slim-bullseye AS compile-image
+
+# Set up virtual environment
+RUN python -m venv /opt/venv
+ENV PATH="/opt/venv/bin:$PATH"
+
+WORKDIR /usr/src/wazo-auth
+
+# Copy dependencies
+COPY requirements.txt .
+
+# Update and install packages
+RUN apt-get -q update && apt-get -yq install --no-install-recommends gcc libldap2-dev libsasl2-dev
+
+# Install requirements
+RUN pip install -r requirements.txt
+
+# Copy files
+COPY setup.py .
+COPY wazo_auth /usr/src/wazo-auth/wazo_auth
+COPY ./etc/wazo-auth /etc/wazo-auth
+COPY ./templates /var/lib/wazo-auth/templates
+
+# Install app
+RUN python setup.py install
+
+# New staget to create final image
+FROM python:3.9-slim-bullseye AS build-image
+
+# Create non-root user
+RUN adduser --quiet --system --group --home /var/lib/wazo-auth wazo-auth
+RUN apt-get -q update && apt-get -yq install --no-install-recommends libldap2-dev libsasl2-dev xmlsec1
+RUN mkdir -p /etc/wazo-auth/conf.d
+RUN mkdir -p /etc/wazo-auth/templates.d
+RUN install -o wazo-auth -g wazo-auth /dev/null /var/log/wazo-auth.log
+RUN rm -rf /var/lib/apt/lists/*
+
+# Application files
+
+# Make sure scripts are executable
+RUN chmod +x /usr/src/wazo-auth/setup.py
+
+USER wazo-auth
+
+# Expose Port
+EXPOSE 9497
+
+ENV PATH="/opt/venv/bin:$PATH"
+
+CMD ["wazo-auth", "--db-upgrade-on-startup"]

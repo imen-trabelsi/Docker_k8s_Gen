@@ -1,0 +1,40 @@
+# Base Image
+FROM node:12.22.12
+
+# Meta-data
+LABEL version="2.0.0" description="This"
+
+# Create app directory
+WORKDIR /usr/src
+
+# Install common dependencies 
+COPY common/ /usr/src/common
+COPY package.json /usr/src/common
+RUN mkdir -p /usr/src/common
+WORKDIR /usr/src/common
+RUN npm install
+
+# Change working directory
+WORKDIR /usr/src/sessioncontroller
+
+# Installation of global packages
+RUN npm install grunt-cli -g
+
+# Copy necessary files and directories
+COPY sessioncontroller/src /usr/src/sessioncontroller/src
+COPY sessioncontroller/Gruntfile.js /usr/src/sessioncontroller/
+COPY sessioncontroller/package.json /usr/src/sessioncontroller
+
+# Install App dependencies
+RUN mkdir -p /usr/src/sessioncontroller/src
+WORKDIR /usr/src/sessioncontroller/src
+RUN npm install
+
+# Build libraries
+RUN grunt build_lib
+
+# Bind to the necessary port
+EXPOSE 4002
+
+# Starting command
+CMD [ "npm", "start" ]

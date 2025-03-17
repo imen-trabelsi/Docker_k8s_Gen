@@ -1,0 +1,28 @@
+# Stage 1 - Building the Application
+FROM gradle:7.0.2-jdk11 as builder
+COPY . /usr/local/src
+WORKDIR /usr/local/src
+RUN gradle clean build
+
+# Stage 2 - Running the Application
+FROM python:slim as runtime
+WORKDIR /app
+COPY init_db.py .
+
+# Install dependencies
+RUN pip install rethinkdb
+
+# Expose required ports here
+EXPOSE 8080
+
+# Health check instruction here
+
+# Set non-root user and group here
+
+# Set Environment Variables here
+
+# Set Labels here
+
+# Run the application
+ENTRYPOINT ["java","-jar","/app/app.jar"]
+CMD ["python", "init_db.py"]

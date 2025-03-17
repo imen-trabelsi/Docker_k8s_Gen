@@ -1,0 +1,41 @@
+{
+    "source_code_info": {
+        "language": "C#",
+        "framework": "C#",
+        "dependencies": {
+            "global.json": "{\n    \"sdk\": {\n      \"version\": \"8.0.0\",\n      \"rollForward\": \"latestMinor\"\n    }\n  }"
+        },
+        "database": null,
+        "build_system": "dotnet",
+        "config_files": {
+            "src/VehicleManagementAPI/appsettings.json": "\ufeff{\n}\n",
+            "src/docker-compose.yml": "services:\n\n  rabbitmq:\n    image: rabbitmq:3-management-alpine\n    container_name: rabbitmq\n    volumes:\n      - rabbitmqdata:/var/lib/rabbitmq\n      - \"./rabbitmq:/etc/pitstop/\"\n    ports:\n      - \"15672:15672\"\n      - \"5672:5672\"\n    environment:\n      - RABBITMQ_CONFIG_FILE=/etc/pitstop/rabbitmq.conf\n\n  sqlserver:\n    image: mcr.microsoft.com/azure-sql-edge\n    container_name: sqlserver\n    volumes:\n      - sqlserverdata:/var/opt/mssql\n    ports:\n      - \"1434:1433\"\n    environment:\n      - ACCEPT_EULA=Y\n      - MSSQL_PID=Developer\n      - SA_PASSWORD=8jkGh47hnDw89Haq8LN2\n\n  mailserver:\n    image: maildev/maildev:1.1.0\n    container_name: mailserver\n    ports:\n      - \"25:25\"\n      - \"4000:80\"\n\n  logserver:\n    image: datalust/seq:latest\n    container_name: logserver\n    ports:\n      - \"5341:80\"\n    environment:\n      - ACCEPT_EULA=Y\n\n  vehiclemanagementapi:\n    image: pitstop/vehiclemanagementapi:1.0\n    build: VehicleManagementAPI\n    depends_on:\n      - rabbitmq\n      - sqlserver\n    ports:\n      - \"5000\"\n    environment:\n      - ASPNETCORE_ENVIRONMENT=Production\n\n  customermanagementapi:\n    image: pitstop/customermanagementapi:1.0\n    build: CustomerManagementAPI\n    depends_on:\n      - rabbitmq\n      - sqlserver\n    ports:\n      - \"5100\"\n    environment:\n      - ASPNETCORE_ENVIRONMENT=Production\n\n  workshopmanagementapi:\n    image: pitstop/workshopmanagementapi:1.0\n    build: WorkshopManagementAPI\n    depends_on:\n      - rabbitmq\n      - sqlserver\n    ports:\n      - \"5200\"\n    environment:\n      - ASPNETCORE_ENVIRONMENT=Production\n\n  auditlogservice:\n    image: pitstop/auditlogservice:1.0\n    build: AuditlogService\n    container_name: auditlogservice\n    depends_on:\n      - rabbitmq\n    environment:\n      - DOTNET_ENVIRONMENT=Production\n\n  invoiceservice:\n    image: pitstop/invoiceservice:1.0\n    build: InvoiceService\n    container_name: invoiceservice\n    depends_on:\n      - rabbitmq\n      - sqlserver\n      - mailserver\n    environment:\n      - DOTNET_ENVIRONMENT=Production\n\n  notificationservice:\n    image: pitstop/notificationservice:1.0\n    build: NotificationService\n    container_name: notificationservice\n    depends_on:\n      - rabbitmq\n      - sqlserver\n      - mailserver\n    environment:\n      - DOTNET_ENVIRONMENT=Production\n\n  timeservice:\n    image: pitstop/timeservice:1.0\n    build: TimeService\n    container_name: timeservice\n    depends_on:\n      - rabbitmq\n    environment:\n      - DOTNET_ENVIRONMENT=Production\n\n  workshopmanagementeventhandler:\n    image: pitstop/workshopmanagementeventhandler:1.0\n    build: WorkshopManagementEventHandler\n    container_name: workshopmanagementeventhandler\n    depends_on:\n      - rabbitmq\n      - sqlserver\n    environment:\n      - DOTNET_ENVIRONMENT=Production\n\n  webapp:\n    image: pitstop/webapp:1.0\n    build: WebApp\n    container_name: webapp\n    depends_on:\n      - customermanagementapi\n      - vehiclemanagementapi\n      - workshopmanagementapi\n    ports:\n      - \"7005:7005\"\n    environment:\n      - ASPNETCORE_ENVIRONMENT=Production\n\nvolumes:\n  sqlserverdata:\n    external: true\n  rabbitmqdata:\n    external: true\n",
+            "src/VehicleManagementAPI/Dockerfile": "FROM pitstop-dotnet-sdk-base:1.0 AS build-env\nWORKDIR /app\n\n# Copy necessary files and restore as distinct layer\nCOPY *.csproj ./\nRUN dotnet restore\n\n# Copy everything else and build\nCOPY . ./\nRUN dotnet publish -c Release -o out\n\n# Build runtime image\nFROM pitstop-dotnet-aspnet-base:1.0\nWORKDIR /app\nCOPY --from=build-env /app/out .\n\n# Expose ports\nEXPOSE 5000/tcp\nENV ASPNETCORE_URLS http://*:5000\nHEALTHCHECK --interval=30s --timeout=3s --retries=1 CMD curl --silent --fail http://localhost:5000/hc || exit 1\n\n# Start\nENTRYPOINT [\"dotnet\", \"Pitstop.VehicleManagementAPI.dll\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            "Dockerfile",
+            "GlobalUsings.cs",
+            "Program.cs",
+            "VehicleManagementAPI.csproj",
+            "appsettings.Development.json",
+            "appsettings.Production.json",
+            "appsettings.json"
+        ],
+        "folders": [
+            "Commands",
+            "Controllers",
+            "DataAccess",
+            "Events",
+            "Mappers",
+            "Migrations",
+            "Model",
+            "Pitstop",
+            "Properties",
+            "wwwroot"
+        ]
+    }
+}

@@ -1,0 +1,43 @@
+# Use an official base image
+FROM buildpack-deps:buster-scm AS builder
+
+# Set the working directory
+WORKDIR /subscan
+
+# Copy go mod and sum files 
+COPY go.mod go.sum ./
+
+# Copy command files 
+WORKDIR /subscan/cmd
+
+# Change working directory
+WORKDIR subscan
+
+# Copy config files
+COPY configs configs
+COPY configs/config.yaml.example configs/config.yaml
+
+# Download all dependencies
+RUN go mod download
+
+# Copy the Go sources files 
+COPY . /subscan
+
+# Build the Go app
+RUN go build -o subscan
+
+# Add logs directory
+RUN mkdir -p /subscan/log
+
+# Start a new stage from scratch
+FROM buildpack-deps:buster-scm 
+
+WORKDIR /subscan/cmd/subscan
+
+# Copy executable
+
+# Expose port
+EXPOSE 4399
+
+# Command to run the executable
+CMD ["/subscan/cmd/subscan"]

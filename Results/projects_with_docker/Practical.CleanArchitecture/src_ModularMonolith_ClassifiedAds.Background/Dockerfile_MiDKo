@@ -1,0 +1,37 @@
+# Start with a base image
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+
+# Make a directory in the Docker image where the application will be placed
+WORKDIR /ClassifiedAds.ModularMonolith
+
+# Copy csproj files and restore dependencies
+COPY ./ClassifiedAds.Application/*.csproj ./ClassifiedAds.Application/
+COPY ./ClassifiedAds.CrossCuttingConcerns/*.csproj ./ClassifiedAds.CrossCuttingConcerns/
+COPY ./ClassifiedAds.Domain/*.csproj ./ClassifiedAds.Domain/
+COPY ./ClassifiedAds.Infrastructure/*.csproj ./ClassifiedAds.Infrastructure/
+COPY ./ClassifiedAds.Contracts/*.csproj ./ClassifiedAds.Contracts/
+COPY ./ClassifiedAds.Modules.AuditLog/*.csproj ./ClassifiedAds.Modules.AuditLog/
+COPY ./ClassifiedAds.Modules.Configuration/*.csproj ./ClassifiedAds.Modules.Configuration/
+COPY ./ClassifiedAds.Modules.Identity/*.csproj ./ClassifiedAds.Modules.Identity/
+COPY ./ClassifiedAds.Modules.Notification/*.csproj ./ClassifiedAds.Modules.Notification/
+COPY ./ClassifiedAds.Modules.Product/*.csproj ./ClassifiedAds.Modules.Product/
+COPY ./ClassifiedAds.Modules.Storage/*.csproj ./ClassifiedAds.Modules.Storage/
+COPY ./ClassifiedAds.Background/*.csproj ./ClassifiedAds.Background/
+RUN dotnet restore ./ClassifiedAds.Application/ClassifiedAds.Application.csproj
+RUN dotnet restore ./ClassifiedAds.Infrastructure/ClassifiedAds.Infrastructure.csproj
+RUN dotnet restore ./ClassifiedAds.Background/ClassifiedAds.Background.csproj
+
+# Copy rest of the application source code
+COPY . ./
+
+# Build the application
+RUN dotnet publish ./ClassifiedAds.Background/ClassifiedAds.Background.csproj -c Release -o out
+
+# Change working directory to build output
+WORKDIR /ClassifiedAds.ModularMonolith
+
+# Copy build output from build stage
+COPY --from=build-env /ClassifiedAds.ModularMonolith/out .
+
+# Run the application on container startup
+ENTRYPOINT ["dotnet", "ClassifiedAds.Background.dll"]

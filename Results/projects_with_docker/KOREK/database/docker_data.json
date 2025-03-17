@@ -1,0 +1,26 @@
+{
+    "docker_info": {
+        "base_image": "mdillon/postgis:11",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY postgresql.conf /etc/postgresql"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"postgres\",",
+                    "\"-c\",",
+                    "\"config_file=/etc/postgresql/postgresql.conf\"]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

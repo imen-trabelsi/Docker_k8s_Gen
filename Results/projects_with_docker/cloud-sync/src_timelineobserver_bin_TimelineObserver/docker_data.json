@@ -1,0 +1,62 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:8-jdk-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [
+            "version=\"2.0.0\""
+        ],
+        "health_checks": [],
+        "build_args": [
+            "USER_HOME_DIR=\"/root\""
+        ],
+        "envs": [
+            "ENV MAVEN_HOME /usr/share/maven",
+            "ENV MAVEN_CONFIG \"$USER_HOME_DIR/.m2\"",
+            "ENV MAVEN_OPTS=\"-XX:+TieredCompilation -XX:TieredStopAtLevel=1\""
+        ],
+        "copy_instructions": [
+            "COPY pom.xml /usr/src/app",
+            "COPY src/ /usr/src/app/src",
+            "COPY --from=build /usr/src/app/target/TimelineObserver-jar-with-dependencies.jar /usr/src/timelineobserver/TimelineObserver-jar-with-dependencies.jar"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"java\",",
+                    "\"-jar\",",
+                    "\"/usr/src/timelineobserver/TimelineObserver-jar-with-dependencies.jar\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --no-cache curl tar bash",
+                "ARG MAVEN_VERSION=3.3.9"
+            ],
+            [
+                "mkdir -p /usr/share/maven && \\",
+                "curl -fsSL http://apache.osuosl.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz | tar -xzC /usr/share/maven --strip-components=1 &&",
+                "ln -s /usr/share/maven/bin/mvn /usr/bin/mvn"
+            ],
+            [
+                "mkdir -p /usr/src/app",
+                "WORKDIR /usr/src/app"
+            ],
+            [
+                "mvn -T 1C install && rm -rf target",
+                ""
+            ],
+            [
+                "mvn -T 1C install",
+                ""
+            ],
+            [
+                "mkdir -p /usr/src/timelineobserver",
+                "WORKDIR /usr/src/timelineobserver"
+            ]
+        ]
+    }
+}

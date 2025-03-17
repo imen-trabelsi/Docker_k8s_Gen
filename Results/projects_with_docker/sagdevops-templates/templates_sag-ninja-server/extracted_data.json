@@ -1,0 +1,1381 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".env",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "CONTRIBUTING.md",
+            "type": "blob"
+        },
+        {
+            "path": "LICENSE",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "environments",
+            "type": "tree"
+        },
+        {
+            "path": "environments/db2",
+            "type": "tree"
+        },
+        {
+            "path": "environments/db2/env.properties",
+            "type": "blob"
+        },
+        {
+            "path": "environments/dev",
+            "type": "tree"
+        },
+        {
+            "path": "environments/dev/env.properties",
+            "type": "blob"
+        },
+        {
+            "path": "environments/devcc",
+            "type": "tree"
+        },
+        {
+            "path": "environments/devcc/env.properties",
+            "type": "blob"
+        },
+        {
+            "path": "environments/mysql",
+            "type": "tree"
+        },
+        {
+            "path": "environments/mysql/env.properties",
+            "type": "blob"
+        },
+        {
+            "path": "environments/oracle",
+            "type": "tree"
+        },
+        {
+            "path": "environments/oracle/env.properties",
+            "type": "blob"
+        },
+        {
+            "path": "environments/prod",
+            "type": "tree"
+        },
+        {
+            "path": "environments/prod/env.properties",
+            "type": "blob"
+        },
+        {
+            "path": "environments/sqlserver",
+            "type": "tree"
+        },
+        {
+            "path": "environments/sqlserver/env.properties",
+            "type": "blob"
+        },
+        {
+            "path": "licenses",
+            "type": "tree"
+        },
+        {
+            "path": "licenses/licenses.zip",
+            "type": "blob"
+        },
+        {
+            "path": "licenses/licenses.zip.enc",
+            "type": "blob"
+        },
+        {
+            "path": "licenses/product_licenses.zip.enc",
+            "type": "blob"
+        },
+        {
+            "path": "scripts",
+            "type": "tree"
+        },
+        {
+            "path": "scripts/cleanup.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/entrypoint.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/generateAsset.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/init.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/inventory.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/provision.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates",
+            "type": "tree"
+        },
+        {
+            "path": "templates/hello-world",
+            "type": "tree"
+        },
+        {
+            "path": "templates/hello-world/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/hello-world/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/import.bat",
+            "type": "blob"
+        },
+        {
+            "path": "templates/import.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/jenkins",
+            "type": "tree"
+        },
+        {
+            "path": "templates/jenkins/env.properties",
+            "type": "blob"
+        },
+        {
+            "path": "templates/jenkins/provision.xml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/jenkins/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/jenkins/test.xml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/jenkins/webapps",
+            "type": "tree"
+        },
+        {
+            "path": "templates/jenkins/webapps/context-jenkins.properties",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-abe",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-abe/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-abe/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-apigateway-cluster",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-apigateway-cluster/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-apigateway-cluster/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-apigateway-cluster/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-apigateway-config",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-apigateway-config/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-apigateway-config/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-apigateway-server",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-apigateway-server/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-apigateway-server/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-apigateway-server/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-all-layer-defs",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-cc-all-layer-defs/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-all-layer-defs/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-builder-dev",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-cc-builder-dev/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-builder-dev/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-builder-dev/test.xml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-builder-repos",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-cc-builder-repos/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-builder-repos/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-creds-dev",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-cc-creds-dev/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-creds-dev/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-creds-dev/test.xml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-creds-ssh",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-cc-creds-ssh/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-creds-ssh/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-creds-ssh/test.xml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-creds",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-cc-creds/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-creds/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-layer-defs",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-cc-layer-defs/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-layer-defs/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-ldap",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-cc-ldap/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-ldap/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-mirrors",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-cc-mirrors/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-mirrors/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-repo-custom",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-cc-repo-custom/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-repo-custom/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-repo-custom/test.xml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-repos-asset",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-cc-repos-asset/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-repos-asset/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-repos-dev",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-cc-repos-dev/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-repos-dev/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-repos-ga",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-cc-repos-ga/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-repos-ga/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-repos",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-cc-repos/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-repos/env.properties",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-repos/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-repos/test.xml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-secure",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-cc-secure/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-secure/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-tuneup",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-cc-tuneup/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-tuneup/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-cc-tuneup/test.xml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-db2",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-db-db2/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-db2/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-db2/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-db2/init_db2.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-db2/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-db2/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-mysql-103",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-db-mysql-103/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-mysql-103/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-mysql-103/mysql-connector-java-5.1.47.jar",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-mysql-103/mysql.cnf",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-mysql-103/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-mysql-103/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-mysql",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-db-mysql/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-mysql/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-mysql/mysql-connector-java-5.1.47.jar",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-mysql/mysql.cnf",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-mysql/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-mysql/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-oracle-103-and-lower",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-db-oracle-103-and-lower/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-oracle-103-and-lower/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-oracle-103-and-lower/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-oracle-103-and-lower/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-oracle",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-db-oracle/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-oracle/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-oracle/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-oracle/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-sqlserver-103-and-lower",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-db-sqlserver-103-and-lower/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-sqlserver-103-and-lower/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-sqlserver-103-and-lower/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-sqlserver-103-and-lower/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-sqlserver-is-schemas",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-db-sqlserver-is-schemas/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-sqlserver-is-schemas/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-sqlserver-is-schemas/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-sqlserver-is-schemas/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-sqlserver",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-db-sqlserver/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-sqlserver/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-sqlserver/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-db-sqlserver/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-des-config",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-des-config/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-des-config/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-des",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-des/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-des/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-des/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-designer-applatform",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-designer-applatform/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-designer-applatform/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-designer-cloudstreams",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-designer-cloudstreams/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-designer-cloudstreams/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-designer-services",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-designer-services/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-designer-services/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-exx-broker-attr",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-exx-broker-attr/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-exx-broker-attr/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-exx-broker",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-exx-broker/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-exx-broker/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-exx-c-rpc-server",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-exx-c-rpc-server/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-exx-c-rpc-server/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-exx-csl-rpc-server",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-exx-csl-rpc-server/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-exx-csl-rpc-server/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-exx-ims-rpc-server",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-exx-ims-rpc-server/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-exx-ims-rpc-server/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-exx-java-rpc-server-config",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-exx-java-rpc-server-config/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-exx-java-rpc-server-config/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-exx-java-rpc-server",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-exx-java-rpc-server/Readme.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-exx-java-rpc-server/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-exx-mf-broker",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-exx-mf-broker/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-exx-mf-broker/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-exx-mq-rpc-server",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-exx-mq-rpc-server/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-exx-mq-rpc-server/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-exx-net-rpc-server",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-exx-net-rpc-server/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-exx-net-rpc-server/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-exx-xml-rpc-server",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-exx-xml-rpc-server/Readme.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-exx-xml-rpc-server/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-infradc",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-infradc/readme.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-infradc/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-internaldatastore",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-internaldatastore/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-internaldatastore/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-internaldatastore/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-is-activetransfer",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-is-activetransfer/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-is-applatform",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-is-applatform/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-is-applatform/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-is-cloudstreams",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-is-cloudstreams/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-is-cloudstreams/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-is-cloudstreams/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-is-cluster",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-is-cluster/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-is-cluster/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-is-cluster/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-is-config",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-is-config/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-is-config/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-is-mft",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-is-mft/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-is-mft/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-is-mft/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-is-server",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-is-server/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-is-server/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-is-server/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-is-stateful-cluster",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-is-stateful-cluster/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-is-stateful-cluster/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-is-stateful-cluster/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-mft-config",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-mft-config/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-mft-config/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-mft-config/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-msc-server-103-and-lower",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-msc-server-103-and-lower/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-msc-server-103-and-lower/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-msc-server-103-and-lower/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-msc-server",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-msc-server/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-msc-server/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-msc-server/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-mws-applatform",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-mws-applatform/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-mws-applatform/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-mws-infradcui",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-mws-infradcui/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-mws-infradcui/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-mws-mftui",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-mws-mftui/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-mws-mftui/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-mws-mftui/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-mws-server",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-mws-server/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-mws-server/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-ninja-cluster",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-ninja-cluster/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-ninja-server",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-ninja-server/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-ninja-server/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-ninja-server/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-ninja-server/entrypoint.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-ninja-server/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-ninja-server/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-onedata",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-onedata/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-optimize-analysis",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-optimize-analysis/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-optimize-analysis/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-optimize-analysis/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-optimize-wsdc",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-optimize-wsdc/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-optimize-wsdc/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-optimize-wsdc/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-spm-boot-local",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-spm-boot-local/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-spm-boot-local/env.properties",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-spm-boot-local/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-spm-boot-ssh",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-spm-boot-ssh/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-spm-boot-ssh/env.properties",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-spm-boot-ssh/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-spm-boot-winrm",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-spm-boot-winrm/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-spm-boot-winrm/push-bootstrap.ps1",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-spm-boot-winrm/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-spm-config",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-spm-config/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-spm-config/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-spm-config/test.properties",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-spm-config/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-spm-connect",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-spm-connect/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-spm-connect/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-spm-connect/env.properties",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-spm-connect/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-spm-connect/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-spm-proxy",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-spm-proxy/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-spm-proxy/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-tc-cluster",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-tc-cluster/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-tc-server",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-tc-server/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-tc-server/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-tc-server/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-tdb-server",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-tdb-server/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-um-cluster-migrate",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-um-cluster-migrate/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-um-cluster-migrate/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-um-cluster",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-um-cluster/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-um-cluster/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-um-cluster/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-um-config-join",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-um-config-join/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-um-config-join/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-um-config",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-um-config/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-um-server-migrate",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-um-server-migrate/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-um-server-migrate/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-um-server",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-um-server/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-um-server/template.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-um-server/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "templates/sag-update",
+            "type": "tree"
+        },
+        {
+            "path": "templates/sag-update/template.yaml",
+            "type": "blob"
+        }
+    ]
+}

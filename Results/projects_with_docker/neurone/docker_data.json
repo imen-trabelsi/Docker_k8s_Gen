@@ -1,0 +1,101 @@
+{
+    "docker_info": {
+        "base_image": "phusion/passenger-customizable:2.0.0",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "username=user",
+            "userid=9001"
+        ],
+        "envs": [
+            "ENV NVM_DIR /nvm",
+            "ENV NODE_VERSION 8.17.0",
+            "ENV NODE_PATH $NVM_DIR/v$NODE_VERSION/lib/node_modules",
+            "ENV PATH $NVM_DIR/versions/node/v$NODE_VERSION/bin:$PATH",
+            "ENV LOCAL_USER_NAME $username",
+            "ENV LOCAL_USER_ID $userid",
+            "ENV HOME /home/$username",
+            "ENV PATH $PATH:$HOME/.meteor",
+            "ENV TOOL_NODE_FLAGS --optimize_for_size --max_old_space_size=1536 --gc_interval=100",
+            "ENV NODE_TLS_REJECT_UNAUTHORIZED 0",
+            "ENV NEURONE_ASSET_PATH /assets",
+            "ENV HTTP_FORWARDED_COUNT 1"
+        ],
+        "copy_instructions": [
+            "ADD ./.deploy/docker/createUser.sh /tmp/createUser.sh",
+            "ADD . ./src"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/sbin/my_init\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "rm /bin/sh && ln -s /bin/bash /bin/sh",
+                ""
+            ],
+            [
+                "apt-get -qq update \\",
+                "&& apt-get -qq --no-install-recommends install wget curl ca-certificates libarchive-tools unzip make gcc python python-dev"
+            ],
+            [
+                "mkdir -p $NVM_DIR \\",
+                "&& curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.0/install.sh | bash"
+            ],
+            [
+                "source $NVM_DIR/nvm.sh \\",
+                "&& nvm install $NODE_VERSION",
+                "&& nvm alias default $NODE_VERSION",
+                "&& nvm use default"
+            ],
+            [
+                "node -v && npm -v",
+                ""
+            ],
+            [
+                "chmod +x /tmp/createUser.sh && ./tmp/createUser.sh",
+                ""
+            ],
+            [
+                "mkdir -p /app && chown -R $username:$username /app",
+                "WORKDIR /app"
+            ],
+            [
+                "chown -R $username:$username ./src",
+                ""
+            ],
+            [
+                "cp ./src/.deploy/docker/neurone.conf /etc/nginx/sites-enabled/neurone.conf \\",
+                "&& cp ./src/.deploy/docker/meteor-env.conf /etc/nginx/main.d/meteor-env.conf",
+                "&& cp ./src/.deploy/docker/meteorBuild.sh ./meteorBuild.sh",
+                "&& cp ./src/.deploy/docker/fixPermissions.sh ./fixPermissions.sh",
+                "&& chmod +x ./meteorBuild.sh",
+                "&& chmod +x ./fixPermissions.sh"
+            ],
+            [
+                "/sbin/setuser $username ./meteorBuild.sh",
+                ""
+            ],
+            [
+                "mkdir -p /assets",
+                "RUN ./fixPermissions.sh /assets $username"
+            ],
+            [
+                "rm -f /etc/nginx/sites-enabled/default \\",
+                "&& rm -f /etc/service/nginx/down"
+            ],
+            [
+                "apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*"
+            ]
+        ]
+    }
+}

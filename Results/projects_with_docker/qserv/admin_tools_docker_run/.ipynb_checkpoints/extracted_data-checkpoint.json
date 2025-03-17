@@ -1,0 +1,21 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "pyproject.toml": "[tool.black]\nline-length = 110\ntarget-version = ['py38']\n"
+        },
+        "database": null,
+        "build_system": "poetry",
+        "config_files": {
+            "admin/tools/docker/run/Dockerfile": "#-------------------------------------------------------------------------------------------------------------\n# The 'lite-qserv' target produces the Qserv unified binary container image -- the end deployment artifact for\n# Qserv. This target layers Qserv binaries and scripts on top of the 'lite-run-base' base image (see\n# 'lite-run-base' target in ../base/Dockerfile), and sets the ownership of the copied files and the default\n# runtime user to 'qserv'.\n#\n# The target expects a build context where binaries, libs, etc. are in top level directories 'bin/', 'lib64/',\n# etc.  This is typically accomodated by providing Qserv's 'build/install/'' directory as the build context.\n#\n# Argument QSERV_RUN_BASE specifies the image name+tag of the base image on which to build.  The default value\n# can be overriden via the -e option to 'docker run'.\n#-------------------------------------------------------------------------------------------------------------\n\nARG QSERV_RUN_BASE=qserv/lite-run-base:latest\nFROM ${QSERV_RUN_BASE} AS lite-qserv\n\nCOPY --chown=qserv:qserv bin/ /usr/local/bin/\nCOPY --chown=qserv:qserv lib64/ /usr/local/lib64/\nCOPY --chown=qserv:qserv lua/ /usr/local/lua/\nCOPY --chown=qserv:qserv python/ /usr/local/python/\nCOPY --chown=qserv:qserv qserv/ /usr/local/qserv/\nCOPY --chown=qserv:qserv etc/ /usr/local/etc/\nCOPY --chown=qserv:qserv log/log.cnf /config-etc/log/log.cnf\n\nRUN ldconfig\n\nUSER qserv\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile"
+        ],
+        "folders": []
+    }
+}

@@ -1,0 +1,19 @@
+{
+    "docker_info": {
+        "base_image": "microsoft/azure-functions-runtime:v2.0.0-beta1",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV AzureWebJobsScriptRoot=/home/site/wwwroot"
+        ],
+        "copy_instructions": [
+            "COPY . /home/site/wwwroot"
+        ],
+        "execution": [],
+        "run": []
+    }
+}

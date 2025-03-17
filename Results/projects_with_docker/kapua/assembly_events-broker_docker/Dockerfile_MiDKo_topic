@@ -1,0 +1,34 @@
+# Set the base image
+FROM @docker.account@/java-base
+
+# Install maven
+RUN apt-get update && apt-get install -y maven
+
+# Copy src to container
+COPY maven /
+
+# Set JAVA_HOME
+ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
+
+# Install postgresql client
+RUN apt-get install -y postgresql-client
+
+# Add a user artemis and give proper permissions
+RUN useradd -u 1002 -g 0 -d '/opt/artemis' -s '/sbin/nologin' artemis && \
+chown -R artemis:root /opt/artemis && \
+chmod -R g=u /opt/artemis && \
+
+# Build the jar with maven
+RUN mvn clean install
+
+# Make the port available for the world
+EXPOSE 5672
+
+# Set the working directory
+WORKDIR /opt/artemis
+
+# Set the user for Docker to run commands as
+USER artemis
+
+# Run the command
+ENTRYPOINT ["/opt/artemis/run-event-broker"]

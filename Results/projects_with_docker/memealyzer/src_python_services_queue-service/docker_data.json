@@ -1,0 +1,39 @@
+{
+    "docker_info": {
+        "base_image": "python:3.8-slim-buster",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV PYTHONDONTWRITEBYTECODE 1",
+            "ENV PYTHONUNBUFFERED 1"
+        ],
+        "copy_instructions": [
+            "ADD services/queue-service/requirements.txt .",
+            "WORKDIR /app",
+            "ADD services/queue-service/. /app"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"python\",",
+                    "\"app.py\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "python -m pip install -r requirements.txt",
+                ""
+            ],
+            [
+                "apt-get update && apt-get install -y curl",
+                "RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,18 @@
+# Use the official Python base image from the dockerhub
+FROM python:3.10.12-slim-bullseye
+
+# Set the working directory in the Docker image
+WORKDIR /dockermount
+COPY . /dockermount
+
+# Set an environment variable with the directory
+ENV PYTHONUNBUFFERED=1
+
+#Install all the dependencies
+RUN apt update && \
+    apt install -y gcc postgresql-13 libpq-dev && \
+    python3 -m pip install -r requirements/requirements.txt && \
+    python3 -m pip install -r requirements/requirements-server.txt && \
+
+# Command to run the application
+CMD ["python3", "manage.py", "runserver", "0.0.0.0:8000"]

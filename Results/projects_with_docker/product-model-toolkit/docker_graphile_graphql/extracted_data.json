@@ -1,0 +1,23 @@
+{
+    "source_code_info": {
+        "language": "Go",
+        "framework": "Echo",
+        "dependencies": {
+            "go.mod": "// SPDX-FileCopyrightText: 2020 Friedrich-Alexander University Erlangen-N\u00fcrnberg (FAU)\n//\n// SPDX-License-Identifier: CC0-1.0\nmodule github.com/osrgroup/product-model-toolkit\n\ngo 1.15\n\nrequire (\n\tgithub.com/Azure/go-ansiterm v0.0.0-20170929234023-d6e3b3328b78 // indirect\n\tgithub.com/Microsoft/go-winio v0.4.15 // indirect\n\tgithub.com/containerd/containerd v1.4.1 // indirect\n\tgithub.com/docker/distribution v2.7.1+incompatible // indirect\n\tgithub.com/docker/docker v20.10.5+incompatible\n\tgithub.com/docker/go-connections v0.4.0 // indirect\n\tgithub.com/docker/go-units v0.4.0 // indirect\n\tgithub.com/gogo/protobuf v1.3.1 // indirect\n\tgithub.com/gorilla/mux v1.8.0 // indirect\n\tgithub.com/kr/pretty v0.1.0 // indirect\n\tgithub.com/labstack/echo/v4 v4.2.1\n\tgithub.com/machinebox/graphql v0.2.2\n\tgithub.com/matryer/is v1.4.0 // indirect\n\tgithub.com/mattn/go-colorable v0.1.8 // indirect\n\tgithub.com/morikuni/aec v1.0.0 // indirect\n\tgithub.com/opencontainers/go-digest v1.0.0 // indirect\n\tgithub.com/opencontainers/image-spec v1.0.1 // indirect\n\tgithub.com/pkg/errors v0.9.1\n\tgithub.com/spdx/tools-golang v0.0.0-20201115191437-b584a7d6d38c\n\tgolang.org/x/crypto v0.0.0-20201117144127-c1f2f97bffc9 // indirect\n\tgolang.org/x/net v0.0.0-20201110031124-69a78807bb2b // indirect\n\tgolang.org/x/sys v0.0.0-20201119102817-f84b799fce68 // indirect\n\tgolang.org/x/text v0.3.4 // indirect\n\tgoogle.golang.org/grpc v1.33.2 // indirect\n\tgopkg.in/check.v1 v1.0.0-20180628173108-788fd7840127 // indirect\n\tgopkg.in/yaml.v2 v2.2.2\n\tgotest.tools v2.2.0+incompatible // indirect\n)\n"
+        },
+        "database": null,
+        "build_system": "go mod",
+        "config_files": {
+            "docker/graphile/.env": "# SPDX-FileCopyrightText: 2020 Friedrich-Alexander University Erlangen-N\u00fcrnberg (FAU)\n#\n# SPDX-License-Identifier: Apache-2.0\n\n# DB\nPOSTGRES_DB=product_model\nPOSTGRES_USER=postgres\nPOSTGRES_PASSWORD=admin123\n\n# GRAPHQL\nDATABASE_URL=postgres://postgres:admin123@db:5432/product_model\n",
+            "docker/graphile/docker-compose.yml": "# SPDX-FileCopyrightText: 2020 Friedrich-Alexander University Erlangen-N\u00fcrnberg (FAU)\n#\n# SPDX-License-Identifier: Apache-2.0\n\nversion: \"3.3\"\nservices:\n  db:\n    container_name: product-model-db\n    restart: \"no\"\n    image: product-model-db\n    build:\n      context: ./db\n    # volume mount disabled for development\n    # volumes:\n    #   - db:/var/lib/postgresql/data\n    env_file:\n      - ./.env\n    ports:\n      - 5432:5432\n\n  graphql:\n    container_name: product-model-graphql\n    restart: \"no\"\n    image: product-model-graphql\n    build:\n      context: ./graphql\n    env_file:\n      - ./.env\n    depends_on:\n      - db\n    ports:\n      - 5433:5433\n    command:\n      [\n        \"--enhance-graphiql\",\n        \"--connection\",\n        \"${DATABASE_URL}\",\n        \"--port\",\n        \"5433\",\n        \"--schema\",\n        \"public\",\n        \"--append-plugins\",\n        \"postgraphile-plugin-connection-filter\",\n      ]\n\n  adminer:\n    image: adminer\n    restart: \"no\"\n    ports:\n      - 8090:8080\n\nvolumes:\n  db:\n",
+            "docker/graphile/graphql/Dockerfile": "# SPDX-FileCopyrightText: 2020 Friedrich-Alexander University Erlangen-N\u00fcrnberg (FAU)\n#\n# SPDX-License-Identifier: Apache-2.0\n\nFROM node:alpine\n\nRUN npm install -g postgraphile\nRUN npm install -g postgraphile-plugin-connection-filter\n\nEXPOSE 5000\nENTRYPOINT [\"postgraphile\", \"-n\", \"0.0.0.0\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile"
+        ],
+        "folders": []
+    }
+}

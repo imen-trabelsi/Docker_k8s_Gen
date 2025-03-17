@@ -1,0 +1,39 @@
+{
+    "docker_info": {
+        "base_image": "ikemtz/sql_dacpac:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "1433"
+        ],
+        "user": [
+            "root"
+        ],
+        "labels": [
+            "author=\"@IkeMtz\""
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV SA_PASSWORD=SqlDockerRocks123! \\",
+            "ENV SA_PASSWORD=SqlDockerRocks123! \\"
+        ],
+        "copy_instructions": [
+            "COPY /bin/Debug/*.dacpac /dacpac/",
+            "COPY --from=sql-temp /var/opt/mssql/data/*.ldf /var/opt/mssql/data/",
+            "COPY --from=sql-temp /var/opt/mssql/data/*.mdf /var/opt/mssql/data/"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "/opt/mssql/bin/sqlservr & sleep 20 \\",
+                "&& sqlpackage /Action:Publish /TargetServerName:localhost /TargetUser:SA /TargetPassword:$SA_PASSWORD /SourceFile:/dacpac/schdDb.dacpac /TargetDatabaseName:schdDb /p:BlockOnPossibleDataLoss=false",
+                "&& sleep 20",
+                "&& pkill sqlservr && sleep 10"
+            ],
+            [
+                "rm -rf /dacpac",
+                "USER mssql"
+            ]
+        ]
+    }
+}

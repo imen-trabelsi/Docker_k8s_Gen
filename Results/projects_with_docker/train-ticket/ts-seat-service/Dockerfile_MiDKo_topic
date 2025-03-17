@@ -1,0 +1,28 @@
+# Use the base image provided by the user
+FROM java:8-jre
+
+# Create a directory in the container
+WORKDIR /app
+
+# Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy pom.xml and source code to the image
+COPY pom.xml .
+COPY src src
+
+# Build with maven
+RUN ./mvnw package -DskipTests
+
+# Copy the service's jar file from target to the /app directory in the image
+COPY ./target/ts-seat-service-1.0.jar /app/
+
+# Set timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Expose the service on the specified port
+EXPOSE 18898
+
+# The command to start the service
+CMD ["java", "-Xmx200m", "-jar", "/app/ts-seat-service-1.0.jar"]

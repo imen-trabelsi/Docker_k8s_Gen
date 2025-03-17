@@ -1,0 +1,28 @@
+# Base Image
+FROM openjdk:8-jdk-alpine
+
+# Volume for Temp file
+VOLUME /tmp
+
+# App jar path
+ARG JAR_FILE=target/*.jar
+
+# Update Alphine and Install maven
+RUN apk update && apk upgrade && apk add maven
+
+# Copy 
+COPY ${JAR_FILE} app.jar
+
+# Set Environment Variables
+ENV REDIS_HOST=redis-service
+ENV REDIS_PORT=6379
+ENV REDIS_PASSWORD=
+ENV MYSQL_ROOT_PASSWORD=debezium
+ENV MYSQL_USER=mysqluser
+ENV MYSQL_PASSWORD=mysqlpw
+
+# Expose the port
+EXPOSE 8084
+
+# Command to run
+ENTRYPOINT ["java","-jar","/app.jar","--spring.profiles.active=prod"]

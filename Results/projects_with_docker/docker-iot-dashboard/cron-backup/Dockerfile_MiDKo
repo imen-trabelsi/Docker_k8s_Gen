@@ -1,0 +1,48 @@
+FROM mongo:latest
+
+ENV AWS_ACCESS_KEY_ID=Your_Access_key
+ENV AWS_DEFAULT_REGION =Your_region
+ENV AWS_HOST_BASE=Your_host_base
+ENV AWS_HOST_BUCKET=your_host_bucket
+ENV AWS_SECRET_ACCESS_KEY=Your_secret_key
+ENV hostname=your_hostname
+ENV relay_ip=your_replay_ip
+ENV domain=your_domain
+
+COPY --from=mongodb /root/env /root/env
+COPY nodered_backup.sh /bin/nodered_backup.sh
+COPY grafana_backup.sh /bin/grafana_backup.sh
+COPY nginx_backup.sh /bin/nginx_backup.sh
+COPY mqtts_backup.sh /bin/mqtts_backup.sh
+COPY mongodb_backup.sh /bin/mongodb_backup.sh
+COPY postfix.sh /etc/my_init.d/postfix.sh
+
+RUN env | grep MON > /root/env && \
+    set -x \
+    && export $(xargs < /root/env) \
+    && echo "deb http://$MONGO_REPO/apt/ubuntu focal/${MONGO_PACKAGE%-unstable}/$MONGO_MAJOR multiverse" | tee "/etc/apt/sources.list.d/${MONGO_PACKAGE%-unstable}.list" \
+    && apt-key adv --keyserver keyserver.ubuntu.com --recv-keys B00A0BD1E2C63C11 \
+
+WORKDIR "/opt/backup"
+
+RUN apt-get update && apt-get install -y python3-pip iputils-ping net-tools debconf-utils rsync  \
+    && mkdir -p /opt/backup \
+    && pip3 install s3cmd \
+    && echo "[default]\naccess_key = ${AWS_ACCESS_KEY_ID}\nbucket_location = $AWS_DEFAULT_REGION\nhost_base = $AWS_HOST_BASE\nhost_bucket = $AWS_HOST_BUCKET\nsecret_key = $AWS_SECRET_ACCESS_KEY" | tee /root/.s3cfg \
+    && echo "postfix postfix/mailname string $host_name" | debconf-set-selections \
+    && echo "postfix postfix/main_mailer_type select Satellite system" | debconf-set-selections \
+    && apt-get update && apt-get install -y postfix mailutils \
+    && postconf -e relayhost=$relay_ip \
+    && echo "root@${hostname} backup@${domain}" > /etc/postfix/generic \
+    && postconf -e smtp_generic_maps=hash:/etc/postfix/generic \
+    && chmod +x /bin/nodered_backup.sh \
+    && chmod +x /bin/grafana_backup.sh \
+    && chmod +x /bin/nginx_backup.sh \
+    && chmod +x /bin/mqtts_backup.sh \
+    && chmod +x /bin/mongodb_backup.sh \
+    && chmod +x /etc/my_init.d/postfix.sh \
+
+COPY cron.sh /etc/my_init.d/cron.sh
+RUN chmod +x /etc/my_init.d/cron.sh
+
+CMD ["/bin/bash"]

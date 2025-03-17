@@ -1,0 +1,30 @@
+# Base Image
+FROM nginx:alpine
+
+# Copy composer.lock and composer.json
+COPY composer.lock composer.json /app/
+
+# Set working directory
+WORKDIR /app
+
+# Install dependencies
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+RUN composer install
+
+# Copy existing application directory contents
+COPY . /app/
+
+# Copy nginx configuration
+COPY conf.d/ /etc/nginx/conf.d/
+
+# Make sure files/folders needed by the processes are accessible when they run under the www-data user
+RUN chown -R www-data:www-data /app && chmod -R 755 /app
+
+# Switch to use a non-root user from here on
+USER www-data
+
+# Expose port 80
+EXPOSE 80
+
+# Start Nginx server
+CMD ["nginx", "-g", "daemon off;"]

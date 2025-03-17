@@ -1,0 +1,21 @@
+# Use the nginxproxy/nginx-proxy:alpine base image
+FROM nginxproxy/nginx-proxy:alpine
+
+# Copy the configuration file to the correct directory
+COPY uploadsize.conf /etc/nginx/conf.d/uploadsize.conf
+
+# Create required directories and adjust permissions as needed
+RUN mkdir -p /var/www/html && chown -Rf www-data:www-data /var/www/html
+
+# Expose the required ports
+EXPOSE 80
+
+# Add user
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+# Set environment variables
+# Replace 'variable_name' and 'variable_value' with the specific variable names and values you have
+ENV variable_name=variable_value
+
+# Define the final command to be executed
+CMD ["nginx", "-g", "daemon off;"]

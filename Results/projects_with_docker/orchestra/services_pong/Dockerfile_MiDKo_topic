@@ -1,0 +1,37 @@
+# The first stage is the build stage
+FROM node:12-alpine AS builder
+
+WORKDIR /builder
+
+# Install dependencies for the build
+RUN apk --no-cache add make g++ python-dev
+
+# Copy necessary files for the build
+COPY common/nodejs/package.json src/common/
+COPY pong/package.json .
+COPY common/messages/stats.proto .
+COPY common/nodejs src/common
+COPY pong .
+
+RUN npm install
+RUN npm run build-msg
+RUN npm run build
+
+# Second stage for the final image
+FROM node:12-alpine
+
+ENV NODE_ENV=production
+ENV PORT=7000
+
+WORKDIR /app
+
+# Copy necessary files from the build stage
+COPY common/nodejs/package.json src/common
+COPY pong package.json .
+COPY pong/bin bin
+
+# Expose necessary ports
+EXPOSE 7000
+
+# Command to run
+CMD [ "npm", "start" ]

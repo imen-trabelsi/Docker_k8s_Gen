@@ -1,0 +1,26 @@
+# As per required by user
+FROM openjdk:21-slim-buster
+
+# Create a directory within the container
+WORKDIR /application
+
+# Copying project files into the workdir in Docker image
+COPY .mvn .mvn
+COPY mvnw .
+COPY pom.xml .
+COPY src src
+
+# Downloading dependencies
+RUN ./mvnw -B dependency:go-offline
+
+# Building the app using Maven
+RUN ./mvnw -B package
+
+# Copying build jar file
+COPY --from=0 target/customer-management-backend-0.0.2-SNAPSHOT.jar .
+
+# Exposed Port as per user input
+EXPOSE 8100
+
+# Command to execute at starting of container
+ENTRYPOINT ["java", "-jar", "customer-management-backend-0.0.2-SNAPSHOT.jar"]

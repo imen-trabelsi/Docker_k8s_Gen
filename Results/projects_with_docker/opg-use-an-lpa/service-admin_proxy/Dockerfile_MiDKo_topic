@@ -1,0 +1,35 @@
+# Use the golang base image provided by the user
+FROM golang:1.23 AS build
+
+# Set the working directory in the builder stage
+WORKDIR /src
+
+# Copy the source files from the local host to the working directory
+COPY . .
+
+# Run the provided build commands
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -installsuffix cgo -o proxy main.go
+
+# Start a new stage from scratch
+FROM alpine:latest
+
+# Install postgresql client for the database
+RUN apk add --no-cache postgresql-client
+
+# Set the working directory in the docker image
+WORKDIR /app
+
+# Copy the binary from build to main stage
+
+# Entrypoint for executing the commands
+ENTRYPOINT ["./entrypoint.sh"]
+
+# Command to run the service
+CMD ["./proxy"]
+
+# Expose port 5000
+EXPOSE 5000
+
+# Docker health check
+HEALTHCHECK --interval=5m --timeout=3s \
+    CMD pg_isready -q -h localhost -p 5432

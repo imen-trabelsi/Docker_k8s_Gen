@@ -1,0 +1,24 @@
+# Use adoptopenjdk/openjdk11:alpine as the base image
+FROM adoptopenjdk/openjdk11:alpine
+
+# Set the file maintainer (your name - optional)
+LABEL maintainer="your-email@domain.com"
+
+# Copy pom.xml and source code to the container
+COPY pom.xml /tmp/
+COPY src /tmp/src/
+
+# Specify the working directory
+WORKDIR /tmp/
+
+# Install maven dependencies and build the project
+RUN apk add --no-cache maven && mvn install
+
+# Copy the application's jar file to the root directory 
+COPY target/auth.jar .
+
+# Set the startup command to execute the jar
+ENTRYPOINT ["java", "-jar", "auth.jar"]
+
+# Expose the application on port 8080
+EXPOSE 8080

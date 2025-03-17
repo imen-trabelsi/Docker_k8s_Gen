@@ -1,0 +1,25 @@
+FROM mcr.microsoft.com/dotnet/sdk:6.0 as build
+WORKDIR /app
+
+# Copy csproj and restore as distinct layers
+COPY ["./src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "./"]
+RUN dotnet restore "Web.Shopping.HttpAggregator.csproj"
+
+# Copy everything else and build app
+COPY . .
+RUN dotnet publish --no-restore "Web.Shopping.HttpAggregator.csproj" -c Release -o /app/publish
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+WORKDIR /app
+
+# Copy necessary files
+
+# Define environment variables
+ENV ASPNETCORE_URLS=http://+:80
+
+# Expose port 80
+EXPOSE 80
+
+# Set Entrypoint
+ENTRYPOINT ["dotnet", "Web.Shopping.HttpAggregator.dll"]

@@ -1,0 +1,24 @@
+# Set the Base Image
+FROM node:13.6
+
+# Create app directory
+WORKDIR /usr/app
+
+# Install dependencies
+COPY package*.json ./
+
+RUN npm cache clean --force
+RUN rm package-lock.json
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Make sure files are up-to-date and secure
+RUN chown -R node:node .
+
+# Set desired user
+USER node
+
+# Specify the Command to run
+CMD ["npm", "run", "start"]

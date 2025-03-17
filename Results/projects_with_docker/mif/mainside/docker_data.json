@@ -1,0 +1,44 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:11-jre",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY target/classes/dockerize/wait-for-flyway-migration-completes.sh /waiting.sh",
+            "COPY target/mainside-1.0-SNAPSHOT.war /app.war"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"sh\",",
+                    "\"-c\",",
+                    "\"./waiting.sh;",
+                    "java",
+                    "-jar",
+                    "-Dspring.profiles.active=docker",
+                    "/app.war\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt update",
+                "RUN apt install -y dnsutils"
+            ],
+            [
+                "apt install -y net-tools",
+                "RUN apt install -y netcat"
+            ],
+            [
+                "chmod +x /waiting.sh",
+                ""
+            ]
+        ]
+    }
+}

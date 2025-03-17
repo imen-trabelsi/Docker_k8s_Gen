@@ -1,0 +1,21 @@
+# Based on the user-provided base image
+FROM nextcloud:fpm
+
+# Updating packages
+RUN set -ex ; \
+apt-get update && apt-get install -y --no-install-recommends ffmpeg ghostscript libmagickcore-6.q16-6-extra procps smbclient supervisor ; \
+rm -rf /var/lib/apt/lists/* ; \
+set -ex ; \
+savedAptMark="$(apt-mark showmanual)" ; \
+apt-get update && apt-get install -y --no-install-recommends libbz2-dev libc-client-dev libkrb5-dev libsmbclient-dev ; \
+docker-php-ext-configure imap --with-kerberos --with-imap-ssl ; docker-php-ext-install bz2 imap ; \
+pecl install smbclient ; docker-php-ext-enable smbclient ; \
+
+# Copy configurations
+COPY supervisord.conf /
+
+# Environment settings
+ENV NEXTCLOUD_UPDATE=1
+
+# Prepare execution command
+CMD ["/usr/bin/supervisord", "-c", "/supervisord.conf"]

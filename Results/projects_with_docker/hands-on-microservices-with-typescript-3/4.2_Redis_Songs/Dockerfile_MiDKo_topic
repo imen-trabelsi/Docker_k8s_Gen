@@ -1,0 +1,26 @@
+# Define base image
+FROM node:8.13-slim AS build-env
+
+# Create app directory
+RUN mkdir -p /opt/my-musik/
+WORKDIR /opt/my-musik/
+
+# Install global dependencies
+RUN npm install typescript -g && npm install --no-optional && "node_modules/.bin/gulp"
+
+# Install dependencies
+COPY package*.json ./
+COPY ./gulpfile.js .
+COPY ./tsconfig.json .
+COPY ./tslint.json .
+COPY ./songs.json .
+COPY ./config.json .
+COPY ./Dockerfile .
+RUN npm install --only=production
+
+# Bundle app source
+COPY ./src ./src
+
+# Expose port 3000 and start node.js server
+EXPOSE 3000
+CMD ["node", "dist/app.js"]

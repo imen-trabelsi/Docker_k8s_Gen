@@ -1,0 +1,14 @@
+# Use openjdk base image 
+FROM openjdk:11
+
+# Copy jar file
+COPY ./target/donor-profile-service-0.0.1-SNAPSHOT.jar /usr/src/donor-profile-service-0.0.1-SNAPSHOT.jar
+
+# Set working directory
+WORKDIR /usr/src
+
+# Expose port 8080
+EXPOSE 8080
+
+# Run Java app
+ENTRYPOINT ["java","-jar","donor-profile-service-0.0.1-SNAPSHOT.jar"]

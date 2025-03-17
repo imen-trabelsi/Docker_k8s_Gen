@@ -1,0 +1,26 @@
+# Set base image (host OS)
+FROM python:3.7
+
+# Set the working directory in the Docker image
+WORKDIR /code
+
+# Copy the dependencies file to the working directory
+COPY requirements.txt /code
+
+# Install any dependencies
+RUN pip install -r /code/requirements.txt
+
+# Copy the content of the local src directory to the working directory in the Docker image
+COPY . /code
+
+# Change to myapp directory
+WORKDIR /code/myapp
+
+# Update the system and install necessary tools
+RUN  apt-get update && apt-get install -y vim postgresql-client
+
+# Application's default port
+EXPOSE 8000
+
+# Command to run the application
+ENTRYPOINT ["bash", "-c", "while ! pg_isready -h postgres_korek -p 5432 | grep accepting; do sleep 1; done; python manage.py runserver 0.0.0.0:8000"]

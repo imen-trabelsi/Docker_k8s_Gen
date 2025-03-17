@@ -1,0 +1,23 @@
+# Use the provided base image with Java
+FROM eclipse-temurin:11
+
+# Avoid container running processes as root
+USER 1001
+
+# Add a volume pointing to /tmp
+VOLUME /tmp
+
+# Copy the application's executable jar to the container
+COPY *.jar /app.jar
+
+# Use bash shell to execute the touch command, update the modification time for changes
+RUN bash -c 'touch /app.jar'
+ 
+# Expose the mentioned port to allow external access
+EXPOSE 8888
+
+# Set the active profile to Docker
+ENV SPRING_PROFILES_ACTIVE=docker
+
+# Set the entrypoint for the application
+ENTRYPOINT ["java","-Dspring.profiles.active=docker","-jar","/app.jar"]

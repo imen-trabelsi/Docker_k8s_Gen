@@ -1,0 +1,55 @@
+# Begin Dockerfile
+FROM php:8.2-fpm-bookworm
+
+# Environment variables
+ENV IMAGICK_COMMIT_HASH d7d3c24af1b4f599897408f1714600b69a56473b
+ENV PHP_MEMORY_LIMIT 512M
+ENV PHP_UPLOAD_LIMIT 512M
+ENV PHP_OPCACHE_MEMORY_CONSUMPTION 128
+ENV NEXTCLOUD_VERSION 30.0.6
+
+# Update and install dependencies
+RUN set -ex \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends \
+       busybox-static \
+       bzip2 \
+       libldap-common \
+       libmagickcore-6.q16-6-extra \
+       rsync \
+    && rm -rf /var/lib/apt/lists/* \
+    && mkdir -p /var/spool/cron/crontabs \
+    && echo '*/5 * * * * php -f /var/www/html/cron.php' > /var/spool/cron/crontabs/www-data \
+    && apt-get update \
+    && selectAptMark="$(apt-mark showmanual)" \
+    && apt-get install -y --no-install-recommends \
+       libcurl4-openssl-dev \
+       libevent-dev \
+       libfreetype6-dev \
+       libgmp-dev \
+       libicu-dev \
+       libjpeg-dev \
+       libldap2-dev \
+       libmagickwand-dev \
+       libmcrypt-dev \
+       libmemcached-dev \
+       libpng-dev \
+       libpq-dev \
+       libwebp-dev \
+       libxml2-dev \
+       libzip-dev \
+    && docker-php-ext-configure ftp --with-openssl-dir=/usr \
+    && docker-php-ext-configure gd --with-freetype --with-jpeg --with-webp \
+
+# Copy Instructions
+COPY *.sh upgrade.exclude /
+COPY config/* /usr/src/nextcloud/config/
+
+# Initialize web server files
+WORKDIR /var/www/html    
+
+EXPOSE 80
+EXPOSE 443
+
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["php-fpm"]

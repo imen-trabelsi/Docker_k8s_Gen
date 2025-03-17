@@ -1,0 +1,30 @@
+# Use the official lightweight Node.js 10 image.
+# https://hub.docker.com/_/node
+FROM node:10-alpine
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Create app directory and set app user
+RUN addgroup appgroup && adduser -D -G appgroup appuser && mkdir -p /usr/src/app && chown -R appuser /usr/src/app
+
+# Switch to the app user
+USER appuser
+
+# Copy application dependency manifests to the container image.
+COPY package.json yarn.lock ./
+
+# Install production dependencies.
+RUN yarn install --production 
+
+# Copy local code to the container image.
+COPY . .
+
+# Set environment variables
+ENV NODE_ENV=production \
+  
+# Expose the application on port 8079
+EXPOSE 8079
+
+# Start the application
+CMD [ "/usr/local/bin/npm", "start" ]

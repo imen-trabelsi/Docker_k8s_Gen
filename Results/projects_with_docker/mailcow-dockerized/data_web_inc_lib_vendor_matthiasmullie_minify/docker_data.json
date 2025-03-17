@@ -1,0 +1,36 @@
+{
+    "docker_info": {
+        "base_image": "php:$version",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "version=cli"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "COPY . /var/www",
+            "WORKDIR /var/www"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apt-get update",
+                "RUN apt-get install -y zip unzip libzip-dev git"
+            ],
+            [
+                "docker-php-ext-install zip",
+                "RUN docker-php-ext-install pcntl"
+            ],
+            [
+                "curl -sS https://getcomposer.org/installer | php",
+                "RUN mv composer.phar /usr/local/bin/composer"
+            ],
+            [
+                "composer install"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,25 @@
+# Set the base image
+FROM python:3
+
+# Set the working directory
+WORKDIR /app
+
+# Update and install prerequisites.
+RUN apt update -y \
+    && apt install -y cmake libgl1-mesa-glx \
+    && /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime \
+
+# Copy everything from the current directory into the container
+COPY . /app/
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=TRUE
+
+# Install project requirements
+RUN pip install -r requirements.txt
+
+# Command to run
+CMD ["gunicorn", "-w", "4", "-b", "0.0.0.0:17001", "app:app"]
+
+# Expose port
+EXPOSE 17001

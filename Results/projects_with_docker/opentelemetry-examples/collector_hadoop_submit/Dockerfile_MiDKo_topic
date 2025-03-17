@@ -1,0 +1,25 @@
+# An optimized and secure Dockerfile based on the information provided
+
+# Let's use the base image provided by the user
+FROM curlimages/curl:7.82.0 AS hadoop_curl
+
+# Setting up environment variables
+ENV JAR_FILEPATH="/opt/hadoop/applications/hadoop-mapreduce-examples-2.7.1-sources.jar"
+ENV CLASS_TO_RUN="org.apache.hadoop.examples.WordCount"
+ENV PARAMS="/input /output"
+
+# Running commands as root
+USER root
+
+# downloading hadoop file
+RUN curl -L --output /hadoop-mapreduce-examples-2.7.1-sources.jar \
+
+# Switching back to non-root user for security
+USER hadoop_curl
+
+# Copy instructions
+COPY run.sh /run.sh
+RUN chmod a+x /run.sh
+
+# Execute the run.sh command
+CMD ["/run.sh"]

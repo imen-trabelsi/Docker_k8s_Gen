@@ -1,0 +1,32 @@
+# Using the user specified base image
+FROM rust:1.72-bookworm
+
+# Setting up the working directory
+WORKDIR /usr/src/zksync
+
+# Copying the necessary files to docker image
+COPY . .
+COPY --from=builder /usr/src/zksync/target/release/plonk_step_by_step_prover /bin/
+COPY --from=builder /usr/src/zksync/target/release/dummy_prover /bin/
+COPY docker/prover/prover-entry.sh docker/prover/graceful-run.sh /bin/
+COPY keys/packed /keys/packed
+COPY contracts/artifacts/ /contracts/artifacts/
+
+# Install dependencies
+RUN apt-get update && \
+    apt-get install -y axel ca-certificates tini && \
+
+# Adding required environment variables (As no specific environment variable is provided)
+# ENV KEY=VALUE
+
+# Build the code
+RUN CARGO_HOME=./cargo cargo build --release
+
+# Container start-up script
+ENTRYPOINT [ "/usr/bin/tini", "-g", "--" ]
+
+# Container run command
+CMD ["/bin/graceful-run.sh"]
+
+# Expose application specific ports – none provided
+# EXPOSE <port>

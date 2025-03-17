@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"AppNodeBase\",\n  \"version\": \"0.0.0\",\n  \"description\": \"Base image for Code Farm node applications\",\n  \"scripts\": {\n    \"prebuild\": \"../../bs/bundle_deps.sh\",\n    \"build\": \"../../bs/build.sh\",\n    \"extract\": \"../../bs/extract.sh\",\n    \"load\": \"../../bs/load.sh\",\n    \"unload\": \"../../bs/unload.sh\"\n  },\n  \"author\": \"Marcus Christensson <marcus.christensson@combitech.se>\",\n  \"license\": \"MIT\"\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "src/containers/AppNodeBase/Dockerfile": "#\n# Base image for Code Farm node applications\n#\n# In containers that inherit this file, EXPOSE ports and set CMD.\n#\n# Example Dockerfile:\n# FROM codefarm/appnodebase:0.0.0\n#\n\nFROM codefarm/nodebase:0.0.0\nLABEL Description=\"Base image for Code Farm node applications including libraries\" Version=\"1.0\"\nENV depTmpRoot ${farmerHome}/deps\nRUN mkdir -p ${depTmpRoot}/src\nADD deps/deps.tar ${depTmpRoot}/src\nUSER root\nRUN chown -R ${user} ${depTmpRoot}\nUSER ${user}\n\nENV DISABLE_LINK_LIBS \"npm installation disabled\"\n\n# Add build-support dependency\nRUN cp -r ${depTmpRoot}/src/bs ${appRoot}/src\n\n# Install all libraries with package.json globally\nRUN for i in $(ls -1 ${depTmpRoot}/src/lib/*/package.json); do \\\n    moduleDir=$(echo $i|sed -e 's/\\/package\\.json//g'); \\\n    echo \"Installing library package $moduleDir globally\"; \\\n    yarn global add file:${moduleDir}; \\\n  done && \\\n  rm -rf ${depTmpRoot}\n\n# 1. Add app dependency specification. This is done first to utilize docker caching.\nONBUILD COPY [ \"package.json\", \"yarn.lock\", \"${appRoot}/src/app/me/\" ]\n\nONBUILD USER root\nONBUILD RUN chown $user --recursive ${appRoot}\nONBUILD USER $user\n\nONBUILD ENV gitroot ${appRoot}\nONBUILD RUN test -f package.json && \\\n  yarn --production || \\\n  echo \"No package.json\"\n\n# 2. Add app source\nONBUILD COPY . ${appRoot}/src/app/me\n\nONBUILD USER root\nONBUILD RUN find ${appRoot}/src/app/me -path './node_modules' -prune -o -print0 | xargs -0 chown $user\nONBUILD USER $user\n\nENV gitroot ${appRoot}\nCMD [ \"yarn\", \"run\", \"start-rel\" ]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            "Dockerfile",
+            "package.json",
+            "yarn.lock"
+        ],
+        "folders": []
+    }
+}

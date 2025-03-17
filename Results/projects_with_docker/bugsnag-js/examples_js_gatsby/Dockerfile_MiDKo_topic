@@ -1,0 +1,38 @@
+# Base Image
+FROM node:18@sha256:f12d34408955b2081f82078e8f96c3299ca0f38d11e76086cb9b9b1b669977e4 as build
+
+# Arguments
+ARG GATSBY_BUGSNAG_API_KEY
+
+# Set working directory
+WORKDIR /usr/src/app
+
+# Copy package files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy source files
+COPY . .
+
+# Build app
+RUN npm run build
+
+# Run Stage
+FROM node:18@sha256:f12d34408955b2081f82078e8f96c3299ca0f38d11e76086cb9b9b1b669977e4
+
+# Set working directory
+WORKDIR /usr/src/app
+
+# Copy from the build stage
+
+# Expose necessary ports
+EXPOSE 8080
+
+# Healthcheck instruction
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD curl -f http://localhost:8080/ || exit 1
+
+# Run the application
+CMD ["npm", "run", "serve", "--host", "0.0.0.0"]

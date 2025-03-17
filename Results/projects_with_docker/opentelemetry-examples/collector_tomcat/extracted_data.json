@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "Go",
+        "framework": "Go",
+        "dependencies": {
+            "go.mod": "module github.com/lightstep/ls-examples/go/opentracing/client\n\ngo 1.17\n\nrequire (\n\tgithub.com/lightstep/lightstep-tracer-go v0.26.0\n\tgithub.com/opentracing/opentracing-go v1.2.0\n)\n\nrequire (\n\tgithub.com/gogo/protobuf v1.3.2 // indirect\n\tgithub.com/golang/protobuf v1.3.1 // indirect\n\tgithub.com/lightstep/lightstep-tracer-common/golang/gogo v0.0.0-20210210170715-a8dfcb80d3a7 // indirect\n\tgolang.org/x/net v0.0.0-20201021035429-f5854403a974 // indirect\n\tgolang.org/x/sys v0.0.0-20210217105451-b926d437f341 // indirect\n\tgolang.org/x/text v0.3.3 // indirect\n\tgoogle.golang.org/genproto v0.0.0-20190530194941-fb225487d101 // indirect\n\tgoogle.golang.org/grpc v1.21.0 // indirect\n)\n"
+        },
+        "database": null,
+        "build_system": "go mod",
+        "config_files": {
+            "collector/tomcat/docker-compose.yml": "version: \"3.7\"\nservices:\n    tomcat:\n        container_name: tomcat\n        image: 'bitnami/tomcat:9.0'\n        environment:\n            - 'CATALINA_OPTS=-Dcom.sun.management.jmxremote -Dcom.sun.management.jmxremote.port=9090 -Dcom.sun.management.jmxremote.ssl=false -Dcom.sun.management.jmxremote.authenticate=false'\n            - 'JAVA_OPTS=-Djava.awt.headless=true -XX:+UseG1GC -Dfile.encoding=UTF-8 -Xms256m -Xmx512m'\n            - 'ALLOW_EMPTY_PASSWORD=yes'\n        ports:\n            - 0.0.0.0:9090:9090\n        stop_grace_period: 1s\n        networks:\n            - integrations\n    otel-collector:\n        container_name: otel-collector\n        build: .\n        command: [\"--config=/conf/collector.yml\"]\n        environment:\n            LS_ACCESS_TOKEN: ${LS_ACCESS_TOKEN}\n        networks:\n            - integrations\n        volumes:\n            - ./collector.yml:/conf/collector.yml:rw\n    loadgen:\n        image: williamyeh/wrk\n        container_name: wrk\n        command: [\"-t12\", \"-c400\", \"-d10m\", \"http://tomcat:8080/foo\"]\n        networks:\n            - integrations\n        depends_on:\n            - tomcat\n        stop_grace_period: 1s\n        # to keep this from starting under regular invocation\n        profiles:\n            - loadgen\nnetworks:\n    integrations:\n",
+            "collector/tomcat/Dockerfile": "FROM curlimages/curl:7.82.0 as curler\nARG JMX_JAR_VERSION=v1.14.0\nUSER root\nRUN curl -L \\\n    --output /opentelemetry-jmx-metrics.jar \\\n    \"https://github.com/open-telemetry/opentelemetry-java-contrib/releases/download/${JMX_JAR_VERSION}/opentelemetry-jmx-metrics.jar\"\n\nRUN curl -L -s \\\n    \"https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.53.0/otelcol-contrib_0.53.0_linux_amd64.tar.gz\" | \\\n    tar -xvz -C /\n\nFROM ibmjava:8-jre\nWORKDIR /\n\nCOPY --from=curler /opentelemetry-jmx-metrics.jar /opt/opentelemetry-jmx-metrics.jar\nCOPY --from=curler /otelcol-contrib /otelcol-contrib\n\nENTRYPOINT [ \"/otelcol-contrib\" ]\nCMD [\"--config\", \"/etc/otel/config.yaml\"]"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "collector.yml",
+            "docker-compose.yml"
+        ],
+        "folders": []
+    }
+}

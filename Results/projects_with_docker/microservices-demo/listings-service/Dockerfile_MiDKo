@@ -1,0 +1,27 @@
+# Use the official Node.js 12 image.
+FROM node:12
+
+# Set the working directory in Docker to /opt/app.
+WORKDIR /opt/app
+
+# Copy package.json and package-lock.json before other files
+# Utilize Docker cache to save re-installing dependencies if unchanged
+COPY package.json yarn.lock ./
+
+# Install dependencies
+RUN yarn install --production 
+
+# Copy the current directory contents into the container at /opt/app
+COPY . /opt/app
+
+# Move to the listings-service directory within /opt/app
+WORKDIR /opt/app/listings-service
+
+# Set the Node.js server to use the default production settings
+ENV NODE_ENV production
+
+# Make port 80 available to the world outside this container
+EXPOSE 80
+
+# Run the application when the docker is started.
+CMD [ "yarn", "watch" ]

@@ -1,0 +1,43 @@
+# Specify a base image
+FROM node:22.12-alpine as builder
+
+# Set working directory
+WORKDIR /app
+
+# Copy package.json and yarn.lock files
+COPY package.json ./
+COPY yarn.lock .
+
+# Copy required files and directories
+COPY apps/hash-realtime/package.json apps/hash-realtime/
+COPY libs/@local/eslint-config/package.json libs/@local/eslint-config/
+COPY libs/@local/hash-backend-utils/package.json libs/@local/hash-backend-utils/
+COPY libs/@local/tsconfig/package.json libs/@local/tsconfig/
+COPY libs/@local/eslint-config libs/@local/eslint-config
+COPY libs/@local/hash-backend-utils libs/@local/hash-backend-utils
+COPY libs/@local/tsconfig libs/@local/tsconfig
+COPY apps/hash-realtime apps/hash-realtime
+
+# Install dependencies
+RUN yarn install --immutable --production --ignore-scripts
+RUN yarn workspace @apps/hash-realtime install --immutable --ignore-scripts
+
+# Create a new stage for production
+FROM node:22.12-alpine
+
+# Set the working directory
+WORKDIR /app
+
+# Create a new user group and user
+RUN addgroup -S appgroup && adduser -S appuser -G appgroup
+
+# Set environment variables 
+ENV NODE_ENV production
+
+# Copy all files from builder image to app directory
+
+# Switch to appuser
+USER appuser
+
+# Command to run when the container starts
+CMD ["yarn", "workspace", "@apps/hash-realtime", "start"]

@@ -1,0 +1,29 @@
+# Use an existing base docker image to leverage pre-built dotnet sdk for microservices
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
+
+# Create a directory to hold your application code inside the image, 
+# and navigate into it as a working directory
+WORKDIR /ClassifiedAds.Microservices
+
+# Copy csproj files and restore as distinct layers
+COPY ./Common/ClassifiedAds.Application/ClassifiedAds.Application.csproj ./Common/ClassifiedAds.Application/
+COPY ./Common/ClassifiedAds.CrossCuttingConcerns/ClassifiedAds.CrossCuttingConcerns.csproj ./Common/ClassifiedAds.CrossCuttingConcerns/
+COPY ./Common/ClassifiedAds.Domain/ClassifiedAds.Domain.csproj ./Common/ClassifiedAds.Domain/
+COPY ./Common/ClassifiedAds.Infrastructure/ClassifiedAds.Infrastructure.csproj ./Common/ClassifiedAds.Infrastructure/
+COPY ./Services.Configuration/ClassifiedAds.Services.Configuration.Api/ClassifiedAds.Services.Configuration.Api.csproj ./Services.Configuration/ClassifiedAds.Services.Configuration.Api/
+
+RUN dotnet restore ./Common/ClassifiedAds.Application/ClassifiedAds.Application.csproj
+RUN dotnet restore ./Common/ClassifiedAds.Infrastructure/ClassifiedAds.Infrastructure.csproj
+RUN dotnet restore ./Services.Configuration/ClassifiedAds.Services.Configuration.Api/ClassifiedAds.Services.Configuration.Api.csproj
+
+# Copy everything else, build and publish Release
+COPY . ./
+RUN dotnet publish ./Services.Configuration/ClassifiedAds.Services.Configuration.Api/ClassifiedAds.Services.Configuration.Api.csproj -c Release -o out
+
+# Generate runtime image
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS runtime
+
+WORKDIR /ClassifiedAds.Microservices
+
+# Configure Docker to execute your .Net microservices you've published with the SDK
+ENTRYPOINT ["dotnet", "ClassifiedAds.Services.Configuration.Api.dll"]

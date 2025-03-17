@@ -1,0 +1,29 @@
+FROM mhart/alpine-node:8.9.1
+
+WORKDIR /usr/src/app
+
+# Add ico user
+RUN addgroup ico \
+
+# Install dependencies
+RUN apk add --update --no-cache git python make g++ curl grep bash \
+    && npm i -g yarn \
+
+# Change permissions of the entrypoint file
+RUN chmod 755 /usr/local/bin/custom-entrypoint.sh
+
+# Copy all files into the image
+COPY . .
+
+# Copy custom entry point
+COPY custom-entrypoint.sh /usr/local/bin/custom-entrypoint.sh
+
+# Switch to ico user
+USER ico
+
+# Expose required ports
+EXPOSE 3000 4000
+
+# Set the execution command
+ENTRYPOINT ["/usr/local/bin/custom-entrypoint.sh"]
+CMD ["npm", "start"]

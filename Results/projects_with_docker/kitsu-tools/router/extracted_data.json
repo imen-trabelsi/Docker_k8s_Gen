@@ -1,0 +1,201 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".editorconfig",
+            "type": "blob"
+        },
+        {
+            "path": ".github",
+            "type": "tree"
+        },
+        {
+            "path": ".github/CONTRIBUTING.md",
+            "type": "blob"
+        },
+        {
+            "path": ".github/ISSUE_TEMPLATE.md",
+            "type": "blob"
+        },
+        {
+            "path": ".github/PULL_REQUEST_TEMPLATE.md",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "CONTRIBUTING.md",
+            "type": "blob"
+        },
+        {
+            "path": "LICENSE",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "bin",
+            "type": "tree"
+        },
+        {
+            "path": "bin/attach",
+            "type": "blob"
+        },
+        {
+            "path": "bin/build",
+            "type": "blob"
+        },
+        {
+            "path": "bin/bundle",
+            "type": "blob"
+        },
+        {
+            "path": "bin/check_for_updates",
+            "type": "blob"
+        },
+        {
+            "path": "bin/clean-docker",
+            "type": "blob"
+        },
+        {
+            "path": "bin/clean-uploads",
+            "type": "blob"
+        },
+        {
+            "path": "bin/guard",
+            "type": "blob"
+        },
+        {
+            "path": "bin/logs",
+            "type": "blob"
+        },
+        {
+            "path": "bin/npm",
+            "type": "blob"
+        },
+        {
+            "path": "bin/open-browser",
+            "type": "blob"
+        },
+        {
+            "path": "bin/pg_dump",
+            "type": "blob"
+        },
+        {
+            "path": "bin/port",
+            "type": "blob"
+        },
+        {
+            "path": "bin/psql",
+            "type": "blob"
+        },
+        {
+            "path": "bin/rails",
+            "type": "blob"
+        },
+        {
+            "path": "bin/rake",
+            "type": "blob"
+        },
+        {
+            "path": "bin/rebuild",
+            "type": "blob"
+        },
+        {
+            "path": "bin/redis-cli",
+            "type": "blob"
+        },
+        {
+            "path": "bin/restart",
+            "type": "blob"
+        },
+        {
+            "path": "bin/rspec",
+            "type": "blob"
+        },
+        {
+            "path": "bin/seed",
+            "type": "blob"
+        },
+        {
+            "path": "bin/setup",
+            "type": "blob"
+        },
+        {
+            "path": "bin/start",
+            "type": "blob"
+        },
+        {
+            "path": "bin/status",
+            "type": "blob"
+        },
+        {
+            "path": "bin/stop",
+            "type": "blob"
+        },
+        {
+            "path": "bin/trust",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "router",
+            "type": "tree"
+        },
+        {
+            "path": "router/Caddyfile",
+            "type": "blob"
+        },
+        {
+            "path": "router/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "router/logging.include.conf",
+            "type": "blob"
+        },
+        {
+            "path": "router/maintenance.html",
+            "type": "blob"
+        },
+        {
+            "path": "router/nginx.conf",
+            "type": "blob"
+        },
+        {
+            "path": "router/offline.html",
+            "type": "blob"
+        },
+        {
+            "path": "router/proxy.include.conf",
+            "type": "blob"
+        },
+        {
+            "path": "uploads",
+            "type": "tree"
+        },
+        {
+            "path": "uploads/kitsu-ugc-dev",
+            "type": "tree"
+        },
+        {
+            "path": "uploads/kitsu-ugc-dev/.gitkeep",
+            "type": "blob"
+        }
+    ]
+}

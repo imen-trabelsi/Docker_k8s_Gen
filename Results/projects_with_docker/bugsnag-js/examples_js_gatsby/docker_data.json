@@ -1,0 +1,42 @@
+{
+    "docker_info": {
+        "base_image": "node:18@sha256:f12d34408955b2081f82078e8f96c3299ca0f38d11e76086cb9b9b1b669977e4",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "GATSBY_BUGSNAG_API_KEY"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /usr/src/app",
+            "COPY package* /usr/src/app/",
+            "COPY . /usr/src/app/"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "npm",
+                    "run",
+                    "serve",
+                    "--",
+                    "--host",
+                    "0.0.0.0"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "npm install",
+                ""
+            ],
+            [
+                "npm run build",
+                ""
+            ]
+        ]
+    }
+}

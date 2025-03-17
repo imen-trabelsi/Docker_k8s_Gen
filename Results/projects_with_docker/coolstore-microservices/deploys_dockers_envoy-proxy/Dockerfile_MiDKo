@@ -1,0 +1,29 @@
+# Use the user-specified envoyproxy base image
+FROM envoyproxy/envoy:latest
+
+# Copy the application source to the docker image
+COPY . /microservice
+
+WORKDIR /microservice
+
+# Copy the envoy configuration file
+COPY deploys/dockers/envoy-proxy/envoy.yaml /etc/envoy/envoy.yaml
+
+# Use the npm package.json to install dependencies
+COPY package.json /microservice
+RUN npm install
+
+# Copy static files
+COPY assets/demo-cloud-native.xml /microservice/assets/demo-cloud-native.xml
+
+# Set necessary environment variables
+ENV NODE_ENV=production
+
+# Ensure the docker container will run as an executable
+ENTRYPOINT [ "node", "index.js" ]
+
+# Expose necessary ports
+EXPOSE 8080
+
+# Specify command to execute
+CMD [ "/usr/local/bin/envoy", "-c", "/etc/envoy/envoy.yaml", "-l", "debug", "--service-cluster", "envoy-proxy" ]

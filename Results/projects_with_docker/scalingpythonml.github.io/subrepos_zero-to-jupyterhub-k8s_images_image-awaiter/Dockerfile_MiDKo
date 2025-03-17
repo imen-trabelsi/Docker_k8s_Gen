@@ -1,0 +1,26 @@
+# Start from golang:1.15 base image
+FROM golang:1.15
+
+# Set the Current Working Directory inside the container
+WORKDIR /build
+
+# Copy go.mod and download dependencies
+COPY go.mod go.sum ./
+
+# Copy the source from the current directory to the Working Directory inside the container
+COPY *.mod *.go ./
+
+# Build the Go app
+RUN CGO_ENABLED=0 GOOS=linux go build -ldflags '-w -s' -installsuffix cgo -a -o out/image-awaiter .
+
+# Move to /dist directory as the place for resulting binary folder
+WORKDIR /dist
+
+# Copy binary from build to main folder
+RUN cp /build/out/image-awaiter .
+
+# Export necessary port
+EXPOSE 8080
+
+# Command to run when starting the container
+CMD ["/dist/image-awaiter"]

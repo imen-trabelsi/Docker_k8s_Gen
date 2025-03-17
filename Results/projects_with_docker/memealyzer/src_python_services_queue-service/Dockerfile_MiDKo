@@ -1,0 +1,27 @@
+# Set the base image 
+FROM python:3.8-slim-buster
+
+# Set environment variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# Add requirements.txt to the image
+COPY services/queue-service/requirements.txt .
+
+# Install dependencies
+RUN python -m pip install -r requirements.txt
+
+# Update and install curl
+RUN apt-get update && apt-get install -y curl
+
+# Installing Azure CLI
+RUN curl -sL https://aka.ms/InstallAzureCLIDeb | bash
+
+# Change Working Directory
+WORKDIR /app
+
+# Copy source code to /app in the Docker image
+COPY services/queue-service/. /app
+
+# Run the application
+CMD ["python", "app.py"]

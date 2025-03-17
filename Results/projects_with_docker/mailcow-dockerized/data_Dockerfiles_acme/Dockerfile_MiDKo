@@ -1,0 +1,32 @@
+# Set the base image to Alpine
+FROM alpine:3.20
+
+LABEL maintainer="your-email@domain.com"
+
+# Copy composer.json
+COPY composer.json /var/www
+
+# Set working directory
+WORKDIR /var/www
+
+# Install dependencies
+RUN apk upgrade --no-cache && \
+    apk add --update --no-cache bash curl openssl bind-tools jq mariadb-client redis tini tzdata python3 && \
+    apk add php7 php7-fpm php7-opcache php7-gd php7-mysqli php7-zlib php7-curl && \
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
+
+# Copy other source code files
+COPY acme.sh /srv/acme.sh
+COPY functions.sh /srv/functions.sh
+COPY obtain-certificate.sh /srv/obtain-certificate.sh
+COPY reload-configurations.sh /srv/reload-configurations.sh
+COPY expand6.sh /srv/expand6.sh
+
+# Make Scripts Executable
+RUN chmod +x /srv/*.sh
+
+# Expose port 80
+EXPOSE 80
+
+# Start PHP-FPM server
+CMD [ "php-fpm7", "-F" ]

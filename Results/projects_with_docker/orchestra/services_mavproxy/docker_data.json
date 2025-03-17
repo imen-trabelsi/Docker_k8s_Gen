@@ -1,0 +1,44 @@
+{
+    "docker_info": {
+        "base_image": "python:2-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY mavproxy/entrypoint.sh ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"sh\",",
+                    "\"entrypoint.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk --no-cache add \\",
+                "py-lxml",
+                "gcc",
+                "libxml2",
+                "libxml2-dev",
+                "libxslt",
+                "libxslt-dev",
+                "libc-dev"
+            ],
+            [
+                "sed -i 's/, int,/, unsigned int,/' /usr/include/assert.h",
+                ""
+            ],
+            [
+                "pip install mavproxy",
+                ""
+            ]
+        ]
+    }
+}

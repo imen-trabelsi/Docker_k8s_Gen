@@ -1,0 +1,21 @@
+# Set base image (host OS)
+FROM adoptopenjdk/openjdk14:jre-14.0.2_12-alpine
+
+# Set the working directory in the Docker container
+WORKDIR /app
+
+# Copy files and directories from the application
+COPY pom.xml mvnw cmd ./
+COPY src ./src
+
+# Install dependencies
+RUN ./mvnw install
+
+# Copy the jar file 
+COPY target/policy-search-service*.jar policy-search-service.jar
+
+# Expose the application's port 
+EXPOSE 8080
+
+# Set entry point
+ENTRYPOINT ["java", "${JAVA_OPTS}", "-jar", "policy-search-service.jar"]

@@ -1,0 +1,17 @@
+#Use the base image provided
+FROM dragonwell-registry.cn-hangzhou.cr.aliyuncs.com/dragonwell/dragonwell:8-extended-ga-centos
+
+#Set up the working directory
+#This is where our application will be placed inside the docker image
+WORKDIR /app
+
+#Copy the jar file and the start script to the working directory in the image
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+COPY /cartservice-provider/target/cartservice-provider-1.0.0-SNAPSHOT.jar /app
+COPY /start.sh /app
+
+#Expose the application on port 8080
+EXPOSE 8080
+
+#Default command when running the container
+CMD ["/app/start.sh"]

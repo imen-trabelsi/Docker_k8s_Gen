@@ -1,0 +1,28 @@
+# Base Image
+FROM openjdk:8u151-jdk AS builder
+
+# Set Work Directory
+WORKDIR /usr/app
+
+# Copy pom.xml and Source code to Work Directory
+COPY ./pom.xml ./
+COPY ./src ./src
+
+# Package the application
+RUN mvn clean package
+
+FROM openjdk:8u151-jdk
+
+# Set Work Directory
+WORKDIR /usr/app
+
+# Copy startup script into the container
+COPY startup.sh /usr/bin/startup.sh
+
+# Give execution permissions to the startup script
+RUN chmod +x /usr/bin/startup.sh
+
+# Copy the jar file built in the previous stage into our new container
+
+# Set the startup command to execute the jar
+CMD ["/usr/bin/startup.sh"]

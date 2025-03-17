@@ -1,0 +1,45 @@
+# Base Image
+FROM nginxinc/nginx-unprivileged:stable-alpine 
+
+# Maintainer
+LABEL maintainer="Your Name <your-email@example.com>"
+
+# Update & Upgrade Packages
+RUN apk update && apk upgrade 
+
+# Install Necessary Packages
+RUN apk add --no-cache curl libcap && \
+
+# Health Check Instruction
+HEALTHCHECK CMD ["curl", "-f", "http://localhost:80"]
+
+# Expose Ports
+EXPOSE 80
+
+# Set working directory in the container 
+WORKDIR /usr/src/app
+
+# Add app 
+COPY . . 
+
+# Install app dependencies 
+COPY package.json ./
+
+RUN npm install 
+
+# Copy necessary files
+COPY service-api/docker/web/default.conf.template /etc/nginx/templates/
+COPY scripts/docker_hardening/harden-nginx.sh /
+
+# Harden the image
+RUN /harden-nginx.sh && rm /harden-nginx.sh
+
+# Set up non-root user
+RUN adduser -D -g '' nginx 
+
+USER nginx 
+
+# Bind to all network interfaces 
+CMD ["npm", "start"]
+
+

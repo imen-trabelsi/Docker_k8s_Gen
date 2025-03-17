@@ -1,0 +1,31 @@
+# Base Image
+FROM adoptopenjdk/openjdk14:jre-14.0.2_12-alpine
+
+# Labels
+LABEL maintainer="me@myorg.com"
+LABEL version="1.0"
+LABEL description="Docker image for Spring Boot Micronaut microservice"
+
+# Workspace directory in container
+WORKDIR /app
+
+# Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy pom.xml and source code to the image
+COPY pom.xml .
+COPY src src
+
+# Maven build
+RUN ./mvnw install -DskipTests
+# RUN ./mvnw package -DskipTests
+
+# Copy the jar file on the host to the image
+COPY target/agent-portal-gateway*.jar agent-portal-gateway.jar
+
+# Expose the appropriate ports
+EXPOSE 8080
+
+# Run the application
+ENTRYPOINT ["java", "-jar", "agent-portal-gateway.jar"]

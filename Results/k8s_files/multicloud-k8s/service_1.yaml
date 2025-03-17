@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    chart: testchart2-0.1.0
+    kube-version/gitversion: v1.14.0
+    kube-version/major: '1'
+    kube-version/minor: '14'
+    namespace: testnamespace
+    release-is-install: 'true'
+    release-is-upgrade: 'false'
+    release-name: testreleasename
+  name: testchart2
+spec:
+  ports:
+  - name: nginx
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  selector:
+    app: testchart2
+  type: ClusterIP

@@ -1,0 +1,23 @@
+FROM python:3-alpine
+
+LABEL maintainer="devops@company.com"
+
+ENV PYTHONUNBUFFERED=1
+ARG NAME
+ARG TOKEN
+ENV NAME=$NAME
+ENV TOKEN=$TOKEN
+
+WORKDIR /code
+
+RUN mkdir /code \
+    && apk add --no-cache bash \
+
+COPY requirements.txt /code/
+COPY . /code/
+
+RUN python3 manage.py makemigrations
+
+EXPOSE 8000
+
+CMD ["bash", "-c", "python3 manage.py runserver 0.0.0.0:8000"]

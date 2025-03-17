@@ -1,0 +1,39 @@
+# Use the Base image
+FROM node:18-alpine
+
+# Define environment variables
+ENV USER git
+ENV EMAIL gitserver@git.com
+ENV NAME "Git Server"
+ENV BRANCH "main"
+ENV REPOSITORY /home/git/repository.git
+ENV FILE /tmp/repository/file.txt
+
+# Create user
+RUN adduser -D -g ${USER} ${USER} 
+
+# Set the correct work directory
+WORKDIR /home/git
+
+# Install necessary packages
+RUN apk add --no-cache tini git \
+    && npm install -g git-http-server \
+    && git config --system user.email ${EMAIL} \
+    && git config --system user.name ${NAME} \
+
+# Create and initialize git repo
+COPY . ${REPOSITORY}
+
+RUN mkdir /tmp/repository/ \
+    && touch ${FILE} \
+    && git init . \
+    && git add --all \
+    && git commit -m "initial commit" \
+
+
+USER ${USER}
+
+# Set the execution command
+ENTRYPOINT ["tini", "--", "git-http-server", "-p", "80", "/home/git"]
+
+CMD [ "node", "app.js" ]

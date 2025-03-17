@@ -1,0 +1,28 @@
+# Use the specified base image
+FROM ubuntu:16.04
+
+# Declare maintainer
+LABEL maintainer="your_email@example.com"
+
+# Set environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Update package list and install necessary packages
+RUN apt-get -y update --fix-missing && \
+
+# Add necessary repository key and install necessary software from repository
+RUN wget -qO - http://cstadler.aksw.org/repos/apt/conf/packages.precise.gpg.key  | sudo apt-key add - && \
+    echo 'deb http://cstadler.aksw.org/repos/apt precise main contrib non-free' | sudo tee -a /etc/apt/sources.list.d/cstadler.aksw.org.list && \
+    apt-get update && \
+
+# Copy necessary scripts and set correct permissions
+WORKDIR /app/linkedgeodata
+COPY start.sh .
+COPY wait-for-postgres.sh .
+RUN chmod +x ./start.sh ./wait-for-postgres.sh && \
+
+# Expose necessary port
+EXPOSE 7531
+
+# Set the correct entry point
+ENTRYPOINT ["./wait-for-postgres.sh", "./start.sh"]

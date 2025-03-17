@@ -1,0 +1,36 @@
+# Use ubuntu as a base image
+FROM ubuntu:18.04
+
+# Create user onap
+RUN groupadd -r onap && useradd -r -g onap onap
+
+# Set the work directory
+WORKDIR /opt/multicloud/k8s/clm
+
+# Add the entire source code for clm microservice
+COPY --chown=onap:onap ./clm ./
+
+# Install go
+RUN apt-get update && \
+    apt-get install -y golang-go && \
+
+# Set the environment variables
+ENV GOROOT /usr/lib/go
+ENV GOPATH $HOME/Projects/Proj1
+ENV PATH $GOPATH/bin:$GOROOT/bin:$PATH
+ENV http_proxy $HTTP_PROXY
+ENV https_proxy $HTTPS_PROXY
+ENV no_proxy $NO_PROXY
+
+# Copy the rest of our application
+COPY src/clm/scripts/Dockerfile .
+COPY build/Readme.md .
+
+# Expose port 9019 for external access
+EXPOSE 9019
+
+# Ensure permission
+RUN chown onap:onap /opt/multicloud/k8s/clm -R
+
+# Default command to run the clm microservice
+CMD ["./clm"]

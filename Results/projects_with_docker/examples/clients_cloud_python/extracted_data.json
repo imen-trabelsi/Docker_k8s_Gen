@@ -1,0 +1,29 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "requirements.txt": "requests\ncertifi\nconfluent-kafka[avro,json,protobuf]>=1.4.2\n"
+        },
+        "database": null,
+        "build_system": "pip",
+        "config_files": {
+            "clients/cloud/python/Dockerfile": "FROM python:3.7-slim\n\nCOPY requirements.txt /tmp/requirements.txt\nRUN pip3 install -U -r /tmp/requirements.txt\n\nCOPY *.py ./\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".gitignore",
+            "Dockerfile",
+            "README.md",
+            "ccloud_lib.py",
+            "consumer.py",
+            "consumer_ccsr.py",
+            "producer.py",
+            "producer_ccsr.py",
+            "requirements.txt"
+        ],
+        "folders": []
+    }
+}

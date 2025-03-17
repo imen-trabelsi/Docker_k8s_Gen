@@ -1,0 +1,22 @@
+# Base Image
+FROM alpine:3.21
+
+# Update and upgrade
+RUN apk add --update --upgrade --no-cache ca-certificates
+
+# Copying necessary files
+COPY cmd/smee/smee-linux-${TARGETARCH:-amd64}${TARGETVARIANT} /usr/bin/smee
+COPY go.mod go.sum ./
+
+# Setting Working Directory
+WORKDIR /app
+
+# Building the Go app
+RUN go mod download
+RUN go build -o main .
+
+# Exposing port 67
+EXPOSE 67
+
+# Entry Point
+ENTRYPOINT ["/usr/bin/smee"]

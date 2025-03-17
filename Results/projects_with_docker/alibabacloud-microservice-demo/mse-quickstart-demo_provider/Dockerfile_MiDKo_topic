@@ -1,0 +1,19 @@
+# Use openjdk:8-jre-alpine as the base image for our generated Dockerfile.
+FROM openjdk:8-jre-alpine
+
+# Add a volume pointing to /tmp
+VOLUME /tmp
+
+# Making directory in the Docker
+RUN mkdir -p /app
+WORKDIR /app
+
+# Copy the jar file into our directory in Docker
+COPY /target/provider-1.0.0.jar /app
+
+# Expose the port the app runs in
+EXPOSE 20002
+
+# Start the application
+ENTRYPOINT ["sh", "-c"]
+CMD ["java -jar /app/provider-1.0.0.jar"]

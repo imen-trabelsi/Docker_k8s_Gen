@@ -1,0 +1,27 @@
+# Start from a base image
+FROM python:3.7-slim
+
+# Set the working directory in the Docker image
+WORKDIR /app
+
+# Add metadata to an image
+LABEL description="Spring Boot microservice"
+
+# Copy the requirements file into the Docker image
+COPY requirements.txt .
+
+# Install python dependencies
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of your app's source code
+COPY . .
+
+# Install necessary packages
+RUN pip install Flask IPython PyYAML
+
+# Exposing ports for network
+EXPOSE 5000
+
+# Command to run
+CMD ["flask", "run"]
+

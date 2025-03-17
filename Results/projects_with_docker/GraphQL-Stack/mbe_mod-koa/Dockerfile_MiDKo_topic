@@ -1,0 +1,21 @@
+# Use the base image provided by the user
+FROM keymetrics/pm2:14-alpine
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+COPY package*.json ./
+
+RUN yarn install --production
+
+# Bundles app source
+COPY /dist .
+COPY ecosystem.config.js .
+
+# Correct exposed port
+EXPOSE 3001
+
+# Set pm2-runtime as the entry point, with running the application as the command
+ENTRYPOINT [ "pm2-runtime", "start", "ecosystem.config.js" ]

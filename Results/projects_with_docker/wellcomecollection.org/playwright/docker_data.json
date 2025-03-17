@@ -1,0 +1,30 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/playwright:v1.46.0",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD ./playwright /usr/src/app/webapp/playwright",
+            "WORKDIR /usr/src/app/webapp/playwright"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"true\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "yarn install --production=true && \\",
+                "yarn cache clean"
+            ]
+        ]
+    }
+}

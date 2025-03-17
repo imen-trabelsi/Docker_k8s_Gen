@@ -1,0 +1,30 @@
+# Use base Java image from DockerHub
+FROM eclipse-temurin:11-jre-alpine
+
+# Labels
+LABEL maintainer="gabriele.deluca@eng.it"
+
+# Update the image to the latest packages and install wget
+RUN apk add --no-cache wget openssl curl cosign \
+    mkdir -p /home/nobody/data/sd && mkdir -p /home/nobody/data/log/ecc && mkdir -p /.sigstore \
+
+# Specify work directory
+WORKDIR /home/nobody
+
+# Copy Maven dependencies
+COPY target/dependency-jars /home/nobody/app/dependency-jars
+
+# Copy Java application
+COPY target/application.jar /home/nobody/app/application.jar
+
+# Healthchecks
+HEALTHCHECK --interval=5s --retries=12 --timeout=10s CMD curl --fail -k https://localhost:8449/about/version || exit 1
+
+# Run the java application
+ENTRYPOINT ["java", "-jar", "/home/nobody/app/application.jar"]
+
+# Set the user with UID 65534 
+USER 65534
+
+# The application's default port 
+EXPOSE 8080

@@ -1,0 +1,23 @@
+FROM alpine/git as builder
+
+RUN apk update && apk add make build-base && \
+
+WORKDIR /entr
+RUN git checkout c564e6bdca1dfe2177d1224363cad734158863ad && \
+
+FROM golang:alpine 
+
+COPY tilt-restart-wrapper /
+
+WORKDIR /app
+
+COPY go.mod .
+RUN go mod download
+
+COPY . .
+
+RUN go build -o main ./...
+
+EXPOSE 8080
+
+ENTRYPOINT ["./main"]

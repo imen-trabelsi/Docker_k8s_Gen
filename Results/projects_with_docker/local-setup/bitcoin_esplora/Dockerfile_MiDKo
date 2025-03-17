@@ -1,0 +1,26 @@
+FROM node:14-alpine3.13
+
+WORKDIR /workdir
+
+ENV CORS_ALLOW="*"
+ENV FLAVOR="bitcoin-regtest"
+ENV BASE_HREF="/"
+
+ARG API_URL
+
+RUN apk add --update --no-cache \
+    git \
+    bash && \
+    git clone --no-checkout https://github.com/Blockstream/esplora.git && \
+    git checkout f6da494a9a0090ac9ae13842bcf53b259e3a3360 && \
+    npm install --unsafe-perm && \
+    npm run dist $FLAVOR && \
+
+WORKDIR esplora
+
+COPY nginx.conf /etc/nginx/conf.d
+COPY --from=build /workdir/esplora/dist /usr/share/nginx/html
+
+EXPOSE 80
+
+CMD ["nginx", "-g", "daemon off;"]

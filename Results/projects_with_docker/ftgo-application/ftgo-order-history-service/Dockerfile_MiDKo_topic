@@ -1,0 +1,32 @@
+# Use the base image with Java support
+FROM eventuateio/eventuate-examples-docker-images-spring-example-base-image:$baseImageVersion as builder
+
+# Set the working directory
+WORKDIR /usr/src/app
+
+# Copy all project files except build and distribution directories
+COPY . .
+
+# Remove any old build artifacts
+RUN ./gradlew clean
+
+# Build the code and produce an executable jar
+RUN ./gradlew bootJar
+
+# Start a new stage for creating the runtime image
+FROM eventuateio/eventuate-examples-docker-images-spring-example-base-image:$baseImageVersion
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the executable jar from the build stage
+
+# Expose the server port
+EXPOSE 8080
+
+# Set healthcheck instructions
+HEALTHCHECK --interval=10s --timeout=3s \
+  CMD curl -f http://localhost:8080/actuator/health || exit 1
+
+# Specify the command to run the application
+CMD ["java", "-jar", "service.jar"]

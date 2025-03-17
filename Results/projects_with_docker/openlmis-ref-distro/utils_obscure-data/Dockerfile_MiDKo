@@ -1,0 +1,23 @@
+# Base Image
+FROM openlmis/run-sql
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# Copy code over to Docker context
+COPY . .
+
+# Set environment variables
+ENV FLASK_APP=my_flask_app.py
+ENV FLASK_RUN_HOST=0.0.0.0
+
+# Copy Obscure script
+COPY utils/obscure-data/Dockerfile obscure.sh /obscure.sh
+RUN chmod u+x /obscure.sh
+
+# Expose Ports
+EXPOSE 80
+
+# Run
+CMD ["flask", "run"]

@@ -1,0 +1,27 @@
+# Use the specified base image
+FROM harbor.nymte.ch/dockerhub/rust:latest AS builder
+
+# Set the working directory to hold the application
+WORKDIR /usr/src/nym/
+
+# Copy everything from the current directory to the container's workspace
+COPY ./ /usr/src/nym/
+
+# Go to nyx-chain-watcher workspace
+WORKDIR /usr/src/nym/nyx-chain-watcher
+
+# Install necessary packages
+RUN apt-get update && apt-get install -y curl ca-certificates
+
+# Build the application
+RUN cargo build --release
+
+# Set the working directory for the second build stage
+FROM debian:buster-slim
+WORKDIR /nym
+
+# Copy only the built artifact from the first stage
+COPY --from =builder /usr/src/nym/target/release/nyx-chain-watcher ./
+
+# Set the command to execute when the Docker container starts
+ENTRYPOINT ["/nym/nyx-chain-watcher", "run"]

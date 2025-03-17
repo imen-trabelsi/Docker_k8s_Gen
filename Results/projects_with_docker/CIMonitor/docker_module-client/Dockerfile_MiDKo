@@ -1,0 +1,29 @@
+# Use the provided base image
+FROM ${BASE_IMAGE} as base
+
+# Set Work Directory
+WORKDIR /CIMonitor
+
+# Install QEMU Binary
+COPY ./${QEMU_BINARY}* /usr/bin/
+
+# Update and install specific packages
+RUN echo "deb http://deb.debian.org/debian stable main contrib non-free" >> /etc/apt/sources.list \
+
+# Copy all required files
+COPY . /CIMonitor
+
+# Set the correct environment variables
+ENV NODE_PATH=/CIMonitor 
+ENV NODE_ENV=production 
+ENV NODE_PATH=/CIMonitor/app
+
+# Expose the required port
+EXPOSE 8080
+
+# Entrypoint
+ENTRYPOINT ["/usr/bin/dumb-init", "--"]
+
+# Start the application
+CMD ["npm", "run", "module-client"]
+CMD ["npm", "run", "start-client"]

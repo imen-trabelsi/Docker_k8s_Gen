@@ -1,0 +1,37 @@
+# Base image
+FROM node:12-alpine
+
+# Labels
+LABEL maintainer="developer@company.com"
+LABEL version="1.0"
+
+# Setting environment variables
+ENV NODE_ENV=production
+ENV NODE_ENV $NODE_ENV
+
+# Build Arguments
+ARG NODE_ENV=production
+
+# Working directory
+WORKDIR /nest
+
+# Adding source code into container
+COPY . .
+
+# Run necessary commands
+RUN mkdir -p /nest
+
+# Install necessary dependencies
+RUN yarn global add @nestjs/cli
+RUN yarn install --production=false
+RUN nest build proto-schema
+RUN nest build service-project
+
+# Copy Instructions
+COPY . .
+
+# Expose ports
+EXPOSE 500193
+
+# Run the application
+CMD ["node", "dist/apps/service-project/main.js"]

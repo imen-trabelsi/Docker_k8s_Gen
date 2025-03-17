@@ -1,0 +1,20 @@
+{
+    "docker_info": {
+        "base_image": "mysql:5.7",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV LANG=C.UTF-8"
+        ],
+        "copy_instructions": [
+            "WORKDIR /docker-entrypoint-initdb.d",
+            "ADD init.sql ."
+        ],
+        "execution": [],
+        "run": []
+    }
+}

@@ -1,0 +1,217 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".dockerignore",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": ".gitmodules",
+            "type": "blob"
+        },
+        {
+            "path": ".mergify.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".travis.yml",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "data",
+            "type": "tree"
+        },
+        {
+            "path": "data/machines.json",
+            "type": "blob"
+        },
+        {
+            "path": "dev.yml",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "hasura",
+            "type": "tree"
+        },
+        {
+            "path": "hasura/config.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "hasura/metadata",
+            "type": "tree"
+        },
+        {
+            "path": "hasura/metadata/.gitkeep",
+            "type": "blob"
+        },
+        {
+            "path": "hasura/metadata/actions.graphql",
+            "type": "blob"
+        },
+        {
+            "path": "hasura/metadata/actions.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "hasura/metadata/allow_list.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "hasura/metadata/functions.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "hasura/metadata/metadata.json",
+            "type": "blob"
+        },
+        {
+            "path": "hasura/metadata/query_collections.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "hasura/metadata/remote_schemas.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "hasura/metadata/tables.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "hasura/metadata/version.yaml",
+            "type": "blob"
+        },
+        {
+            "path": "hasura/migrations",
+            "type": "tree"
+        },
+        {
+            "path": "hasura/migrations/.gitkeep",
+            "type": "blob"
+        },
+        {
+            "path": "media",
+            "type": "tree"
+        },
+        {
+            "path": "media/doosan-2600sy.png",
+            "type": "blob"
+        },
+        {
+            "path": "media/doosan-gt2100m.png",
+            "type": "blob"
+        },
+        {
+            "path": "media/hardinge-gx1600.png",
+            "type": "blob"
+        },
+        {
+            "path": "media/samsung-sl45.png",
+            "type": "blob"
+        },
+        {
+            "path": "nginx",
+            "type": "tree"
+        },
+        {
+            "path": "nginx/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "nginx/nginx.conf",
+            "type": "blob"
+        },
+        {
+            "path": "scripts",
+            "type": "tree"
+        },
+        {
+            "path": "scripts/.gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/build-github-pages.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/convert-geojson.js",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/count-topic.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/delete-topic-kafka.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/describe-topic-kafka.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/export-graphql-schema.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/generate-certificate.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/generate-proto.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/list-topics-kafka.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/query.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/reset-kafka.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/tunnel.sh",
+            "type": "blob"
+        },
+        {
+            "path": "scripts/watch-kafka.sh",
+            "type": "blob"
+        },
+        {
+            "path": "sql",
+            "type": "tree"
+        },
+        {
+            "path": "sql/init.sh",
+            "type": "blob"
+        },
+        {
+            "path": "timeclock-config.ini",
+            "type": "blob"
+        }
+    ]
+}

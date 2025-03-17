@@ -1,0 +1,21 @@
+# Using Official Node Base Image
+FROM node:16
+
+# Creating app directory
+WORKDIR /usr/src/app
+
+# Copying package.json and package-lock.json
+COPY package.json ./ 
+COPY package-lock.json ./
+
+# Installing app dependencies
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Expose Port
+EXPOSE 50051
+
+# Default Command
+CMD [ "npm", "start" ]

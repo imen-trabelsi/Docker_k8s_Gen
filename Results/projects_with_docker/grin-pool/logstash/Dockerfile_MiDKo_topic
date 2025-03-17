@@ -1,0 +1,39 @@
+FROM docker.elastic.co/logstash/logstash:6.4.1
+
+# Install cargo and rust
+RUN apt-get update && \
+    apt-get install -y curl build-essential && \
+    curl https://sh.rustup.rs -sSf | sh -s -- -y && \
+    . $HOME/.cargo/env && \
+    rustup default stable && \
+
+# Install Redis
+RUN apt-get install -y redis-server
+
+# Copy application dependencies files 
+COPY Cargo.toml Cargo.lock ./
+
+# Copy application source
+COPY src ./src
+
+# Build application
+RUN cargo build --release
+
+# Copy configuration files
+COPY logstash/Dockerfile ./logstash/Dockerfile
+COPY run.sh /
+WORKDIR /usr/share/logstash/config/
+COPY logstash.yml /usr/share/logstash/config/
+COPY jvm.options /usr/share/logstash/config/
+COPY sharefilter.conf /usr/share/logstash/config/
+COPY poolblockfilter.conf /usr/share/logstash/config/
+
+# Set environment variables for logstash
+ENV PATH /usr/share/logstash/bin:$PATH
+ENV LS_SETTINGS_DIR /usr/share/logstash/config
+
+# Expose the necessary ports
+EXPOSE 5044 9600
+
+ENTRYPOINT ["logstash"]
+CMD ["-f", "/usr/share/logstash/config/logstash.yml"]

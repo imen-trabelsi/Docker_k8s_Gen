@@ -1,0 +1,29 @@
+{
+    "docker_info": {
+        "base_image": "fedora:38",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY entrypoint.sh /entrypoint.sh"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/entrypoint.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "dnf -y install clang-tools-extra git-clang-format",
+                ""
+            ]
+        ]
+    }
+}

@@ -1,0 +1,29 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"mwc\",\n  \"private\": true,\n  \"main\": \"server.js\",\n  \"scripts\": {\n    \"start\": \"node src/server.js\",\n    \"local\": \"IKONCODE='../../assets/secrets/ikoncode_secrets' NODE_ENV='dev' SSL_KEY='../../assets/ssl/server.key' SSL_CRT='../../assets/ssl/server.crt' node src/server.js\"\n  },\n  \"dependencies\": {\n    \"bluebird\": \"3.5.3\",\n    \"compression\": \"1.7.3\",\n    \"cors\": \"2.8.5\",\n    \"express\": \"4.16.4\",\n    \"express-openapi\": \"6.0.0\",\n    \"flatted\": \"2.0.1\",\n    \"got\": \"10.6.0\",\n    \"helmet\": \"3.21.3\",\n    \"nodemw\": \"0.12.2\",\n    \"nominatim-geocoder\": \"0.1.4\"\n  },\n  \"devDependencies\": {\n    \"faker\": \"4.1.0\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "docker-compose.yml": "version: '3.1'\nservices:\n\n  nginx:\n    container_name: Controller\n    build:\n      context: .\n      dockerfile: ./src/controller/Dockerfile\n    image: ikonresearch/controller:latest\n    restart: always\n    ports:\n      - \"443:443\"\n      - \"80:80\"\n    secrets:\n      - ssl_key\n      - ssl_crt\n\n  mwc:\n    container_name: MediaWikiConnector\n    build:\n      context: ./src/mwc/\n      dockerfile: Dockerfile\n    image: ikonresearch/mwc:latest\n    restart: always\n    environment:\n      IKONCODE: /run/secrets/ikoncode_secrets\n      SSL_KEY: /run/secrets/ssl_key\n      SSL_CRT: /run/secrets/ssl_crt\n      PORT: 443\n    secrets:\n      - ssl_key\n      - ssl_crt\n      - ikoncode_secrets\n\n  topicextraction:\n    container_name: TopicExtractionService\n    build:\n      context: ./src/topicextraction/\n      dockerfile: Dockerfile\n    image: ikonresearch/tes:latest\n    restart: always\n    environment:\n      SSL_KEY: /run/secrets/ssl_key\n      SSL_CRT: /run/secrets/ssl_crt\n      PORT: 443\n    secrets:\n      - ssl_key\n      - ssl_crt\n\n  sharing:\n    container_name: SharingService\n    build:\n      context: ./src/sharing/\n      dockerfile: Dockerfile\n    image: ikonresearch/sharing:latest\n    restart: always\n    environment:\n      SSL_KEY: /run/secrets/ssl_key\n      SSL_CRT: /run/secrets/ssl_crt\n      PORT: 443\n    secrets:\n      - ssl_key\n      - ssl_crt\n\nsecrets:\n  ssl_crt:\n    file: ./assets/ssl/server.crt\n  ssl_key:\n    file: ./assets/ssl/server.key\n  ikoncode_secrets:\n    file: ./assets/secrets/ikoncode_secrets\n",
+            "src/mwc/Dockerfile": "FROM node:13-alpine\n\n# Create app directory\nWORKDIR /usr/src/app\n\n# Install app dependencies\n# A wildcard is used to ensure both package.json AND package-lock.json are copied\n# where available (npm@5+)\nCOPY package*.json ./\nRUN yarn install --only=production\n\n# Bundle app source\nCOPY . .\n\n# Enable production mode\nENV NODE_ENV=production\nCMD [ \"npm\", \"start\" ]\n"
+        },
+        "static_files": {
+            "assets/secrets/README.md": "# IKON-backend-config\n"
+        }
+    },
+    "project_structure": {
+        "files": [
+            ".gitignore",
+            "Dockerfile",
+            "poetry.lock",
+            "pyproject.toml"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

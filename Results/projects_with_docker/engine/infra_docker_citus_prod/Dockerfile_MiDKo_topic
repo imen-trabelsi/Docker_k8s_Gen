@@ -1,0 +1,36 @@
+# Based on user provided base image
+FROM postgres:13.4
+
+# Making sure that we keep the image updated
+RUN apt-get update && apt-get upgrade -y
+
+# Installing curl
+RUN apt-get install -y curl
+
+# Adding Citus Data, a Postgres extension (`postgresql-13-citus-10.1`), and a PostgreSQL Logical decoding output plugin (`postgresql-13-wal2json`).
+RUN curl https://install.citusdata.com/community/deb.sh | bash
+RUN apt-get -y install postgresql-13-citus-10.1 postgresql-13-wal2json
+
+# Clean up APT when done.
+RUN apt-get clean && rm -rf /var/lib/apt/lists/*
+
+# Set environment variables
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_DB=postgres
+ENV PGDATA=/var/lib/postgresql/data
+ENV POSTGRES_INITDB_ARGS=--auth-host=scram-sha-256
+
+# Copy config files into the Docker image
+COPY infra/docker/citus/prod/postgresql.conf /etc/postgresql/
+COPY infra/docker/citus/prod/pg_hba.conf /etc/postgresql/
+COPY infra/docker/citus/prod/initdb /docker-entrypoint-initdb.d
+COPY infra/docker/citus/prod/initdb/0000_init.sql /0001_init.sql
+
+# Expose the PostgreSQL port
+EXPOSE 5432
+
+# Running the init process in PostgreSQL under the postgres user
+USER postgres
+
+# The CMD instruction provides defaults for an executing container which include an executable, or they can omit the executable, in which case you must specify an ENTRYPOINT instruction.
+CMD ["postgres"]

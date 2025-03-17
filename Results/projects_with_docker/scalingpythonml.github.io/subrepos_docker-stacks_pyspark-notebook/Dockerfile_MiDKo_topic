@@ -1,0 +1,34 @@
+# Build from base image
+FROM $BASE_CONTAINER AS builder
+
+# Maintainer information
+LABEL maintainer="Jupyter"
+
+# Set Working Directories
+WORKDIR /tmp
+WORKDIR /usr/local
+WORKDIR $HOME
+
+# Run Commands
+RUN apt-get -y update && \
+    apt-get install --no-install-recommends -y "openjdk-${openjdk_version}-jre-headless" ca-certificates-java && \
+
+RUN wget -q $(wget -qO- https://www.apache.org/dyn/closer.lua/spark/spark-${APACHE_SPARK_VERSION}/spark-${APACHE_SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz\?as_json | \
+    python -c "import sys, json; content=json.load(sys.stdin); print(content['preferred']+content['path_info'])") && \
+    echo "${spark_checksum} *spark-${APACHE_SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz" | sha512sum -c - && \
+    tar xzf "spark-${APACHE_SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz" -C /usr/local --owner root --group root --no-same-owner && \
+
+RUN ln -s "spark-${APACHE_SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}" spark && \
+    cp -p "$SPARK_HOME/conf/spark-defaults.conf.template" "$SPARK_HOME/conf/spark-defaults.conf" && \
+    echo 'spark.driver.extraJavaOptions="-Dio.netty.tryReflectionSetAccessible=true"' >> $SPARK_HOME/conf/spark-defaults.conf && \
+
+RUN conda install --quiet --yes --satisfied-skip-solve 'pyarrow=2.0.*' && \
+    conda clean --all -f -y && \
+    fix-permissions "${CONDA_DIR}" && \
+
+# Define environment variables
+ENV APACHE_SPARK_VERSION="${spark_version}" \
+    SPARK_HOME=/usr/local/spark \
+
+# Set user
+USER $NB_UID

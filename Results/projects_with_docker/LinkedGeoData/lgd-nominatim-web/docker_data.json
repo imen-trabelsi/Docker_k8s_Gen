@@ -1,0 +1,53 @@
+{
+    "docker_info": {
+        "base_image": "lgd-build-nominatim:4.0.1",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY nominatim.conf /etc/apache2/conf-available/",
+            "WORKDIR /srv/nominatim/nominatim-ui",
+            "COPY target/nominatim-ui.tar.gz .",
+            "WORKDIR /lgd/nominatim",
+            "COPY wait-for-postgres.sh .",
+            "COPY start.sh ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"./wait-for-postgres.sh\",",
+                    "\"./start.sh\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p /srv/nominatim/nominatim-project/website",
+                "RUN chmod -R a+x /srv"
+            ],
+            [
+                "tar --strip-components 1 -xf nominatim-ui.tar.gz",
+                "RUN echo \"Nominatim_Config.Nominatim_API_Endpoint='../../nominatim/'\" > dist/theme/config.theme.js"
+            ],
+            [
+                "service apache2 stop",
+                "RUN a2enmod rewrite"
+            ],
+            [
+                "a2enconf nominatim",
+                ""
+            ],
+            [
+                "chmod +x ./wait-for-postgres.sh ./start.sh",
+                ""
+            ]
+        ]
+    }
+}

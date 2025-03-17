@@ -1,0 +1,21 @@
+# Set the base image
+FROM golang:1.12-alpine
+
+# Set the working directory inside the container
+WORKDIR /go-palletone
+
+# Copy the go source
+COPY . /go-palletone
+
+# Install dependencies and build application
+RUN apk add make gcc musl-dev linux-headers git && \
+    cd /go-palletone && make gptn && \
+
+# Copy the compiled output from builder to bin directory
+COPY /go-palletone/build/bin/gptn /usr/local/bin/
+
+# Expose the application on port 8545
+EXPOSE 8545
+
+# Run the binary program produced by `make gptn`
+ENTRYPOINT ["gptn"]

@@ -1,0 +1,23 @@
+FROM golang:1.21.11-alpine3.19
+
+LABEL maintainer=”your-email@company.com" \
+      version="1.0" \
+
+WORKDIR /app
+
+COPY go.mod ./
+COPY .env ./
+COPY docker-compose.yml ./
+
+COPY build/config/topology/multicluster.json build/config/topology/
+COPY build/docker/meta-migration/builder/Dockerfile build/docker/meta-migration/builder/
+COPY build/README.md build/
+COPY build/deb/README.md build/deb/
+
+RUN apk add --no-cache make bash
+
+RUN go mod download
+
+EXPOSE 8080
+
+CMD ["go", "run", "./main.go"]

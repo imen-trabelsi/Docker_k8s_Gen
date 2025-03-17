@@ -1,0 +1,36 @@
+# Use an official Maven image to build the microservice
+FROM maven:3.5-jdk-8 AS build
+
+# Set working directory to /app
+WORKDIR /app
+
+# Copy all pom.xml and the src folder into our image
+COPY pom.xml ./
+COPY src ./src
+
+# Package the application with maven
+RUN mvn clean package
+
+# Use the Telegraf 1.2 image based on Alpine
+FROM telegraf:1.2-alpine
+
+RUN apk --no-cache add curl jq bash docker
+
+# Copy the script to get stats on Eureka and Abixen
+COPY get-eureka-stats.sh /usr/local/bin/
+COPY get-abixen-container-stats.sh /usr/local/bin/
+
+# Change mode for the scripts copied so they can be executed
+RUN chmod +x /usr/local/bin/get-eureka-stats.sh
+RUN chmod +x /usr/local/bin/get-abixen-container-stats.sh
+
+# Copy the jar file
+
+# Making port 8080 available to the world outside microservice
+EXPOSE 8080
+
+# Set environment variable for java to use /dev/urandom instead of /dev/random to generate random values which is faster
+ENV JAVA_OPTS="-Djava.security.egd=file:/dev/./urandom"
+
+# Execute the microservice
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar /usr/local/lib/app.jar"]

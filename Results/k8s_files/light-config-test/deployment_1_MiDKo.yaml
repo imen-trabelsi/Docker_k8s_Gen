@@ -1,0 +1,76 @@
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: default
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: swagger-petstore
+  name: swagger-petstore-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: swagger-petstore
+  template:
+    metadata:
+      annotations: {}
+      labels:
+        app: swagger-petstore
+    spec:
+      containers:
+      - image: networknt/com.networknt.petstore-2.0.0:latest
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+        name: swagger-petstore-deployment
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 80
+        resources:
+          limits:
+            cpu: 500m
+            ephemeral-storage: 1Gi
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            ephemeral-storage: 500Mi
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 1000
+          runAsUser: 1000
+        volumeMounts:
+        - mountPath: /config
+          name: config
+          readOnly: true
+      serviceAccountName: default
+      volumes:
+      - name: config
+        secret:
+          secretName: petstore-secret
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: swagger-petstore
+  name: swagger-petstore-service
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+  selector:
+    app: swagger-petstore
+  type: ClusterIP

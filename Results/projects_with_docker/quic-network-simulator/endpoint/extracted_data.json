@@ -1,0 +1,261 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".github",
+            "type": "tree"
+        },
+        {
+            "path": ".github/dependabot.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".github/workflows",
+            "type": "tree"
+        },
+        {
+            "path": ".github/workflows/build-docker-images.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "LICENSE.md",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "endpoint",
+            "type": "tree"
+        },
+        {
+            "path": "endpoint/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "endpoint/run_endpoint.sh",
+            "type": "blob"
+        },
+        {
+            "path": "endpoint/setup.sh",
+            "type": "blob"
+        },
+        {
+            "path": "interop",
+            "type": "tree"
+        },
+        {
+            "path": "interop/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "sim",
+            "type": "tree"
+        },
+        {
+            "path": "sim/CMakeLists.patch",
+            "type": "blob"
+        },
+        {
+            "path": "sim/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "sim/run.sh",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios",
+            "type": "tree"
+        },
+        {
+            "path": "sim/scenarios/blackhole",
+            "type": "tree"
+        },
+        {
+            "path": "sim/scenarios/blackhole/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/blackhole/blackhole-error-model.cc",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/blackhole/blackhole-error-model.h",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/blackhole/blackhole.cc",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/corrupt-rate",
+            "type": "tree"
+        },
+        {
+            "path": "sim/scenarios/corrupt-rate/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/corrupt-rate/corrupt-rate-error-model.cc",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/corrupt-rate/corrupt-rate-error-model.h",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/corrupt-rate/corrupt-rate.cc",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/drop-rate",
+            "type": "tree"
+        },
+        {
+            "path": "sim/scenarios/drop-rate/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/drop-rate/drop-rate-error-model.cc",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/drop-rate/drop-rate-error-model.h",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/drop-rate/drop-rate.cc",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/droplist",
+            "type": "tree"
+        },
+        {
+            "path": "sim/scenarios/droplist/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/droplist/droplist-error-model.cc",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/droplist/droplist-error-model.h",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/droplist/droplist.cc",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/helper",
+            "type": "tree"
+        },
+        {
+            "path": "sim/scenarios/helper/quic-network-simulator-helper.cc",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/helper/quic-network-simulator-helper.h",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/helper/quic-packet.cc",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/helper/quic-packet.h",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/helper/quic-point-to-point-helper.cc",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/helper/quic-point-to-point-helper.h",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/rebind",
+            "type": "tree"
+        },
+        {
+            "path": "sim/scenarios/rebind/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/rebind/rebind-error-model.cc",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/rebind/rebind-error-model.h",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/rebind/rebind.cc",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/simple-p2p",
+            "type": "tree"
+        },
+        {
+            "path": "sim/scenarios/simple-p2p/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/simple-p2p/simple-p2p.cc",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/tcp-cross-traffic",
+            "type": "tree"
+        },
+        {
+            "path": "sim/scenarios/tcp-cross-traffic/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/tcp-cross-traffic/tcp-cross-traffic.cc",
+            "type": "blob"
+        },
+        {
+            "path": "sim/scenarios/udp-cross-traffic",
+            "type": "tree"
+        },
+        {
+            "path": "sim/scenarios/udp-cross-traffic/udp-cross-traffic.cc",
+            "type": "blob"
+        },
+        {
+            "path": "sim/wait-for-it-quic",
+            "type": "tree"
+        },
+        {
+            "path": "sim/wait-for-it-quic/go.mod",
+            "type": "blob"
+        },
+        {
+            "path": "sim/wait-for-it-quic/wait-for-it.go",
+            "type": "blob"
+        }
+    ]
+}

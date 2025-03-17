@@ -1,0 +1,29 @@
+# Use lightweight Java 8 JRE distribution base image
+FROM java:8-jre-alpine
+
+# Metdata labelling the Dockerfile
+LABEL org.label-schema.docker.cmd="docker run -p 8080:8080 -d [SERVICE_NAME]" \
+      org.label-schema.name="[SERVICE_NAME]" \
+      org.label-schema.description="[SERVICE_DESCRIPTION]" \
+      org.label-schema.vcs-url="[SERVICE_REPO]" \
+      org.label-schema.version="latest" \
+
+# Create directory to hold application code
+RUN mkdir -p /home/apps/
+
+# Set the working directory
+WORKDIR /home/apps/
+
+# Copy necessary files
+COPY target/csedemo-1.0.0.jar .
+COPY target/lib ./lib
+COPY start.sh .
+
+# Make the script executable
+RUN chmod +x ./start.sh
+
+# Set the entrypoint
+ENTRYPOINT ["sh", "/home/apps/start.sh"]
+
+# Expose the service port
+EXPOSE 8080

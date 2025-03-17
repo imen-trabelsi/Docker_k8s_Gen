@@ -1,0 +1,25 @@
+# Set the base image
+FROM debian:bookworm-slim
+
+# Set working directory inside container
+WORKDIR /app
+
+# Install essential packages
+RUN apt update && apt install pigz -y --no-install-recommends
+
+# Copy Composer.json into the container
+COPY composer.json .
+
+# Install build dependencies
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl ca-certificates zip unzip git && \
+    curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer && \
+
+# Copy static files and configuration into the container
+COPY . .
+
+# Ownership permissions for the application files
+RUN chmod -R 755 /app && chown -R www-data:www-data /app
+
+# Start the PHP server
+CMD ["php", "-S", "0.0.0.0:8000"]

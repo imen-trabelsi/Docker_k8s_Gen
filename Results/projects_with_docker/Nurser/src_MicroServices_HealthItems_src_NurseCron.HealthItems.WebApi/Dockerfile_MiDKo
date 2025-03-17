@@ -1,0 +1,21 @@
+# Stage 1 - Build the application
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+WORKDIR /app
+
+# Copy csproj and restore
+COPY *.csproj ./
+RUN dotnet restore
+
+# Copy everything else and build
+COPY . ./
+RUN dotnet publish -c Release -o out --no-restore
+
+# Stage 2 Build a runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:5.0
+WORKDIR /app
+
+# Expose port 80
+EXPOSE 80
+
+# Define the command to start the container
+ENTRYPOINT ["dotnet", "NurseCron.HealthItems.WebApi.dll"]

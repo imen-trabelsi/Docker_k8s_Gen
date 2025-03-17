@@ -1,0 +1,27 @@
+# Stage 1: Building the application
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+WORKDIR /app
+
+# Copy csproj and restore dependencies
+COPY *.sln ./
+COPY */*.csproj ./
+
+# Restore the application
+RUN dotnet restore "eShop-Learn.sln"
+
+# Copy all other files
+COPY . ./
+
+# Build and publish the application
+RUN dotnet publish "src/Services/Identity/Identity.API/Identity.API.csproj" -c Release -o out
+
+# Stage 2: Generate runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+WORKDIR /app
+EXPOSE 80
+
+# Copy build result into image
+
+# Set the entrypoint
+ENTRYPOINT ["dotnet", "Identity.API.dll"]
+

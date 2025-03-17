@@ -1,0 +1,22 @@
+# Use the Ubuntu base image provided by user
+FROM ubuntu:19.04
+
+# Install Dependencies
+RUN apt-get update \
+&& apt-get install -y curl python-dev xz-utils zlib1g libxml2-dev libxslt1-dev bzip2 python-pip \
+&& apt-get clean \
+
+# Set Working Directory
+WORKDIR /app
+
+#  Copy NFS
+COPY . /app
+
+# Download and move scancode
+RUN curl -sL https://github.com/nexB/scancode-toolkit/releases/download/v3.1.1/scancode-toolkit-3.1.1.tar.bz2 | tar -xj \
+
+# Confirm installation
+RUN ./scancode --version
+
+# Specify default command for container
+CMD ["go", "run", "main.go"]

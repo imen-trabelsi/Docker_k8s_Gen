@@ -1,0 +1,38 @@
+{
+    "docker_info": {
+        "base_image": "docker.io/java:8-jdk-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8181"
+        ],
+        "user": [
+            "1001"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD ./target/order-processing-service-1.0-SNAPSHOT-jar-with-dependencies.jar /app"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"java\",\"-jar\",",
+                    "\"order-processing-service-1.0-SNAPSHOT-jar-with-dependencies.jar\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p /app",
+                "WORKDIR /app"
+            ],
+            [
+                "chown -Rv 1001:0 /app",
+                "ENV JAVA_HOME   /usr/lib/jvm/java-1.8.0"
+            ]
+        ]
+    }
+}

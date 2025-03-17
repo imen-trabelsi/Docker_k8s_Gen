@@ -1,0 +1,30 @@
+{
+    "docker_info": {
+        "base_image": "maven:3.6.3-jdk-11-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /usr/share/website"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/usr/share/website/scripts/wait-for-it.sh\",",
+                    "\"cassandra:9042\",",
+                    "\"--timeout=0\",",
+                    "\"--\",",
+                    "\"mvn\",",
+                    "\"clean\",",
+                    "\"install\"]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

@@ -1,0 +1,54 @@
+# Use base image
+FROM base AS base
+
+# Setting working directory
+WORKDIR /usr/src/app
+
+# Copy dependencies manifest
+COPY pyproject.toml pdm.lock /opt/python/
+
+# Setting environment variables
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV TZ=UTC
+ENV PYTHONPATH=.
+
+# Build stage
+FROM base AS build
+WORKDIR /opt/python
+RUN apt-get update && apt-get install --no-install-recommends -y build-essential libffi-dev libgeos-dev postgresql-server-dev-15 python3-dev && rm -rf /var/lib/apt/lists/*
+RUN pip install --no-cache-dir pdm==2.18.1
+RUN pdm export --prod --without-hashes > requirements.txt
+RUN pip install --no-cache-dir -r /opt/python/requirements.txt
+
+# Runtime stage
+FROM base AS runtime
+WORKDIR /usr/src/app
+RUN apt-get update && apt-get install --no-install-recommends -y libgeos3.11.1 postgresql-client proj-bin && rm -rf /var/lib/apt/lists/*
+
+# Copy over the build artifacts from the build layer and install them
+
+# Adding user for security considerations
+RUN useradd --uid 9000 --create-home --home /home/appuser --shell /bin/false appuser
+RUN chown -R appuser:appuser /usr/src/app
+
+# Copy rest of the application
+COPY backend backend/
+COPY migrations migrations/
+COPY scripts/world scripts/world/
+COPY scripts/database scripts/database/
+COPY manage.py .
+
+# Switching to user
+USER appuser
+
+# Running python and compiling all the python files
+RUN python -m compileall .
+
+# Expose necessary ports
+EXPOSE 5678/tcp
+EXPOSE 5000/tcp
+
+# Health check instructions and environment specific configurations should be included here
+
+# Running the application
+CMD ["gunicorn", "-c", "python:backend.gunicorn", "manage:application"]

@@ -1,0 +1,18 @@
+# Start with the provided base image.
+FROM mongo
+
+# Set working directory inside the container
+WORKDIR /home/normalization
+
+# Copy all necessary files, including the bash file, into the Docker image.
+COPY bash/mongo.bash ./
+
+# We make the mongo.bash script executable by allowing all permissions on it
+RUN chmod 700 mongo.bash
+
+# Expose the port that Mongo runs on, 27017
+EXPOSE 27017
+
+# Command to run the mongod service
+CMD ["mongod"]
+

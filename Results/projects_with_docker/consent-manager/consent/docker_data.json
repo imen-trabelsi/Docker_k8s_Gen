@@ -1,0 +1,38 @@
+{
+    "docker_info": {
+        "base_image": "adoptopenjdk/openjdk11:jre-11.0.8_10-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "JAR_FILE=build/libs/*.jar"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR application",
+            "COPY ${JAR_FILE} application.jar",
+            "WORKDIR application",
+            "COPY --from=builder application/dependencies/ ./",
+            "COPY --from=builder application/snapshot-dependencies/ ./",
+            "COPY --from=builder application/spring-boot-loader/ ./",
+            "COPY --from=builder application/application/ ./"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"java\",",
+                    "\"org.springframework.boot.loader.JarLauncher\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "java -Djarmode=layertools -jar application.jar extract",
+                ""
+            ]
+        ]
+    }
+}

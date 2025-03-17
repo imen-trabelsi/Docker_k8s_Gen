@@ -1,0 +1,26 @@
+# Stage 1 : Setup the Base Image
+FROM bde2020/hadoop-base:2.0.0-hadoop3.2.1-java8
+
+# Define Environment Variables
+ENV HDFS_CONF_dfs_namenode_name_dir=file:///hadoop/dfs/name
+
+# Create necessary directory
+RUN mkdir -p /hadoop/dfs/name
+
+# Expose the required port
+EXPOSE 9870
+
+# Add required files
+COPY run.sh /run.sh
+
+# Set up health check
+HEALTHCHECK CMD curl -f http://localhost:9870/ || exit 1
+
+# Give execution permissions
+RUN chmod a+x /run.sh
+
+# Set the entrypoint
+CMD ["/run.sh"]
+
+# Define Volumes
+VOLUME /hadoop/dfs/name

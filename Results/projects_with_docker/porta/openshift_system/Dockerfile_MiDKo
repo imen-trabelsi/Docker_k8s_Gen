@@ -1,0 +1,32 @@
+# -------- Builder Stage --------
+FROM quay.io/centos/centos:stream9 as builder
+WORKDIR /opt/system
+# Setting environment variables
+ENV RUBY_MAJOR_VERSION=3 \
+RUBY_VERSION="${RUBY_MAJOR_VERSION}.${RUBY_MINOR_VERSION}" \
+
+# Installing dependencies
+RUN dnf -y --enablerepo=crb --setopt=module_stream_switch=True module enable ruby:${RUBY_VERSION} nodejs:18 \
+# Adding source code
+COPY . ./
+# Installing Node.js dependencies
+RUN npm install
+# Build procedure
+RUN npm run build
+
+# -------- Application Stage --------
+FROM quay.io/centos/centos:stream9
+
+# Setting environment variables
+ENV RUBY_MAJOR_VERSION=3 \
+RUBY_VERSION="${RUBY_MAJOR_VERSION}.${RUBY_MINOR_VERSION}" \
+NODE_ENV=production        \
+
+WORKDIR /opt/system
+
+# Exposed port
+EXPOSE 3000
+
+# Starting the application
+ENTRYPOINT ["/usr/libexec/catatonit/catatonit", "--", "/opt/system/entrypoint.sh"]
+CMD ["unicorn", "-c", "config/unicorn.rb", "-E", "${RAILS_ENV}", "config.ru"]

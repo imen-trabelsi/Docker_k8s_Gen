@@ -1,0 +1,45 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Nuxt.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"subscan-essentials-ui\",\n  \"version\": \"1.0.0\",\n  \"description\": \"My transcendent Nuxt.js project\",\n  \"author\": \"Carl\",\n  \"private\": true,\n  \"scripts\": {\n    \"dev\": \"nuxt\",\n    \"build\": \"nuxt build\",\n    \"start\": \"nuxt start\",\n    \"generate\": \"nuxt generate\",\n    \"test\": \"jest\"\n  },\n  \"dependencies\": {\n    \"@nuxtjs/axios\": \"^5.12.1\",\n    \"element-ui\": \"^2.4.11\",\n    \"lodash\": \"^4.17.21\",\n    \"moment\": \"^2.29.4\",\n    \"nuxt\": \"^3.4.3\",\n    \"vue-i18n\": \"^8.20.0\",\n    \"vue-json-pretty\": \"^1.6.7\"\n  },\n  \"devDependencies\": {\n    \"@nuxtjs/proxy\": \"^2.0.1\",\n    \"@vue/test-utils\": \"^1.0.0-beta.27\",\n    \"babel-jest\": \"^24.1.0\",\n    \"jest\": \"^24.1.0\",\n    \"sass\": \"^1.48.0\",\n    \"sass-loader\": \"^10\",\n    \"svg-sprite-loader\": \"^5.0.0\",\n    \"vue-jest\": \"^4.0.0-0\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "docker-compose.yml": "version: \"2.4\"\n\nservices:\n  subscan-api:\n    build: .\n    image: subscan/api\n    environment: &app_base\n      MYSQL_HOST: mysql\n      MYSQL_PASS: 'helloload'\n      # Name of the database subscan will connect to and use\n      # this db must exist\n      MYSQL_DB: 'subscan'\n      REDIS_ADDR: redis:6379\n      CHAIN_WS_ENDPOINT: 'wss://rpc.polkadot.io'\n      # the types file used for the chain as:\n      # configs/source/{NETWORK_NODE}.json\n      NETWORK_NODE: 'polkadot'\n      WEB_HOST: 'http://subscan-api:4399'\n      DEPLOY_ENV: 'prod'\n    ports:\n      - '4399:4399'\n    networks:\n      - app_net\n  subscan-observer:\n    environment:\n      <<: *app_base\n    image: subscan/api\n    command: [\"subscan\",\"start\",\"substrate\"]\n    networks:\n      - app_net\n\n  subscan-static:\n    build:\n      context: ./ui\n    environment:\n      NODE_ENV: 'production'\n    ports:\n      - '80:80'\n    networks:\n      - app_net\n\nnetworks:\n  app_net:\n    external: true",
+            "Dockerfile": "FROM golang:1.17.10 as builder\n\nWORKDIR /subscan\n\nCOPY go.mod go.sum ./\nRUN go mod download\nCOPY . /subscan\nWORKDIR /subscan/cmd\nRUN go build -o subscan\n\nFROM buildpack-deps:buster-scm\n\nWORKDIR subscan\nCOPY configs configs\nCOPY configs/config.yaml.example configs/config.yaml\n\nCOPY --from=builder /subscan/cmd/subscan cmd/subscan\nWORKDIR cmd\nRUN mkdir -p /subscan/log\n\n\nENTRYPOINT [\"/subscan/cmd/subscan\"]\nEXPOSE 4399"
+        },
+        "static_files": {
+            "ui/static/README.md": "# STATIC\n\n**This directory is not required, you can delete it if you don't want to use it.**\n\nThis directory contains your static files.\nEach file inside this directory is mapped to `/`.\nThus you'd want to delete this README.md before deploying to production.\n\nExample: `/static/robots.txt` is mapped as `/robots.txt`.\n\nMore information about the usage of this directory in [the documentation](https://nuxtjs.org/guide/assets#static).\n",
+            "ui/assets/README.md": "# ASSETS\n\n**This directory is not required, you can delete it if you don't want to use it.**\n\nThis directory contains your un-compiled assets such as LESS, SASS, or JavaScript.\n\nMore information about the usage of this directory in [the documentation](https://nuxtjs.org/guide/assets#webpacked).\n"
+        }
+    },
+    "project_structure": {
+        "files": [
+            ".babelrc",
+            ".editorconfig",
+            ".gitignore",
+            "Dockerfile",
+            "README.md",
+            "default.conf",
+            "jest.config.js",
+            "nuxt.config.js",
+            "package.json",
+            "yarn.lock"
+        ],
+        "folders": [
+            "assets",
+            "components",
+            "layouts",
+            "locales",
+            "middleware",
+            "pages",
+            "plugins",
+            "static",
+            "store",
+            "test"
+        ]
+    }
+}

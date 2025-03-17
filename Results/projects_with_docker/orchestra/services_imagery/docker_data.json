@@ -1,0 +1,75 @@
+{
+    "docker_info": {
+        "base_image": "node:10-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8081"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV NODE_ENV=production",
+            "ENV PORT=8081 \\"
+        ],
+        "copy_instructions": [
+            "WORKDIR /builder",
+            "COPY common/nodejs/package.json src/common/",
+            "COPY imagery/package.json .",
+            "COPY common/messages/imagery.proto \\",
+            "COPY common/nodejs src/common",
+            "COPY imagery .",
+            "WORKDIR /app",
+            "COPY --from=builder /builder/node_modules/gphoto2 node_modules/gphoto2",
+            "COPY --from=builder /builder/node_modules/sqlite3 node_modules/sqlite3",
+            "COPY common/nodejs/package.json src/common/",
+            "COPY imagery/package.json .",
+            "COPY --from=builder /builder/lib lib",
+            "COPY /imagery/bin bin"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "FORCE_COLOR=1",
+                    "npm",
+                    "start",
+                    "--silent"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk --no-cache add \\",
+                "make",
+                "g++",
+                "git",
+                "python-dev",
+                "libgphoto2-dev"
+            ],
+            [
+                "npm install",
+                ""
+            ],
+            [
+                "npm run build-msg",
+                ""
+            ],
+            [
+                "npm run build",
+                ""
+            ],
+            [
+                "apk --no-cache add \\",
+                "libgphoto2-dev",
+                "graphicsmagick",
+                "exiv2"
+            ],
+            [
+                "npm install",
+                ""
+            ]
+        ]
+    }
+}

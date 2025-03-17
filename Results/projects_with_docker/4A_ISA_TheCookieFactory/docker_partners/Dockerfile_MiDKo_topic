@@ -1,0 +1,17 @@
+# Use mono base image
+FROM mono:3.10
+
+# Set the Workdir
+WORKDIR /app
+
+# Copy server binary
+COPY ./server.exe ./server.exe
+
+# Expose port 
+EXPOSE 9090
+
+# Set Entrypoint
+ENTRYPOINT ["mono", "./server.exe"]
+
+# Define default command
+CMD ["/standalone"]

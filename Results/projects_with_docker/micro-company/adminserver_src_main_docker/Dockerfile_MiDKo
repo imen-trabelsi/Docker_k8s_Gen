@@ -1,0 +1,34 @@
+# Define the base Image
+FROM eclipse-temurin:11
+
+# Copy the jar file and the wait script to the image
+COPY *.jar /app.jar
+COPY wait-for-it.sh /wait-for-it.sh
+
+# Grant execute permissions to the wait-for-it.sh script
+RUN bash -c 'chmod 777 /wait-for-it.sh'
+
+# Create a directory to hold the application
+RUN mkdir /app
+WORKDIR /app
+
+# Copy the application
+COPY . /app
+
+# Build the application using Maven
+RUN mvn clean install
+
+# Boot up Spring Boot application
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the application's jar file from the build stage image
+COPY target/*.jar ./app.jar
+
+# Set the startup command to execute the jar
+CMD ["java", "-jar", "/app.jar"]
+
+# Expose the port
+EXPOSE 9998

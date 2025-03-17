@@ -1,0 +1,26 @@
+## Use adoptopenjdk/openjdk14:jre-14.0.2_12-alpine as base image 
+FROM adoptopenjdk/openjdk14:jre-14.0.2_12-alpine as build
+WORKDIR /workspace/app
+
+## Copy pom.xml and src directory to the workdir
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+COPY src src
+
+## Build the project 
+RUN ./mvnw install -DskipTests
+RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+
+## Start with build stage
+FROM adoptopenjdk/openjdk14:jre-14.0.2_12-alpine
+VOLUME /tmp
+
+## Copy the app
+WORKDIR /app
+
+## Expose the service on the given port
+EXPOSE 8080
+
+## Run the jar file 
+ENTRYPOINT ["java","-cp","app:app/lib/*","hello.Application"]

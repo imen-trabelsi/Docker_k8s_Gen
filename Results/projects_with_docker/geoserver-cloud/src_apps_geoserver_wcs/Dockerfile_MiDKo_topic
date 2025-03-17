@@ -1,0 +1,29 @@
+# Stage 1: Build
+FROM maven:3.5.2-jdk-8 as builder
+
+WORKDIR /usr/src/geoserver
+
+COPY pom.xml .
+RUN mvn dependency:resolve dependency:resolve-plugins
+
+COPY . .
+RUN mvn clean package
+
+# Stage 2: Optimize
+FROM $REPOSITORY/gs-cloud-base-jre:$TAG as optimizer
+
+RUN java -Djarmode=layertools -jar application.jar extract
+
+# Stage 3: Secure runtime
+FROM $REPOSITORY/gs-cloud-base-jre:$TAG
+
+
+RUN mkdir /tmp/tmpdatadir
+RUN GEOSERVER_DATA_DIR=/tmp/tmpdatadir java -XX:ArchiveClassesAtExit=application.jsa -Dspring.context.exit=onRefreshed -Dspring.profiles.active=standalone,datadir,offline -Dserver.port=0 -Dmanagement.server.port=0 org.springframework.boot.loader.JarLauncher
+RUN rm -rf /tmp/*
+
+ENV JAVA_TOOL_OPTIONS="${JAVA_TOOL_OPTIONS} -XX:SharedArchiveFile=application.jsa"
+
+EXPOSE 8080
+
+ENTRYPOINT ["java", "-Djarmode=layertools", "-jar", "application.jar"]

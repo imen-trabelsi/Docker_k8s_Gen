@@ -1,0 +1,36 @@
+# Use the base image provided 
+FROM ${QSERV_RUN_BASE}
+
+# Use QSERV_RUN_BASE build argument
+ARG QSERV_RUN_BASE=qserv/lite-run-base:latest
+
+# Create the work directory and set it as active.
+WORKDIR /usr/local/src
+
+# Copy the dependencies file and install the dependencies 
+COPY pyproject.toml ./
+RUN poetry install
+
+# Copy the static files over
+COPY . .
+
+# Setup user and permissions.
+USER qserv
+RUN chown -R qserv:qserv /usr/local/src
+
+# Expose the necessary ports.
+
+# Copy all necessary build files and folders to correct locations.
+COPY --chown=qserv:qserv bin/ /usr/local/bin/
+COPY --chown=qserv:qserv lib64/ /usr/local/lib64/
+COPY --chown=qserv:qserv lua/ /usr/local/lua/
+COPY --chown=qserv:qserv python/ /usr/local/python/
+COPY --chown=qserv:qserv qserv/ /usr/local/qserv/
+COPY --chown=qserv:qserv etc/ /usr/local/etc/
+COPY --chown=qserv:qserv log/log.cnf /config-etc/log/log.cnf
+
+# Update ldconfig database for runtime binding
+RUN ldconfig
+
+# Execution command to run the application.
+CMD ["python", "app.py"]

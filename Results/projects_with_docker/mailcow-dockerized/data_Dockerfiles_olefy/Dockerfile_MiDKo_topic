@@ -1,0 +1,28 @@
+# Start with specified base image
+FROM alpine:3.20
+
+LABEL maintainer="maintainer@example.com"
+
+WORKDIR /app
+
+# Install needed packages and python dependencies
+RUN apk add --virtual .build-deps gcc musl-dev python3-dev libffi-dev openssl-dev cargo \
+&& apk add --update --no-cache python3 py3-pip openssl tzdata libmagic \
+&& pip3 install --upgrade pip \
+&& pip3 install --upgrade asyncio python-magic \
+&& pip3 install --upgrade https://github.com/decalage2/oletools/archive/master.zip \
+
+# Copy necessary project files
+COPY olefy.py /app/
+
+# Change ownership of directories
+RUN chown -R nobody:nobody /app /tmp
+
+# Switch to non-priveleged user
+USER nobody
+
+# Set necessary environment variables
+ENV PIP_BREAK_SYSTEM_PACKAGES=1
+
+# Define default EntryPoint and Cmd.
+CMD ["python3", "-u", "/app/olefy.py"]

@@ -1,0 +1,27 @@
+# Start from the latest golang base image
+FROM golang:latest
+
+# Add Maintainer Info
+LABEL maintainer="Your Name <youremail@domain.com>"
+
+# Set the Current Working Directory inside the container
+WORKDIR $GOPATH/src/github.com/nxadm/tail
+
+# Download all the dependencies
+COPY go.mod .
+RUN go mod download
+
+# Copy the source files from the current directory to the PWD(Present Working Directory) inside the container
+COPY . .
+
+# Test the application before deployment
+RUN go test -v .
+
+# Build the Go app
+RUN go build -o main .
+
+# Expose port to the outside world
+EXPOSE 8080
+
+# Run the go app
+CMD ["./main", "cmd: ["gotail"]"]

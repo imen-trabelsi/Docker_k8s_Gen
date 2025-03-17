@@ -1,0 +1,27 @@
+# Use openjdk:11-jre as base image.
+FROM openjdk:11-jre
+
+# The WORKDIR instruction sets the working directory for any instructions that follow it in the Dockerfile.
+WORKDIR /app
+
+# Copy pom.xml and source code to the container
+COPY ./pom.xml ./pom.xml
+COPY ./src ./src
+
+# Build the application with Maven
+RUN mvn clean install
+
+# Provides an instruction that the build can replace with a different value.
+ARG JAR_FILE
+
+# The ADD instruction copies new files, directories or remote file URLs from <src> and adds them to the filesystem of the image at the path <dest>.
+COPY target/${JAR_FILE} /api-web.jar
+
+# Provides metadata to an image.
+LABEL maintainer="support@yourcompany.com"
+
+# The EXPOSE instruction informs Docker that the container listens on the specified network ports at runtime.
+EXPOSE 8080
+
+# The ENTRYPOINT argument for describing how to run a container as if it was a standalone executable.
+ENTRYPOINT ["java", "-jar", "/api-web.jar"]

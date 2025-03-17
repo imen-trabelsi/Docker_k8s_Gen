@@ -1,0 +1,44 @@
+# Base Image
+FROM golang:1.13 as builder
+
+# Set the Current Working Directory inside the container
+WORKDIR /go/src/github.com/palletone/
+
+# Copy go mod and sum files
+COPY go.mod go.sum ./
+
+# Download all dependencies. Dependencies will be cached if the go.mod and the go.sum files are not changed
+RUN go mod download
+
+# Clone the specific branch of the project
+RUN git clone -b master https://github.com/palletone/go-palletone.git
+
+# Change the workdir to the project directory
+WORKDIR /go/src/github.com/palletone/go-palletone/cmd/gptn
+
+# Build the Go app
+RUN go build -mod=vendor
+
+# Start a new stage from scratch
+FROM debian:buster-slim
+
+# Set up environment
+RUN apt-get -y update \
+&& apt-get install -yqq expect \
+
+# Set the Current Working Directory inside the container
+WORKDIR /go-palletone
+
+# Copy the pre-built binary file from the previous stage
+COPY init.sh .
+COPY newgenesis.sh .
+COPY gptn-entrypoint.sh .
+
+# Shift the execution permissions
+RUN chmod +x *.sh
+
+# Expose port 8545 to the outside world
+EXPOSE 8545
+
+# Command to run the executable
+ENTRYPOINT ["./gptn-entrypoint.sh"]

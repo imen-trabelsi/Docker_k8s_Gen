@@ -1,0 +1,26 @@
+#First, build the source code using dotnet core sdk
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 AS build
+
+WORKDIR /src
+COPY ["HostedServices/TrafficInfoApi/TrafficInfoApi.csproj", "HostedServices/TrafficInfoApi/"]
+COPY ["SharedKernel/Contracts/Contracts.csproj", "SharedKernel/Contracts/"]
+
+RUN dotnet restore "HostedServices/TrafficInfoApi/TrafficInfoApi.csproj"
+
+COPY . .
+WORKDIR "/src/HostedServices/TrafficInfoApi"
+
+RUN dotnet build "TrafficInfoApi.csproj" -c Release -o /app/build
+
+#Then publish the built application to the /app/publish directory
+RUN dotnet publish "TrafficInfoApi.csproj" -c Release -o /app/publish
+
+#Finally, create a new docker image for running the application
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1 AS final
+WORKDIR /app
+
+#Set the start script of this docker image to run the application
+ENTRYPOINT ["dotnet", "TrafficInfoApi.dll", "--environment=Docker"]
+
+#Expose the necessary ports from this application
+EXPOSE 80 443

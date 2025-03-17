@@ -1,0 +1,27 @@
+# Select base image
+FROM node:12-alpine
+
+# Create app directory
+RUN mkdir -p /nest
+WORKDIR /nest
+
+# Copy package.json and package-lock.json
+COPY package*.json ./ 
+
+# Install app dependencies
+RUN yarn global add @nestjs/cli \
+
+# Bundle app source
+COPY . .
+
+# Build the application
+RUN nest build proto-schema \
+
+# Set environment variable
+ENV NODE_ENV=$NODE_ENV
+
+# Exposing our endpoint
+EXPOSE 50053
+
+# Command to run the app
+CMD [ "node", "dist/apps/service-tenant/main.js" ]

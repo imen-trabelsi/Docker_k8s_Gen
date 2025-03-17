@@ -1,0 +1,25 @@
+# Set base image
+FROM java:8-jre
+
+# Set working directory in the container
+WORKDIR /app
+
+# Copy pom.xml and Install dependencies
+COPY ./pom.xml /app
+RUN mvn dependency:resolve
+
+# Package the application
+COPY . /app
+RUN mvn package
+
+# Copy jar file 
+COPY ./target/ts-train-food-service-1.0.jar /app/
+
+# Set timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Expose service port
+EXPOSE 19999
+
+# Define default command
+CMD ["java", "-Xmx200m", "-jar", "/app/ts-train-food-service-1.0.jar"]

@@ -1,0 +1,34 @@
+# Use the base image provided by the user
+FROM adoptopenjdk/openjdk14:jre-14.0.2_12-alpine AS builder
+
+# Update packages and install maven
+RUN apk add --no-cache maven
+
+# Set the working directory in the container
+WORKDIR /opt/app
+
+# Copy pom.xml file
+COPY ./pom.xml .
+
+# Download dependencies as specified in pom.xml
+RUN mvn dependency:go-offline -B
+
+# Copy the rest of the application
+COPY ./src ./src
+
+# Build the application
+RUN mvn package
+
+# Final Stage
+FROM adoptopenjdk/openjdk14:jre-14.0.2_12-alpine
+
+# Set the working directory in the container
+WORKDIR /opt/app
+
+# Copy auth-service jar from builder to the working directory
+
+# Expose the application on port 8080
+EXPOSE 8080
+
+# Command to execute the spring boot application 
+CMD ["java", "-jar", "auth-service.jar"]

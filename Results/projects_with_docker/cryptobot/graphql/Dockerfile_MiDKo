@@ -1,0 +1,14 @@
+# Specify the base image
+FROM openjdk:${VERSION}-alpine
+
+# Argument for openjdk version
+ARG VERSION=14
+
+# Install curl and other dependencies
+RUN apk --no-cache add curl
+
+# Copy application jar file to the docker image
+COPY build/libs/*-all.jar /bin/app.jar
+
+# Command to run the java application
+CMD ["java", "-Dcom.sun.management.jmxremote", "-Xmx128m", "-jar", "/bin/app.jar"]

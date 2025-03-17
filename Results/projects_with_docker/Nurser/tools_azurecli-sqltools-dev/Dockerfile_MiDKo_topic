@@ -1,0 +1,38 @@
+FROM ubuntu:xenial
+LABEL maintainer="Your Name <youremail@domain.com>"
+
+RUN apt-get -y update && apt-get -y upgrade
+RUN apt-get -y install apt-transport-https
+RUN apt-get -y install lsb-release
+RUN apt-get -y install software-properties-common
+RUN apt-get -y install dirmngr
+RUN apt-get -y install debconf-utils
+RUN apt-get -y install curl
+RUN apt-get install -y jq \
+
+RUN AZ_REPO=$(lsb_release -cs) \
+    && echo "deb [arch=amd64] https://packages.microsoft.com/repos/azure-cli/ $AZ_REPO main" | tee /etc/apt/sources.list.d/azure-cli.list \
+    && curl https://packages.microsoft.com/keys/microsoft.asc | apt-key add - \
+    && curl https://packages.microsoft.com/config/ubuntu/16.04/prod.list > /etc/apt/sources.list.d/mssql-release.list \
+    && apt-get update \
+    && apt-get install azure-cli \
+    && apt-get update && ACCEPT_EULA=Y apt-get install -y msodbcsql mssql-tools \
+    && echo 'export PATH="$PATH:/opt/mssql-tools/bin"' >> ~/.bashrc \
+    && /bin/bash -c "source ~/.bashrc" \
+    && apt-get -y install dotnet-sdk-2.2 \
+    && apt-get -y install locales \
+    && locale-gen en_US.UTF-8 \
+    && update-locale LANG=en_US.UTF-8 \
+    && apt-get -y install unzip \
+
+RUN mkdir /opt/mssql-tools/bin/sqlpackage/
+ENV PATH="/opt/mssql-tools/bin:/opt/mssql-tools/bin/sqlpackage/:${PATH}"
+
+ADD https://go.microsoft.com/fwlink/?linkid=2069122 /opt/mssql-tools/bin/sqlpackage/sqlpackage.zip
+WORKDIR /devvol
+
+RUN unzip /opt/mssql-tools/bin/sqlpackage/sqlpackage.zip -d /opt/mssql-tools/bin/sqlpackage/
+VOLUME /devvol
+
+# Provide default values for your app
+CMD ["/bin/bash", "your-app-start.sh"]

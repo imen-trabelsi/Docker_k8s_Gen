@@ -1,0 +1,36 @@
+# Use the official Go image from the Docker Hub
+FROM golang:1.23-alpine3.20
+
+# Required Environment Variables
+ENV GO111MODULE=on
+
+# Security settings
+RUN apk add --no-cache ca-certificates
+
+# Required tool-chain and libraries
+RUN apk add --no-cache git gcc musl-dev make
+
+# Change the Working directory inside the container
+WORKDIR /go/src/github.com/golang-migrate/migrate
+
+# Copy go mod and sum files
+COPY go.mod go.sum ./
+
+# Download all dependencies
+RUN go mod download
+
+# Copy the source from the current directory to the Working Directory inside the container
+COPY . .
+
+# Build the Go app
+RUN make build-docker
+
+# Create a system link 
+RUN ln -s /usr/local/bin/migrate /migrate
+
+# Copy build outputs
+COPY --from=builder /go/src/github.com/golang-migrate/migrate/build/migrate.linux-386 /usr/local/bin/migrate
+
+# Command to run the executable
+ENTRYPOINT ["migrate"]
+CMD ["--help"]

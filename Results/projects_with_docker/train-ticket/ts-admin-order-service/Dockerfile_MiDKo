@@ -1,0 +1,20 @@
+# Step 1: Define the base image
+FROM java:8-jre
+
+# Step 2: Create a directory in the container
+RUN mkdir /app
+
+# Step 3: Add the service jar to the container
+COPY ./target/ts-admin-order-service-1.0.jar /app/
+
+# Step 4: Set timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Step 5: Specify the working directory
+WORKDIR /app
+
+# Step 6: Expose the required port
+EXPOSE 16112
+
+# Step 7: Provide default command
+CMD ["java", "-Xmx200m", "-jar", "/app/ts-admin-order-service-1.0.jar"]

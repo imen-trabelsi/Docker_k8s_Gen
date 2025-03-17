@@ -1,0 +1,27 @@
+FROM python:3.10-slim
+
+LABEL description="Aether"
+
+ENV VIRTUAL_ENV=/var/run/aether/venv
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+ARG VERSION=0.0.0
+ARG GIT_REVISION
+
+WORKDIR /code
+
+COPY --chown=aether:aether ./conf/pip /code/conf/pip
+COPY --chown=aether:aether ./ /code
+
+RUN apt-get update -qq > /dev/null && \
+    apt-get -qq --yes --allow-downgrades --allow-remove-essential --allow-change-held-packages install gcc redis-server curl > /dev/null && \
+    useradd -ms /bin/false aether && \
+    mkdir -p $VIRTUAL_ENV && \
+    python3 -m venv $VIRTUAL_ENV && \
+    pip install -q --upgrade pip && \
+    pip install -q -r /code/conf/pip/requirements.txt && \
+    mkdir -p /var/tmp && \
+    echo $VERSION > /var/tmp/VERSION && \
+
+EXPOSE ## Insert your port number here. Note: if the port number is not known, add `EXPOSE 8080` as a default
+
+ENTRYPOINT ["/code/entrypoint.sh"]

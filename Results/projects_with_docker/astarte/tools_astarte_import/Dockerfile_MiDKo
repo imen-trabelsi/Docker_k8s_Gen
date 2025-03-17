@@ -1,0 +1,30 @@
+# Base Image
+FROM hexpm/elixir:1.15.7-erlang-25.3.2.7-debian-bullseye-20231009-slim
+
+# Set environment variables
+ENV MIX_ENV=prod
+ENV LANG=C.UTF-8
+ARG BUILD_ENV=prod
+
+# Set work directory
+WORKDIR /app
+
+# Copy files
+COPY mix.exs mix.lock ./
+COPY . .
+
+# Update packages and install dependencies
+RUN apt-get update --allow-releaseinfo-change -y \
+    && apt-get install -y build-essential git libssl1.1\
+    && apt-get clean \
+    && rm -f /var/lib/apt/lists/*_* \
+    && mix local.hex --force \
+    && mix local.rebar --force \
+    && mix hex.info \
+    && mix do deps.get, deps.compile \
+
+# To be replaced with actual exposed ports once identified
+EXPOSE <port_number>
+
+# Run the application
+CMD ["sh", "-c", "./bin/astarte_import start ${REALM} ${XML_FILE}"]

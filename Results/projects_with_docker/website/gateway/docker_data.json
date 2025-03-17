@@ -1,0 +1,30 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:11-jre-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "443"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /usr/share/website/gateway",
+            "COPY target/*-exec.jar /usr/share/website/gateway/gateway-exec.jar",
+            "COPY keystore /usr/share/website/gateway/keystore"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"java\",",
+                    "\"-jar\",",
+                    "\"/usr/share/website/gateway/gateway-exec.jar\"]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

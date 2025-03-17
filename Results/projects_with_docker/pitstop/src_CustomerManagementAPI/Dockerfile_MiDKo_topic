@@ -1,0 +1,26 @@
+# Stage 1: Build
+FROM pitstop-dotnet-sdk-base:1.0 AS build-env
+WORKDIR /app
+
+# Copy csproj and restore dependencies
+COPY src/CustomerManagementAPI/*.csproj ./
+RUN dotnet restore
+
+# Copy everything else and build
+COPY src/CustomerManagementAPI/ ./
+RUN dotnet publish -c Release -o out
+
+# Stage 2: Setup runtime
+FROM pitstop-dotnet-sdk-base:1.0
+WORKDIR /app
+
+ENV ASPNETCORE_URLS=http://*:5100
+
+# Expose the application on port 5100
+EXPOSE 5100/tcp
+
+# Healthcheck for the application
+HEALTHCHECK --interval=30s --timeout=3s --retries=1 CMD curl --silent --fail http://localhost:5100/hc || exit 1
+
+# Run the application
+ENTRYPOINT ["dotnet", "CustomerManagementAPI.dll"]

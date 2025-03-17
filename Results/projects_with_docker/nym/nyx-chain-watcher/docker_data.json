@@ -1,0 +1,39 @@
+{
+    "docker_info": {
+        "base_image": "harbor.nymte.ch/dockerhub/rust:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ./ /usr/src/nym",
+            "WORKDIR /usr/src/nym/nyx-chain-watcher",
+            "WORKDIR /nym",
+            "COPY --from=builder /usr/src/nym/target/release/nyx-chain-watcher ./"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"/nym/nyx-chain-watcher\",",
+                    "\"run\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "cargo build --release",
+                ""
+            ],
+            [
+                "apt update && apt install -yy curl ca-certificates",
+                ""
+            ]
+        ]
+    }
+}

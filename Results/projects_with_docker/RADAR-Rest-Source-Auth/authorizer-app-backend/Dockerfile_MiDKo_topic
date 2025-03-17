@@ -1,0 +1,44 @@
+# Set base image
+FROM --platform=$BUILDPLATFORM openjdk:11 as builder
+
+RUN mkdir /code
+WORKDIR /code
+
+# Copy files
+COPY ./buildSrc /code/buildSrc
+COPY ./build.gradle.kts ./settings.gradle.kts ./gradle.properties /code/
+COPY authorizer-app-backend/build.gradle.kts  /code/authorizer-app-backend/
+COPY authorizer-app-backend/src /code/authorizer-app-backend/src
+
+# Install dependencies and build project
+RUN gradle downloadDependencies copyDependencies startScripts
+RUN gradle jar
+
+# Start a new stage from scratch
+FROM openjdk:11-jdk-slim
+
+# Assign the user to the docker user we just created
+USER 101
+
+# Set environment variables
+ENV GRADLE_USER_HOME /code/.gradlecache
+ENV JAVA_OPTS ""
+
+# Expose port
+EXPOSE 8085
+
+# Copy files from builder stage
+COPY --from=builder /code/authorizer-app-backend/build/scripts/* /usr/bin/
+COPY --from=builder /code/authorizer-app-backend/build/third-party/* /usr/lib/
+COPY --from=builder /code/authorizer-app-backend/build/libs/authorizer-app-backend-*.jar /usr/lib/
+
+# Define health checks
+
+# Set the entry point
+ENTRYPOINT ["java", "-jar", "/usr/lib/authorizer-app-backend.jar"]
+
+# Define command to run the application
+CMD ["authorizer-app-backend"]
+
+# Set metadata for the image
+LABEL description="RADAR-base"

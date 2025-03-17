@@ -1,0 +1,43 @@
+# Sets python:3.7-buster as the base image
+FROM python:3.7-buster
+
+# Sets the environment variable PYTHONUNBUFFERED to 1
+ENV PYTHONUNBUFFERED 1
+
+# Runs the specified commands in order to install the required packages
+RUN echo 'deb http://deb.debian.org/debian buster-backports main' > /etc/apt/sources.list.d/backports.list
+
+RUN apt-get update \
+&& apt-get install -y redis-server postgresql-client libtiff-tools pdftk \
+&& apt-get install -y librocksdb5.17 librocksdb-dev libsnappy-dev zlib1g-dev libbz2-dev libgflags-dev liblz4-dev rocksdb-tools \
+&& apt-get install -y libx11-xcb1 libxtst6 libgtk-3-0 libnss3 \
+&& echo libhyperscan5 libhyperscan/cpu-ssse3 boolean true | debconf-set-selections && apt-get -t buster-backports install -y libhyperscan-dev \
+&& apt-get install -y tidy \
+&& apt-get install -y libdrm2 libgbm-dev \
+
+# Creates and sets the /app directory as the working directory
+RUN mkdir /app
+WORKDIR /app
+
+# Copies requirements.txt and yarn.lock from the host to the app directory in the image
+COPY requirements.txt /app
+COPY yarn.lock /app
+
+# Install the specified versions of pip and the requirements for this project, and then delete requirements.txt
+RUN pip install pip==21.3.1 \
+&& pip install -r requirements.txt --src /usr/local/src \
+
+# Sets a configuration option related to modules for Yarn
+RUN echo "--modules-folder /node_modules" > /.yarnrc 
+
+# Copies package.json from the host to the /app directory in the image
+COPY package.json /app
+
+# Downloads, installs, and removes a specific version of Node.js, installs a specific version of Yarn, installs the required node modules, and removes package.json and yarn.lock
+RUN curl -o nodejs.deb https://deb.nodesource.com/node_14.x/pool/main/n/nodejs/nodejs_14.21.3-1nodesource1_amd64.deb \
+RUN rm nodejs.deb \
+&& npm install -g yarn@1.22.5 \
+RUN rm package.json \
+
+# Installs chromium and firefox for playwright
+RUN playwright install chromium firefox

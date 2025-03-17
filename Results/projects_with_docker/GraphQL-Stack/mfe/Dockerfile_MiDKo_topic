@@ -1,0 +1,25 @@
+# Specify Base Image
+FROM caddy:2-alpine
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Install app dependencies
+# A wildcard has been used for package.json and package-lock.json as well
+COPY package*.json ./
+
+RUN apk add --no-cache npm && \
+    npm install && \
+    # If you are building your code for production
+
+# Bundle app source
+COPY . .
+
+# Include the correct exposed ports and necessary copy instructions
+EXPOSE 80
+
+# Healthcheck to ensure the app is running correctly
+HEALTHCHECK --interval=5m --timeout=3s CMD curl -f http://localhost/ || exit 1
+
+# Default command
+CMD [ "npm", "start" ]

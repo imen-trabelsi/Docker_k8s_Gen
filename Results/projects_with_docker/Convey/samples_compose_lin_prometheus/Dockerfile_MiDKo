@@ -1,0 +1,17 @@
+# Start with the base image
+FROM prom/prometheus
+
+# Setting the working directory
+WORKDIR /app
+
+# Copy over the necessary application files
+COPY prometheus.yml /etc/prometheus/prometheus.yml
+
+# Optional: If runtime Environment variables are needed, include them below
+# ENV VAR=value 
+
+# This will be the entry point for the container
+# ENTRYPOINT [ "executable" ]
+
+# Expose the application on port 8080
+# EXPOSE 8080

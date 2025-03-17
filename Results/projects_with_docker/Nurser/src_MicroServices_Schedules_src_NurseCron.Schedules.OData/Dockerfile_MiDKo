@@ -1,0 +1,17 @@
+# Start with ASP.NET base image
+FROM mcr.microsoft.com/dotnet/aspnet
+
+# Set the working directory in the image
+WORKDIR /app
+
+# Copy project's build artifacts to the container
+COPY ./pub .
+
+# Expose port 80 for the application.
+EXPOSE 80
+
+# Set environment variables if any. This is a placeholder and should be replaced with actual environment variables
+# ENV var1=value1 var2=value2
+
+# Set the Docker image execution command
+ENTRYPOINT ["dotnet", "NurseCron.Schedules.OData.dll"]

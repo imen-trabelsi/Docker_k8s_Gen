@@ -1,0 +1,55 @@
+# Start with a base image
+FROM node:lts-alpine AS build-stage
+
+# Set working directory
+WORKDIR /app
+
+# Copy package json files for npm install
+COPY package*.json ./
+
+# Run npm install
+RUN npm install
+
+# Copy all other files
+COPY . .
+
+# Update the browserslist database
+RUN npx browserslist@latest --update-db
+
+# Build the application
+RUN npm run build
+
+FROM openjdk:8-jdk-alpine as application
+
+# Set working directory in docker image
+WORKDIR /app
+
+# Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy the pom.xml file
+COPY pom.xml .
+
+# Build the project
+RUN ./mvnw install -DskipTests
+
+# Copy other source files
+COPY src src
+
+# Arguments for main class
+ENTRYPOINT ["java", "-jar", "target/my-project-0.0.1-SNAPSHOT.jar"] 
+
+FROM nginx:alpine AS final-stage
+
+# Copy the build result to replace the default nginx contents.
+
+# Copy the nginx configuration file.
+COPY nginx.conf /etc/nginx
+
+
+# Expose port 80 to the outside world
+EXPOSE 80
+
+# Run the application
+CMD ["nginx", "-g", "daemon off;", "-c", "/etc/nginx/nginx.conf"]

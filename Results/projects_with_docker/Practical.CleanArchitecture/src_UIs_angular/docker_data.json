@@ -1,0 +1,44 @@
+{
+    "docker_info": {
+        "base_image": "node:10.16.0-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY package.json ./",
+            "WORKDIR /ng-app",
+            "COPY . .",
+            "COPY ./config/nginx.conf /etc/nginx/conf.d/default.conf",
+            "COPY --from=builder /ng-app/dist/angular /usr/share/nginx/html"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"nginx\",",
+                    "\"-g\",",
+                    "\"daemon",
+                    "off;\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "npm i && mkdir /ng-app && mv ./node_modules ./ng-app",
+                ""
+            ],
+            [
+                "npm run build",
+                ""
+            ],
+            [
+                "rm -rf /usr/share/nginx/html/*",
+                ""
+            ]
+        ]
+    }
+}

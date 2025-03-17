@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "requirements.txt": "setuptools==50.3.2\nscikit-learn[alldeps]==0.23.2\nsobol_seq==0.2.0\nPyYAML==5.3.1\nstatsmodels==0.12.0\njsonschema==3.2.0\nscipy==1.5.3\npytest==6.1.1\npika==1.1.0\npymongo==3.11.0\nnumexpr==2.7.1\npandas==1.1.3\n"
+        },
+        "database": "MongoDB",
+        "build_system": "pip",
+        "config_files": {
+            "docker-compose.yml": "# Launch & Build a bunch containers with workers and one service for them.\nversion: \"3.7\"\nservices: \n  main-node:\n    build: ./main_node/\n    tty: true\n    container_name: main-node\n    environment:\n      - EXP_DUMP_NAME=undefined\n    restart: on-failure\n\n  event_service:\n    build: ./event_service/\n    stdin_open: true\n    tty: true\n    container_name: event-service\n    ports:\n        - 49153:49153\n        - 49154:49154\n        - 49155:49155\n    restart: on-failure\n\n  mongo-db:\n    image: mongo:4.4.0\n    container_name: mongo-db\n    restart: on-failure\n    environment:\n        MONGO_INITDB_DATABASE: BRISE_db\n    ports:\n        - 27017:27017\n    volumes:\n      - ./mongo_db/init.js:/docker-entrypoint-initdb.d/init.js\n\n  worker_service:\n    build: ./worker_service/\n    stdin_open: true\n    tty: true\n    container_name: worker-service\n    restart: on-failure\n\n  front-end:\n    build: ./front_end/\n    container_name: front-end\n    tty: true\n    ports:\n        - 80:80\n    restart: on-failure\n\n  worker:\n    build: ./worker/\n    restart: on-failure\n",
+            "main_node/Dockerfile": "FROM brisedev/main-dev:2.5.0\n\n# Copying project\nCOPY . /root\nRUN rm /root/Dockerfile\n\nWORKDIR /root\n\nARG BRISE_EVENT_SERVICE_HOST\nENV BRISE_EVENT_SERVICE_HOST ${BRISE_EVENT_SERVICE_HOST}\n\nARG BRISE_EVENT_SERVICE_AMQP_PORT\nENV BRISE_EVENT_SERVICE_AMQP_PORT ${BRISE_EVENT_SERVICE_AMQP_PORT}\n\nARG BRISE_EVENT_SERVICE_GUI_PORT\nENV BRISE_EVENT_SERVICE_GUI_PORT ${BRISE_EVENT_SERVICE_GUI_PORT}\n\nARG BRISE_DATABASE_HOST\nENV BRISE_DATABASE_HOST ${BRISE_DATABASE_HOST}\n\nARG BRISE_DATABASE_PORT\nENV BRISE_DATABASE_PORT ${BRISE_DATABASE_PORT}\n\nARG BRISE_DATABASE_NAME\nENV BRISE_DATABASE_NAME ${BRISE_DATABASE_NAME}\n\nARG BRISE_DATABASE_USER\nENV BRISE_DATABASE_USER ${BRISE_DATABASE_USER}\n\nARG BRISE_DATABASE_PASS\nENV BRISE_DATABASE_PASS ${BRISE_DATABASE_PASS}\n\nCMD dockerize -wait http://${BRISE_EVENT_SERVICE_HOST}:${BRISE_EVENT_SERVICE_GUI_PORT}  python3.7 -u api-supreme.py\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "README.md",
+            "intro.py"
+        ],
+        "folders": []
+    }
+}

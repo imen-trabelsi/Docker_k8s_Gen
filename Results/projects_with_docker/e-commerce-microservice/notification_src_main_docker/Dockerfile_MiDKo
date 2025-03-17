@@ -1,0 +1,25 @@
+# Dockerfile
+FROM openjdk:8-jre-alpine
+
+LABEL maintainer="maintainer@example.com"
+
+ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \
+    SPRING_PROFILES_ACTIVE=prod \
+
+RUN adduser -D -s /bin/sh jhipster
+
+WORKDIR /home/jhipster
+
+COPY notification/src/main/resources/logback-spring.xml logback-spring.xml
+COPY notification/src/main/docker/Dockerfile Dockerfile
+COPY notification/Jenkinsfile Jenkinsfile
+COPY entrypoint.sh entrypoint.sh
+COPY *.war app.war
+
+RUN chmod 755 entrypoint.sh && chown jhipster:jhipster entrypoint.sh && chown jhipster:jhipster app.war && chown jhipster:jhipster logback-spring.xml
+
+USER jhipster
+
+EXPOSE 8082
+
+ENTRYPOINT ["./entrypoint.sh"]

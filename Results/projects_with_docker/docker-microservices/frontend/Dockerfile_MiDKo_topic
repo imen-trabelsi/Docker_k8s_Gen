@@ -1,0 +1,36 @@
+# ==================================================
+# Stage 1 - Build stage
+# ==================================================
+
+FROM node:12.16.1-alpine as build-stage
+
+USER node
+
+WORKDIR /usr/src/app
+
+# Copy the dependencies file to the working directory
+COPY package*.json ./
+
+# Install all the dependencies
+RUN npm install
+
+# Copy the rest of your application's source code from your host to your image filesystem.
+COPY . . 
+
+# Build the application
+RUN npm run build
+
+# ==================================================
+#  Stage 2 - Production stage
+# ==================================================
+
+FROM node:12.16.1-alpine as production-stage
+
+WORKDIR /usr/src/app
+
+# Copy the production build from the build-stage
+
+EXPOSE 3000
+
+# Start server
+CMD ["npm", "run", "dev"]

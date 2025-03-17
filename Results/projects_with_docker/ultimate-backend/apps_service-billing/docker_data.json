@@ -1,0 +1,49 @@
+{
+    "docker_info": {
+        "base_image": "node:12-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "50067"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "NODE_ENV=production"
+        ],
+        "envs": [
+            "ENV NODE_ENV $NODE_ENV"
+        ],
+        "copy_instructions": [
+            "WORKDIR /nest",
+            "COPY . ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"node\",",
+                    "\"dist/apps/service-billing/main.js\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p /nest",
+                "ADD . /nest"
+            ],
+            [
+                "yarn global add @nestjs/cli",
+                ""
+            ],
+            [
+                "yarn install --production=false",
+                ""
+            ],
+            [
+                "nest build proto-schema",
+                "RUN nest build service-billing"
+            ]
+        ]
+    }
+}

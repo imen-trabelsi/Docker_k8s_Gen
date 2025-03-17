@@ -1,0 +1,110 @@
+{
+    "docker_info": {
+        "base_image": "rust:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "13413",
+            "13414",
+            "13415",
+            "13416",
+            "13420",
+            "3413",
+            "3414",
+            "3415",
+            "3416",
+            "3420"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV LANG en_US.UTF-8"
+        ],
+        "copy_instructions": [
+            "WORKDIR /usr/src",
+            "WORKDIR /usr/src/grin",
+            "WORKDIR /usr/src/grin-wallet",
+            "COPY --from=builder /usr/src/grin/target/release/grin /usr/local/bin/",
+            "COPY --from=builder /usr/src/grin-wallet/target/release/grin-wallet /usr/local/bin/",
+            "COPY grin-wallet.toml /usr/src/grin-wallet/grin-wallet.toml",
+            "COPY grin-server.toml /usr/src/grin/grin-server.toml",
+            "COPY run.sh /",
+            "COPY run-wallet.sh /",
+            "COPY libheath.py /"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/run.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "rustup update && \\",
+                "set -ex &&",
+                "apt-get update &&",
+                "apt-get --no-install-recommends --yes install",
+                "clang",
+                "libclang-dev",
+                "llvm-dev",
+                "libncurses5",
+                "libncursesw5",
+                "cmake",
+                "git",
+                "libssl-dev"
+            ],
+            [
+                "git clone https://github.com/mimblewimble/grin.git && \\",
+                "cd grin &&",
+                "git checkout v3.1.0 &&",
+                "git fetch"
+            ],
+            [
+                "git clone https://github.com/mimblewimble/grin-wallet.git && \\",
+                "cd grin-wallet &&",
+                "git checkout v3.1.0 &&",
+                "git fetch"
+            ],
+            [
+                "cargo build --release",
+                ""
+            ],
+            [
+                "target/release/grin server config",
+                ""
+            ],
+            [
+                "sed -i -e 's/\\.header(CONTENT_TYPE, \"application\\/json\")//g'  controller/src/controller.rs",
+                "RUN sed -i -e 's/127\\.0\\.0\\.1/0.0.0.0/g' config/src/types.rs"
+            ],
+            [
+                "cargo build --release",
+                ""
+            ],
+            [
+                "apt-get update && DEBIAN_FRONTEND=noninteractive apt-get install -y \\",
+                "locales",
+                "procps",
+                "libssl-dev",
+                "vim",
+                "telnet",
+                "curl",
+                "python3",
+                "netcat",
+                "net-tools",
+                "libncursesw6",
+                "&&",
+                "apt-get autoremove -y &&",
+                "rm -rf /var/cache/apt"
+            ],
+            [
+                "sed -i -e 's/# en_US.UTF-8 UTF-8/en_US.UTF-8 UTF-8/' /etc/locale.gen && \\",
+                "dpkg-reconfigure --frontend=noninteractive locales &&",
+                "update-locale LANG=en_US.UTF-8"
+            ]
+        ]
+    }
+}

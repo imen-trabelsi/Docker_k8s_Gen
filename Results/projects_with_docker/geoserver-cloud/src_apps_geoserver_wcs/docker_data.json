@@ -1,0 +1,48 @@
+{
+    "docker_info": {
+        "base_image": "$REPOSITORY/gs-cloud-base-jre:$TAG",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "REPOSITORY=geoservercloud",
+            "TAG=latest",
+            "JAR_FILE=target/gs-cloud-*-bin.jar"
+        ],
+        "envs": [
+            "ENV JAVA_TOOL_OPTIONS=\"${JAVA_TOOL_OPTIONS} -XX:SharedArchiveFile=application.jsa\""
+        ],
+        "copy_instructions": [
+            "COPY ${JAR_FILE} application.jar",
+            "COPY --from=builder dependencies/ ./",
+            "COPY --from=builder snapshot-dependencies/ ./",
+            "COPY --from=builder spring-boot-loader/ ./"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "java -Djarmode=layertools -jar application.jar extract",
+                ""
+            ],
+            [
+                "true",
+                "COPY --from=builder application/ ./"
+            ],
+            [
+                "mkdir /tmp/tmpdatadir",
+                "RUN GEOSERVER_DATA_DIR=/tmp/tmpdatadir java",
+                "-XX:ArchiveClassesAtExit=application.jsa",
+                "-Dspring.context.exit=onRefreshed",
+                "-Dspring.profiles.active=standalone,datadir,offline",
+                "-Dserver.port=0 -Dmanagement.server.port=0",
+                "org.springframework.boot.loader.JarLauncher"
+            ],
+            [
+                "rm -rf /tmp/*",
+                ""
+            ]
+        ]
+    }
+}

@@ -1,0 +1,19 @@
+# Using the base image specified by the user
+FROM tcardonne/github-runner
+
+# Update and Install dependencies
+RUN apk update \
+    && apk add --no-cache \
+    py-pip python3-dev libffi-dev openssl-dev gcc libc-dev make \
+
+# Copy the local package.json into our container and install dependencies
+COPY package.json ./
+RUN npm install
+
+# Copy the rest of our application into the container
+COPY . .
+
+# The command that starts our app
+CMD [ "npm", "start" ]
+
+

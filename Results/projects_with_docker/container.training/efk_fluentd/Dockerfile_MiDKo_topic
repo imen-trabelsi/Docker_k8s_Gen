@@ -1,0 +1,28 @@
+# Dockerfile
+FROM ruby
+
+# Installing dependencies
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application scripts (Python scripts) and config files
+COPY efk/docker-compose.yml efk/docker-compose.yml
+COPY efk/fluentd/Dockerfile efk/fluentd/Dockerfile
+
+# Installing Ruby Gem
+RUN gem install fluentd
+RUN gem install fluent-plugin-elasticsearch
+
+# Copy application source code
+COPY . . 
+
+WORKDIR /efk/fluentd
+
+# Copy configuration into container
+COPY fluentd.conf /fluentd.conf
+
+# Securing Docker
+USER 1001:1001
+
+# Run application
+CMD ["fluentd", "-c", "/fluentd.conf"]

@@ -1,0 +1,38 @@
+# Build Image stage 
+FROM golang:1.12-alpine as builder
+
+ENV GOPATH=/gopath
+ENV GOROOT=/usr/local/go
+ENV PATH=$PATH:$GOPATH/bin:$GOROOT/bin
+
+RUN apk add --no-cache make gcc musl-dev linux-headers git \
+  && go get -u -v github.com/palletone/adaptor \
+  && mkdir -p src/github.com/palletone \
+  && cd src/github.com/palletone \
+  && git clone -b master https://github.com/palletone/go-palletone.git \
+  && go get -u -v github.com/kardianos/govendor \
+  && cd src/github.com/palletone/go-palletone/contracts/example/go/container \
+  && govendor init \
+  && govendor add +e \
+  && rm vendor/github.com/palletone/adaptor/*_mock.go \
+  && wget -o download.log https://studygolang.com/dl/golang/go1.12.linux-amd64.tar.gz \
+  && tar -C /usr/local -zxvf go1.12.linux-amd64.tar.gz >> download.log \
+  && rm go1.12.linux-amd64.tar.gz download.log \
+
+# Copy dependencies
+
+# Runtime Image stage
+FROM alpine:3.9
+
+# Copy our static executable
+
+# Environment variables
+ENV GOPATH=/gopath
+ENV GOROOT=/usr/local/go
+ENV PATH=$PATH:$GOPATH/bin:$GOROOT/bin
+
+# Expose port 8080
+EXPOSE 8080
+
+# Run the web service
+CMD ["/go/bin/app"]

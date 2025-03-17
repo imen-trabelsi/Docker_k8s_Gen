@@ -1,0 +1,47 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/devcontainers/python:3.12",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV PYTHONUNBUFFERED=1"
+        ],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY poetry.lock pyproject.toml /app/"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apt-get update \\",
+                "&& apt-get install -y",
+                "libffi8",
+                "libgdk-pixbuf2.0-0",
+                "liblcms2-2",
+                "libopenjp2-7",
+                "libssl3",
+                "libtiff6",
+                "libwebp7",
+                "libpq5",
+                "shared-mime-info",
+                "mime-support",
+                "pipx"
+            ],
+            [
+                "pipx ensurepath",
+                ""
+            ],
+            [
+                "pipx install poetry==2.0.1",
+                "RUN poetry config virtualenvs.create false"
+            ],
+            [
+                "poetry sync"
+            ]
+        ]
+    }
+}

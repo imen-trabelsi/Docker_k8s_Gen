@@ -1,0 +1,55 @@
+# Dockerfile
+FROM node:12.14.0-alpine3.9 AS BUILD
+
+# Create app directory
+WORKDIR /usr/src/app
+    
+# Install app dependencies
+COPY package*.json ./
+
+#Add necessary software
+RUN apk update && apk upgrade && \
+    apk add --no-cache bash git openssh && \
+    apk add make && \
+    apk add g++ && \
+    apk add python && \
+    npm install -g npm@8.7.0 && \
+    npm ci --only=prod && \
+    npm ci --legacy-peer-deps && \
+
+# Copy app source code
+COPY . .
+
+# Build the app
+RUN npm run build
+
+# Set environments variables
+ENV PORT=3707
+ENV INDYSCAN_API_URL=3708
+ENV LOG_LEVEL="info"
+ENV LOG_HTTP_REQUESTS="false"
+ENV LOG_HTTP_RESPONSES="false"
+
+# Set labels
+LABEL org.label-schema.schema-version="1.0" \
+    org.label-schema.name="indyscan-webapp" \
+    org.label-schema.description="Serverside" \
+
+FROM node:12.14.0-alpine3.9
+
+WORKDIR /usr/src/app
+
+
+# Set work directories and copy instruction
+WORKDIR /usr/src/app/indyscan-api-client
+COPY indyscan-api-client ./
+WORKDIR /usr/src/app/indyscan-txtype
+COPY indyscan-txtype ./
+WORKDIR /usr/src/app/indyscan-webapp
+WORKDIR /usr/src/app/indyscan-webapp
+
+# Expose port
+EXPOSE ${PORT}
+
+# CMD command
+CMD [ "npm", "run", "serve" ]

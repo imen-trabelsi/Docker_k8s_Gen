@@ -1,0 +1,50 @@
+#Using ruby based alpine image as base
+FROM ruby:2.7.2-alpine
+
+#Environment Variables
+ENV SECRET_KEY_BASE=dumb \
+    EXECJS_RUNTIME=Node \
+    RAILS_LOG_TO_STDOUT=true \
+    PATH="/opt/yarn/bin:$PATH" \
+    BUNDLE_JOBS=4 \
+    RAILS_ENV=development \
+
+#Adding label
+LABEL maintainer="contato@opensanca.com.br"
+
+#Install necessary dependencies
+RUN apk add --update --no-cache openssl tar build-base tzdata postgresql-dev postgresql-client nodejs 
+
+#Install yarn
+RUN wget https://yarnpkg.com/latest.tar.gz && \
+    mkdir -p /opt/yarn && \
+
+#Create application directory
+RUN mkdir -p /var/app
+
+#Copy current directory to /var/app
+COPY . /var/app
+
+#Set working directory
+WORKDIR /var/app
+
+#Copy Bundle from /usr/local/bundle/
+COPY --from=builder /usr/local/bundle/ /usr/local/bundle/
+
+#Copy from /var/app from builder
+COPY --from=builder /var/app /var/app
+
+#Install bundles and compile assets
+RUN bundle install && yarn && bundle exec rake assets:precompile && \
+    rm -rf /usr/local/bundle/cache/*.gem && \
+    find /usr/local/bundle/gems/ -name "*.c" -delete && \
+    find /usr/local/bundle/gems/ -name "*.o" -delete && \
+
+#Install extra packages
+RUN apk add --update --no-cache openssl tzdata postgresql-dev postgresql-client $extra_packages
+
+# Expose port 3000
+EXPOSE 3000
+
+# Run the application by default when the container starts. 
+CMD ["bin/rails", "s", "-b", "0.0.0.0"]

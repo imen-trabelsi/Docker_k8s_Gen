@@ -1,0 +1,24 @@
+{
+    "docker_info": {
+        "base_image": "httpd:2.4-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ./docker/httpd/conf/httpd.conf.esh /usr/local/apache2/conf/httpd.conf.esh",
+            "COPY ./docker/httpd//msoffice.html /usr/local/apache2/htdocs/msoffice.html",
+            "COPY ./docker/httpd/httpd-foreground /usr/local/bin/"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apk add --no-cache esh",
+                ""
+            ]
+        ]
+    }
+}

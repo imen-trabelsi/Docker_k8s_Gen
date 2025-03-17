@@ -1,0 +1,23 @@
+# Step 1: Use alpine:latest as the base image
+FROM alpine:latest
+
+# Step 2: Set working directory
+WORKDIR /app
+
+# Step 3: Install required dependencies
+RUN set -ex \
+&& apk add --update --no-cache ca-certificates wget \
+&& wget -q -O /etc/apk/keys/sgerrand.rsa.pub https://raw.githubusercontent.com/sgerrand/alpine-pkg-glibc/master/sgerrand.rsa.pub \
+&& wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.25-r0/glibc-2.25-r0.apk \
+&& wget https://github.com/sgerrand/alpine-pkg-glibc/releases/download/2.25-r0/glibc-bin-2.25-r0.apk \
+&& apk add --no-cache glibc-2.25-r0.apk glibc-bin-2.25-r0.apk \
+&& rm glibc-2.25-r0.apk glibc-bin-2.25-r0.apk \
+
+# Step 4: Copy the application to the container
+COPY sfhr /
+
+# Step 5: Set execution permissions for the application
+RUN chmod +x /sfhr
+
+# Step 6: Startup Command
+CMD ["/sfhr", "--host", "0.0.0.0", "--mqttbroker", "mqtt", "1883"]

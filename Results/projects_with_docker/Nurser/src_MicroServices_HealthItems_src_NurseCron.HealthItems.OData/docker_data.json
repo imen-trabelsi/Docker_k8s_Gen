@@ -1,0 +1,28 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/aspnet",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY ./pub ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"dotnet\",",
+                    "\"NurseCron.HealthItems.Api.dll\"]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

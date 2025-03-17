@@ -1,0 +1,28 @@
+# Use the maven 3.6.1-jdk-8 image for the builder stage
+FROM maven:3.6.1-jdk-8 as builder
+WORKDIR /app
+COPY pom.xml ./
+RUN mvn dependency:go-offline -B
+COPY src/ ./src/
+RUN mvn package
+
+# Use the base image provided by User for runtime
+FROM $REPOSITORY/gs-cloud-base-jre:$TAG
+ARG JAR_FILE=target/gs-cloud-*-bin.jar
+WORKDIR /application
+
+# Remove Temp files
+RUN rm -rf /tmp/*
+
+# Ensure the service runs as non-root
+USER application
+
+# Set JAVA_TOOL_OPTIONS environment variable
+ENV JAVA_TOOL_OPTIONS="${DEFAULT_JAVA_TOOL_OPTIONS} -XX:SharedArchiveFile=application.jsa"
+
+# Run the jar file
+ENTRYPOINT ["java", "-Djarmode=layertools", "-jar", "application.jar", "extract", "true", "-XX:ArchiveClassesAtExit=application.jsa", "-Dspring.context.exit=onRefreshed", "-Dspring.profiles.active=standalone,offline", "-Dserver.port=0", "-Dmanagement.server.port=0", "$JAVA_OPTS", "org.springframework.boot.loader.JarLauncher"]
+
+# Expose the required services
+EXPOSE 8080
+HEALTHCHECK CMD curl --fail http://localhost:8080/actuator/health || exit 1

@@ -1,0 +1,26 @@
+# Using the openjdk base image with tag of 8-jdk-alpine.
+FROM openjdk:8-jdk-alpine
+
+# Creating the app directory inside the Docker image.
+WORKDIR /usr/src/app
+
+# Copying the Maven POM file to the existing directory.
+COPY pom.xml .
+
+# Getting maven dependencies
+RUN mvn dependency:go-offline -B
+
+# Copying the source code of the application into the app directory.
+COPY src src
+
+# Packaging the application into a JAR file.
+RUN mvn package -DskipTests
+
+# Adding the deployed JAR file into the Docker image.
+COPY target/discovery-service.jar discovery-service.jar
+
+# Exposing the correct port of the Networking section.
+EXPOSE 8761
+
+# Specifying the default command to execute when the Docker image runs as a container.
+ENTRYPOINT ["java", "-jar", "discovery-service.jar"]

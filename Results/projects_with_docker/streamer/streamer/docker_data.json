@@ -1,0 +1,76 @@
+{
+    "docker_info": {
+        "base_image": "almalinux:8",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [
+            "donders.ru.nl.app_name",
+            "donders.ru.nl.app_maintainer",
+            "donders.ru.nl.app_code_repository"
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD https://nodejs.org/dist/latest-v10.x/node-v10.24.1-linux-x64.tar.xz /tmp",
+            "WORKDIR /opt/streamer",
+            "COPY package.json package.json",
+            "COPY bin ./bin",
+            "COPY lib ./lib",
+            "COPY config ./config",
+            "COPY start_streamer.sh start_streamer.sh",
+            "COPY supervisord.conf /opt/streamer/supervisord.conf"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"/usr/bin/supervisord\",",
+                    "\"-c\",",
+                    "\"/opt/streamer/supervisord.conf\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "( ulimit -n 1024 && yum -y install wget gcc gcc-c++ \\",
+                "make autoconf git zlib zlib-devel",
+                "openssl openssl-devel openssl-libs",
+                "sssd-client which rsync",
+                "curl curl-devel libxml2-devel epel-release",
+                "&& yum clean all",
+                "&& rm -rf /var/cache/yum/*",
+                "&& rm -rf /tmp/* )"
+            ],
+            [
+                "( ulimit -n 1024 && yum -y install supervisor sshpass pv expect \\",
+                "&& yum clean all",
+                "&& rm -rf /var/cache/yum/*",
+                "&& rm -rf /tmp/* )"
+            ],
+            [
+                "( mkdir -p /tmp )",
+                "WORKDIR /tmp"
+            ],
+            [
+                "( if [ ! -d node-v10.24.1-linux-x64 ]; then tar xf node-v10.24.1-linux-x64.tar.xz; fi \\",
+                "&& mv node-v10.24.1-linux-x64 /opt/nodejs && rm -rf /tmp/node-*)"
+            ],
+            [
+                "( mkdir -p /opt/streamer )",
+                ""
+            ],
+            [
+                "( export PATH=/opt/nodejs/bin:$PATH && export USER=root && /opt/nodejs/bin/npm install -g node-gyp && /opt/nodejs/bin/npm install -g --unsafe-perm)",
+                "COPY *.js ./"
+            ],
+            [
+                "( chmod +x bin/* )",
+                "RUN ( chmod +x start_streamer.sh )"
+            ]
+        ]
+    }
+}

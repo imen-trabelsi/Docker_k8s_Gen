@@ -1,0 +1,36 @@
+# Use an official Golang runtime as a father image
+FROM golang:1.23.5-alpine as build
+
+# Setting up working directory
+WORKDIR /app
+
+# Installing zip tool
+RUN apk add --no-cache zip=3.0-r13
+
+# Copying the go.mod and go.sum file
+COPY lambda-functions/event-receiver/go.mod lambda-functions/event-receiver/go.sum ./
+
+# Download all dependencies. 
+RUN go mod download
+
+# Copying the rest of the source code
+COPY lambda-functions/event-receiver/app/ ./
+COPY lambda-functions/event-receiver/internal/ ./internal
+
+# Building the Go app
+RUN GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -tags lambda.norpc -o bootstrap . \
+
+# Zipping the build
+RUN zip event-receiver.zip bootstrap
+
+# Start fresh from a smaller image
+FROM alpine:3.14
+
+COPY ./localstack/localstack-init.sh /etc/localstack/init/ready.d/localstack-init.sh
+RUN chmod 544 /etc/localstack/init/ready.d/localstack-init.sh
+
+# Export necessary port
+EXPOSE 80
+
+# Running the command
+CMD ["./bootstrap"]

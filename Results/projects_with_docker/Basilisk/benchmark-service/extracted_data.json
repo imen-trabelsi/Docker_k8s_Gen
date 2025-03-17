@@ -1,0 +1,25 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Spring Boot",
+        "dependencies": {
+            "pom.xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\"\n         xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n    <parent>\n        <artifactId>basilisk</artifactId>\n        <groupId>org.dicegroup</groupId>\n        <version>0.1</version>\n    </parent>\n    <modelVersion>4.0.0</modelVersion>\n\n    <artifactId>benchmark-service</artifactId>\n    <version>0.1</version>\n\n    <properties>\n        <maven.compiler.source>17</maven.compiler.source>\n        <maven.compiler.target>17</maven.compiler.target>\n    </properties>\n\n    <dependencies>\n        <dependency>\n            <groupId>org.dicegroup</groupId>\n            <artifactId>commons</artifactId>\n            <version>0.1</version>\n        </dependency>\n\n        <dependency>\n            <groupId>com.github.docker-java</groupId>\n            <artifactId>docker-java</artifactId>\n            <version>3.2.13</version>\n            <exclusions>\n                <exclusion>\n                    <groupId>org.slf4j</groupId>\n                    <artifactId>jcl-over-slf4j</artifactId>\n                </exclusion>\n            </exclusions>\n        </dependency>\n        <dependency>\n            <groupId>com.github.docker-java</groupId>\n            <artifactId>docker-java-transport-httpclient5</artifactId>\n            <version>3.2.13</version>\n        </dependency>\n        <dependency>\n            <groupId>com.google.guava</groupId>\n            <artifactId>guava</artifactId>\n            <version>19.0</version>\n        </dependency>\n\n        <dependency>\n            <groupId>org.apache.commons</groupId>\n            <artifactId>commons-text</artifactId>\n            <version>1.9</version>\n        </dependency>\n\n        <dependency>\n            <groupId>com.fasterxml.jackson.core</groupId>\n            <artifactId>jackson-databind</artifactId>\n        </dependency>\n    </dependencies>\n\n    <build>\n        <plugins>\n            <plugin>\n                <groupId>org.springframework.boot</groupId>\n                <artifactId>spring-boot-maven-plugin</artifactId>\n                <version>${spring.boot.maven.plugin.version}</version>\n                <configuration>\n                    <mainClass>org.dicegroup.basilisk.benchmarkService.BenchmarkServiceApplication</mainClass>\n                    <!--                        <executable>true</executable>-->\n                </configuration>\n                <executions>\n                    <execution>\n                        <goals>\n                            <goal>repackage</goal>\n                        </goals>\n                    </execution>\n                </executions>\n            </plugin>\n        </plugins>\n    </build>\n\n</project>"
+        },
+        "database": null,
+        "build_system": "Maven",
+        "config_files": {
+            "docker-compose.yml": "version: '3.0'\nservices:\n  jobs-managing-service:\n    build:\n      context: jobs-managing-service\n      dockerfile: Dockerfile\n    image: jobs-managing-service:latest\n    depends_on:\n      - rabbitmq\n    ports:\n      - \"8080:8080\"\n    volumes:\n      - ./.data/:/.data/\n    networks:\n      - basilisk\n\n  benchmark-service:\n    build:\n      context: benchmark-service\n      dockerfile: Dockerfile\n    image: benchmark-service:latest\n    depends_on:\n      - rabbitmq\n      - fuseki\n    ports:\n      - \"8082:8082\"\n    volumes:\n      - /var/run/docker.sock:/var/run/docker.sock\n      - /data/iguana-configs:/iguana-configs\n      - /data/benchmarks:/benchmarks\n      - /data/datasets:/datasets\n    networks:\n      - basilisk\n\n  rabbitmq:\n    image: rabbitmq:management\n    ports:\n      - \"5672:5672\"\n      - \"15672:15672\"\n    networks:\n      - basilisk\n\n  fuseki:\n    image: fuseki\n    command: \"--tdb2 --update --loc databases/results /results\"\n    ports:\n      - \"3030:3030\"\n    volumes:\n      - /data/logs/fuseki:/fuseki/logs\n      - /data/databases/fuseki:/fuseki/databases\n    networks:\n      - basilisk\n\nnetworks:\n  basilisk:\n",
+            "benchmark-service/Dockerfile": "FROM openjdk:17-jdk-alpine\nMAINTAINER dice-research.org\n\nRUN apk --no-cache add curl\n\nRUN wget https://github.com/dice-group/IGUANA/releases/download/v3.3.0/iguana-3.3.0.zip && \\\n    unzip iguana-3.3.0.zip\n\nCOPY target/benchmark-service-0.1.jar benchmark-service-0.1.jar\nENTRYPOINT [\"java\", \"-jar\", \"/benchmark-service-0.1.jar\"]"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "pom.xml"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

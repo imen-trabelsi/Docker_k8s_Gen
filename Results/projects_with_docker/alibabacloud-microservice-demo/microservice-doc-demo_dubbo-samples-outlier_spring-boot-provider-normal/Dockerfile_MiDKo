@@ -1,0 +1,30 @@
+# Use the base image with Java 8
+FROM openjdk:8-jre-alpine
+
+# Update the operating system packages
+RUN apk --no-cache add curl
+
+# Set a working directory
+WORKDIR /app
+
+# Copy the Maven dependencies
+COPY pom.xml ./
+
+# Copy project files to the image
+COPY src ./src
+
+# Build the application
+RUN mvn clean package
+
+# Copy the build
+COPY /target/spring-boot-provider-1.0-SNAPSHOT.jar /app
+
+# Expose the HTTP port
+EXPOSE 8080
+
+# Set a Health Check
+HEALTHCHECK --interval=30s --timeout=3s CMD curl -f http://localhost:8080/actuator/health || exit 1
+
+# Set the command to start the service
+ENTRYPOINT ["sh", "-c"]
+CMD ["java", "-jar", "/app/spring-boot-provider-1.0-SNAPSHOT.jar"]

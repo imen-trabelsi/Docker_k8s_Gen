@@ -1,0 +1,48 @@
+# Use official Maven image as the base image
+FROM maven:3-jdk-8 AS builder
+
+# Set work directory
+WORKDIR /bl-heritrix-modules
+
+# Copy pom.xml and install dependencies
+COPY pom.xml .
+RUN mvn -B -f /bl-heritrix-modules/pom.xml -s /usr/share/maven/ref/settings-docker.xml dependency:resolve-plugins dependency:go-offline
+COPY src/main/resources/GeoLite2-City_20200908/GeoLite2-City.mmdb .
+COPY .mvn ./mvn
+COPY src ./src
+
+# Build the project
+RUN mvn -B -s /usr/share/maven/ref/settings-docker.xml -DskipTests install && cp -r /bl-heritrix-modules/target/dist/heritrix-* /h3-bin
+
+FROM openjdk:8-jdk-alpine
+
+# Copy file from builder image
+
+# Environment Variables
+ENV FOREGROUND=true
+ENV MONITRIX_ENABLE=false
+ENV MAVEN_CONFIG=/home/heritrix/.m2
+
+# Health Check
+HEALTHCHECK --interval=5m --timeout=3s CMD curl -f http://localhost:8443/ || exit 1
+
+# Add user and create required directories
+RUN addgroup --gid 1001 heritrix && adduser --uid 1001 --ingroup heritrix heritrix \
+    && mkdir -p /heritrix /output /home/heritrix /h3-bin /jobs \
+
+USER heritrix
+
+# Copy necessary files to the container
+COPY docker/filebeat.yml /etc/filebeat/filebeat.yml
+COPY docker/logging.properties /h3-bin/conf/logging.properties
+COPY docker/bin/* /h3-bin/bin/
+COPY jobs /jobs
+
+# Expose required port
+EXPOSE 8443
+
+# Set work directory
+WORKDIR /home/heritrix
+
+# Start Spring Boot project
+ENTRYPOINT [ "java", "-jar", "/app.jar" ]

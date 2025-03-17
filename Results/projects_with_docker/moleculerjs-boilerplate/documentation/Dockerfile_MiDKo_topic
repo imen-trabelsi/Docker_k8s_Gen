@@ -1,0 +1,30 @@
+# Use node base image
+FROM node:8.11.4
+
+# Create app directory
+WORKDIR /app
+
+# Install app dependencies
+# A wildcard is used to ensure both package.json AND package-lock.json are copied where available
+COPY package*.json ./
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Copy static file and other necessary directories
+WORKDIR /app/website
+COPY ./docs /app/docs
+COPY ./website /app/website
+
+# Define the build arguments and environmental variables if any
+
+# ADD healthcheck if necessary
+
+# Define the user to use for the Dockerfile if any
+
+# Exposed port
+EXPOSE 3000
+
+# Default command to start the app
+CMD ["yarn", "start"]

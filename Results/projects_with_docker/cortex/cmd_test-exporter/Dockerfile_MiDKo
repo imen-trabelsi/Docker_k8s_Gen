@@ -1,0 +1,14 @@
+# Build the Go app
+FROM alpine:3.19 AS builder
+WORKDIR /app
+COPY go.mod .
+RUN apk add --no-cache go && go mod download
+COPY . .
+RUN CGO_ENABLED=0 GOOS=linux go build -o test-exporter cmd/test-exporter/main.go
+
+# Run the Go app
+FROM alpine:3.19
+LABEL org.opencontainers.image.title="test-exporter"
+RUN apk add --no-cache ca-certificates
+WORKDIR /app
+ENTRYPOINT ["/app/test-exporter"]

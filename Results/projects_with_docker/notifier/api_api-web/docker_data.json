@@ -1,0 +1,28 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:11-jre",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "JAR_FILE"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "ADD target/${JAR_FILE} /api-web.jar"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"java\",",
+                    "\"-jar\",",
+                    "\"/api-web.jar\"]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

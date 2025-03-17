@@ -1,0 +1,39 @@
+# Set the Base image
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+
+# File Author / Maintainer
+LABEL author="Your Name"
+
+# Set Environment Variable to ensure messages are immediately dumped to the stream instead of being buffered
+ENV NODE_ENV=production
+
+# Set the application directory
+WORKDIR /ClassifiedAds.Microservices
+
+# Install all the dependencies
+COPY package.json .
+RUN npm install
+
+COPY ./Common/ClassifiedAds.Application/*.csproj ./Common/ClassifiedAds.Application/
+COPY ./Common/ClassifiedAds.CrossCuttingConcerns/*.csproj ./Common/ClassifiedAds.CrossCuttingConcerns/
+COPY ./Common/ClassifiedAds.Domain/*.csproj ./Common/ClassifiedAds.Domain/
+COPY ./Common/ClassifiedAds.Infrastructure/*.csproj ./Common/ClassifiedAds.Infrastructure/
+COPY ./Services.Identity/ClassifiedAds.Services.Identity/*.csproj ./Services.Identity/ClassifiedAds.Services.Identity/
+COPY ./Services.Identity/ClassifiedAds.Services.Identity.Api/*.csproj ./Services.Identity/ClassifiedAds.Services.Identity.Api/
+COPY . .
+
+# Restore all csproj files
+RUN dotnet restore ./Common/ClassifiedAds.Application/ClassifiedAds.Application.csproj
+RUN dotnet restore ./Common/ClassifiedAds.Infrastructure/ClassifiedAds.Infrastructure.csproj
+RUN dotnet restore ./Services.Identity/ClassifiedAds.Services.Identity/ClassifiedAds.Services.Identity.csproj
+RUN dotnet restore ./Services.Identity/ClassifiedAds.Services.Identity.Api/ClassifiedAds.Services.Identity.Api.csproj
+
+# Build app
+RUN dotnet publish ./Services.Identity/ClassifiedAds.Services.Identity.Api/ClassifiedAds.Services.Identity.Api.csproj -c Release -o out
+
+# Expose ports
+# Please replace xxx with the actual port your application will listen on
+EXPOSE xxx
+
+# Define the command to run your application, here it would set the entry point for the application
+ENTRYPOINT ["dotnet", "ClassifiedAds.Services.Identity.Api.dll"]

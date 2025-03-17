@@ -1,0 +1,22 @@
+{
+    "docker_info": {
+        "base_image": "telegraf:1.2-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY get-eureka-stats.sh /usr/local/bin/",
+            "COPY get-abixen-container-stats.sh /usr/local/bin/"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apk --no-cache add curl jq bash docker"
+            ]
+        ]
+    }
+}

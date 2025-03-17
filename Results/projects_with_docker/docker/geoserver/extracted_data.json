@@ -1,0 +1,201 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".env",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "BUILD.md",
+            "type": "blob"
+        },
+        {
+            "path": "LICENSE",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "bdqueimadas-light",
+            "type": "tree"
+        },
+        {
+            "path": "bdqueimadas-light/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "bdqueimadas-light/docker-entrypoint.sh",
+            "type": "blob"
+        },
+        {
+            "path": "bdqueimadas-light/files",
+            "type": "tree"
+        },
+        {
+            "path": "bdqueimadas-light/files/install_bdqlight.sh",
+            "type": "blob"
+        },
+        {
+            "path": "build-images.sh",
+            "type": "blob"
+        },
+        {
+            "path": "conf",
+            "type": "tree"
+        },
+        {
+            "path": "conf/.pgpass",
+            "type": "blob"
+        },
+        {
+            "path": "conf/bdqueimadas-light",
+            "type": "tree"
+        },
+        {
+            "path": "conf/bdqueimadas-light/.pgpass",
+            "type": "blob"
+        },
+        {
+            "path": "conf/bdqueimadas-light/conf",
+            "type": "tree"
+        },
+        {
+            "path": "conf/bdqueimadas-light/conf/Application.json",
+            "type": "blob"
+        },
+        {
+            "path": "conf/bdqueimadas-light/conf/AttributesTable.json",
+            "type": "blob"
+        },
+        {
+            "path": "conf/bdqueimadas-light/conf/Database.json",
+            "type": "blob"
+        },
+        {
+            "path": "conf/bdqueimadas-light/conf/Filter.json",
+            "type": "blob"
+        },
+        {
+            "path": "conf/bdqueimadas-light/conf/Graphics.json",
+            "type": "blob"
+        },
+        {
+            "path": "conf/bdqueimadas-light/conf/Map.json",
+            "type": "blob"
+        },
+        {
+            "path": "conf/bdqueimadas-light/conf/Tables.json",
+            "type": "blob"
+        },
+        {
+            "path": "conf/terrama2_geoserver_setenv.sh",
+            "type": "blob"
+        },
+        {
+            "path": "conf/terrama2_webapp_db.json.in",
+            "type": "blob"
+        },
+        {
+            "path": "conf/terrama2_webapp_settings.json.in",
+            "type": "blob"
+        },
+        {
+            "path": "conf/terrama2_webmonitor.json.in",
+            "type": "blob"
+        },
+        {
+            "path": "configure-version.sh",
+            "type": "blob"
+        },
+        {
+            "path": "configure.sh",
+            "type": "blob"
+        },
+        {
+            "path": "create-postgres.sh",
+            "type": "blob"
+        },
+        {
+            "path": "deploy-terrama2.sh",
+            "type": "blob"
+        },
+        {
+            "path": "deploy.sh",
+            "type": "blob"
+        },
+        {
+            "path": "docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "geoserver",
+            "type": "tree"
+        },
+        {
+            "path": "geoserver/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "geoserver/docker-entrypoint.sh",
+            "type": "blob"
+        },
+        {
+            "path": "terrama2",
+            "type": "tree"
+        },
+        {
+            "path": "terrama2/Dockerfile.in",
+            "type": "blob"
+        },
+        {
+            "path": "terrama2/files",
+            "type": "tree"
+        },
+        {
+            "path": "terrama2/files/install_terrama2.sh",
+            "type": "blob"
+        },
+        {
+            "path": "terrama2/files/start_terrama2_service.sh",
+            "type": "blob"
+        },
+        {
+            "path": "webapp",
+            "type": "tree"
+        },
+        {
+            "path": "webapp/Dockerfile.in",
+            "type": "blob"
+        },
+        {
+            "path": "webapp/docker-entrypoint.sh",
+            "type": "blob"
+        },
+        {
+            "path": "webmonitor",
+            "type": "tree"
+        },
+        {
+            "path": "webmonitor/Dockerfile.in",
+            "type": "blob"
+        },
+        {
+            "path": "webmonitor/docker-entrypoint.sh",
+            "type": "blob"
+        }
+    ]
+}

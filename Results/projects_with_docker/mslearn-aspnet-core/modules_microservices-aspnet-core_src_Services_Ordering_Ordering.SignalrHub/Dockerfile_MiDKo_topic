@@ -1,0 +1,32 @@
+# Base Stage
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS base
+WORKDIR /app
+EXPOSE 80
+
+# Restore Stage
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS restore
+WORKDIR /src
+COPY ["eShop-Learn.sln", "./"]
+
+# Copy csproj files
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+
+# Copy everything else
+COPY . .
+
+RUN dotnet restore "eShop-Learn.sln"
+
+# Build Stage
+FROM restore AS build
+WORKDIR "/src/src/Services/Ordering/Ordering.SignalrHub"
+RUN dotnet build "Ordering.SignalrHub.csproj" -c Release -o /app/build
+
+# Publish Stage
+FROM build AS publish
+RUN dotnet publish "Ordering.SignalrHub.csproj" -c Release -o /app/publish --no-restore
+
+# Final Stage
+FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS final
+WORKDIR /app
+
+ENTRYPOINT ["dotnet", "Ordering.SignalrHub.dll"]

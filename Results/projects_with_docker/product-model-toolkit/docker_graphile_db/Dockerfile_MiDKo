@@ -1,0 +1,21 @@
+# Use the official Go image from the Docker Hub
+FROM golang:1.16-alpine
+
+# Set the Current Working Directory inside the container
+WORKDIR /app
+
+# Copy go.mod and download dependencies
+COPY go.mod .
+RUN go mod download
+
+# Copy the source code
+COPY . .
+
+# Build the application
+RUN go build -o main .
+
+# This container exposes port 8080 to the outside world
+EXPOSE 8080
+
+# Run the executable
+CMD ["./main"]

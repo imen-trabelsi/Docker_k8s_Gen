@@ -1,0 +1,30 @@
+# Base Image
+FROM node:22.13.1-bookworm as builder
+
+# Set environment variable
+ENV SHELL=/bin/bash
+
+# Create necessary directories
+RUN mkdir -p /builds && \
+    useradd -d /builds/worker -s /bin/bash -m worker && \
+    mkdir /builds/worker/artifacts && \
+
+# Set Working Directory
+WORKDIR /builds/worker
+
+# Copy the requirements file
+COPY requirements.txt ./requirements.txt
+
+# Install dependencies
+RUN apt-get update && \
+    apt-get install -y rabbitmq-server && \
+    pip install -r requirements.txt && \
+
+# Copy all the project files
+COPY . .
+
+# Specify User
+USER worker
+
+# Execution command
+CMD ["/bin/bash", "--login"]

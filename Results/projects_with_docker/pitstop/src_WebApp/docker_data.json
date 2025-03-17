@@ -1,0 +1,60 @@
+{
+    "docker_info": {
+        "base_image": "pitstop-dotnet-sdk-base:1.0",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "7005/tcp"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [
+            "HEALTHCHECK --interval=30s --timeout=3s --retries=1 CMD curl --silent --fail http://localhost:7005/hc || exit 1"
+        ],
+        "build_args": [],
+        "envs": [
+            "ENV NODE_VERSION=20.x",
+            "ENV ASPNETCORE_URLS http://*:7005"
+        ],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY *.csproj ./",
+            "COPY . ./",
+            "WORKDIR /app",
+            "COPY --from=build-env /app/out ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"dotnet\",",
+                    "\"Pitstop.WebApp.dll\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get -y update \\",
+                "&& apt-get install -y curl",
+                "&& curl -sL https://deb.nodesource.com/setup_${NODE_VERSION} | sh -",
+                "&& apt-get install -y nodejs",
+                "&& apt-get clean"
+            ],
+            [
+                "npm install --global gulp-cli",
+                ""
+            ],
+            [
+                "dotnet restore",
+                ""
+            ],
+            [
+                "npm install",
+                "RUN gulp default"
+            ],
+            [
+                "dotnet publish -c Release -o out",
+                ""
+            ]
+        ]
+    }
+}

@@ -1,0 +1,29 @@
+# Use the given base image
+FROM node:10.15.3-alpine
+
+# Create the user and setup the home directory
+RUN addgroup -S nupp && adduser -S -g nupp nupp
+ENV HOME=/home/nupp
+WORKDIR $HOME/app
+
+# Copy package.json and install dependencies
+COPY package.json ./
+RUN npm install
+
+# Copy the rest of the code
+COPY . .
+
+# Change the owner of the home directory to the new user
+RUN chown -R nupp:nupp $HOME/* /usr/local/ && chmod +x /usr/local/bin/dumb-init
+
+# Add the dumb-init executable
+ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.1/dumb-init_1.1.1_amd64 /usr/local/bin/dumb-init
+
+# Clean up the npm cache
+RUN npm cache clean --force 
+
+# Switch to the new user
+USER nupp
+
+# This will run the microservice
+CMD ["dumb-init", "npm", "run", "dev"]

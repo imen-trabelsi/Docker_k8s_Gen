@@ -1,0 +1,51 @@
+# Start with a base image containing Java runtime
+FROM adoptopenjdk/openjdk11:jdk-11.0.6_10-slim
+
+# Set the working directory in the image to /app
+WORKDIR /app
+
+# Add Maintainer Info
+LABEL maintainer="example@email.com"
+
+# Copy pom.xml and source code to the container
+COPY pom.xml .
+COPY src ./src
+
+# Package the application
+RUN ./mvnw package -DskipTests
+
+# Unpack the server and client jars
+RUN cd score-server/target && mv score-server-*-dist.tar.gz score-server.tar.gz && tar zxvf score-server.tar.gz -C /tmp && mv -f /tmp/score-server-*  /tmp/score-server-dist && cp -f /tmp/score-server-dist/lib/score-server.jar $SERVER_JAR_FILE
+RUN cd score-client/target && mv score-client-*-dist.tar.gz score-client.tar.gz && tar zxvf score-client.tar.gz -C /tmp && mv -f /tmp/score-client-*  /tmp/score-client-dist && cp -r /tmp/score-client-dist $CLIENT_DIST_DIR
+
+# Install dependencies
+RUN apt-get update && apt-get install -y libfuse-dev fuse curl wget software-properties-common
+
+# Set environment variables
+ENV SERVER_JAR_FILE    /score-server.jar
+ENV CLIENT_DIST_DIR    /score-client-dist
+ENV JDK_DOWNLOAD_URL https://download.java.net/openjdk/jdk17/ri/openjdk-17+35_linux-x64_bin.tar.gz
+ENV SCORE_CLIENT_HOME /score-client
+ENV PATH /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:$SCORE_CLIENT_HOME/bin
+ENV SCORE_USER score
+ENV SCORE_HOME /score-server
+ENV SCORE_LOGS $SCORE_HOME/logs
+ENV JAR_FILE            /score-server.jar
+ENV SCORE_USER score
+ENV SCORE_UID 9999
+ENV SCORE_GID 9999
+
+# Set user and group
+RUN useradd $SCORE_USER
+RUN addgroup --system --gid $SCORE_GID $SCORE_USER
+RUN adduser --system --uid $SCORE_UID --ingroup $SCORE_USER $SCORE_USER
+
+# Create necessary directories
+RUN mkdir $SCORE_CLIENT_HOME $SCORE_HOME $SCORE_LOGS
+
+# Change ownerships
+RUN chown -R $SCORE_UID:$SCORE_GID $SCORE_HOME
+RUN chown -R $SCORE_USER:$SCORE_USER $SCORE_CLIENT_HOME
+
+# Run the jar file 
+ENTRYPOINT ["java", "-jar", "/app/target/my-app-1.0.0.jar"]

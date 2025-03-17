@@ -1,0 +1,30 @@
+# Set the base image to Node
+FROM node:12-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Install Redis
+RUN apk add --no-cache redis
+
+# Copy package.json file into the container
+COPY package.json .
+
+# Install all the dependencies
+RUN npm install
+
+# Copy all the source code into the container
+COPY . .
+
+# Copy the sshd_config provided by the user
+COPY sshd_config /etc/ssh/sshd_config
+
+# Run the user provided commands
+RUN echo UID_MAX 60000 >> /etc/login.defs
+
+# Expose the application port
+EXPOSE 8080
+
+# Command to execute the application
+CMD [ "npm", "start" ]
+

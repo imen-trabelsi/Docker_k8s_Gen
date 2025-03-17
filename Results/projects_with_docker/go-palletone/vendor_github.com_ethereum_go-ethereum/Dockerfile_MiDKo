@@ -1,0 +1,20 @@
+# Using golang:1.12-alpine as a base image
+FROM golang:1.12-alpine
+
+# Adding the source code to /go-ethereum directory
+COPY . /go-ethereum
+
+# Adding necessary packages and dependencies
+RUN apk add --no-cache make gcc musl-dev linux-headers
+RUN cd /go-ethereum && make geth
+RUN apk add --no-cache ca-certificates
+
+# Copy built binary to /go-ethereum directory
+COPY --from=builder /go-ethereum/build/bin/geth /usr/local/bin/
+
+# Expose the required port
+EXPOSE 8545
+
+# Define the entry point
+ENTRYPOINT ["geth"]
+

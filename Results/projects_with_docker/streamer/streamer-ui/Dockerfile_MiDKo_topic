@@ -1,0 +1,52 @@
+# Build the Streamer UI Client
+FROM node:16 AS build_client
+
+WORKDIR /opt/streamer-ui-client
+
+COPY ./packages/client/package.json ./
+COPY ./packages/client/yarn.lock ./
+COPY ./packages/client/.eslintrc.json ./
+COPY ./packages/client/*.js ./
+COPY ./packages/client/*.less ./
+COPY ./packages/client/src ./src
+COPY ./packages/client/public ./public
+
+RUN yarn install
+COPY ./packages/client/tsconfig.json ./
+RUN yarn build
+
+# Build the Streamer UI Server
+FROM node:16 AS build_server
+
+WORKDIR /opt/streamer-ui-server
+
+COPY ./packages/server/package.json ./
+COPY ./packages/server/yarn.lock ./
+COPY ./packages/server/*.js ./
+COPY ./packages/server/bin ./bin
+COPY ./packages/server/routes ./routes
+COPY ./packages/server/config ./config
+COPY ./packages/server/cron/crontab /etc/cron.d/purge-db
+
+RUN yarn install
+COPY ./packages/server/supervisord.conf ./
+RUN ulimit -n 1024 && apt-get update && apt-get install -y cron curl supervisor
+
+COPY ./packages/server/purge-db.sh ./
+COPY ./packages/server/purge-all-db.sh ./
+COPY ./packages/server/start-server.sh ./
+COPY ./packages/server/start-cron.sh ./
+
+RUN chmod +x purge-db.sh purge-all-db.sh start-server.sh start-cron.sh /etc/cron.d/purge-db && crontab /etc/cron.d/purge-db
+
+# Final image
+FROM node:16
+
+WORKDIR /opt/streamer-ui-server
+
+ENV NODE_ENV production
+
+
+EXPOSE 8080 8443
+
+CMD ["/usr/bin/supervisord", "-c", "/opt/streamer-ui-server/supervisord.conf"]

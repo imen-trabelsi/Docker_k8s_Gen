@@ -1,0 +1,59 @@
+# 2 stages dockerfile: build and release
+
+# Stage 1. Build
+FROM node:10-alpine as builder
+
+# Arguments and Environment Variables
+ARG ENV_CONFIG=docker-pre
+ARG API_URL=https://host-01.polkascan.io/kusama/api/v1
+ARG NETWORK_NAME=Kusama
+ARG NETWORK_ID=kusama
+ARG NETWORK_TYPE=pre
+ARG CHAIN_TYPE=relay
+ARG NETWORK_TOKEN_SYMBOL=KSM
+ARG NETWORK_TOKEN_DECIMALS=12
+ARG NETWORK_COLOR_CODE=d32e79
+ARG NGINX_CONF=nginx/polkascan-prod.conf
+
+ENV ENV_CONFIG=$ENV_CONFIG
+ENV API_URL=$API_URL
+ENV NETWORK_NAME=$NETWORK_NAME
+ENV NETWORK_ID=$NETWORK_ID
+ENV NETWORK_TYPE=$NETWORK_TYPE
+ENV CHAIN_TYPE=$CHAIN_TYPE
+ENV NETWORK_TOKEN_SYMBOL=$NETWORK_TOKEN_SYMBOL
+ENV NETWORK_TOKEN_DECIMALS=$NETWORK_TOKEN_DECIMALS
+ENV NETWORK_COLOR_CODE=$NETWORK_COLOR_CODE
+ENV NGINX_CONF=$NGINX_CONF
+
+# Work in /ng-app directory
+WORKDIR /ng-app
+
+# Copy package.json and package-lock.json
+COPY explorer-gui/package.json explorer-gui/package-lock.json ./
+
+# Install dependencies
+RUN npm ci && mkdir /ng-app && mv ./node_modules ./ng-app
+
+# Copy application code
+COPY explorer-gui/ /ng-app/
+
+# Build the application
+RUN npm run ng build -- --configuration=$ENV_CONFIG --output-path=dist
+
+# Stage 2. Release
+FROM nginx:1.19-alpine
+
+# Copy NGINX configuration file
+COPY $NGINX_CONF /etc/nginx/conf.d/
+
+# Clean up nginx directories
+RUN rm -rf /etc/nginx/conf.d/* \
+
+# Copy built code from Stage 1
+
+# Expose port 80
+EXPOSE 80
+
+# Execution commands
+CMD ["nginx", "-g", "daemon off;"]

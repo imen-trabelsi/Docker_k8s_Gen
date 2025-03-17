@@ -1,0 +1,27 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Django",
+        "dependencies": {
+            "requirements.txt": "-i https://pypi.python.org/simple\n\nBabel==2.3.4\ngunicorn==19.3.0\nDjango==3.1.6\ndjango3-all-access==0.10.0\niso8601==0.1.11\nmysqlclient==2.0.3\nnetaddr==0.7.18\noslo.config==5.2.0\npython-dateutil==2.5.3\npython-keystoneclient==3.16.0\npython-swiftclient==3.7.1\npytz==2015.4\nrequests==2.19.1\ncryptography==2.9.2\npython-swift-cloud-tools==0.1.5\n"
+        },
+        "database": "MySQL",
+        "build_system": "pip",
+        "config_files": {
+            "docker-compose.yml": "version: '3'\n\nservices:\n    mysql:\n        container_name: vault_db\n        image: mysql:5.7\n        volumes:\n            - vol_mysql:/var/lib/mysql\n        ports:\n            - 3307:3306\n        environment:\n            MYSQL_ALLOW_EMPTY_PASSWORD: 1\n        networks:\n            vault_net:\n                ipv4_address: 10.5.0.5\n\n    keystone:\n        container_name: vault_keystone\n        image: stormers/vault-keystone:1.0.0\n        volumes:\n            - vol_keystone:/etc/keystone\n        depends_on:\n            - mysql\n        ports:\n            - 35357:35357\n            - 5000:5000\n        networks:\n            vault_net:\n                ipv4_address: 10.5.0.4\n\n    swift:\n        container_name: vault_swift\n        image: stormers/vault-swift:1.0.0\n        volumes:\n            - vol_swift:/swift/nodes\n        depends_on:\n            - keystone\n        links:\n            - keystone\n        ports:\n            - 8080:8080\n        networks:\n            vault_net:\n                ipv4_address: 10.5.0.3\n        extra_hosts:\n            - 'localhost:10.5.0.4'\n\n    vault:\n        container_name: vault_app\n        build:\n            context: ./\n            dockerfile: helpers/docker/vault/Dockerfile\n        volumes:\n            - .:/home/app/vault\n        depends_on:\n            - mysql\n            - keystone\n            - swift\n        links:\n            - mysql\n            - keystone\n            - swift\n        command: ['./helpers/docker/vault/start.sh']\n        ports:\n            - 8000:8000\n        environment:\n            VAULT_MYSQL_HOST: vault_db\n            VAULT_KEYSTONE_URL: http://vault_keystone:5000/v3\n            VAULT_KEYSTONE_PROJECT: Vault\n            VAULT_KEYSTONE_USERNAME: u_vault\n            VAULT_KEYSTONE_PASSWORD: u_vault\n            VAULT_ENVIRON: docker\n        networks:\n            vault_net:\n                ipv4_address: 10.5.0.2\n        extra_hosts:\n            - 'localhost:10.5.0.4'\n            - 'localhost:10.5.0.3'\n\nvolumes:\n    vol_mysql:\n    vol_keystone:\n    vol_swift:\n\nnetworks:\n    vault_net:\n        driver: bridge\n        ipam:\n            config:\n                - subnet: 10.5.0.0/16\n",
+            "helpers/docker/vault/Dockerfile": "FROM python:3.7\n\nRUN apt-get update \\\n    && apt-get install -y build-essential libssl-dev default-libmysqlclient-dev python-pip python-dev \\\n    && apt-get -y clean all\n\nCOPY . /home/app/vault\n\nRUN pip install -r /home/app/vault/requirements.txt\n\nWORKDIR /home/app/vault\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "bootstrap.sh",
+            "bootstrap_fn.sh",
+            "create_db.py",
+            "keystone.conf",
+            "requirements.txt"
+        ],
+        "folders": []
+    }
+}

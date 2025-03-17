@@ -1,0 +1,19 @@
+# Use specific version of Node.js as base image
+FROM node:8.16-buster-slim
+
+# Update system packages and install git and jq
+RUN apt-get update -y && apt-get install git jq -y
+
+# Change directory and copy project files
+WORKDIR /home/tiler
+COPY package.json yarn.lock /home/tiler/
+COPY . /home/tiler
+
+# Install global and project specific dependencies
+RUN yarn global add carto && yarn install
+
+# Set as non-root user
+USER node
+
+# Run application
+CMD ["yarn", "dev"]

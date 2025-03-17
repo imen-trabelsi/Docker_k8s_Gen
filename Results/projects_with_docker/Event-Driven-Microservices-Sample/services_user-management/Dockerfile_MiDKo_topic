@@ -1,0 +1,20 @@
+# Start with a base image containing JavaScript runtime
+FROM node:11.2.0-alpine
+
+# Set the working directory in the app
+WORKDIR /usr/app
+
+# Copy the current directory contents into the container at /server
+COPY . /server
+
+# Set the working directory in /server
+WORKDIR /server
+
+# Install app dependencies
+RUN npm install
+
+# Make port 3000 available to the world outside this container
+EXPOSE 3000
+
+# Run the application when the container launches
+CMD ["node", "/server/src/server.js"]

@@ -1,0 +1,36 @@
+# Start with base image
+FROM registry.access.redhat.com/ubi9
+
+#Copying the Java artifacts 
+COPY deployment/commons/sso/keycloak/docker/Dockerfile /opt/app
+
+# Setting up the environment dependencies
+RUN dnf install java-11-openjdk-devel -y \
+    && dnf install maven -y \
+    && dnf install -y postgresql \
+    && mkdir -p /mnt/rootfs \
+    && dnf install --installroot /mnt/rootfs curl coreutils --releasever 9 --setopt install_weak_deps=false --nodocs -y \
+    && dnf --installroot /mnt/rootfs clean all \
+    && dnf clean all \
+    
+# Copy the pom.xml  file where it is expected to be  
+COPY pom.xml /opt/app  
+
+# Copy Additional Files
+COPY --from=ubi-micro-build /mnt/rootfs /
+COPY ../entrypoint/run-keycloak /opt/run-keycloak
+
+# Set the working directory.
+WORKDIR /opt/app 
+
+# Build the microservice with all the dependencies 
+RUN mvn clean install -DskipTests
+
+# Run under the unprivileged user 
+USER 0
+
+# Provide the port on which the microservice runs on  
+EXPOSE 8080 
+
+# Setting the entry point to start the microservice 
+ENTRYPOINT ["/opt/run-keycloak"]

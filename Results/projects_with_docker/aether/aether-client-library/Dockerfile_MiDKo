@@ -1,0 +1,30 @@
+# Use the specified image as base
+FROM python:3.10-slim
+
+# Set the Work Directory
+WORKDIR /code
+
+# Copy the requirements file
+COPY ./conf/pip /code/conf/pip
+
+# Copy the rest of the application
+COPY ./ /code
+
+# Set environment variables
+ENV VIRTUAL_ENV=/var/run/aether/venv
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+
+# Install dependencies
+RUN apt-get update -qq > /dev/null && \
+    apt-get -qq --yes --allow-downgrades --allow-remove-essential --allow-change-held-packages install gcc libssl-dev > /dev/null && \
+    mkdir -p $VIRTUAL_ENV && \
+    python3 -m venv $VIRTUAL_ENV && \
+    pip install -q --upgrade pip && \
+    pip install -q -r /code/conf/pip/requirements.txt && \
+    mkdir -p /var/tmp && \
+
+# Expose port
+EXPOSE 80
+
+# Set ENTRYPOINT
+ENTRYPOINT ["/code/entrypoint.sh"]

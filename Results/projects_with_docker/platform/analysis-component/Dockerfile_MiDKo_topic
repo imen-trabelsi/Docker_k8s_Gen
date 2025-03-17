@@ -1,0 +1,33 @@
+# Use maven:3-eclipse-temurin-11 as base image
+FROM maven:3-eclipse-temurin-11 AS build
+
+# Set work directory
+WORKDIR /usr/src/hobbit-platform
+
+# Install dependencies from pom.xml
+COPY parent-pom/pom.xml parent-pom/
+RUN mvn --file parent-pom -Dmaven.test.skip=true install
+
+# Set build argument
+ARG project=analysis-component
+
+# Go offline with project pom.xml dependencies
+COPY ${project}/pom.xml ${project}/
+RUN mvn --file ${project} dependency:go-offline
+
+# Copy project files
+COPY ${project}/src ${project}/src
+
+# Build the project 
+RUN mvn --file ${project} -Dmaven.test.skip=true package
+
+# Use OpenJDK to run our application
+FROM eclipse-temurin:11-jre
+
+# Set work directory
+WORKDIR /app
+
+# Copy built application JAR to work dir
+
+# Set up execution command
+CMD ["java", "-cp", "analysis-component.jar", "org.hobbit.core.run.ComponentStarter", "org.hobbit.analysis.AnalysisComponent"]

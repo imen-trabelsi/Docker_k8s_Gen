@@ -1,0 +1,38 @@
+# From Base Image
+FROM ontop/ontop-endpoint:latest
+
+# Set Working Directory
+WORKDIR /opt/ontop
+
+# Copy dependencies
+COPY pom.xml .
+
+# Build with Maven
+RUN mvn dependency:go-offline -B
+
+# Copy rest of the source code
+COPY src /src
+
+# Add necessary files
+ADD https://repo1.maven.org/maven2/org/postgresql/postgresql/42.2.19/postgresql-42.2.19.jar jdbc/
+COPY lgd.obda input/lgd.obda
+COPY lgd.owl input/lgd.owl
+COPY lgd.portal.toml input/lgd.portal.toml
+COPY catalog-v001.xml input/catalog-v001.xml
+COPY library input/library
+
+# Build the project
+RUN mvn clean install
+
+# Expose the port
+EXPOSE 8080
+
+# Health Checks
+HEALTHCHECK CMD curl --fail http://localhost:8080 || exit 1
+
+# Run Commands
+RUN sleep 3
+ENV
+
+# Run App
+CMD ["java", "-jar", "/target/your-artifactId-version.jar"]

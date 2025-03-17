@@ -1,0 +1,35 @@
+# Set base image 
+FROM ${IMAGE_BASE_NAME}:base-builder-${BASE_BUILDER_IMAGE_HASH} AS builder
+
+# Set up environment
+ENV HOME=/app
+ENV PATH="/opt/venv/bin:$PATH"
+
+# Build dependencies
+COPY pyproject.toml .
+RUN python -m venv /opt/venv && \
+. /opt/venv/bin/activate && \
+pip install --no-cache-dir -U "pip==22.*" -U "wheel>0.38.0" && \
+poetry install --no-dev --no-root --no-interaction && \
+poetry build -f wheel -n && \
+pip install --no-deps dist/*.whl && \
+
+# Copy files
+COPY . /build/
+WORKDIR /build
+
+# Set permission
+RUN chgrp -R 0 /app && chmod -R g=u /app && chmod o+wr /app
+USER 1001
+
+# Set up working directory
+WORKDIR /app
+
+# Expose ports
+EXPOSE 5005
+
+# Set up entrypoint
+ENTRYPOINT ["rasa"]
+
+# Set up command
+CMD ["--help"]

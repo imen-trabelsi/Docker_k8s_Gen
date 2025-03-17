@@ -1,0 +1,16 @@
+# Use the existing base image
+FROM lgd-build-nominatim:4.0.1
+
+# Set working directory
+WORKDIR /lgd/osmosis
+
+# Copy necessary files to the working directory
+COPY configuration.txt.dist .
+COPY start.sh .
+COPY wait-for-postgres.sh .
+
+# Ensure scripts are executable
+RUN chmod +x ./start.sh ./wait-for-postgres.sh
+
+# Make these scripts the entrypoint
+ENTRYPOINT ["./wait-for-postgres.sh", "./start.sh"]

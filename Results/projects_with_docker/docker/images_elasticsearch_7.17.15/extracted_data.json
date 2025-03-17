@@ -1,0 +1,1289 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".github",
+            "type": "tree"
+        },
+        {
+            "path": ".github/workflows",
+            "type": "tree"
+        },
+        {
+            "path": ".github/workflows/elasticsearch-image-builder.yml",
+            "type": "blob"
+        },
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": ".gitmodules",
+            "type": "blob"
+        },
+        {
+            "path": "LICENSE",
+            "type": "blob"
+        },
+        {
+            "path": "README.md",
+            "type": "blob"
+        },
+        {
+            "path": "cmd",
+            "type": "tree"
+        },
+        {
+            "path": "cmd/docker.sh",
+            "type": "blob"
+        },
+        {
+            "path": "cmd/download.sh",
+            "type": "blob"
+        },
+        {
+            "path": "cmd/elastic.sh",
+            "type": "blob"
+        },
+        {
+            "path": "cmd/import.sh",
+            "type": "blob"
+        },
+        {
+            "path": "cmd/prepare.sh",
+            "type": "blob"
+        },
+        {
+            "path": "cmd/system.sh",
+            "type": "blob"
+        },
+        {
+            "path": "cmd/test.sh",
+            "type": "blob"
+        },
+        {
+            "path": "common",
+            "type": "tree"
+        },
+        {
+            "path": "common/preview",
+            "type": "tree"
+        },
+        {
+            "path": "common/preview/index.html",
+            "type": "blob"
+        },
+        {
+            "path": "images",
+            "type": "tree"
+        },
+        {
+            "path": "images/elasticsearch",
+            "type": "tree"
+        },
+        {
+            "path": "images/elasticsearch/2.4",
+            "type": "tree"
+        },
+        {
+            "path": "images/elasticsearch/2.4/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "images/elasticsearch/2.4/elasticsearch.yml",
+            "type": "blob"
+        },
+        {
+            "path": "images/elasticsearch/5.6.12",
+            "type": "tree"
+        },
+        {
+            "path": "images/elasticsearch/5.6.12/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "images/elasticsearch/5.6.12/elasticsearch.yml",
+            "type": "blob"
+        },
+        {
+            "path": "images/elasticsearch/6.8.5",
+            "type": "tree"
+        },
+        {
+            "path": "images/elasticsearch/6.8.5/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "images/elasticsearch/6.8.5/elasticsearch.yml",
+            "type": "blob"
+        },
+        {
+            "path": "images/elasticsearch/7.17.15",
+            "type": "tree"
+        },
+        {
+            "path": "images/elasticsearch/7.17.15/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "images/elasticsearch/7.17.15/elasticsearch.yml",
+            "type": "blob"
+        },
+        {
+            "path": "images/elasticsearch/7.5.1",
+            "type": "tree"
+        },
+        {
+            "path": "images/elasticsearch/7.5.1/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "images/elasticsearch/7.5.1/elasticsearch.yml",
+            "type": "blob"
+        },
+        {
+            "path": "images/elasticsearch/8.12.2-beta",
+            "type": "tree"
+        },
+        {
+            "path": "images/elasticsearch/8.12.2-beta/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "images/elasticsearch/8.12.2-beta/elasticsearch.yml",
+            "type": "blob"
+        },
+        {
+            "path": "images/valhalla",
+            "type": "tree"
+        },
+        {
+            "path": "images/valhalla/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "lib",
+            "type": "tree"
+        },
+        {
+            "path": "lib/cli.sh",
+            "type": "blob"
+        },
+        {
+            "path": "lib/env.sh",
+            "type": "blob"
+        },
+        {
+            "path": "pelias",
+            "type": "blob"
+        },
+        {
+            "path": "projects",
+            "type": "tree"
+        },
+        {
+            "path": "projects/australia",
+            "type": "tree"
+        },
+        {
+            "path": "projects/australia/.env",
+            "type": "blob"
+        },
+        {
+            "path": "projects/australia/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "projects/australia/blacklist",
+            "type": "tree"
+        },
+        {
+            "path": "projects/australia/blacklist/osm.txt",
+            "type": "blob"
+        },
+        {
+            "path": "projects/australia/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/australia/pelias.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/australia/test_cases",
+            "type": "tree"
+        },
+        {
+            "path": "projects/australia/test_cases/search_address.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/australia/test_cases/search_venue.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/austria",
+            "type": "tree"
+        },
+        {
+            "path": "projects/austria/.env",
+            "type": "blob"
+        },
+        {
+            "path": "projects/austria/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "projects/austria/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/austria/elasticsearch.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/austria/pelias.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/belgium",
+            "type": "tree"
+        },
+        {
+            "path": "projects/belgium/.env",
+            "type": "blob"
+        },
+        {
+            "path": "projects/belgium/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "projects/belgium/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/belgium/elasticsearch.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/belgium/pelias.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/brazil",
+            "type": "tree"
+        },
+        {
+            "path": "projects/brazil/.env",
+            "type": "blob"
+        },
+        {
+            "path": "projects/brazil/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "projects/brazil/blacklist",
+            "type": "tree"
+        },
+        {
+            "path": "projects/brazil/blacklist/osm.txt",
+            "type": "blob"
+        },
+        {
+            "path": "projects/brazil/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/brazil/pelias.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/denmark",
+            "type": "tree"
+        },
+        {
+            "path": "projects/denmark/.env",
+            "type": "blob"
+        },
+        {
+            "path": "projects/denmark/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "projects/denmark/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/denmark/elasticsearch.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/denmark/pelias.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/france",
+            "type": "tree"
+        },
+        {
+            "path": "projects/france/.env",
+            "type": "blob"
+        },
+        {
+            "path": "projects/france/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "projects/france/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/france/elasticsearch.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/france/pelias.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/germany",
+            "type": "tree"
+        },
+        {
+            "path": "projects/germany/.env",
+            "type": "blob"
+        },
+        {
+            "path": "projects/germany/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "projects/germany/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/germany/elasticsearch.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/germany/pelias.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/israel",
+            "type": "tree"
+        },
+        {
+            "path": "projects/israel/.env",
+            "type": "blob"
+        },
+        {
+            "path": "projects/israel/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "projects/israel/blacklist",
+            "type": "tree"
+        },
+        {
+            "path": "projects/israel/blacklist/osm.txt",
+            "type": "blob"
+        },
+        {
+            "path": "projects/israel/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/israel/elasticsearch.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/israel/pelias.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/italy",
+            "type": "tree"
+        },
+        {
+            "path": "projects/italy/.env",
+            "type": "blob"
+        },
+        {
+            "path": "projects/italy/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "projects/italy/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/italy/elasticsearch.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/italy/pelias.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/jamaica",
+            "type": "tree"
+        },
+        {
+            "path": "projects/jamaica/.env",
+            "type": "blob"
+        },
+        {
+            "path": "projects/jamaica/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "projects/jamaica/blacklist",
+            "type": "tree"
+        },
+        {
+            "path": "projects/jamaica/blacklist/osm.txt",
+            "type": "blob"
+        },
+        {
+            "path": "projects/jamaica/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/jamaica/pelias.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/jamaica/test_cases",
+            "type": "tree"
+        },
+        {
+            "path": "projects/jamaica/test_cases/search_address.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/jamaica/test_cases/search_venue.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/kyrgyzstan",
+            "type": "tree"
+        },
+        {
+            "path": "projects/kyrgyzstan/.env",
+            "type": "blob"
+        },
+        {
+            "path": "projects/kyrgyzstan/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "projects/kyrgyzstan/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/kyrgyzstan/elasticsearch.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/kyrgyzstan/pelias.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/las-vegas-metro",
+            "type": "tree"
+        },
+        {
+            "path": "projects/las-vegas-metro/.env",
+            "type": "blob"
+        },
+        {
+            "path": "projects/las-vegas-metro/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "projects/las-vegas-metro/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/las-vegas-metro/pelias.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/las-vegas-metro/synonyms",
+            "type": "tree"
+        },
+        {
+            "path": "projects/las-vegas-metro/synonyms/custom_name.txt",
+            "type": "blob"
+        },
+        {
+            "path": "projects/las-vegas-metro/synonyms/custom_street.txt",
+            "type": "blob"
+        },
+        {
+            "path": "projects/las-vegas-metro/test_cases",
+            "type": "tree"
+        },
+        {
+            "path": "projects/las-vegas-metro/test_cases/search_address.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/las-vegas-metro/test_cases/search_venue.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/lithuania",
+            "type": "tree"
+        },
+        {
+            "path": "projects/lithuania/.env",
+            "type": "blob"
+        },
+        {
+            "path": "projects/lithuania/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "projects/lithuania/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/lithuania/elasticsearch.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/lithuania/pelias.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/los-angeles-metro",
+            "type": "tree"
+        },
+        {
+            "path": "projects/los-angeles-metro/.env",
+            "type": "blob"
+        },
+        {
+            "path": "projects/los-angeles-metro/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "projects/los-angeles-metro/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/los-angeles-metro/pelias.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/los-angeles-metro/synonyms",
+            "type": "tree"
+        },
+        {
+            "path": "projects/los-angeles-metro/synonyms/custom_name.txt",
+            "type": "blob"
+        },
+        {
+            "path": "projects/los-angeles-metro/synonyms/custom_street.txt",
+            "type": "blob"
+        },
+        {
+            "path": "projects/los-angeles-metro/test_cases",
+            "type": "tree"
+        },
+        {
+            "path": "projects/los-angeles-metro/test_cases/search_venue.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/netherlands",
+            "type": "tree"
+        },
+        {
+            "path": "projects/netherlands/.env",
+            "type": "blob"
+        },
+        {
+            "path": "projects/netherlands/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "projects/netherlands/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/netherlands/elasticsearch.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/netherlands/pelias.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/new-york-city",
+            "type": "tree"
+        },
+        {
+            "path": "projects/new-york-city/.env",
+            "type": "blob"
+        },
+        {
+            "path": "projects/new-york-city/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "projects/new-york-city/blacklist",
+            "type": "tree"
+        },
+        {
+            "path": "projects/new-york-city/blacklist/osm.txt",
+            "type": "blob"
+        },
+        {
+            "path": "projects/new-york-city/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/new-york-city/pelias.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/new-york-city/synonyms",
+            "type": "tree"
+        },
+        {
+            "path": "projects/new-york-city/synonyms/custom_name.txt",
+            "type": "blob"
+        },
+        {
+            "path": "projects/new-york-city/synonyms/custom_street.txt",
+            "type": "blob"
+        },
+        {
+            "path": "projects/new-york-city/test_cases",
+            "type": "tree"
+        },
+        {
+            "path": "projects/new-york-city/test_cases/search_address.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/new-york-city/test_cases/search_venue.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america",
+            "type": "tree"
+        },
+        {
+            "path": "projects/north-america/.env",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/pelias.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases",
+            "type": "tree"
+        },
+        {
+            "path": "projects/north-america/test_cases/address_interpolation.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/address_matching.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/address_parsing.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/address_type.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/admin_lookup.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/autocomplete_acushnet_antiques.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/autocomplete_admin_areas.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/autocomplete_boundary_country.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/autocomplete_boundary_rect.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/autocomplete_daly_city.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/autocomplete_focus.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/autocomplete_jitter.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/autocomplete_poi.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/autocomplete_stop_words.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/autocomplete_street_centroids.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/autocomplete_street_fallback.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/autocomplete_streets.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/autocomplete_venues.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/balance.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/brooklyn.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/confidence_score.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/encoding.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/exact_matches.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/fallback.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/international.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/labels.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/landmarks.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/missing_postcodes.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/place.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/placeholder_altnames.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/placeholder_general.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/placeholder_geometric_filters.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/placeholder_sorting.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/properties_source_id.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/quattroshapes_popularity.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/reverse_address.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/reverse_coarse.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/reverse_coordinate_wrapping.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/san_francisco.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/search.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/search_abbreviations.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/search_city_country.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/search_coarse.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/search_geodisambiguation.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/search_iso2_to_iso3.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/search_layers.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/search_poi.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/search_postalcodes.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/search_street_centroids.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/structured_address_parsing.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/structured_geocoding.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/structured_postalcodes.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/tizen-sdk-geocoder.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/tizen-sdk-places.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/university.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/washington_dc.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/wof_counties.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/wof_countries.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/wof_localadmins.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/wof_localities.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/wof_neighbourhoods.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/north-america/test_cases/wof_regions.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/norway",
+            "type": "tree"
+        },
+        {
+            "path": "projects/norway/.env",
+            "type": "blob"
+        },
+        {
+            "path": "projects/norway/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "projects/norway/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/norway/elasticsearch.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/norway/pelias.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/planet",
+            "type": "tree"
+        },
+        {
+            "path": "projects/planet/.env",
+            "type": "blob"
+        },
+        {
+            "path": "projects/planet/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "projects/planet/acceptance-tests",
+            "type": "commit"
+        },
+        {
+            "path": "projects/planet/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/planet/pelias.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/planet/test_cases",
+            "type": "blob"
+        },
+        {
+            "path": "projects/poland",
+            "type": "tree"
+        },
+        {
+            "path": "projects/poland/.env",
+            "type": "blob"
+        },
+        {
+            "path": "projects/poland/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "projects/poland/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/poland/elasticsearch.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/poland/pelias.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/poland/test_cases",
+            "type": "tree"
+        },
+        {
+            "path": "projects/poland/test_cases/search_address.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/portland-metro",
+            "type": "tree"
+        },
+        {
+            "path": "projects/portland-metro/.env",
+            "type": "blob"
+        },
+        {
+            "path": "projects/portland-metro/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "projects/portland-metro/blacklist",
+            "type": "tree"
+        },
+        {
+            "path": "projects/portland-metro/blacklist/osm.txt",
+            "type": "blob"
+        },
+        {
+            "path": "projects/portland-metro/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/portland-metro/pelias.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/portland-metro/synonyms",
+            "type": "tree"
+        },
+        {
+            "path": "projects/portland-metro/synonyms/custom_name.txt",
+            "type": "blob"
+        },
+        {
+            "path": "projects/portland-metro/synonyms/custom_street.txt",
+            "type": "blob"
+        },
+        {
+            "path": "projects/portland-metro/test_cases",
+            "type": "tree"
+        },
+        {
+            "path": "projects/portland-metro/test_cases/libpostal_quirks.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/portland-metro/test_cases/search_address.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/portland-metro/test_cases/search_venue.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/san-jose-metro",
+            "type": "tree"
+        },
+        {
+            "path": "projects/san-jose-metro/.env",
+            "type": "blob"
+        },
+        {
+            "path": "projects/san-jose-metro/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "projects/san-jose-metro/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/san-jose-metro/pelias.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/san-jose-metro/synonyms",
+            "type": "tree"
+        },
+        {
+            "path": "projects/san-jose-metro/synonyms/custom_name.txt",
+            "type": "blob"
+        },
+        {
+            "path": "projects/san-jose-metro/synonyms/custom_street.txt",
+            "type": "blob"
+        },
+        {
+            "path": "projects/san-jose-metro/test_cases",
+            "type": "tree"
+        },
+        {
+            "path": "projects/san-jose-metro/test_cases/search_venue.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/singapore",
+            "type": "tree"
+        },
+        {
+            "path": "projects/singapore/.env",
+            "type": "blob"
+        },
+        {
+            "path": "projects/singapore/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "projects/singapore/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/singapore/pelias.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/singapore/test_cases",
+            "type": "tree"
+        },
+        {
+            "path": "projects/singapore/test_cases/search_venue.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/south-africa",
+            "type": "tree"
+        },
+        {
+            "path": "projects/south-africa/.env",
+            "type": "blob"
+        },
+        {
+            "path": "projects/south-africa/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "projects/south-africa/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/south-africa/pelias.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/south-africa/synonyms",
+            "type": "tree"
+        },
+        {
+            "path": "projects/south-africa/synonyms/custom_name.txt",
+            "type": "blob"
+        },
+        {
+            "path": "projects/south-africa/synonyms/custom_street.txt",
+            "type": "blob"
+        },
+        {
+            "path": "projects/south-africa/test_cases",
+            "type": "tree"
+        },
+        {
+            "path": "projects/south-africa/test_cases/search_address.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/south-america",
+            "type": "tree"
+        },
+        {
+            "path": "projects/south-america/.env",
+            "type": "blob"
+        },
+        {
+            "path": "projects/south-america/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "projects/south-america/blacklist",
+            "type": "tree"
+        },
+        {
+            "path": "projects/south-america/blacklist/osm.txt",
+            "type": "blob"
+        },
+        {
+            "path": "projects/south-america/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/south-america/pelias.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/texas",
+            "type": "tree"
+        },
+        {
+            "path": "projects/texas/.env",
+            "type": "blob"
+        },
+        {
+            "path": "projects/texas/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "projects/texas/blacklist",
+            "type": "tree"
+        },
+        {
+            "path": "projects/texas/blacklist/osm.txt",
+            "type": "blob"
+        },
+        {
+            "path": "projects/texas/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "projects/texas/pelias.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/texas/synonyms",
+            "type": "tree"
+        },
+        {
+            "path": "projects/texas/synonyms/custom_name.txt",
+            "type": "blob"
+        },
+        {
+            "path": "projects/texas/synonyms/custom_street.txt",
+            "type": "blob"
+        },
+        {
+            "path": "projects/texas/test_cases",
+            "type": "tree"
+        },
+        {
+            "path": "projects/texas/test_cases/libpostal_quirks.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/texas/test_cases/search_address.json",
+            "type": "blob"
+        },
+        {
+            "path": "projects/texas/test_cases/search_venue.json",
+            "type": "blob"
+        }
+    ]
+}

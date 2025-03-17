@@ -1,0 +1,33 @@
+# Start with a base image containing Java runtime
+FROM openjdk:11-jdk-slim
+
+# The application's jar file
+ARG JAR_FILE=target/*.jar
+
+# Add the application's jar to the container
+COPY ${JAR_FILE} app.jar
+
+# Add the create-topics.sh script to the container
+COPY create-topics.sh create-topics.sh
+
+# Add the topics.txt file to the container
+COPY topics.txt topics.txt
+
+# Set the working directory in the image
+WORKDIR /app/
+
+# Update permissions to execute the shell script
+RUN chmod +x create-topics.sh
+
+# Provide a health check to test our service instance to see if it’s up and running
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD curl -f http://localhost:8080/actuator/health || exit 1
+
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
+
+# Run the create-topics.sh shell script when the docker container starts
+ENTRYPOINT ["/app/create-topics.sh"]
+
+# Run the app. Here we use "entrypoint" instead of "CMD" to make our command arguments overridable from the command line
+ENTRYPOINT ["java","-jar","/app.jar"]

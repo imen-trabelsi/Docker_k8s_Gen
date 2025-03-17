@@ -1,0 +1,18 @@
+# Stage 1 - build
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+WORKDIR /src
+COPY ["src/Services/LibraryManagement/LibraryManagement.API/LibraryManagement.API.csproj", "src/Services/LibraryManagement/LibraryManagement.API/"]
+RUN dotnet restore "src/Services/LibraryManagement/LibraryManagement.API/LibraryManagement.API.csproj"
+COPY . .
+WORKDIR "/src/src/Services/LibraryManagement/LibraryManagement.API"
+RUN dotnet build "LibraryManagement.API.csproj" -c Release -o /app/build
+
+# Stage 2 - publish
+FROM build AS publish
+RUN dotnet publish "LibraryManagement.API.csproj" -c Release -o /app/publish
+
+# Stage 3 - production
+FROM mcr.microsoft.com/dotnet/aspnet:5.0
+WORKDIR /app
+EXPOSE 80
+ENTRYPOINT ["dotnet", "LibraryManagement.API.dll"]

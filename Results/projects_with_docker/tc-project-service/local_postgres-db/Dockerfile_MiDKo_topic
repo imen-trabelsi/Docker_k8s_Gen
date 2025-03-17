@@ -1,0 +1,43 @@
+# Fetch the Base Image
+FROM postgres:12.3 AS build
+
+# Set label
+LABEL maintainer="Your Name <your.email@example.org>"
+
+# Update packages and install maven
+RUN apt-get update &&\
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Copy the pom.xml file
+COPY ./pom.xml ./
+
+# Get all the downloads out of the way.
+RUN mvn dependency:go-offline -B
+
+# Copy rest of the files
+COPY . .
+
+# Build the service
+RUN mvn clean install
+
+# Start with a clean image again
+FROM postgres:12.3
+
+# Set the working directory
+WORKDIR /root/
+
+# Copy Over the Jar from the 'build' image
+
+# Copy PostgreSQL script to Docker-entrypoint
+COPY create-multiple-postgresql-databases.sh /docker-entrypoint-initdb.d/
+
+# Add execute permissions to script
+RUN chmod +x /docker-entrypoint-initdb.d/create-multiple-postgresql-databases.sh
+
+# Declare port number that needs to be exposed
+EXPOSE [Your Exposed Port Here]
+
+# Command to start the service
+CMD ["java", "-jar", "./app.jar"]

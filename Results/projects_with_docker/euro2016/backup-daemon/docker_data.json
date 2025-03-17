@@ -1,0 +1,34 @@
+{
+    "docker_info": {
+        "base_image": "alpine:3.20.0",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ./crontab /etc/crontabs/root",
+            "WORKDIR /app",
+            "COPY ./backup.sh ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"crond\",",
+                    "\"-f\",",
+                    "\"-d\",",
+                    "\"8\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk update && apk upgrade && apk add postgresql-client",
+                ""
+            ]
+        ]
+    }
+}

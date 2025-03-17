@@ -1,0 +1,16 @@
+#---------------------- Python Base Image ----------------------#
+FROM python:slim
+
+#---------------------- Set working directory ----------------------#
+WORKDIR /usr/local/src
+
+#---------------------- Install RethinkDB package ----------------------#
+RUN pip install rethinkdb
+
+#---------------------- Copy source files ----------------------#
+COPY init_db.py .
+
+#---------------------- Set entry point ----------------------#
+CMD ["python", "init_db.py"]
+
+

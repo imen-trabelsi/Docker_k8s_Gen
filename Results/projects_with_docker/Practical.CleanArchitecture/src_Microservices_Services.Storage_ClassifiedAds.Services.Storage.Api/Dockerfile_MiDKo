@@ -1,0 +1,30 @@
+# Start with the user-defined base image
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
+
+# Set the working directory
+WORKDIR /ClassifiedAds.Microservices
+
+# Copy project files and restore dependencies
+COPY ./Common/ClassifiedAds.Application/*.csproj ./Common/ClassifiedAds.Application/
+COPY ./Common/ClassifiedAds.CrossCuttingConcerns/*.csproj ./Common/ClassifiedAds.CrossCuttingConcerns/
+COPY ./Common/ClassifiedAds.Domain/*.csproj ./Common/ClassifiedAds.Domain/
+COPY ./Common/ClassifiedAds.Infrastructure/*.csproj ./Common/ClassifiedAds.Infrastructure/
+COPY ./Services.Storage/ClassifiedAds.Services.Storage.Api/*.csproj ./Services.Storage/ClassifiedAds.Services.Storage.Api/
+COPY . ./
+RUN dotnet restore ./Common/ClassifiedAds.Application/ClassifiedAds.Application.csproj
+RUN dotnet restore ./Common/ClassifiedAds.Infrastructure/ClassifiedAds.Infrastructure.csproj
+RUN dotnet restore ./Services.Storage/ClassifiedAds.Services.Storage.Api/ClassifiedAds.Services.Storage.Api.csproj
+
+# Build the project
+RUN dotnet publish ./Services.Storage/ClassifiedAds.Services.Storage.Api/ClassifiedAds.Services.Storage.Api.csproj -c Release -o out 
+
+# Final stage
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+
+# Set the working directory
+WORKDIR /ClassifiedAds.Microservices
+
+# Copy built files from builder stage
+
+# Set the entrypoint
+ENTRYPOINT ["dotnet", "ClassifiedAds.Services.Storage.Api.dll"]

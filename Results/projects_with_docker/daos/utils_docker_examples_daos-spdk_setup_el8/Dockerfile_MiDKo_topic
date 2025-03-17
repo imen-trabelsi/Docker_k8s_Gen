@@ -1,0 +1,39 @@
+# Set the base image
+FROM $DAOS_DOCKER_IMAGE_NSP/daos-base-$LINUX_DISTRO:$DAOS_DOCKER_IMAGE_TAG
+
+# Label the image
+LABEL maintainer="daos@daos.groups.io"
+
+# Set Work directory
+WORKDIR /app
+
+# Copy the python application and its dependencies file into the docker image
+COPY . /app
+
+# Set environment variables for specific versions of Linux distro, DAOS, Docker Image Namespace and Docker Image Tag
+ARG LINUX_DISTRO=""
+ENV LINUX_DISTRO $LINUX_DISTRO
+ARG DAOS_DOCKER_IMAGE_NSP=""
+ENV DAOS_DOCKER_IMAGE_NSP $DAOS_DOCKER_IMAGE_NSP
+ARG DAOS_DOCKER_IMAGE_TAG=""
+ENV DAOS_DOCKER_IMAGE_TAG $DAOS_DOCKER_IMAGE_TAG
+ARG DAOS_VERSION=""
+ENV DAOS_VERSION $DAOS_VERSION
+
+# Install python & its dependencies
+RUN for it in $DAOS_VERSION ; do \
+    done &&\
+    echo "[INFO] Installing SPDK tools dependencies" ;\
+    dnf install kmod;\
+    echo "[INFO] Installing SPDK tools";\
+    dnf install spdk-tools ;\
+    dnf clean all;\
+
+# Copy config files and Jenkinsfile
+COPY utils/docker/examples/.env .
+COPY utils/docker/examples/daos-spdk_setup/el8/Dockerfile .
+COPY Jenkinsfile .
+    
+# Run the application 
+ENTRYPOINT ["/usr/share/spdk/scripts/setup.sh"]
+CMD ["status"]

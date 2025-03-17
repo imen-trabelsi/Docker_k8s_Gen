@@ -1,0 +1,35 @@
+{
+    "docker_info": {
+        "base_image": "reg.docker.alibaba-inc.com/fuyi_docker/arms-baseline:1.0",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "admin:admin"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ./server/target/arms-prometheus-gateway  /home/admin/arms-prometheus-gateway",
+            "WORKDIR /home/admin/arms-prometheus-gateway",
+            "ADD admin /home/admin",
+            "ADD alidata /alidata"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"./bin/app.sh\",",
+                    "\"start\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "chown -R admin:admin /home/admin/arms-prometheus-gateway",
+                ""
+            ]
+        ]
+    }
+}

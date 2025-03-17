@@ -1,0 +1,48 @@
+# Use the official lightweight Node.js 12 image.
+# https://hub.docker.com/_/node
+FROM --platform="${BUILD_PLATFORM}" node:12-slim
+
+# Set user
+USER ${USER}
+
+# Change working Directory
+WORKDIR /app
+
+# Copy local code to the container image.
+COPY packages/director/ ./packages/director/
+COPY packages/common/ ./packages/common
+COPY packages/mongo/ ./packages/mongo
+COPY packages/logger/ ./packages/logger
+COPY package.json ./
+COPY yarn.lock ./
+COPY tsconfig.json ./
+
+# Install dependencies.
+RUN yarn install --frozen-lockfile
+
+RUN yarn workspace @sorry-cypress/common build
+RUN yarn workspace @sorry-cypress/mongo build
+RUN yarn workspace @sorry-cypress/logger build
+RUN yarn workspace @sorry-cypress/director build
+RUN yarn install --production --frozen-lockfile
+
+# Install curl and prune
+RUN apk --no-cache add curl && \
+  curl -sf https://gobinaries.com/tj/node-prune | sh && \
+  node-prune && \
+
+# Set Environment Variable
+ENV NODE_ENV=production
+
+# Set the working directory for any following COPY command
+WORKDIR /app
+
+# COPY the build artifacts
+COPY --chown=node:node --from=build /app/packages/ packages/
+COPY --chown=node:node --from=build /app/node_modules/ node_modules/
+
+# Expose the port
+EXPOSE 1234
+
+# Startup command
+CMD ["/sbin/tini", "--", "./node_modules/.bin/pm2-runtime", "packages/director/dist"]

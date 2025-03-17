@@ -1,0 +1,22 @@
+#Dockerfile
+
+# Use the mcr.microsoft.com/dotnet/framework/wcf:4.7.2 image as the base image
+FROM mcr.microsoft.com/dotnet/framework/wcf:4.7.2
+
+# By using a non-root user, you can protect the host machine from potential harm 
+USER ContainerAdministrator 
+
+# Copy the build argument “source”
+ARG source
+
+# Workspace directory
+WORKDIR /inetpub/wwwroot
+
+# Copy application required files
+COPY ${source:-obj/Docker/publish} .
+
+# Expose the application on port 80
+EXPOSE 80
+
+# Run command absorb signal sent by Docker stop command and gracefully stops the ASP.NET project. 
+ENTRYPOINT ["C:\\ServiceMonitor.exe", "w3svc"]

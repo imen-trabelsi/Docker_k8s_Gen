@@ -1,0 +1,31 @@
+# Using base image as provided by the user
+FROM python:2.7.16-alpine3.9
+
+# Install necessary dependencies (Gradle for building the Spring Boot project and mysql for the database)
+RUN apk update && apk add gradle mysql-client && pip install awscli --upgrade
+
+# Create a directory within the container
+WORKDIR /app
+
+# Copy the Spring Boot application into our directory
+COPY . /app
+
+# Use Gradle to build the application inside the Docker container
+RUN gradle clean build
+
+# Copy command as listed by the user
+COPY ftgo-order-history.json .
+COPY wait-for-dynamodblocal.sh .
+COPY create-dynamodb-tables.sh .
+
+# Change permissions to execute shell scripts
+RUN chmod +x *.sh
+
+# Health check to ensure the container is functioning properly
+HEALTHCHECK --interval=10s --retries=10 --timeout=3s CMD [ -f "/tables-created" ]
+
+# Command to execute our Spring Boot application (use an array to avoid shell string munging issues)
+CMD ./wait-for-dynamodblocal.sh && ./create-dynamodb-tables.sh && java -jar build/libs/*.jar
+
+# Expose the necessary port as provided by the user
+EXPOSE 8080

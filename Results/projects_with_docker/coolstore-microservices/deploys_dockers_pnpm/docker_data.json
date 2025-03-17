@@ -1,0 +1,20 @@
+{
+    "docker_info": {
+        "base_image": "node:alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "apk add --no-cache curl",
+                "RUN curl -sL https://unpkg.com/@pnpm/self-installer | node"
+            ]
+        ]
+    }
+}

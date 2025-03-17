@@ -1,0 +1,17 @@
+# Start from a java base image
+FROM java:8-jre
+
+# File Author / Maintainer
+LABEL maintainer="maintainer@example.com"
+
+# Set the default timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Add Spring Boot app.jar to container
+COPY ./target/ts-rebook-service-1.0.jar /app/
+
+# Expose the port
+EXPOSE 18886
+
+# Include the app jar into the Docker Image
+ENTRYPOINT ["java", "-Xmx200m", "-jar", "/app/ts-rebook-service-1.0.jar"]

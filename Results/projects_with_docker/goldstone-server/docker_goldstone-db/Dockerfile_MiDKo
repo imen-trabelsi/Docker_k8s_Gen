@@ -1,0 +1,23 @@
+# Based on provided information starting with base image
+FROM solinea/postgres:9.4
+
+# Adding mandatory environment variable
+ENV GOLDSTONE_PASSWORD="goldstone"
+
+# Expose the port the app runs in
+EXPOSE 5432
+
+# Copy Files 
+COPY init-goldstone-db.sh /docker-entrypoint-initdb.d/
+COPY startup-goldstone-db.sh /docker-entrypoint-always.d/
+
+# Use the entrypoint from user 
+COPY docker-entrypoint.sh / 
+
+# Add permissions for scripts
+RUN chmod +x /docker-entrypoint-initdb.d/init-goldstone-db.sh
+RUN chmod +x /docker-entrypoint-always.d/startup-goldstone-db.sh
+RUN chmod +x /docker-entrypoint.sh
+
+# Utilize the copied entrypoint as default entrypoint
+ENTRYPOINT ["/docker-entrypoint.sh"]

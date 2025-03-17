@@ -1,0 +1,21 @@
+# Set base image
+FROM hmctspublic.azurecr.io/base/java:21-distroless
+
+# Set environment variables
+ENV APPLICATION_USER=app
+ENV APP_HOME=/opt/$APPLICATION_USER
+ENV APP_INSIGHTS_AGENT_VERSION=3.4.14
+ENV JAVA_TOOL_OPTIONS="$JAVA_TOOL_OPTIONS -javaagent:/opt/app/applicationinsights-agent-3.0.1.jar"
+
+# Copy application files
+COPY build/libs/payment-app.jar $APP_HOME/
+COPY lib/applicationinsights.json $APP_HOME/
+
+# Update permissions
+RUN chown -R $APPLICATION_USER:$APPLICATION_USER $APP_HOME && chmod +x $APP_HOME/payment-app.jar
+
+# Expose application port
+EXPOSE 8080
+
+# Set command
+CMD ["java","-jar","/opt/app/payment-app.jar"]

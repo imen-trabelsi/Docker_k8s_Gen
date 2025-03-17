@@ -1,0 +1,47 @@
+#Dockerfile for Node.js Spring Boot Microservice
+
+# Set build arguments
+ARG BUILD_PLATFORM=linux/amd64
+ARG USER=node
+
+# Set base image
+FROM --platform="${BUILD_PLATFORM}" node:12.16.1-alpine as build
+
+# Set working directory
+WORKDIR /app
+
+# Copy instruction for files and directories
+COPY packages/api/ ./packages/api
+COPY packages/common/ ./packages/common
+COPY packages/mongo/ ./packages/mongo
+COPY packages/logger/ ./packages/logger
+COPY package.json ./
+COPY yarn.lock ./
+COPY tsconfig.json ./
+WORKDIR /app
+COPY  --chown=node:node --from=build /app/packages/ packages/
+COPY  --chown=node:node --from=build /app/node_modules/ node_modules/
+
+# Install dependencies
+RUN yarn install --frozen-lockfile
+RUN yarn workspace @sorry-cypress/common build
+RUN yarn workspace @sorry-cypress/mongo build
+RUN yarn workspace @sorry-cypress/logger build
+RUN yarn workspace @sorry-cypress/api build
+RUN yarn install --production --frozen-lockfile
+RUN apk --no-cache add curl && \
+    curl -sf https://gobinaries.com/tj/node-prune | sh && \
+RUN apk add --no-cache tini
+
+# Set environment variables
+ENV NODE_ENV=production
+
+# Switch to a non-root user for added security
+USER ${USER}
+
+# Expose port
+EXPOSE 4000
+
+# Set the CMD/ENTRYPOINT instructions
+ENTRYPOINT ["/sbin/tini", "--"]
+CMD ["node", "packages/api/dist"]

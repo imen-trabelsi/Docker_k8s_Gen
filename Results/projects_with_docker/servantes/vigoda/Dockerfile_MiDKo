@@ -1,0 +1,21 @@
+# Set the Base Image
+FROM golang:1.17-alpine
+
+# Set Work Directory
+WORKDIR /go/src/github.com/tilt-dev/servantes/vigoda
+
+# Install dependencies
+COPY go.mod .
+RUN go mod download
+
+# Copy rest of the source code
+COPY . /go/src/github.com/tilt-dev/servantes/vigoda
+
+# Compile the binary, we will start from this path in the ENTRYPOINT
+RUN go install .
+
+# Expose necessary ports here
+# EXPOSE <port>/<protocol>
+
+# CMD or ENTRYPOINT to execute the binary \\
+ENTRYPOINT ["/go/bin/vigoda"]

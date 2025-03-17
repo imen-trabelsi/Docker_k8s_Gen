@@ -1,0 +1,22 @@
+# Use official base image
+FROM nginx:1
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# Install system-level dependencies
+RUN apt-get update && apt-get install -y gettext && useradd cwww
+
+# Copy application files
+COPY dhparams.pem /etc/ssl/private/dhparams.pem
+COPY mime.types /etc/nginx/mime.types
+COPY nginx.conf.template /tmp/nginx.conf.template
+
+# Setting user to ensure that the container runs without root privileges
+USER cwww
+
+# Expose correct ports
+EXPOSE 8000
+
+# Add start script
+CMD  ["nginx", "-g", "daemon off;"]

@@ -1,0 +1,45 @@
+# Use node v8 as the base image
+FROM node:8
+
+# Define metadata
+LABEL version="2.0.0"
+LABEL description="This
+
+# Setup the working directory in the container
+WORKDIR /usr/src
+
+# Install app dependencies by adding package.json and package-lock.json
+COPY package.json ./
+
+# Update npm
+RUN rm -rf /usr/local/lib/node_modules/npm \
+&& mkdir /usr/local/lib/node_modules/npm \
+&& curl -sL https://github.com/npm/npm/archive/v5.3.0.tar.gz | tar xz -C /usr/local/lib/node_modules/npm --strip-components=1 \
+
+# Build the app
+RUN mkdir -p /usr/src/common
+WORKDIR /usr/src/common
+RUN npm install
+RUN mkdir -p /usr/src/statscontroller
+RUN npm install -g grunt-cli
+RUN mkdir -p /usr/src/statscontroller/src
+WORKDIR /usr/src/statscontroller/src
+RUN npm install
+
+# Add common files
+COPY common/ /usr/src/common
+
+# Add files necessary for statscontroller
+COPY statscontroller/src /usr/src/statscontroller/src
+WORKDIR /usr/src/statscontroller
+COPY statscontroller/Gruntfile.js /usr/src/statscontroller/
+COPY statscontroller/package.json /usr/src/statscontroller/
+
+# Bundle app source by copying the remaining directories and files
+COPY . /usr/src/app
+
+# Expose the app on port 4001
+EXPOSE 4001
+
+# Define the command to run the app
+CMD [ "npm", "start" ]

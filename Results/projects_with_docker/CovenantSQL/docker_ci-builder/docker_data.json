@@ -1,0 +1,35 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.13",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR $GOPATH"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apt-get update && apt-get install -y --no-install-recommends \\",
+                "libicu-dev",
+                "&& rm -rf /var/lib/apt/lists/*"
+            ],
+            [
+                "go get github.com/mattn/goveralls",
+                "RUN go get github.com/haya14busa/goverage"
+            ],
+            [
+                "go get -x github.com/wadey/gocovmerge",
+                "RUN go get golang.org/x/lint/golint"
+            ],
+            [
+                "go get github.com/haya14busa/reviewdog/cmd/reviewdog",
+                ""
+            ]
+        ]
+    }
+}

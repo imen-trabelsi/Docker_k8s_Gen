@@ -1,0 +1,31 @@
+# Set the base image to ubuntu:18.04
+FROM ubuntu:18.04
+
+# Set environment variables for proxy settings
+ENV http_proxy=$HTTP_PROXY \
+    https_proxy=$HTTPS_PROXY \
+
+# Update and install necessary tools
+RUN  apt-get update \
+    && apt-get install -y wget curl unzip tar git \
+
+# Create a new group and user
+RUN groupadd -r onap && useradd -r -g onap onap
+
+# Change the working directory
+WORKDIR /opt/multicloud/k8s/ncm
+
+# Add the main application binary file
+COPY --chown=onap ./ncm ./
+
+# Change ownership of the directory recursively
+RUN chown onap:onap /opt/multicloud/k8s/ncm -R
+
+# Change to the created user
+USER onap
+
+# Expose port 9016
+EXPOSE 9016
+
+# Set the command to start the microservice
+CMD ["./ncm"]

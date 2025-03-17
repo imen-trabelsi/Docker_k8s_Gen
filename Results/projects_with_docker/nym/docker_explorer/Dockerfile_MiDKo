@@ -1,0 +1,19 @@
+# Dockerfile
+FROM node:16
+
+WORKDIR /app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+COPY ./setup.sh /setup.sh
+
+RUN chmod +x /setup.sh
+
+EXPOSE YOUR_PORT 
+# Replace 'YOUR_PORT' with the correct exposed port number based on your application
+
+CMD [ "/setup.sh" ]

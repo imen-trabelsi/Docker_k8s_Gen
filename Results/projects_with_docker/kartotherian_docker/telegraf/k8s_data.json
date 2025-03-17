@@ -1,0 +1,66 @@
+{
+  "replicaCount": 1,
+  "image": {
+    "repository": "telegraf",
+    "pullPolicy": "IfNotPresent",
+    "tag": "1.8-alpine@sha256:7f6873f5745fe9b4f610c5dcfaaa73d7cd75adb63bd770bb70c26a7e85c94a2a"
+  },
+  "service": {
+    "type": "ClusterIP",
+    "port": 80
+  },
+  "imagePullSecrets": [],
+  "nameOverride": "",
+  "fullnameOverride": "",
+  "serviceAccount": {
+    "create": true,
+    "automount": true,
+    "annotations": {},
+    "name": ""
+  },
+  "podAnnotations": {},
+  "podLabels": {},
+  "podSecurityContext": {},
+  "securityContext": {},
+  "ingress": {
+    "enabled": false,
+    "className": "",
+    "annotations": {},
+    "hosts": [
+      {
+        "host": "chart-example.local",
+        "paths": [
+          {
+            "path": "/",
+            "pathType": "ImplementationSpecific"
+          }
+        ]
+      }
+    ],
+    "tls": []
+  },
+  "resources": {},
+  "livenessProbe": {
+    "httpGet": {
+      "path": "/",
+      "port": "http"
+    }
+  },
+  "readinessProbe": {
+    "httpGet": {
+      "path": "/",
+      "port": "http"
+    }
+  },
+  "autoscaling": {
+    "enabled": false,
+    "minReplicas": 1,
+    "maxReplicas": 100,
+    "targetCPUUtilizationPercentage": 80
+  },
+  "volumes": [],
+  "volumeMounts": [],
+  "nodeSelector": {},
+  "tolerations": [],
+  "affinity": {}
+}

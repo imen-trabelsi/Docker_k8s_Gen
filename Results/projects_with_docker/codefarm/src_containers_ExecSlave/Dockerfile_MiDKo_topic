@@ -1,0 +1,38 @@
+# Use the specified base image
+FROM codefarm/nodebase:0.0.0
+# Label maintainer
+LABEL maintainer="your-name"
+
+# Set up environment variable
+ENV farmerHome=/home/codefarm 
+
+# Copying package file
+COPY package.json /app
+
+# Installing npm
+RUN npm install
+
+# Create necessary directories and copy keys
+RUN mkdir -p $farmerHome/.ssh
+RUN mkdir -p $farmerHome/execKeys
+WORKDIR $farmerHome
+COPY ["id_rsa", "id_rsa.pub", "$farmerHome/execKeys/"]
+
+# Run necessary commands
+RUN apt-get update && apt-get install -y openssh-server
+RUN mkdir /var/run/sshd
+RUN cat $farmerHome/execKeys/id_rsa.pub >> $farmerHome/.ssh/authorized_keys
+RUN chown -R $user $farmerHome/execKeys && chgrp -R $user $farmerHome/execKeys
+RUN ssh-keygen -N "" -f $farmerHome/.ssh/id_rsa || true
+RUN cat $farmerHome/.ssh/id_rsa.pub >> $farmerHome/.ssh/authorized_keys
+RUN chmod 600 $farmerHome/.ssh/authorized_keys
+RUN chown -R $user $farmerHome/.ssh && chgrp -R $user $farmerHome/.ssh
+
+# Set the user to root
+USER root
+
+# Expose the necessary port
+EXPOSE 22
+
+# Set the CMD command
+CMD ["/usr/sbin/sshd", "-D"]

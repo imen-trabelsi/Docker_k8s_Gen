@@ -1,0 +1,26 @@
+# Base Image
+FROM node:12
+
+# CREATE APP DIRECTORY
+WORKDIR /app/apiservice
+
+# INSTALL APP DEPENDENCIES
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY package*.json ./
+
+RUN npm install --no-optional
+# If you are building your code for production
+# RUN npm ci --only=production
+
+# Copy app source
+COPY . /app/apiservice
+
+# Check the health of the app
+HEALTHCHECK CMD curl --fail http://localhost:8080 || exit 1
+
+# EXPOSE PORT
+EXPOSE 8080
+
+# START APP
+CMD [ "npm", "start" ]

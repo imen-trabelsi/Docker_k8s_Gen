@@ -1,0 +1,23 @@
+# Use openjdk base image
+FROM openjdk:21-slim
+
+# Define working directory
+WORKDIR /usr/local/report
+
+# Define environment variables
+ENV roomDomain=rbp-room
+ENV bookingDomain=rbp-booking
+ENV profile=dev
+
+# Copy files and folders to the docker image
+COPY . /usr/local/report
+COPY target ./
+
+# Install dependencies
+RUN mvn clean install
+
+# Define the ENTRYPOINT and default command
+ENTRYPOINT [ "java", "-jar", "-Dspring.profiles.active=$profile", "target/restful-booker-platform-report-*.jar", "-D" ]
+
+# Expose port
+EXPOSE 8080

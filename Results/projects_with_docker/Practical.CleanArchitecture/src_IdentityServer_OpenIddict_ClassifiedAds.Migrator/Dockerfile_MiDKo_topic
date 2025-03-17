@@ -1,0 +1,35 @@
+# Use the base image with .NET
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
+
+# Set the work directory in the Docker image
+WORKDIR /ClassifiedAds.IdentityServer
+
+# Copy csproj files
+COPY ./ClassifiedAds.Application/*.csproj ./ClassifiedAds.Application/
+COPY ./ClassifiedAds.CrossCuttingConcerns/*.csproj ./ClassifiedAds.CrossCuttingConcerns/
+COPY ./ClassifiedAds.Domain/*.csproj ./ClassifiedAds.Domain/
+COPY ./ClassifiedAds.IdentityServer/*.csproj ./ClassifiedAds.IdentityServer/
+COPY ./ClassifiedAds.Infrastructure/*.csproj ./ClassifiedAds.Infrastructure/
+COPY ./ClassifiedAds.Migrator/*.csproj ./ClassifiedAds.Migrator/
+COPY ./ClassifiedAds.Persistence/*.csproj ./ClassifiedAds.Persistence/
+
+# Copy the entire solution
+COPY ./ClassifiedAds.OpenIddict.sln .
+
+# Restore the application
+RUN dotnet restore
+
+# Copy everything else and build
+COPY . ./
+
+# Publish the application 
+RUN dotnet publish ./ClassifiedAds.Migrator/ClassifiedAds.Migrator.csproj -c Release -o out
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+
+WORKDIR /ClassifiedAds.IdentityServer
+
+
+# Define the entrypoint
+ENTRYPOINT ["dotnet", "ClassifiedAds.Migrator.dll"]

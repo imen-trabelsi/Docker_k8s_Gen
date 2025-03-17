@@ -1,0 +1,48 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.23-alpine3.21",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "UPSTREAM_REPO",
+            "UPSTREAM_TAG",
+            "LAGOON_VERSION"
+        ],
+        "envs": [
+            "ENV LAGOON_VERSION=$LAGOON_VERSION",
+            "ENV LAGOON=actions-handler",
+            "ENV JWT_SECRET=super-secret-string \\"
+        ],
+        "copy_instructions": [
+            "COPY . /go/src/github.com/uselagoon/lagoon/services/actions-handler/",
+            "WORKDIR /go/src/github.com/uselagoon/lagoon/services/actions-handler/",
+            "WORKDIR /app/",
+            "COPY --from=builder /go/src/github.com/uselagoon/lagoon/services/actions-handler/actions-handler ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/sbin/tini\",",
+                    "\"--\",",
+                    "\"/lagoon/entrypoints.sh\"]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/app/actions-handler\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "CGO_ENABLED=0 GOOS=linux GOARCH=${ARCH} go build -a -o actions-handler .",
+                ""
+            ]
+        ]
+    }
+}

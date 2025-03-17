@@ -1,0 +1,23 @@
+# Base Image
+FROM curlimages/curl:7.82.0 AS builder
+
+# Set the workdir
+WORKDIR /
+
+# Set the environment variable
+ARG JMX_JAR_VERSION=v1.14.0
+
+# Downloading and unpacking the required JAR
+RUN curl -L --output /opentelemetry-jmx-metrics.jar "https://github.com/open-telemetry/opentelemetry-java-contrib/releases/download/${JMX_JAR_VERSION}/opentelemetry-jmx-metrics.jar"
+
+# Downloading and unpacking the otelcol-contrib
+RUN curl -L -s "https://github.com/open-telemetry/opentelemetry-collector-releases/releases/download/v0.53.0/otelcol-contrib_0.53.0_linux_amd64.tar.gz" | tar -xvz -C /
+
+# Set the user to root (for now)
+USER root
+
+# Coping the JAR and otelcol-contrib into the image
+
+# The command to run when the container is started
+ENTRYPOINT ["/otelcol-contrib"]
+CMD ["--config", "/etc/otel/config.yaml"]

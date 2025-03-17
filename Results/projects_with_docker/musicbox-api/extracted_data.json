@@ -1,0 +1,53 @@
+{
+    "source_code_info": {
+        "language": "Ruby",
+        "framework": "Rails",
+        "dependencies": {
+            "Gemfile": "# frozen_string_literal: true\n\nsource \"https://rubygems.org\"\n\ngit_source(:github) do |repo_name|\n  repo_name = \"#{repo_name}/#{repo_name}\" unless repo_name.include?(\"/\")\n  \"https://github.com/#{repo_name}.git\"\nend\n\n# Bundle edge Rails instead: gem 'rails', github: 'rails/rails'\ngem \"rails\", \"6.1.4\"\n# Use sqlite3 as the database for Active Record\n# gem 'sqlite3'\n# Use Puma as the app server\n# gem 'puma', '~> 3.7'\n\ngem \"puma\", \"5.2.2\"\n\n# Use postgresql as the database for Active Record\ngem \"pg\", \"1.2.1\"\n\ngem \"dotenv-rails\", \"2.7.6\"\ngem \"health_check\", \"3.0.0\"\ngem \"passenger\", \"6.0.4\"\ngem \"rack-cors\", \"1.1.1\"\ngem \"redis\", \"4.1.3\"\ngem \"sidekiq\", \"6.0.4\"\n\ngem \"devise\", \"4.8.0\"\ngem \"doorkeeper\", \"5.2.5\"\ngem \"graphiql-rails\", \"1.7.0\"\ngem \"graphql\", \"1.10.10\"\n\ngem \"airbrake\", \"9.5.5\"\ngem \"foreman\", \"0.87.2\"\n\ngem 'terminal-table'\n\n# Cron-like task scheduler\ngem 'clockwork', '3.0.0'\n\ngroup :development do\n  gem \"listen\", \"3.2.1\"\n  gem \"rubocop\", \"0.78.0\"\n  gem \"rubocop-rspec\", \"1.37.1\"\n  gem \"spring\", \"2.1.0\"\n  gem \"spring-watcher-listen\", \"2.0.1\"\nend\n\ngroup :development, :test do\n  gem \"bullet\", \"6.1.4\"\n  gem \"pry-byebug\", \"3.9.0\"\n  gem \"webmock\", \"3.8.3\"\nend\n\ngroup :test do\n  gem \"database_cleaner\", \"1.7.0\"\n  gem \"factory_bot_rails\", \"5.1.1\"\n  gem \"rspec-rails\", \"4.0.0.beta3\"\n  gem \"rspec-sidekiq\", \"3.0.3\"\nend\n"
+        },
+        "database": "PostgreSQL",
+        "build_system": "Bundler",
+        "config_files": {
+            "docker-compose.yml": "---\nversion: '3.4'\nservices:\n  db:\n    image: postgres:11.5\n    environment:\n      POSTGRES_PASSWORD: postgrespassword\n    ports: [\"5432:5432\"]\n  app: &app-common\n    build: \".\"\n    command: bin/wait-for-it.sh db:5432 -- passenger start -p 3000 --nginx-config-template nginx.conf.erb\n    environment: &app-environment\n      DATABASE_URL: postgresql://postgres:postgrespassword@db\n      REDIS_URL: redis://redis:6379\n      SIDEKIQ_REDIS_URL: redis://redis:6379\n      LOG_LEVEL: debug\n      SKYLIGHT_ENABLED: \"false\"\n      LETSENCRYPT_HOST: localhost\n      VIRTUAL_HOST: localhost\n      VIRTUAL_PORT: 3000\n    links:\n    - db\n    - redis\n    volumes: [\".:/app\"]\n    ports: [\"3000:3000\"]\n  redis:\n    image: redis:5.0.3\n    ports: [\"6379:6379\"]\n  app-poll-room-queue:\n    <<: *app-common\n    environment:\n      <<: *app-environment\n      LOG_LEVEL: info\n    command: bin/wait-for-it.sh db:5432 -- bin/wait-for-it.sh redis:6379 -- rake room:poll_queue\n    ports: []\n  app-sidekiq-workers:\n    <<: *app-common\n    command: bin/wait-for-it.sh db:5432 -- bin/wait-for-it.sh redis:6379 -- bundle exec sidekiq\n    ports: []\n    environment:\n      <<: *app-environment\n      DB_POOL: 1\n      SIDEKIQ_CONCURRENCY: 5\n",
+            "Dockerfile": "FROM ruby:2.6.5\nRUN apt-get update -qq && apt-get upgrade -qqy\nRUN apt-get -qqy install cmake\nRUN gem install bundler -v 2.0.2\nRUN gem update --system\n\nENV APP_HOME /app\nRUN mkdir $APP_HOME\nWORKDIR $APP_HOME\n\nADD .ruby-version $APP_HOME/\nADD Gemfile* $APP_HOME/\n\nENV BUNDLE_GEMFILE=$APP_HOME/Gemfile BUNDLE_JOBS=4 BUNDLE_WITHOUT=production:staging\n\nRUN bundle install\n\nRUN passenger-config install-standalone-runtime --auto\nRUN passenger-config build-native-support\n\nCOPY . $APP_HOME\n\nCMD [\"echo\", \"Commands: `bin/passenger start -p $PORT`]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            ".env.template",
+            ".gitignore",
+            ".jsonapicfg.yml",
+            ".rspec",
+            ".rubocop.yml",
+            ".rubocop_todo.yml",
+            ".ruby-version",
+            "CONTRIBUTING.md",
+            "COSTS.md",
+            "Dockerfile",
+            "Gemfile",
+            "Gemfile.lock",
+            "LICENSE.txt",
+            "ProductionProcfile",
+            "README.md",
+            "Rakefile",
+            "config.ru",
+            "docker-compose.yml",
+            "nginx.conf.erb",
+            "render.yaml"
+        ],
+        "folders": [
+            ".github",
+            "app",
+            "bin",
+            "config",
+            "db",
+            "lib",
+            "log",
+            "spec",
+            "tmp",
+            "vendor"
+        ]
+    }
+}

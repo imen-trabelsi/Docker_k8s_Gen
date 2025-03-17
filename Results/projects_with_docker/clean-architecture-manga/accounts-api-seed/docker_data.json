@@ -1,0 +1,28 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/sdk:6.0",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV DOTNET_SYSTEM_GLOBALIZATION_INVARIANT=false"
+        ],
+        "copy_instructions": [
+            "COPY . ."
+        ],
+        "execution": [],
+        "run": [
+            [
+                "dotnet tool update --global dotnet-ef",
+                "WORKDIR /src"
+            ],
+            [
+                "dotnet restore \"src/WebApi/WebApi.csproj\"",
+                "RUN dotnet build \"src/WebApi/WebApi.csproj\" --no-restore"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,25 @@
+# Use company provided Java 8 JDK alpine image
+FROM docker.io/java:8-jdk-alpine
+
+# Set working directory in docker image
+RUN mkdir -p /app
+WORKDIR /app
+
+# For security, run the application under non-root user
+RUN adduser -D userapp && chown -Rv 1001:0 /app
+USER 1001
+
+# Set JAVA_HOME environment variable in docker image
+ENV JAVA_HOME=/usr/lib/jvm/java-1.8.0
+
+# Copy the application's jar file to the container
+COPY ./target/order-processing-service-1.0-SNAPSHOT-jar-with-dependencies.jar /app
+
+# Tell docker that all future commands should run as non-root user
+USER userapp
+
+# Expose the application's port to the docker host
+EXPOSE 8181
+
+# Set the entrypoint command
+ENTRYPOINT ["java","-jar","order-processing-service-1.0-SNAPSHOT-jar-with-dependencies.jar"]

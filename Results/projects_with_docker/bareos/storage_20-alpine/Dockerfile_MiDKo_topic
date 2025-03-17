@@ -1,0 +1,32 @@
+# Step 1: Use an alpine base image 
+FROM alpine:3.15
+
+# Step 2: Define maintainer and schema-version
+LABEL maintainer="barcus@tou.nu" org.label-schema.schema-version="1.0"
+
+# Step 3: Define arguments
+ARG BUILD_DATE
+ARG NAME
+ARG VCS_REF
+ARG VERSION
+
+# Step 4: Define environment variable
+ENV BAREOS_SD /usr/sbin/bareos-sd
+ENV BAREOS_USER bareos
+
+# Step 5: Copy entrypoint script into filesystem
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+
+# Step 6: Install required dependencies
+RUN apk add --no-cache bareos tar &&\
+
+# Step 7: Create bareos directory and assign permissions
+RUN mkdir /run/bareos &&\
+    chown $BAREOS_USER /run/bareos &&\
+
+# Step 8: Expose necessary ports
+EXPOSE 9103
+
+# Step 9: Set entrypoint & command
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["/usr/sbin/bareos-sd", "-u", "bareos", "-f"]

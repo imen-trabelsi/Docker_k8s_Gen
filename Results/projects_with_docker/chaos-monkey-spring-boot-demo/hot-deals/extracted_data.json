@@ -1,0 +1,25 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Spring Boot",
+        "dependencies": {
+            "pom.xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n         xmlns=\"http://maven.apache.org/POM/4.0.0\"\n         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n    <parent>\n        <artifactId>shopping-parent</artifactId>\n        <groupId>com.example.chaos.monkey.shopping</groupId>\n        <version>1.0-SNAPSHOT</version>\n    </parent>\n    <modelVersion>4.0.0</modelVersion>\n\n    <artifactId>hot-deals</artifactId>\n    <name>hot-deals</name>\n\n    <dependencies>\n        <dependency>\n            <groupId>de.codecentric</groupId>\n            <artifactId>chaos-monkey-spring-boot</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.springframework.boot</groupId>\n            <artifactId>spring-boot-starter-actuator</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.springframework.boot</groupId>\n            <artifactId>spring-boot-starter-web</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.springframework.cloud</groupId>\n            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.springframework.cloud</groupId>\n            <artifactId>spring-cloud-starter-sleuth</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.springframework.cloud</groupId>\n            <artifactId>spring-cloud-starter-zipkin</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.projectlombok</groupId>\n            <artifactId>lombok</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.springframework.boot</groupId>\n            <artifactId>spring-boot-devtools</artifactId>\n            <scope>runtime</scope>\n        </dependency>\n        <dependency>\n            <groupId>org.springframework.boot</groupId>\n            <artifactId>spring-boot-starter-test</artifactId>\n            <scope>test</scope>\n        </dependency>\n        <dependency>\n            <groupId>com.example.chaos.monkey.shopping</groupId>\n            <artifactId>shared</artifactId>\n            <version>${parent.version}</version>\n        </dependency>\n    </dependencies>\n    <build>\n        <plugins>\n            <plugin>\n                <groupId>org.springframework.boot</groupId>\n                <artifactId>spring-boot-maven-plugin</artifactId>\n            </plugin>\n            <plugin>\n                <groupId>com.spotify</groupId>\n                <artifactId>dockerfile-maven-plugin</artifactId>\n            </plugin>\n        </plugins>\n    </build>\n</project>"
+        },
+        "database": null,
+        "build_system": "Maven",
+        "config_files": {
+            "docker-compose.yml": "version: '3.3'\n\nservices:\n  requestload:\n    image: mrbwilms/requestload\n\n  chaostoolkit:\n    image: mrbwilms/chaostoolkit:chaos-demo\n    tty: true\n\n  chaoshub:\n    image: chaostoolkit/chaoshub:0.1.2\n    ports:\n      - \"8888:8080\"\n    tty: true\n\n  gateway:\n    image: mrbwilms/gateway:chaos-demo\n    ports:\n      - \"8080:8080\"\n\n  fashion:\n    image: mrbwilms/bestseller-fashion:chaos-demo\n    ports:\n      - 8090-8092:8082\n\n  toys:\n    image: mrbwilms/bestseller-toys:chaos-demo\n    ports:\n      - \"8081:8081\"\n\n  hot-deals:\n    image: mrbwilms/hot-deals:chaos-demo\n    ports:\n      - \"8083:8083\"\n\n  eureka-server:\n    image: mrbwilms/eureka-server:chaos-demo\n    ports:\n      - \"8761:8761\"\n\n  jaeger-server:\n    image: jaegertracing/all-in-one\n    environment:\n      - COLLECTOR_ZIPKIN_HTTP_PORT=9411\n    ports:\n      - \"5775:5775\"\n      - \"6831:6831/udp\"\n      - \"6832:6832\"\n      - \"5778:5778\"\n      - \"16686:16686\"\n      - \"14268:14268\"\n      - \"9411:9411\"",
+            "hot-deals/Dockerfile": "FROM mrbwilms/docker-base-image\nARG SERVICE_NAME\nARG JAR_FILE\n\nVOLUME /tmp\n\nCOPY ${JAR_FILE} app.jar\n\nENV JAVA_OPTS=\"-Xmx64m -Xms32m\"\nENV SERVICE_NAME=${SERVICE_NAME}\nLABEL APP=${SERVICE_NAME}\nLABEL DOMAIN=\"shopping-demo\"\n\nENTRYPOINT [ \"sh\", \"-c\", \"java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app.jar --spring.profiles.active=docker,chaos-monkey\"]"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "pom.xml"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

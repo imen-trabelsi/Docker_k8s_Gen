@@ -1,0 +1,23 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Flask",
+        "dependencies": {
+            "requirements.txt": "Flask==3.1.0\nrequests==2.32.3\nhttpx[http2]"
+        },
+        "database": null,
+        "build_system": "pip",
+        "config_files": {
+            "docker-compose.yml": "services:\n  database-service:\n    build: './database_server'\n    container_name: database-server\n    restart: always\n    environment:\n      - MONGO_INITDB_ROOT_USERNAME=gs1resolver\n      - MONGO_INITDB_ROOT_PASSWORD=gs1resolver\n    ports:\n      - \"27017:27017\"\n    volumes:\n      - resolver-database-volume:/data/db\n    networks:\n      - resolver-internal-network\n\n  data-entry-service:\n    build: './data_entry_server'\n    container_name: data-entry-server\n    environment:\n      - SESSION_TOKEN=secret\n      - MONGO_URI=mongodb://gs1resolver:gs1resolver@database-service:27017\n    depends_on:\n      - database-service\n    restart: always\n    networks:\n      - resolver-internal-network\n\n  web-service:\n    build: './web_server'\n    container_name: resolver-web-server\n    depends_on:\n      - database-service\n    restart: always\n    networks:\n      - resolver-internal-network\n\n  frontend-proxy-service:\n    build: './frontend_proxy_server'\n    container_name: frontend-proxy-server\n    depends_on:\n      - web-service\n      - data-entry-service\n    restart: always\n    ports:\n      - \"8080:80\"\n    networks:\n      - resolver-internal-network\n\n  test-service:\n    build: './test_suite'\n    container_name: test-service\n    restart: always\n    ports:\n      - \"4001:5000\"\n    networks:\n      - resolver-internal-network\n\nvolumes:\n  resolver-database-volume: {}\n\nnetworks:\n  resolver-internal-network:\n    name: resolver-internal-network",
+            "data_entry_server/Dockerfile": "FROM python:3.10-bullseye\nLABEL authors=\"nick\"\n\n# The environment variable ensures that the python output is set straight\n# to the terminal without buffering it first\nENV PYTHONUNBUFFERED 1\n\n# Install Node for GS1 Digital Link Toolikit\nRUN apt-get update && apt-get install -y curl && curl -sL https://deb.nodesource.com/setup_18.x | bash -\nRUN apt-get install -y nodejs nano\nADD src/gs1-digitallink-toolkit /app/gs1-digitallink-toolkit\nWORKDIR /app/gs1-digitallink-toolkit\nRUN npm init es6\nRUN npm install --save gs1encoder\n\nWORKDIR /app\n\n# Add requirements.txt before rest of repo for caching\nADD src/requirements.txt /app/\nRUN pip install --no-cache-dir -r requirements.txt\n\n# Add the current directory contents into the container at /app\nADD src /app/\n\nEXPOSE 3000\n\nCMD [\"python\", \"-m\", \"main\"]"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "nginx.conf"
+        ],
+        "folders": []
+    }
+}

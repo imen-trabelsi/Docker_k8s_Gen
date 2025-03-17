@@ -1,0 +1,17 @@
+# Use java:8-jre as base image for the Docker image
+FROM java:8-jre
+
+# Update timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Create directory for the app
+RUN mkdir -p /app
+
+# Copy the jar file from the target folder into the Docker image
+COPY ./target/ts-assurance-service-1.0.jar /app/
+
+# Expose the required ports
+EXPOSE 18888
+
+# Run the jar file using the configured java command
+ENTRYPOINT ["java", "-Xmx200m", "-jar", "/app/ts-assurance-service-1.0.jar"]

@@ -1,0 +1,22 @@
+# Set base image
+FROM node:13.3.0
+
+# Create app directory
+RUN mkdir -p /app
+WORKDIR /app
+
+# Set environment variable
+ENV NODE_ENV=production PORT=9001
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install --only=production
+
+# Copy all other files
+COPY . .
+
+# Expose necessary port and start application
+EXPOSE $PORT
+CMD [ "npm", "start" ]

@@ -1,0 +1,28 @@
+# Use golang alpine as base image
+FROM golang:1.23-alpine3.21 as builder
+
+# Install build dependencies
+RUN apk add --no-cache git 
+
+#Specify a non-root user 
+USER nonroot:nonroot 
+
+#Copy all files to the specified location 
+COPY . /go/src/github.com/uselagoon/lagoon/taskimages/activestandby/
+WORKDIR /go/src/github.com/uselagoon/lagoon/taskimages/activestandby/
+
+#Build the application
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=386 go build -a -o taskrunner .
+
+FROM alpine:3.11
+
+#Copy the build output from the builder 
+
+# Specify a base directory
+WORKDIR /
+
+# Expose the necessary port
+EXPOSE 8080
+
+# Set the entry point
+ENTRYPOINT ["/taskrunner"]

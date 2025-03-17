@@ -1,0 +1,28 @@
+# Use the BASE_IMAGE as we have specified
+FROM ${BASE_IMAGE}
+
+# Maintainer
+LABEL maintainer="jon@jaggersoft.com"
+
+# We specify the working directory
+WORKDIR /runner
+
+# We install specified gem
+RUN gem install --no-document 'concurrent-ruby'
+
+# Copy project files to the image
+COPY source/server/ .
+
+# Setup the healthcheck
+HEALTHCHECK --interval=1s --timeout=1s --retries=5 --start-period=5s CMD /runner/config/healthcheck.sh
+
+# Copy the specified environment variables
+ENV BASE_IMAGE=${BASE_IMAGE}
+ENV SHA=${COMMIT_SHA}
+
+# Setup the user
+USER root
+
+# Set the entrypoint and execution command
+ENTRYPOINT ["/sbin/tini", "-g", "--"]
+CMD ["/runner/config/up.sh"]

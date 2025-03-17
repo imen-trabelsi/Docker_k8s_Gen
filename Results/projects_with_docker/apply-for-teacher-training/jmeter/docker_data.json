@@ -1,0 +1,75 @@
+{
+    "docker_info": {
+        "base_image": "ruby:2.7.5-alpine3.15",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8080"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "BUILD_DEPS=\"git"
+        ],
+        "envs": [
+            "ENV JMETER_VERSION=\"5.4.3\"",
+            "ENV JMETER_MIRROR https://downloads.apache.org/jmeter/binaries",
+            "ENV JMETER_PATH /opt/apache-jmeter-${JMETER_VERSION}",
+            "ENV JMETER_TARGET_BASEURL=",
+            "ENV JMETER_TARGET_PLAN=",
+            "ENV JMETER_WAIT_FACTOR="
+        ],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY Gemfile Gemfile.lock ./",
+            "COPY plans/ plans/",
+            "COPY *.csv ./",
+            "COPY add_prometheus_xml.rb ./",
+            "COPY log4j2.xml /opt/apache-jmeter-5.4.3/bin/log4j2.xml",
+            "COPY run.sh ./"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "ash",
+                    "./run.sh"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk -U upgrade && \\",
+                "apk add --update --no-cache $BUILD_DEPS tzdata libxml2 libxslt curl unzip &&",
+                "echo \"Europe/London\" > /etc/timezone &&",
+                "cp /usr/share/zoneinfo/Europe/London /etc/localtime"
+            ],
+            [
+                "apk update && apk add openjdk11-jre-headless",
+                ""
+            ],
+            [
+                "cd /opt && \\",
+                "curl -o apache-jmeter-${JMETER_VERSION}.tgz ${JMETER_MIRROR}/apache-jmeter-${JMETER_VERSION}.tgz &&",
+                "curl -o apache-jmeter-${JMETER_VERSION}.tgz.sha512 ${JMETER_MIRROR}/apache-jmeter-${JMETER_VERSION}.tgz.sha512 &&",
+                "sha512sum -c apache-jmeter-${JMETER_VERSION}.tgz.sha512 &&",
+                "tar xzf apache-jmeter-${JMETER_VERSION}.tgz &&",
+                "ln -s ${JMETER_PATH}/bin/jmeter /usr/local/bin"
+            ],
+            [
+                "cd ${JMETER_PATH} && \\",
+                "curl -o jmeter-prometheus.zip https://jmeter-plugins.org/files/packages/jmeter-prometheus-0.6.0.zip &&",
+                "unzip jmeter-prometheus.zip"
+            ],
+            [
+                "cd ${JMETER_PATH} && \\",
+                "curl -o jmeter-json.zip https://jmeter-plugins.org/files/packages/jpgc-json-2.7.zip &&",
+                "unzip -o jmeter-json.zip"
+            ],
+            [
+                "bundle install",
+                "RUN mkdir plans"
+            ]
+        ]
+    }
+}

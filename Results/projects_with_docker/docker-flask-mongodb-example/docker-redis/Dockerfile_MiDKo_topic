@@ -1,0 +1,11 @@
+# Start with base image
+FROM redis:6
+
+# Copy the redis configuration file into the docker image
+COPY redis.conf /usr/local/etc/redis/redis.conf
+
+# Expose the default redis port
+EXPOSE 6379
+
+# Specify the start command
+CMD ["redis-server", "/usr/local/etc/redis/redis.conf"]

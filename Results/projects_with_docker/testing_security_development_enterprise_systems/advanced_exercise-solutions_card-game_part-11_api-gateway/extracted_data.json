@@ -1,0 +1,25 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Spring Boot",
+        "dependencies": {
+            "pom.xml": "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n    <modelVersion>4.0.0</modelVersion>\n\n    <artifactId>card-game-part11-apigateway</artifactId>\n    <packaging>jar</packaging>\n\n    <parent>\n        <groupId>org.tsdes.advanced.exercises.cardgame.part11</groupId>\n        <artifactId>card-game-part11</artifactId>\n        <version>0.0.1-SNAPSHOT</version>\n    </parent>\n\n\n    <dependencies>\n        <dependency>\n            <groupId>org.springframework.cloud</groupId>\n            <artifactId>spring-cloud-starter-gateway</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.springframework.boot</groupId>\n            <artifactId>spring-boot-starter-actuator</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.springframework.cloud</groupId>\n            <artifactId>spring-cloud-starter-consul-discovery</artifactId>\n        </dependency>\n    </dependencies>\n\n\n    <build>\n        <plugins>\n            <plugin>\n                <groupId>org.springframework.boot</groupId>\n                <artifactId>spring-boot-maven-plugin</artifactId>\n                <configuration>\n                    <finalName>api-gateway</finalName>\n                </configuration>\n            </plugin>\n        </plugins>\n    </build>\n</project>"
+        },
+        "database": null,
+        "build_system": "Maven",
+        "config_files": {
+            "advanced/exercise-solutions/card-game/part-11/docker-compose.yml": "version: '3.3'\n\nservices:\n\n  api-gateway:\n    build:\n      context: ./api-gateway\n      dockerfile: Dockerfile\n    ports:\n      - \"80:8080\"\n    depends_on:\n      - discovery\n\n  frontend:\n    build:\n      context: ./frontend\n      dockerfile: Dockerfile\n\n  rabbitmq:\n    image:  \"rabbitmq:3\"\n\n  discovery:\n    image: \"consul:1.8\"\n    environment:\n      - CONSUL_LOCAL_CONFIG={\"log_level\":\"info\"}\n\n  redis:\n    image: \"redis:latest\"\n\n  postgres-auth:\n    image: \"postgres:10\"\n    environment:\n      - POSTGRES_HOST_AUTH_METHOD=trust\n\n  postgres-user-collections:\n    image: \"postgres:10\"\n    environment:\n      - POSTGRES_HOST_AUTH_METHOD=trust\n\n  postgres-scores:\n    image: \"postgres:10\"\n    environment:\n      - POSTGRES_HOST_AUTH_METHOD=trust\n\n  auth:\n    build:\n      context: ../part-10/auth\n      dockerfile: Dockerfile\n    depends_on:\n      - api-gateway\n      - redis\n      - postgres-auth\n      - rabbitmq\n\n  cards_0:\n    build:\n      context: ../part-08/cards\n      dockerfile: Dockerfile\n    depends_on:\n      - api-gateway\n      - discovery\n\n  cards_1:\n    build:\n      context: ../part-08/cards\n      dockerfile: Dockerfile\n    depends_on:\n      - api-gateway\n      - discovery\n\n  user-collections:\n    build:\n      context: ../part-10/user-collections\n      dockerfile: Dockerfile\n    depends_on:\n      - api-gateway\n      - discovery\n      - postgres-user-collections\n      - auth\n      - rabbitmq\n\n  scores:\n    build:\n      context: ../part-10/scores\n      dockerfile: Dockerfile\n    depends_on:\n      - api-gateway\n      - discovery\n      - postgres-scores\n      - rabbitmq\n\n\n\n\n\n\n",
+            "advanced/exercise-solutions/card-game/part-11/api-gateway/Dockerfile": "FROM adoptopenjdk/openjdk11:alpine\n\nCOPY target/api-gateway.jar .\n\nCMD java -jar api-gateway.jar"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "pom.xml"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

@@ -1,0 +1,17 @@
+# Start with a base image containing Java runtime
+FROM java:8-jre
+
+# Add Maintainer Info
+LABEL maintainer="example@example.com"
+
+# Make port 8080 available to the world outside this container
+EXPOSE 18898
+
+# The application's jar file
+COPY ./target/ts-seat-service-1.0.jar /app/
+
+# Setup timezone
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Run the jar file 
+CMD ["java", "-Xmx200m", "-jar", "/app/ts-seat-service-1.0.jar"]

@@ -1,0 +1,22 @@
+FROM node:alpine
+
+LABEL maintainer="maintainer@example.com"
+
+WORKDIR /usr/src/app
+
+COPY package.json .
+
+RUN npm install
+
+COPY . .
+
+ENV DEBUG loopback:connector:swagger
+
+RUN mkdir -p /usr/src/app
+
+EXPOSE 3000 
+
+HEALTHCHECK --interval=1m --timeout=3s \
+  CMD curl --fail http://localhost/vitals/docker || exit 1
+
+CMD ["npm", "run", "start.dev"]

@@ -1,0 +1,31 @@
+# Use the rust base image
+FROM harbor.nymte.ch/dockerhub/rust:latest as builder
+
+# Set working directory in the container
+WORKDIR /usr/src/nym
+
+# Copy project files into the WORKDIR
+COPY . .
+
+# Going to the microservice directory
+WORKDIR /usr/src/nym/nyx-chain-watcher
+
+# Updating the system and installing necessary system tools
+RUN apt update && apt install -yy curl ca-certificates
+
+# Build the microservice
+RUN cargo build --release
+
+# Use a minimal alpine image to run the service
+FROM alpine:latest
+
+# Install ca-certificates
+RUN apk --no-cache add ca-certificates
+
+# Set WORKDIR
+WORKDIR /nym
+
+# Copy the statically-linked binary into an empty directory
+
+# Set ENTRYPOINT
+ENTRYPOINT ["/nym/nyx-chain-watcher", "run"]

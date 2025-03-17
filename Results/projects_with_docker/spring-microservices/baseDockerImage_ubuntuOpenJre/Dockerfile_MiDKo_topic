@@ -1,0 +1,33 @@
+# Use an existing docker image as a base
+FROM ubuntu:22.04
+
+# Set up JAVA_HOME path
+ENV JAVA_HOME /usr/local/openjdk-11
+ENV PATH $JAVA_HOME/bin:$PATH
+
+# Install necessary packages
+RUN apt-get update && \
+
+# Install OpenJDK
+RUN wget --no-check-certificate --progress=dot:giga -O openjdk.tgz "https://download.java.net/openjdk/jdk11/ri/openjdk-11+28_linux-x64_bin.tar.gz" && \
+    mkdir -p $JAVA_HOME && \
+    tar --extract --file openjdk.tgz --directory "$JAVA_HOME" --strip-components 1 --no-same-owner && \
+
+# Clean up unnecessary packages
+RUN apt-get remove wget -y && \
+    apt-get autoremove -y && \
+
+# Install Maven
+RUN apt-get update && \
+
+# Copy project files into the docker image
+COPY . .
+
+# Set the working directory in the image
+WORKDIR .
+
+# Install the project dependencies and build the project
+RUN mvn clean install
+
+# Command to run the java application using maven
+CMD ["mvn", "spring-boot:run"]

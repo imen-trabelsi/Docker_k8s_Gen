@@ -1,0 +1,26 @@
+# The 'build' stage.
+FROM mcr.microsoft.com/dotnet/sdk:3.1 AS build
+WORKDIR /src
+COPY ["identity-server/IdentityServer.csproj", "identity-server/"]
+RUN dotnet restore "identity-server/IdentityServer.csproj"
+COPY . .
+WORKDIR "/src/identity-server"
+
+# Build the project and publish it.
+RUN dotnet build "IdentityServer.csproj" -c Release -o /app/build
+RUN dotnet publish "IdentityServer.csproj" -c Release -o /app/publish
+
+# The 'publish' stage.
+FROM mcr.microsoft.com/dotnet/sdk:3.1 AS publish
+WORKDIR /app
+
+# The 'final' stage.
+FROM mcr.microsoft.com/dotnet/sdk:3.1 AS final
+WORKDIR /app
+
+# Expose required ports.
+EXPOSE 80
+EXPOSE 443
+
+# Set the entrypoint.
+ENTRYPOINT ["dotnet", "IdentityServer.dll"]

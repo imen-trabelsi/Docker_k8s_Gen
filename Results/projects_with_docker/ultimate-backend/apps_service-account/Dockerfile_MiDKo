@@ -1,0 +1,34 @@
+# Use the official lightweight Node.js 12 image.
+FROM node:12-alpine
+
+# Set the environment variables
+ENV NODE_ENV=production
+
+# Create and change to the app directory.
+WORKDIR /usr/src/app
+
+# safety measures
+RUN npm config set unsafe-perm true
+
+# Install NestJS cli
+RUN yarn global add @nestjs/cli
+
+# Copy application dependency manifests to the container image.
+# Installing these dependencies will be done in the next step.
+COPY package.json yarn.lock ./
+
+# Install production dependencies.
+RUN yarn install --production=false
+
+# Copy local code to the container image.
+COPY . .
+
+# Build application
+RUN nest build proto-schema
+RUN nest build service-account
+
+# Set the entry point
+CMD ["node", "dist/apps/service-account/main.js"]
+
+# Expose the port
+EXPOSE 50054

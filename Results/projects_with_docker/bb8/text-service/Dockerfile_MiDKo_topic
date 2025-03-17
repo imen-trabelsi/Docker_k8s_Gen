@@ -1,0 +1,23 @@
+# Start from the base image specified by the user
+FROM node:12.16
+
+# Set working directory in the container
+WORKDIR /usr/app
+
+# Install app dependencies by copying package.json and package lock files
+COPY package*.json ./
+
+# Run install command
+RUN yarn
+
+# Bundle app source into the docker image
+COPY . .
+
+# Build the production app
+RUN yarn build
+
+# Expose port
+EXPOSE 8080
+
+# Default command, this will run when a container is spun up from the image
+CMD [ "yarn", "start:prod" ]

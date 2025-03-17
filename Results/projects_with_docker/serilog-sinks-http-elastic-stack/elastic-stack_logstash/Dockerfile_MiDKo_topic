@@ -1,0 +1,21 @@
+# Use Elastic's logstash base image
+ARG ELASTIC_VERSION
+FROM docker.elastic.co/logstash/logstash:${ELASTIC_VERSION}
+
+COPY elastic-stack/logstash/config/logstash.yml /usr/share/logstash/config/
+COPY elastic-stack/logstash/pipeline/logstash.conf /usr/share/logstash/pipeline/
+
+# Define environment variables
+ENV ELASTIC_VERSION=${ELASTIC_VERSION} \
+    PATH=/usr/share/logstash/bin:$PATH \
+
+# Expose logstash port 
+EXPOSE 5044 
+
+# Set up healthcheck
+HEALTHCHECK --interval=1m --timeout=3s \
+  CMD curl -f http://localhost:5044 || exit 1
+
+# Define Docker entrypoint
+ENTRYPOINT ["logstash"]
+CMD ["-f", "/usr/share/logstash/pipeline/logstash.conf"]

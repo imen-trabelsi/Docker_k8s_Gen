@@ -1,0 +1,41 @@
+{
+    "source_code_info": {
+        "language": "Ruby",
+        "framework": "Rails",
+        "dependencies": {
+            "Gemfile": "source 'https://rubygems.org'\n\ngem 'rails',      '~> 5.0.2'\ngem 'sass-rails', '~> 5.0.2'\ngem 'thin'\n\ngem 'minitest'\ngem 'simplecov'\n"
+        },
+        "database": null,
+        "build_system": "Bundler",
+        "config_files": {
+            ".env": "\nCYBER_DOJO_HOME=/cyber-dojo\nCYBER_DOJO_KATAS_ROOT=/tmp/cyber-dojo/katas\nCYBER_DOJO_START_POINTS_ROOT=/app/start_points\n",
+            "docker-compose.yml": "\nversion: '2.2'\n\nservices:\n\n  web:\n    build:\n      context: .\n      args:\n        - CYBER_DOJO_HOME=${CYBER_DOJO_HOME}\n    user: nobody\n    image: cyberdojo/web\n    init: true\n    container_name: test_cyber-dojo-web\n    mem_limit: 2G\n    memswap_limit: 2G\n    restart: 'no'\n    volumes:\n      - ./test:${CYBER_DOJO_HOME}/test:ro\n    environment:\n      - CYBER_DOJO_HOME\n    depends_on:\n      - differ\n      - runner_stateless\n      - runner_stateful\n      #- runner_processful\n      - starter\n      - storer\n      - zipper\n\n  # - - - - - - - - - - - - - - - -\n\n  starter:\n    user: nobody\n    image: cyberdojo/starter\n    init: true\n    container_name: test_web_cyber-dojo-starter\n    read_only: true\n    tmpfs: /tmp\n    mem_limit: 50M\n    memswap_limit: 50M\n    restart: 'no'\n    environment:\n      - CYBER_DOJO_START_POINTS_ROOT\n    volumes:\n      - ./test/data/start_points:${CYBER_DOJO_START_POINTS_ROOT}:ro\n\n  # - - - - - - - - - - - - - - - -\n\n  storer:\n    user: storer\n    image: cyberdojo/storer\n    init: true\n    container_name: test_web_cyber-dojo-storer\n    read_only: true\n    tmpfs: /tmp\n    mem_limit: 2G\n    memswap_limit: 2G\n    restart: 'no'\n    environment:\n      - CYBER_DOJO_KATAS_ROOT\n    depends_on:\n      - starter\n\n  # - - - - - - - - - - - - - - - -\n\n  runner_stateless:\n    user: root\n    image: cyberdojo/runner_stateless\n    init: true\n    container_name: test_web_cyber-dojo-runner-stateless\n    read_only: true\n    tmpfs: /tmp\n    mem_limit: 2G\n    memswap_limit: 2G\n    restart: 'no'\n    volumes:\n      - /var/run/docker.sock:/var/run/docker.sock\n\n  # - - - - - - - - - - - - - - - -\n\n  runner_stateful:\n    user: root\n    image: cyberdojo/runner_stateful\n    init: true\n    container_name: test_web_cyber-dojo-runner-stateful\n    read_only: true\n    tmpfs: /tmp\n    mem_limit: 2G\n    memswap_limit: 2G\n    restart: 'no'\n    volumes:\n      - /var/run/docker.sock:/var/run/docker.sock\n\n  # - - - - - - - - - - - - - - - -\n\n  #runner_processful:\n  #  user: root\n  #  image: cyberdojo/runner_processful\n  #  init: true\n  #  container_name: test_web_cyber-dojo-runner-processful\n  #  read_only: true\n  #  tmpfs: /tmp\n  #  mem_limit: 2G\n  #  memswap_limit: 2G\n  #  restart: 'no'\n  #  volumes:\n  #    - /var/run/docker.sock:/var/run/docker.sock\n\n  # - - - - - - - - - - - - - - - -\n\n  differ:\n    user: nobody\n    image: cyberdojo/differ\n    init: true\n    container_name: test_web_cyber-dojo-differ\n    read_only: true\n    tmpfs: /tmp\n    mem_limit: 1G\n    memswap_limit: 1G\n    restart: 'no'\n\n  # - - - - - - - - - - - - - - - -\n\n  zipper:\n    user: nobody\n    image: cyberdojo/zipper\n    init: true\n    container_name: test_web_cyber-dojo-zipper\n    read_only: true\n    tmpfs: /tmp\n    mem_limit: 50M\n    memswap_limit: 50M\n    restart: 'no'\n    depends_on:\n      - storer\n",
+            "Dockerfile": "FROM  alpine:latest\nLABEL maintainer=jon@jaggersoft.com\n\n# - - - - - - - - - - - - - - - - -\n# install ruby+\n# using FROM alpine:latest and install only the ruby packages\n# I need results in an image of ~102MB whereas\n# using FROM ruby:alpine results in an image of ~162MB\n# bundle install needs\n#   libffi-dev for sass-rails\n#   tzdata for railties\n#   zlib-dev for nokogiri\n# - - - - - - - - - - - - - - - - -\n\nRUN apk --update --no-cache add \\\n    bash \\\n    libffi-dev \\\n    ruby \\\n    ruby-bigdecimal \\\n    ruby-bundler \\\n    ruby-dev \\\n    tzdata \\\n    zlib-dev\n\n# - - - - - - - - - - - - - - - - -\n# install gems\n# - - - - - - - - - - - - - - - - -\n\nARG             CYBER_DOJO_HOME\nCOPY Gemfile  ${CYBER_DOJO_HOME}/\nWORKDIR       ${CYBER_DOJO_HOME}\n\nRUN  apk --update --no-cache add --virtual build-dependencies build-base \\\n  && bundle config --global silence_root_warning 1 \\\n  && bundle install \\\n  && apk del build-dependencies build-base \\\n  && rm -vrf /var/cache/apk/*\n\nRUN  cat ${CYBER_DOJO_HOME}/Gemfile.lock\n\n# - - - - - - - - - - - - - - - - -\n# copy source & set ownership\n# - - - - - - - - - - - - - - - - -\n\nCOPY . ${CYBER_DOJO_HOME}\nRUN  chown -R nobody:nogroup ${CYBER_DOJO_HOME}\nUSER nobody\n\n# - - - - - - - - - - - - - - - - -\n# bring it up\n# - - - - - - - - - - - - - - - - -\n\nEXPOSE  3000\nCMD [ \"./up.sh\" ]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            ".env",
+            ".gitignore",
+            ".travis.yml",
+            "Dockerfile",
+            "Gemfile",
+            "LICENSE.md",
+            "config.ru",
+            "docker-compose.yml",
+            "pipe_build_up_test.sh",
+            "up.sh"
+        ],
+        "folders": [
+            "app",
+            "config",
+            "docs",
+            "lib",
+            "script",
+            "sh",
+            "test"
+        ]
+    }
+}

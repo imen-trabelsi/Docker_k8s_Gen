@@ -1,0 +1,47 @@
+{
+    "docker_info": {
+        "base_image": "python:3.9@sha256:5caa9a0f034e56693e096ac4562097d9167a2509d22fb970cb4a2b5465a48d95",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "PIP_INDEX_URL",
+            "PIP_TRUSTED_HOST"
+        ],
+        "envs": [
+            "ENV PIP_NO_CACHE_DIR=false \\",
+            "ENV PATH=\"/home/twitch_bot/.local/bin:${PATH}\""
+        ],
+        "copy_instructions": [
+            "COPY --chown=twitch_bot:twitch_bot ./requirements.txt /workspace/web/",
+            "WORKDIR /workspace/web",
+            "COPY --chown=twitch_bot:twitch_bot ./ /workspace/web"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "./wait_for_it.sh",
+                    "mysql:3306",
+                    "--timeout=60",
+                    "--strict",
+                    "--",
+                    "python",
+                    "main.py"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "useradd --uid 1000 -U -m twitch_bot",
+                "USER twitch_bot"
+            ],
+            [
+                "pip install --upgrade -r /workspace/web/requirements.txt",
+                ""
+            ]
+        ]
+    }
+}

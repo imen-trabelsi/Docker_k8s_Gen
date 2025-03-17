@@ -1,0 +1,46 @@
+# use a node base image
+FROM node:20.17-alpine
+
+# Update to latest packages
+RUN apk update && apk upgrade  
+
+# Install necessary tools for the application
+RUN apk add --no-cache \
+chromium \
+python3 \
+make \
+g++ \
+nss \
+freetype \
+freetype-dev \
+harfbuzz \
+ca-certificates \
+
+# Create app directory
+WORKDIR /web
+
+# Install app dependencies by copying
+# package.json and package-lock.json
+COPY package*.json ./
+
+# If you are building your code for production
+# RUN npm ci --only=production
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Your app binds to port, so you'll use the EXPOSE instruction to have it mapped by the docker daemon
+EXPOSE 
+
+# The CMD provides defaults for an executing container and can include an executable, or they can omit the executable, in which case the ENTRYPOINT must be specified
+CMD []
+
+# The ENTRYPOINT specifies a command that will always be executed when the container starts.
+ENTRYPOINT []
+
+# Environment variable
+ENV 
+
+# Labels
+LABEL

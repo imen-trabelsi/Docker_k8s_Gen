@@ -1,0 +1,38 @@
+# Set up base Image
+FROM codefarm/nodebase:0.0.0
+
+# Add metadata
+LABEL Description="Base"
+
+# Set environment variables
+ENV depTmpRoot ${farmerHome}/deps
+ENV DISABLE_LINK_LIBS "npm installation disabled"
+ENV gitroot ${appRoot}
+
+# Set up working directory
+WORKDIR /src
+
+# Install app dependencies
+# A wildcard is used to ensure both package.json and package-lock.json are copied
+COPY package*.json ./
+
+# Using package-lock.json if present
+RUN npm ci --only=production
+
+# Bundle app source
+COPY . .
+
+# Run commands to set up the app
+RUN mkdir -p ${depTmpRoot}/src \
+    && ADD deps/deps.tar ${depTmpRoot}/src \
+    && chown -R ${user} ${depTmpRoot} \
+    && USER ${user} \
+    && cp -r ${depTmpRoot}/src/bs ${appRoot}/src \
+    && for i in $(ls -1 ${depTmpRoot}/src/lib/*/package.json); do \
+        moduleDir=$(echo $i|sed -e 's/\/package\.json//g'); \
+        echo "Installing library package $moduleDir globally"; \
+        yarn global add file:${moduleDir}; \
+    done \
+
+# Provide run command
+CMD [ "yarn", "run", "start-rel"]

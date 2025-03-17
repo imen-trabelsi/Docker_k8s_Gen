@@ -1,0 +1,43 @@
+# Use the ruby base image with the tag 2.6.5
+FROM ruby:2.6.5
+
+# Support multi-byte characters
+ENV LANG C.UTF-8
+
+# Set working directory in the docker container
+ENV APP_HOME /app
+WORKDIR $APP_HOME
+
+# Update and upgrade the system
+RUN apt-get update -qq && apt-get upgrade -qqy
+
+# Install cmake, need to compile some gems
+RUN apt-get -qqy install cmake
+
+# Update RubyGems and install bundler
+RUN gem update --system && gem install bundler -v 2.0.2
+
+# Copy Gemfile and .ruby-version and all other needed files into the image
+COPY .ruby-version $APP_HOME/
+COPY Gemfile $APP_HOME/
+COPY Gemfile.lock $APP_HOME/
+
+# Set environment variables for bundler
+ENV BUNDLE_GEMFILE=$APP_HOME/Gemfile BUNDLE_JOBS=4 BUNDLE_WITHOUT='production:staging'
+
+# Install gem dependencies
+RUN bundle install
+
+
+# Copy the whole project to the docker container (except the files/folders excluded in .dockerignore)
+COPY . $APP_HOME
+
+# Install Passenger standalone
+RUN bundle exec passenger-config install-standalone-runtime --auto
+RUN bundle exec passenger-config build-native-support
+
+# Open this port in the docker container
+EXPOSE 3000
+
+# The default command that gets run will be to start the Puma server.
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]

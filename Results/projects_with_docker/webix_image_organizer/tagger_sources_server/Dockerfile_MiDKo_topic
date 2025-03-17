@@ -1,0 +1,43 @@
+# Use the official Node.js 16 image.
+FROM node:16-alpine3.16
+
+# Set the working directory
+WORKDIR /app
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install dependencies
+RUN npm ci --only=production
+
+# Install PM2 globally
+RUN npm i pm2 -g
+
+# Copy relevant source files
+COPY sources/utils ./utils
+COPY sources/validationSchemas ./validationSchemas
+COPY conf/pm2_backend/pm2.config.js .
+
+# Copy the rest of the microservice
+COPY sources/server/tagger ./server/tagger
+
+# Ensure proper file permissions and ownership
+RUN chmod -R 755 /app && chown -R node:node /app
+
+# Switch to non-root user
+USER node
+
+# Include the correct exposed ports
+# This would need to be replaced with actual port numbers
+# EXPOSE 3000
+
+# Set environment variables
+# Again, this would need to be replaced with actual variable assignments
+# ENV MY_VAR=my_value
+
+# Set healthcheck
+# Here's an example, replace path with the actual healthcheck URL
+# HEALTHCHECK CMD curl --fail http://localhost:3000/health || exit 1
+
+# CMD instruction
+CMD ["pm2-runtime", "pm2.config.js"]

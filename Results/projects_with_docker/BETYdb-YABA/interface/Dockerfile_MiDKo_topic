@@ -1,0 +1,22 @@
+# Use the Base Image provided by the user
+FROM node:12.18.2-alpine
+
+# Define the directory we will be working in
+WORKDIR /code
+
+# Copy Package.json and Install Dependencies
+COPY package.json .
+RUN npm install --silent
+RUN npm install react-scripts@1.1.1 -g --silent
+
+# Add /code/node_modules/.bin to $PATH
+ENV PATH /code/node_modules/.bin:$PATH
+
+# Copy the Rest of the App
+COPY . .
+
+# Expose the Port for the App to be accessed
+EXPOSE 3000
+
+# Command to Run App
+CMD ["npm", "start"]

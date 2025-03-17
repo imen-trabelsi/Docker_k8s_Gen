@@ -1,0 +1,33 @@
+# Set base image
+FROM brennovich/protobuf-tools
+
+# Set working directory in the Docker image filesystem
+WORKDIR /app
+
+# Copy package.json and package-lock.json files into the node app directory
+COPY package*.json /app/
+
+# Install dependencies
+RUN npm install
+
+# Bundle app source inside Docker image
+COPY . ./
+
+# Copy protobuf files
+COPY src/grpc/v1/*.proto ./v1/
+COPY src/grpc/third_party/googleapis ./googleapis/
+COPY src/grpc/third_party/grpc-gateway ./grpc-gateway/
+
+# Copy other project files
+COPY .env .
+COPY docker-compose.yml .
+COPY docker-compose.override.yml .
+COPY deploys/dockers/docker-volume/Dockerfile .
+
+# Expose a port
+EXPOSE 8080
+
+HEALTHCHECK CMD curl --fail http://localhost:8080/health || exit 1
+
+# Provide runtime command
+CMD ["protoc", "-I./v1", "-I/usr/local/include", "-I./googleapis", "-I./grpc-gateway"]

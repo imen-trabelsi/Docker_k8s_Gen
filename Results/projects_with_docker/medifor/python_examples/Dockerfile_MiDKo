@@ -1,0 +1,25 @@
+# Use the selected base image
+FROM datamachines/grpc-python:1.15.0
+
+# Set labels for image
+LABEL grpc_version="1.15.0"
+LABEL proto_version="3.6.1"
+LABEL language="python:3.7"
+
+# Set work directory
+WORKDIR /app
+
+# Copy all files in the root directory to /app in the container
+COPY . /app
+
+# Install the necessary python git repo
+RUN pip install git+https://github.com/mediaforensics/medifor.git
+
+# Install project dependencies
+RUN pip install -r requirements.txt
+
+# Expose the application's port
+EXPOSE 50051
+
+# Define the command that will be executed when Docker container is run
+CMD ["python", "example_analytic.py"]

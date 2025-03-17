@@ -1,0 +1,27 @@
+# Use the base image provided by the user
+FROM node:alpine
+
+# Set work directory
+WORKDIR /goTemp/web/sapper
+
+# Copy package.json file
+COPY ./sapper/package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy static files
+COPY ./sapper .
+
+# Build the application
+RUN npm run build
+
+# Add environment variable
+ENV HOST=0.0.0.0
+
+# Expose ports 3000 and 10000
+EXPOSE 3000
+EXPOSE 10000
+
+# Start the application
+CMD [ "npm", "run", "start" ]

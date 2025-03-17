@@ -1,0 +1,63 @@
+{
+    "docker_info": {
+        "base_image": "node:8.13-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3002"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ./gulpfile.js .",
+            "COPY ./package.json .",
+            "COPY ./tsconfig.json .",
+            "COPY ./tslint.json .",
+            "COPY ./config.json .",
+            "COPY ./Dockerfile .",
+            "COPY ./src ./src",
+            "COPY --from=build-env /opt/my-musik/dist ./dist",
+            "COPY --from=build-env /opt/my-musik/package.json ./",
+            "COPY --from=build-env /opt/my-musik/config.json ./"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"node\",",
+                    "\"dist/app.js\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p /opt/my-musik/",
+                "WORKDIR /opt/my-musik/"
+            ],
+            [
+                "npm install typescript -g",
+                ""
+            ],
+            [
+                "npm install --no-optional",
+                ""
+            ],
+            [
+                "\"node_modules/.bin/gulp\"",
+                ""
+            ],
+            [
+                "mkdir -p /opt/my-musik/",
+                "WORKDIR /opt/my-musik/"
+            ],
+            [
+                "npm install --no-optional --only=prod",
+                ""
+            ]
+        ]
+    }
+}

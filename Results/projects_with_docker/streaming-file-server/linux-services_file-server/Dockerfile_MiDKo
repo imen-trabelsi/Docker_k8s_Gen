@@ -1,0 +1,29 @@
+# Use OpenJDK 11 as our base image
+FROM openjdk:11.0.5-jre-stretch
+
+# My application runs on port 8002, so we expose this port.
+EXPOSE 8002
+
+# Copy all dependencies
+COPY pom.xml ./
+
+# Create a directory for our application
+RUN mkdir -p /usr/src/app
+
+# Move to the application directory
+WORKDIR /usr/src/app
+
+# Copy project files to the app directory
+COPY . /usr/src/app
+
+# Build our application using Maven
+RUN mvn clean install
+
+# Copy our built JAR file to the tmp directory
+COPY modules/apps/file-server/build/libs/*.jar /tmp/app.jar
+
+# Run the Spring boot app
+ENTRYPOINT ["java", "-jar", "/tmp/app.jar"]
+
+# Healthcheck
+HEALTHCHECK --retries=33 CMD curl -f http://127.0.0.1:8002/actuator/health || exit 1

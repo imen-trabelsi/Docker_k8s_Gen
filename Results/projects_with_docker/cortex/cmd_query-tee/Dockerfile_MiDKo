@@ -1,0 +1,30 @@
+# Use user specified base image
+FROM alpine:3.19 AS build-env
+
+# Set workdir
+WORKDIR /app
+
+# Copy go.mod and download dependencies
+COPY go.mod .
+RUN go mod download
+
+# Copy the source code into the container
+COPY . .
+
+# Build the application
+RUN CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o query-tee .
+
+#Start a new stage from base
+FROM alpine:3.19
+
+# Set labels
+LABEL org.opencontainers.image.title="query-tee"
+
+# Install ca-certificates
+RUN apk add --no-cache ca-certificates
+
+# Copy binary from build to prod env
+
+# Provide necessary commands
+ENTRYPOINT ["/query-tee"]
+

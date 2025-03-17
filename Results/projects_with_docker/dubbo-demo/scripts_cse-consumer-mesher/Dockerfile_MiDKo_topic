@@ -1,0 +1,31 @@
+# Start with a base image containing Java runtime
+FROM ubuntu:16.04
+
+# The application's jar file
+ARG JAR_FILE=target/*.jar
+
+# Add the application's jar to the container
+COPY ${JAR_FILE} app.jar
+
+# Set work directory
+WORKDIR /app
+
+# Copy the local source code to the Docker image
+COPY . /app
+
+# Install necessary software
+RUN apt-get -qq update && \
+    apt-get -qq -y install curl net-tools iproute maven && \
+    mkdir /app && \
+
+# Build the project using maven
+RUN mvn clean package -DskipTests
+
+# Expose the port the app runs in
+EXPOSE 8080
+
+# Add the application's jar to the container
+COPY ${JAR_FILE} app.jar
+
+# Specify the entry point
+ENTRYPOINT ["java","-jar","/app.jar"]

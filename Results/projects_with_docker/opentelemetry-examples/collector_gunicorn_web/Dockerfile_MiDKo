@@ -1,0 +1,22 @@
+# Base Image
+FROM python:3.10.7-slim-buster
+
+# Environment Variables
+ENV PYTHONDONTWRITEBYTECODE 1
+ENV PYTHONUNBUFFERED 1
+
+# Working Directory
+WORKDIR /usr/src/app
+
+# Dockerfile build instructions for dependencies
+COPY requirements.txt ./requirements.txt
+RUN pip install --upgrade pip && pip install -r requirements.txt
+
+# Copy the application source code to WORKDIR
+COPY . /usr/src/app/
+
+# Expose ports
+EXPOSE 5000
+
+# Run Command
+CMD ["python", "app.py"]

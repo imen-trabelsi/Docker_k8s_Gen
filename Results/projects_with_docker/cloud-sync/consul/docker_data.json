@@ -1,0 +1,57 @@
+{
+    "docker_info": {
+        "base_image": "ubuntu:16.04",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "53/udp"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV REFRESHED_AT 2017-09-13"
+        ],
+        "copy_instructions": [
+            "ADD https://releases.hashicorp.com/consul/0.8.0/consul_0.8.0_linux_amd64.zip /tmp/consul.zip",
+            "ADD consul.json /config/"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[",
+                    "\"/usr/sbin/consul\",",
+                    "\"agent\",",
+                    "\"-ui\",",
+                    "\"-config-dir=/config\"",
+                    "]"
+                ]
+            },
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get -qq update",
+                "RUN apt-get -qq install curl unzip"
+            ],
+            [
+                "cd /usr/sbin && unzip /tmp/consul.zip && chmod +x /usr/sbin/consul && rm /tmp/consul.zip",
+                ""
+            ],
+            [
+                "mkdir -p /webui/",
+                "ADD https://releases.hashicorp.com/consul/0.8.0/consul_0.8.0_web_ui.zip /webui/webui.zip"
+            ],
+            [
+                "cd /webui && unzip webui.zip && rm webui.zip",
+                ""
+            ]
+        ]
+    }
+}

@@ -1,0 +1,28 @@
+# Use the base image with Python installed
+FROM brisedev/event-service-dev:2.5.0
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Copy the current directory contents into the container
+COPY . .
+
+# Install any needed packages specified in requirements.txt
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Make sure we use Python for our application
+RUN ln -s /usr/bin/python3 /usr/bin/python
+
+# Set environment variables
+ENV MONGO_DB_URL mongodb://localhost:27017/test
+ENV RABBITMQ_LOGS=/var/log/rabbitmq/warning_log.log
+
+# Expose the port to the outside world.
+EXPOSE 49153
+
+# COPY the files needed for RabbitMQ
+COPY ./bin/definitions.json /etc/rabbitmq/
+COPY ./bin/rabbitmq.config /etc/rabbitmq/
+
+# Default command when starting the container
+CMD ["python", "intro.py"]

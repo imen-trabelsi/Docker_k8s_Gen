@@ -1,0 +1,23 @@
+# Start with the Base Image
+FROM adoptopenjdk/openjdk14:jre-14.0.2_12-alpine
+
+# Set a working directory
+WORKDIR /app
+
+# Add a network ports the application uses to the Dockerfile with EXPOSE
+EXPOSE 8080
+
+# COPY commands to copy the necessary files to the Docker image
+COPY mvnw .
+COPY .mvn .mvn
+COPY pom.xml .
+COPY src src/
+
+# Use MAVEN to build the code
+RUN ./mvnw package -DskipTests
+
+# Copy the built jar to the root directory
+COPY target/policy-service*.jar policy-service.jar
+
+# Set the entry point for the Docker image
+ENTRYPOINT ["java","-jar","policy-service.jar"]

@@ -1,0 +1,25 @@
+# Base image
+FROM golang:alpine3.10
+
+# Install OS dependencies
+RUN apk add build-base make git icu-dev icu-static
+
+# Go needs these two environment variables
+ENV GOPATH /go
+ENV PATH /go/bin:$PATH
+
+# Set the Current Working Directory inside the container
+WORKDIR $GOPATH
+
+# Copy everything from the current directory to the Workdir in the container
+COPY . .
+
+# Build the Go app
+RUN go mod download
+RUN go build -o main .
+
+# Expose the application on port 8080
+EXPOSE 8080
+
+# Command to run the executable
+CMD ["./main"]

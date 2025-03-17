@@ -1,0 +1,35 @@
+# Build stage
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+
+# Set Working Directory
+WORKDIR /src
+
+# Copy everything and build
+COPY ["ApiGateways/YarpApiGateway/YarpApiGateway.csproj", "ApiGateways/YarpApiGateway/"]
+RUN dotnet restore "./ApiGateways/YarpApiGateway/./YarpApiGateway.csproj"
+COPY . .
+RUN dotnet build "./ApiGateways/YarpApiGateway/YarpApiGateway.csproj" -c Release -o /app/build
+
+# Publish it
+FROM build AS publish
+RUN dotnet publish "./ApiGateways/YarpApiGateway/YarpApiGateway.csproj" -c Release -o /app/publish /p:UseAppHost=false
+
+# Final stage / image
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
+
+# Create user
+RUN adduser -D -H -u 1000 -s /bin/bash app
+
+# Set Working Directory
+WORKDIR /app
+
+# Change to non-root user
+USER app
+
+# Copy built application
+
+# Expose ports
+EXPOSE 8080
+EXPOSE 8081
+
+ENTRYPOINT ["dotnet", "YarpApiGateway.dll"]

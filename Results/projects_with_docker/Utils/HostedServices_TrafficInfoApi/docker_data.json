@@ -1,0 +1,48 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/core/sdk:3.1",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "80",
+            "443"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "WORKDIR /src",
+            "COPY [\"HostedServices/TrafficInfoApi/TrafficInfoApi.csproj\", \"HostedServices/TrafficInfoApi/\"]",
+            "COPY [\"SharedKernel/Contracts/Contracts.csproj\", \"SharedKernel/Contracts/\"]",
+            "WORKDIR \"/src/HostedServices/TrafficInfoApi\"",
+            "WORKDIR /app",
+            "COPY --from=publish /app/publish ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"dotnet\",",
+                    "\"TrafficInfoApi.dll\",",
+                    "\"--environment=Docker\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "dotnet restore \"HostedServices/TrafficInfoApi/TrafficInfoApi.csproj\"",
+                "COPY . ."
+            ],
+            [
+                "dotnet build \"TrafficInfoApi.csproj\" -c Release -o /app/build",
+                ""
+            ],
+            [
+                "dotnet publish \"TrafficInfoApi.csproj\" -c Release -o /app/publish",
+                ""
+            ]
+        ]
+    }
+}

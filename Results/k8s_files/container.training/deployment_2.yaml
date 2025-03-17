@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: tilt-registry
+  name: tilt-registry
+  namespace: tilt-registry
+spec:
+  selector:
+    matchLabels:
+      app: tilt-registry
+  template:
+    metadata:
+      labels:
+        app: tilt-registry
+    spec:
+      containers:
+      - image: registry
+        name: registry

@@ -1,0 +1,37 @@
+{
+    "docker_info": {
+        "base_image": "ubuntu:14.04",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV     DEBIAN_FRONTEND noninteractive"
+        ],
+        "copy_instructions": [
+            "WORKDIR /build",
+            "ADD     package.json    /build/package.json"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "./node_modules/gulp/bin/gulp.js",
+                    "serve"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && apt-get install -y git npm nodejs openjdk-7-jre",
+                "RUN     ln -s /usr/bin/nodejs /usr/local/bin/node"
+            ],
+            [
+                "npm install",
+                "ADD     .   /build"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,25 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "requirements.txt": "kafka\nboto3"
+        },
+        "database": null,
+        "build_system": "pip",
+        "config_files": {
+            "dev/io_test/producer/.env": "MINIO_DATA_DIR=/mnt/data\nMINIO_CONFIG_DIR=/mnt/config\nMINIO_ACCESS_KEY=BQA2GEXO711FVBVXDWKM\nMINIO_SECRET_KEY=uvgz3LCwWM3e400cDkQIH/y1Y4xgU4iV91CwFSPC",
+            "dev/docker-compose.yml": "# This docker compose file will stand up the minimal components necessary for\n# Puptoo to work. Nothing is stood up for uploads or to consume the inventory\n# messages.\nversion: \"3\"\nservices:\n  zookeeper:\n    image: confluentinc/cp-zookeeper\n    environment:\n      - ZOOKEEPER_CLIENT_PORT=32181\n      - ZOOKEEPER_SERVER_ID=1\n  kafka:\n    image: confluentinc/cp-kafka\n    ports:\n      - 29092:29092\n    depends_on:\n      - zookeeper\n    environment:\n      - KAFKA_ADVERTISED_LISTENERS=PLAINTEXT://kafka:29092\n      - KAFKA_BROKER_ID=1\n      - KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR=1\n      - KAFKA_ZOOKEEPER_CONNECT=zookeeper:32181\n      - KAFKA_AUTO_CREATE_TOPICS_ENABLE=true\n  puptoo:\n    image: quay.io/cloudservices/insights-puptoo:latest\n    ports:\n      - 8000:8000 #for prometheus endpoint\n    depends_on:\n      - kafka\n      - minio\n  minio:\n      image: minio/minio\n      command: [\"server\", \"--console-address\", \":9001\", \"/data\"]\n      volumes:\n        - '$MINIO_DATA_DIR:/data:Z'\n        - '$MINIO_CONFIG_DIR:/root/.minio:Z'\n      ports:\n        - 9000:9000\n      environment:\n        - MINIO_ROOT_USER=$MINIO_ACCESS_KEY\n        - MINIO_ROOT_PASSWORD=$MINIO_SECRET_KEY\n  createbuckets:\n    image: minio/mc\n    depends_on:\n      - minio\n    entrypoint: >\n      /bin/sh -c \"\n      /usr/bin/mc config host add myminio http://minio:9000 $MINIO_ACCESS_KEY $MINIO_SECRET_KEY;\n      /usr/bin/mc mb --ignore-existing myminio/insights-upload-perma;\n      /usr/bin/mc mb --ignore-existing myminio/insights-upload-rejected;\n      /usr/bin/mc mb --ignore-existing myminio/insights-upload-puptoo;\n      /usr/bin/mc anonymous set public myminio/insights-upload-perma;\n      /usr/bin/mc anonymous set public myminio/insights-upload-rejected;\n      /usr/bin/mc anonymous set public myminio/insights-upload-puptoo;\n      exit 0;\n      \"\n  redis:\n    image: redis\n    container_name: puptoo-redis\n    ports:\n      - 6379:6379\n",
+            "Dockerfile": "FROM registry.access.redhat.com/ubi8/ubi-minimal:latest\n\nWORKDIR /app-root/\n\nRUN microdnf install -y python38 python38-devel curl python38-pip git tar xz bzip2 unzip && \\\n    microdnf upgrade -y && \\\n    microdnf clean all && \\\n    git clone -b 3.0 https://github.com/RedHatInsights/insights-core && \\\n    pip3 install ./insights-core\n\nCOPY poetry.lock poetry.lock\nCOPY pyproject.toml pyproject.toml\nCOPY requirements.txt requirements.txt\nCOPY unit_test.sh unit_test.sh\nCOPY dev dev\nCOPY tests tests\nCOPY src src\n\nRUN pip3 install --upgrade pip && pip3 install .\n\nCMD [\"puptoo\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "consumer.py",
+            "requirements.txt"
+        ],
+        "folders": []
+    }
+}

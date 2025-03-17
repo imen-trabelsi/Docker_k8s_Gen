@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    component: scheduler
+    name: stork-scheduler
+    tier: control-plane
+  name: stork-scheduler
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      name: stork-scheduler
+  template:
+    metadata:
+      annotations: {}
+      labels:
+        component: scheduler
+        name: stork-scheduler
+        tier: control-plane
+    spec:
+      containers:
+      - image: gcr.io/google_containers/kube-scheduler-amd64:v1.18.2
+        imagePullPolicy: Always
+        livenessProbe:
+          httpGet:
+            path: /healthz
+            port: 80
+        name: stork-scheduler
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /healthz
+            port: 80
+        resources:
+          limits:
+            cpu: 500m
+            ephemeral-storage: 1Gi
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            ephemeral-storage: 500Mi
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 1000
+          runAsUser: 1000
+        volumeMounts: []
+      serviceAccountName: stork-scheduler-account
+      tolerations: []
+      volumes: []
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: stork-scheduler-service
+spec:
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+  selector:
+    name: stork-scheduler
+  type: ClusterIP

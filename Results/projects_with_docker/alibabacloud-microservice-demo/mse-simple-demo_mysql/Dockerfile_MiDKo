@@ -1,0 +1,35 @@
+# Use a base image with Java and Maven (since it's needed for the Spring Boot application)
+FROM openjdk:8-jdk-alpine AS builder
+
+# Set the current working directory in the Docker image
+WORKDIR /app
+
+# Set environment variable
+ENV LANG=C.UTF-8 
+
+# Copy the Maven configuration file to the Docker image
+COPY pom.xml .
+
+# Download the project dependencies
+RUN mvn dependency:go-offline -B
+
+# Copy the source code into the Docker image
+COPY src /app/src
+
+# Build the application
+RUN mvn package
+
+# Use a second stage to generate a clean and minimized image
+FROM openjdk:8-jdk-alpine
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the executable jar from the builder stage
+
+# Copy the database initialization script to the Docker entrypoint directory
+WORKDIR /docker-entrypoint-initdb.d
+COPY init.sql .
+
+#Set the startup command to execute the jar
+ENTRYPOINT ["java","-jar","/app/app.jar"]

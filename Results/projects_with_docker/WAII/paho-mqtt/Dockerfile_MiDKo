@@ -1,0 +1,14 @@
+FROM eclipse-mosquitto:latest
+
+# Copy necessary files
+COPY ./pwd_file /etc/mosquitto/passwd
+COPY ./cert/ca.crt /etc/mosquitto/ca.crt
+COPY ./cert/server.crt /etc/mosquitto/server.crt
+COPY ./cert/server.key /etc/mosquitto/server.key
+COPY mosquitto.conf /mqtt/config/mosquitto.conf
+
+# Expose necessary ports
+EXPOSE 8883
+
+# Set the command to execute
+CMD ["/usr/sbin/mosquitto", "-v", "-c", "/mqtt/config/mosquitto.conf"]

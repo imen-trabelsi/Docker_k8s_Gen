@@ -1,0 +1,48 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "JavaScript",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"maintenance\",\n  \"version\": \"1.0.0\",\n  \"main\": \"index.js\",\n  \"license\": \"MIT\",\n  \"scripts\": {\n    \"start:dev\": \"http-server ./src/\"\n  },\n  \"devDependencies\": {\n    \"http-server\": \"^0.11.1\"\n  }\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "src/frontend/maintenance/Dockerfile": "# This file creates a container that runs a {package} caliopen frontend\n# Important:\n# Author: Caliopen\n# Date: 2019-05-13\n\nFROM nginx\nMAINTAINER Caliopen\nCOPY src /opt/caliopen\nCOPY config/nginx-config-maintenance.conf /etc/nginx/conf.d/default.conf\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".babelrc",
+            ".dockerignore",
+            ".eslintrc.json",
+            ".gitignore",
+            ".prettierignore",
+            ".prettierrc.js",
+            ".stylelintrc.yml",
+            "CONTRIBUTING.md",
+            "Dockerfile",
+            "Dockerfile.caliopen-node",
+            "README.md",
+            "lingui.config.ts",
+            "package.json",
+            "postcss.config.js",
+            "tsconfig.json",
+            "yarn.lock"
+        ],
+        "folders": [
+            "__mocks__",
+            "assets",
+            "bin",
+            "config",
+            "locale",
+            "public",
+            "server",
+            "src",
+            "template",
+            "test",
+            "webpack"
+        ]
+    }
+}

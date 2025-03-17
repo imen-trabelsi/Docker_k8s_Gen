@@ -1,0 +1,38 @@
+# From the base image
+FROM "${DAOS_DOCKER_IMAGE_NSP}/daos-base-${LINUX_DISTRO}:$DAOS_DOCKER_IMAGE_TAG"
+
+# Maintainer
+LABEL maintainer="daos@daos.groups.io"
+
+# Set work directory
+WORKDIR /app
+
+# Copy requirements file
+COPY requirements.txt .
+
+# Install dependencies
+RUN pip install -r requirements.txt
+
+# Arguments
+ARG DAOS_VERSION=""
+ARG DAOS_AUTH=""
+ARG DAOS_HUGEPAGES_NBR=""
+ARG DAOS_IFACE_NAME=""
+ARG DAOS_SCM_SIZE=""
+ARG DAOS_BDEV_SIZE=""
+ARG DAOS_MD_ON_SSD=""
+
+# Installation of DAOS server
+RUN for it in DAOS_VERSION; do \
+    if eval "[[ -z \$$it ]]"; then echo "[ERROR] Docker build argument $it is not defined"; exit 1; fi; done &&\
+    dnf install daos-server-${DAOS_VERSION} && \
+    dnf clean all && \
+
+# Check and setting other DAOS related arguments
+RUN for it in DAOS_AUTH DAOS_HUGEPAGES_NBR DAOS_IFACE_NAME DAOS_SCM_SIZE DAOS_BDEV_SIZE DAOS_MD_ON_SSD; do \
+
+# Copy YML file
+COPY daos_server.yml.in /tmp/daos_server.yml.in
+
+# Start app
+CMD [ "python", "./app.py" ]

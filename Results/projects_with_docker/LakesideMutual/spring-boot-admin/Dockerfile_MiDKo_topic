@@ -1,0 +1,34 @@
+# Choose the base image
+FROM openjdk:21-slim-buster as build
+
+# Set the current working directory inside the Docker image
+WORKDIR /app
+
+# Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy pom.xml to the image
+COPY pom.xml .
+
+# Download dependencies
+RUN ./mvnw -B dependency:go-offline
+
+# Copy remaining project files
+COPY src src
+
+# Build the application
+RUN ./mvnw -B package
+
+# Start a new stage
+FROM openjdk:21-slim-buster
+
+WORKDIR /app
+
+# Copy compiled jar file from the build stage
+
+# Expose the port
+EXPOSE 9000
+
+# Define the start command
+ENTRYPOINT ["java", "-jar", "spring-boot-admin-0.0.2-SNAPSHOT.jar"]

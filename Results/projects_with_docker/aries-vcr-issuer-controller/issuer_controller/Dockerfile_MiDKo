@@ -1,0 +1,26 @@
+# Dockerfile
+FROM python:3
+
+# Set environment variables
+ENV HOME="/app/controller"
+ENV HOST_IP 0.0.0.0
+ENV HOST_PORT 8000
+ENV INDY_GENESIS_PATH "${HOME}/genesis"
+
+# Make directory for app
+RUN mkdir ${HOME}
+
+# Set working directory in the container
+WORKDIR $HOME
+
+# Copy the current directory contents into the container
+COPY . .
+
+# Install dependencies
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+# Expose ports
+EXPOSE 8000
+
+# Command to run on start
+ENTRYPOINT [ "bash", "./docker-entrypoint.sh" ]

@@ -1,0 +1,24 @@
+{
+    "docker_info": {
+        "base_image": "kapua/kapua-console:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "0"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ../tls.crt /tmp/tls.crt"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "keytool -noprompt  -importcert -file \"/tmp/tls.crt\" -alias \"ssocert\" -keystore \"${JAVA_HOME}/lib/security/cacerts\" -storepass \"changeit\"",
+                "USER 1000"
+            ]
+        ]
+    }
+}

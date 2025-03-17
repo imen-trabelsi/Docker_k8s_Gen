@@ -1,0 +1,22 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Flask",
+        "dependencies": {
+            "requirements.txt": "# pin version of flask to avoid bug in mara-app build\nflask==2.2.5\n\n# mara\n-e git+https://github.com/mara/mara-app.git@1.5.1#egg=mara-app\n-e git+https://github.com/mara/mara-acl.git@1.4.0#egg=mara-acl\n-e git+https://github.com/mara/mara-db.git@3.0.1#egg=mara-db\n-e git+https://github.com/mara/mara-page.git@1.3.0#egg=mara-page\n-e git+https://github.com/mara/data-integration.git@1.0.0#egg=data-integration\n\n# running flask\ngunicorn\n\n# downloading data from s3\n#awscli<1.14.0\nJSONBender\naiohttp\npytz==2024.2\ncffi>=1.13\nbackoff\n\n"
+        },
+        "database": null,
+        "build_system": "pip",
+        "config_files": {
+            "data-pipeline/docker/mara-app/Dockerfile": "FROM ubuntu:18.04\n\n# mara-base section\nARG python_version=3.8\n\nRUN apt-get update -y \\\n    && apt-get install -y \\\n    build-essential \\\n    git \\\n    dialog \\\n    coreutils \\\n    graphviz \\\n    software-properties-common \\\n    postgresql-client \\\n    rsync\nRUN add-apt-repository ppa:deadsnakes/ppa\nRUN apt-get update -y \\\n    && apt-get install -y \\\n    python$python_version \\\n    python$python_version-dev \\\n    python$python_version-venv \\\n    python3-venv \\\n    python-psycopg2 \\\n    libpq-dev\n\n# ========================================================================================================\n# Install go-crond (from https://github.com/webdevops/go-crond)\n#\n#\n# CRON Jobs in OpenShift:\n# - https://blog.danman.eu/cron-jobs-in-openshift/\n#\n# - go-crond was selected over OpenShift cron jobs, and attempting to get crond running on OpenShift\n#   - Allows the mara container to be running and the user interface to be available.\n#   - The history issues with the OpenShift cron jobs are avoided.\n# --------------------------------------------------------------------------------------------------------\nARG SOURCE_REPO=webdevops\nARG GOCROND_VERSION=22.9.1\nADD https://github.com/$SOURCE_REPO/go-crond/releases/download/$GOCROND_VERSION/go-crond.linux.amd64 /usr/bin/go-crond\nRUN chmod ug+x /usr/bin/go-crond\n# ========================================================================================================\n\n# mara-app section - this is specific to our use of mara\n# ======================================================\n\n# Add mara user\nARG uid=1001\nARG user=mara\nRUN useradd -U -ms /bin/bash -u $uid $user \\\n    && usermod -a -G root $user\n\nENV HOME=\"/data-pipeline\"\nENV PYENV_ROOT=$HOME/.venv\nENV APP_ROOT=$HOME \\\n    PATH=$PYENV_ROOT/bin:$PATH \\\n    LC_ALL=C.UTF-8 \\\n    LANG=C.UTF-8 \\\n    SHELL=/bin/bash \\\n    PIP_NO_CACHE_DIR=off \\\n    PYTHON_VERSION=$python_version \\\n    PYTHONUNBUFFERED=1 \\\n    PYTHONIOENCODING=UTF-8 \n\n# Copy source code\nADD . $APP_ROOT\nADD ./.scripts $APP_ROOT\nADD ./docker/mara-app/docker-entrypoint.sh $APP_ROOT\nARG entrypoint=$APP_ROOT/docker-entrypoint.sh\n\nWORKDIR $APP_ROOT\nRUN make install-packages\n\n# pin previous version of sqlalchemy_utils work avoid bug in 0.36.8\nRUN pip install sqlalchemy==1.3.23\nRUN pip install sqlalchemy_utils==0.36.7\n\n# Set ownership and permissions\n# Set scripts as executable (make files and python files do not have to be marked)\n# Make /etc/passwd writable for the root group so an entry can be created for an OpenShift assigned user account.\nRUN chown -R mara:root $APP_ROOT \\\n    && chmod -R ug+rw $APP_ROOT \\\n    && chmod ug+x $APP_ROOT/scripts/*.sh \\\n    && chmod ug+x $APP_ROOT/.scripts/mara-app/*.sh \\\n    && chmod ug+x $APP_ROOT/.scripts/mara-app/makeshell \\\n    && chmod ug+x $entrypoint \\\n    && chmod g+rw /etc/passwd \\\n    && chmod g-w $APP_ROOT/scripts/cron/*\n\nUSER $user\nENTRYPOINT [\"bash\", \"docker-entrypoint.sh\"]"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "1-init-dbs.sh",
+            "Dockerfile"
+        ],
+        "folders": []
+    }
+}

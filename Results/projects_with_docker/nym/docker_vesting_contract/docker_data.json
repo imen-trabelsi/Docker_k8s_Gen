@@ -1,0 +1,20 @@
+{
+    "docker_info": {
+        "base_image": "rust",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "rustup target add wasm32-unknown-unknown",
+                "CMD cd nym/contracts/vesting && RUSTFLAGS='-C link-arg=-s' cargo build --release --target wasm32-unknown-unknown"
+            ]
+        ]
+    }
+}

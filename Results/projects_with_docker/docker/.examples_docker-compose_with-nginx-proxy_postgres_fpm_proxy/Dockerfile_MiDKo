@@ -1,0 +1,12 @@
+# Use nginx base image
+FROM nginxproxy/nginx-proxy:alpine
+
+# Copy nginx configuration
+COPY uploadsize.conf /etc/nginx/conf.d/uploadsize.conf
+
+# Expose ports
+EXPOSE 80
+
+# Set up command to run your app
+# Change it according to your application
+#CMD ["nginx", "-g", "daemon off;"]

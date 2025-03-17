@@ -1,0 +1,38 @@
+# Custom Base Image
+FROM @docker.account@/jetty-base
+
+# Set the working directory
+WORKDIR /usr/src/app
+
+# Copy the Maven pom.xml
+COPY pom.xml .
+
+# Build all the dependencies, will be cached
+RUN mvn dependency:go-offline
+
+# Copy other project files and build the app
+COPY . .
+RUN mvn package
+
+# Copy built jar file into another Base image
+FROM openjdk:8-jdk-alpine
+
+WORKDIR /app
+COPY --from=0 /usr/src/app/target/*.jar /app/app.jar
+
+ENV BROKER_ADDR=broker \
+    BROKER_PORT=1883 \
+    DATASTORE_ADDR=es:9200 \
+    SQL_DB_ADDR=db \
+    SQL_DB_PORT=3306 \
+    SERVICE_BROKER_ADDR=failover:(amqp://events-broker:5672)?jms.sendTimeout=1000 \
+    JOB_ENGINE_BASE_ADDR=http://job-engine:8080/v1 \
+
+EXPOSE 8080
+
+# Run commands
+RUN chown -R 1000:0 /app /var/opt/jetty && \
+
+USER 1000
+
+ENTRYPOINT ["java","-jar","/app/app.jar"]

@@ -1,0 +1,17 @@
+FROM palletone/baseimg
+
+# Set environment variables
+ENV GOPATH=/gopath  
+ENV PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/go/bin/:$GOPATH/bin
+
+# Run necessary commands to set up dependencies.
+# Using wget, download and install go, set up necessary directories.
+RUN wget -o download.log https://studygolang.com/dl/golang/go1.12.linux-amd64.tar.gz && \
+    tar -C /usr/local -zxvf go1.12.linux-amd64.tar.gz >> download.log && \
+    rm go1.12.linux-amd64.tar.gz download.log && \
+
+# Copy necessary directories or files into docker image.
+COPY ./vendor /gopath/src/
+# No need to specify execution command, as the command would be
+# specific to the go application and not included in the extracted info.
+# Also, there are no specified exposed ports or health checks

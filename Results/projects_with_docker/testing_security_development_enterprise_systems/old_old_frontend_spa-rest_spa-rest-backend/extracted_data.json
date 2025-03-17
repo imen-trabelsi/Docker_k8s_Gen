@@ -1,0 +1,25 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Spring Boot",
+        "dependencies": {
+            "pom.xml": "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n    <modelVersion>4.0.0</modelVersion>\n\n    <artifactId>spa-rest-backend</artifactId>\n    <packaging>jar</packaging>\n\n    <parent>\n        <groupId>org.tsdes.advanced.frontend.sparest</groupId>\n        <artifactId>spa-rest</artifactId>\n        <version>0.0.1-SNAPSHOT</version>\n    </parent>\n\n    <build>\n        <plugins>\n            <plugin>\n                <groupId>org.springframework.boot</groupId>\n                <artifactId>spring-boot-maven-plugin</artifactId>\n                <configuration>\n                    <finalName>SpaRestBackend</finalName>\n                </configuration>\n            </plugin>\n        </plugins>\n    </build>\n\n\n    <dependencies>\n\n        <dependency>\n            <groupId>org.tsdes.advanced.frontend.sparest</groupId>\n            <artifactId>spa-rest-dto</artifactId>\n            <version>${project.version}</version>\n        </dependency>\n        <dependency>\n            <groupId>org.tsdes.advanced.rest</groupId>\n            <artifactId>rest-dto</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.tsdes.advanced.rest</groupId>\n            <artifactId>rest-exception</artifactId>\n        </dependency>\n\n\n\n        <dependency>\n            <groupId>org.springframework.boot</groupId>\n            <artifactId>spring-boot-starter-web</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.springframework.boot</groupId>\n            <artifactId>spring-boot-starter-data-jpa</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>io.springfox</groupId>\n            <artifactId>springfox-swagger2</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>io.springfox</groupId>\n            <artifactId>springfox-swagger-ui</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>io.springfox</groupId>\n            <artifactId>springfox-spring-web</artifactId>\n        </dependency>\n\n        <dependency>\n            <groupId>org.flywaydb</groupId>\n            <artifactId>flyway-core</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.postgresql</groupId>\n            <artifactId>postgresql</artifactId>\n        </dependency>\n\n\n        <!-- test -->\n        <dependency>\n            <groupId>com.h2database</groupId>\n            <artifactId>h2</artifactId>\n            <scope>test</scope>\n        </dependency>\n        <dependency>\n            <groupId>org.springframework.boot</groupId>\n            <artifactId>spring-boot-starter-test</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>io.rest-assured</groupId>\n            <artifactId>rest-assured</artifactId>\n        </dependency>\n    </dependencies>\n</project>"
+        },
+        "database": "PostgreSQL",
+        "build_system": "Maven",
+        "config_files": {
+            "old/old_frontend/spa-rest/docker-compose.yml": "# Useful commands:\n# docker-compose build\n# docker-compose up\n# docker-compose ps\n# docker-compose down\n\nversion: '3.7'\n\nservices:\n\n  frontend:\n    build:\n      context: ./spa-rest-frontend\n      dockerfile: Dockerfile\n    ports:\n      - \"8080:8080\"\n\n  # Note that here I am using a real database, and not\n  # an embedded one like H2\n  postgres:\n    image: \"postgres:10\"\n\n  backend:\n     build:\n        context: ./spa-rest-backend\n        dockerfile: Dockerfile\n     depends_on:\n        - postgres\n     ports:\n        - \"8081:8081\"\n\n# Only needed if then you have other images joining later this network.\n# Otherwise, if not overriding the name, it might have a random component\n# in the name.\nnetworks:\n  default:\n    name: spa-rest-network",
+            "old/old_frontend/spa-rest/spa-rest-backend/Dockerfile": "FROM openjdk:8-alpine\n\nADD target/SpaRestBackend.jar .\n\nCMD java -jar SpaRestBackend.jar"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "pom.xml"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

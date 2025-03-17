@@ -1,0 +1,27 @@
+# Base Image
+FROM tomee:8-jdk-7.0.1-plus
+
+# Set working directory
+WORKDIR /usr/local/tomee/
+
+# Copy instructions
+COPY ./tcf-backend.war ./webapps/.
+COPY ./resources/tomcat-user.xml ./conf/tomcat-users.xml
+COPY ./resources/manager-context.xml ./webapps/manager/META-INF/context.xml
+COPY ./resources/start-tcf.sh .
+
+# Run commands
+RUN ["chmod", "u+x", "./start-tcf.sh"]
+
+# Healthchecks
+HEALTHCHECK --interval=5s CMD curl --fail http://localhost:8080/ || exit 1
+
+# Expose Ports
+EXPOSE 8080
+
+# Set Environment Variables
+ENV bank_host=localhost
+ENV bank_port=9090
+
+# Set entrypoint
+ENTRYPOINT ["./start-tcf.sh"]

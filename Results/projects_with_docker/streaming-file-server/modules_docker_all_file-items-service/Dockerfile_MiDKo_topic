@@ -1,0 +1,51 @@
+# Base Image
+FROM docker_base-streaming-file-server:latest as build-stage 
+
+# Set Work Directory
+WORKDIR /app
+
+# Set Maven as a Build System
+USER root
+
+RUN apk add --no-cache curl tar bash
+ARG MAVEN_VERSION=3.6.1
+ARG USER_HOME_DIR="/root"
+RUN mkdir -p /usr/share/maven && \
+curl -fsSL https://apache.osuosl.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz \
+    | tar -xzC /usr/share/maven --strip-components=1 && \
+ENV MAVEN_HOME /usr/share/maven
+ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
+
+# Copy pom.xml File
+COPY pom.xml .
+
+# Copy Application Source Code
+COPY src src
+
+# Build the Application
+RUN mvn -DskipTests clean package
+
+#Copy Static Files
+COPY modules/docker/all/file-items-service/Dockerfile .
+COPY .env .
+COPY modules/docker/all/docker-compose.yml .
+
+# Copy the JAR File
+COPY --chown=appuser ./modules/apps/file-items-service/build/libs/*.jar ./app.jar
+
+# Start a new, final Base Image
+FROM docker_base-streaming-file-server:latest
+
+# Copy from the Build Stage, Image
+
+# Set Java Environment Variable
+ENV JAVA_OPTS=""
+
+# Health Check
+HEALTHCHECK --retries=33 CMD wget --quiet --tries=1 --spider http://127.0.0.1:8001/actuator/health || exit 1
+
+# Expose Ports
+EXPOSE 8001
+
+# Entrypoint
+ENTRYPOINT ["java", "${JAVA_OPTS}", "-jar", "./app.jar", "--spring.profiles.active=db-pg"]

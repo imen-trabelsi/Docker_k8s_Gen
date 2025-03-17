@@ -1,0 +1,41 @@
+# Base Image
+FROM openjdk:8-jre-alpine
+
+# Add Maintainer Info
+LABEL maintainer="abc@xyz.com"
+
+# Change to tmp folder
+WORKDIR /tmp
+
+# Copy pom.xml file
+COPY ./pom.xml /tmp/
+
+# Package layering
+RUN mvn dependency:go-offline -B
+
+# Now package our application code
+COPY ./src /tmp/src/
+
+# This will call clean, package
+RUN mvn package
+
+# Change to root folder
+WORKDIR /
+
+# Copy the jar file
+COPY abixen-platform-zipkin.jar app.jar
+
+# Expose port 8888
+EXPOSE 8888
+
+# Set JVM Options
+ENV JAVA_OPTS=""
+
+# Set spring profile to use
+ENV SPRING_PROFILE="docker"
+
+# Set eureka URI
+ENV EUREKA_URI="discovery"
+
+# Execute application
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=${SPRING_PROFILE}","-Dabixen.services.eureka.uri=${EUREKA_URI}","-jar", "/app.jar"]

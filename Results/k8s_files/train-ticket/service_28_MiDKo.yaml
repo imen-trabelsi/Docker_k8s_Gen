@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: ts-rebook-service
+spec:
+  ports:
+  - port: 18886
+    protocol: TCP
+    targetPort: 18886
+  selector:
+    app: ts-rebook-service
+  type: ClusterIP

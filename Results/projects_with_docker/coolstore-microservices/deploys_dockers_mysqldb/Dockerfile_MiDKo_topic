@@ -1,0 +1,28 @@
+# Set the base image
+FROM mysql:8.0.12
+
+# Copy the dependencies file
+COPY package.json ./deploys/dockers/mysqldb/
+
+# Installing dependencies
+RUN npm install
+
+# Copying rest of the application to docker image
+COPY . ./deploys/dockers/mysqldb/
+
+# Build arguments and setting environment variable
+ARG NODE_ENV=production
+ENV NODE_ENV=${NODE_ENV}
+
+# Setup the work directory
+WORKDIR /deploys/dockers/mysqldb/
+
+# Healthcheck for checking the state of the container
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD curl -f http://localhost/ || exit 1
+
+# Expose the necessary port 
+EXPOSE 8080
+
+# Running the application
+CMD [ "npm", "start" ]

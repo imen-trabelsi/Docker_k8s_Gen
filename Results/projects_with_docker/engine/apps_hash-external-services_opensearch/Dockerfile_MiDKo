@@ -1,0 +1,30 @@
+# Set base image 
+FROM opensearchproject/opensearch:1.2.3
+
+# Copy dependency definitions
+COPY pyproject.toml /app/
+
+# Set environment variables
+# Replace ENV_VARIABLE_NAME and ENV_VARIABLE_VALUE with actual values
+# ENV ENV_VARIABLE_NAME=ENV_VARIABLE_VALUE
+
+# Set work directory
+WORKDIR /app
+
+# Install dependencies
+RUN apt-get update && apt-get install -y python3-pip && pip3 install poetry
+RUN poetry install --no-interaction --no-ansi
+
+# Copy all files from current directory to work directory
+COPY . /app
+
+# Copy start script and make it executable
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+
+# Exposed Ports
+# Replace PORT_NUMBER with actual values
+#EXPOSE PORT_NUMBER
+
+# Run command
+CMD ["/start.sh"]

@@ -1,0 +1,22 @@
+# Base Image
+FROM docker.elastic.co/logstash/logstash:6.4.1
+
+# Set current working directory
+WORKDIR /usr/share/logstash/config/
+
+# Copy required files
+COPY run.sh /
+COPY logstash.yml /usr/share/logstash/config/
+COPY jvm.options /usr/share/logstash/config/
+COPY sharefilter.conf /usr/share/logstash/config/
+COPY poolblockfilter.conf /usr/share/logstash/config/
+
+# Run Commands
+RUN chmod +x /run.sh
+
+# Expose ports
+# Add your needed ports here, example: EXPOSE 80
+
+# Run the command on container startup
+CMD ["/run.sh"]
+ENTRYPOINT []

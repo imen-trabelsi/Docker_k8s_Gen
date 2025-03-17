@@ -1,0 +1,32 @@
+# Specify the base image
+FROM openjdk:8u151-jdk AS build
+
+# Set working directory in the image
+WORKDIR /app
+
+# Copy pom.xml and source code to the container
+COPY pom.xml .
+COPY src ./src
+
+# Build the application
+RUN mvn clean package
+
+# Copy the startup script
+COPY startup.sh /usr/bin/startup.sh
+
+# Change the script permissions
+RUN chmod +x /usr/bin/startup.sh
+
+# Copy the JAR file to the container
+ARG JAR_FILE
+COPY target/${JAR_FILE} /usr/share/skalogs/process-importer.jar
+
+# Make startup script the entrypoint (CMD can be overridden)
+ENTRYPOINT ["/usr/bin/startup.sh"]
+
+# Expose the necessary port
+EXPOSE 8080
+
+# Add labels
+LABEL maintainer="maintainer@example.com" \
+      version="1.0" \

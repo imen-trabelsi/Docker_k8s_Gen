@@ -1,0 +1,46 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.21.9-bookworm",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "PROTOBUF_VERSION"
+        ],
+        "envs": [
+            "ENV PROTOC_GEN_GO_GRPC_VERSION=\"v1.1.0\"",
+            "ENV GOCACHE=/tmp/build/.cache",
+            "ENV GOMODCACHE=/tmp/build/.modcache"
+        ],
+        "copy_instructions": [
+            "WORKDIR /build"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/bin/bash\",",
+                    "\"/build/swapserverrpc/gen_protos.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update && apt-get install -y \\",
+                "git",
+                "protobuf-compiler='3.21.12*'",
+                "clang-format='1:14.0*'"
+            ],
+            [
+                "cd /tmp \\",
+                "&& mkdir -p /tmp/build/.cache",
+                "&& mkdir -p /tmp/build/.modcache",
+                "&& go install google.golang.org/protobuf/cmd/protoc-gen-go@${PROTOBUF_VERSION}",
+                "&& go install google.golang.org/grpc/cmd/protoc-gen-go-grpc@${PROTOC_GEN_GO_GRPC_VERSION}",
+                "&& chmod -R 777 /tmp/build/"
+            ]
+        ]
+    }
+}

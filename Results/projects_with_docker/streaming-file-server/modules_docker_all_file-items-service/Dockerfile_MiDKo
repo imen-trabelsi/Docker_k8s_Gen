@@ -1,0 +1,37 @@
+# Start with a base image containing Java runtime
+FROM docker_base-streaming-file-server:latest
+
+# Add Maintainer Info
+LABEL maintainer="DevOps docker@example.com"
+
+# Add the application's jar to the container
+COPY --chown=appuser ./modules/apps/file-items-service/build/libs/*.jar ./app.jar
+
+# Add configuration files
+COPY .env .
+COPY modules/docker/all/docker-compose.yml .
+COPY modules/docker/all/file-items-service/Dockerfile .
+
+# Specify the location of dependency file
+COPY pom.xml .
+
+# For PostgreSQL, expose port 8001 recommended by PostgreSQL
+EXPOSE 8001
+
+# Set healthcheck
+HEALTHCHECK --retries=33 CMD wget --quiet --tries=1 --spider http://127.0.0.1:8001/actuator/health || exit 1
+
+# Set the timezone in docker
+RUN echo "America/New_York" > /etc/timezone
+
+# Specify a user to prevent running the container as root
+USER appuser
+
+# Set environment variable for Spring Boot Active Profile
+ENV SPRING_PROFILES_ACTIVE=db-pg
+
+# Configure container to run as an executable
+ENTRYPOINT ["java", "${JAVA_OPTS}", "-jar", "./app.jar", "--spring.profiles.active=db-pg"]
+
+# Set the command to run
+CMD ["wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:8001/actuator/health", "||", "exit", "1"]

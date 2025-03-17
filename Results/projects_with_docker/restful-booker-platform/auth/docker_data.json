@@ -1,0 +1,32 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:21-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV profile=dev"
+        ],
+        "copy_instructions": [
+            "ADD . /usr/local/auth",
+            "WORKDIR /usr/local/auth",
+            "COPY target ./"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "java",
+                    "-jar",
+                    "-Dspring.profiles.active=$profile",
+                    "-Dhoneycomb.beeline.write-key=${HONEYCOMB_API_KEY}",
+                    "restful-booker-platform-auth-*.jar"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

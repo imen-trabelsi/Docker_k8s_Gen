@@ -1,0 +1,29 @@
+{
+    "docker_info": {
+        "base_image": "openlmis/awscli",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY restore-snapshot.sh /restore-snapshot.sh"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "/restore-snapshot.sh"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "chmod u+x /restore-snapshot.sh",
+                ""
+            ]
+        ]
+    }
+}

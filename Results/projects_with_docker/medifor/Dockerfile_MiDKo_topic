@@ -1,0 +1,44 @@
+# Starting with the python 3.8-slim-buster image
+FROM python:3.8-slim-buster as builder
+
+# Set environment variables
+ENV PYTHONUNBUFFERED=1
+ENV GOPATH ""
+ENV PATH=${PATH}:/app/bin
+
+# Set the working directory in the Docker image
+WORKDIR /go
+
+# Copy all python and setup files
+COPY . ./
+COPY ./setup.py /src/medifor/
+COPY ./python/ /src/medifor/python/
+
+# Install python dependencies
+RUN apt-get update \
+    && apt-get install -y g++ \
+    && pip install -U pip \
+    && pip install -r requirements.txt \
+
+# Build application
+RUN cd cmd/analyticproxy && go build; cd -; \
+    cd cmd/medifor && go build; cd -; \
+    cd cmd/analyticworker && go build; cd -; \
+    cd cmd/analyticworkflow && go build; cd -; \
+
+# Python runtime Image
+FROM python:3.8-slim-buster as runtime
+
+# Set the working directory in the Docker image
+WORKDIR /go
+
+# Copy necessary files from builder image
+
+# Updating and installing some tools
+RUN apt-get update \
+
+# Expose port 50051
+EXPOSE 50051
+
+# Set the command to be executed on container boot
+CMD [ "python", "-m", "medifor", "--help" ]

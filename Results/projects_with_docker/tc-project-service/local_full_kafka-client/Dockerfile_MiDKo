@@ -1,0 +1,41 @@
+# Start with a base image containing Java runtime (JDK 8 is chosen here)
+FROM openjdk:8-jdk-alpine
+
+# Add Maintainer Info
+LABEL maintainer="info@example.com"
+
+# At this point, we can add any labels accordingly 
+LABEL description="This is a sample Dockerfile for a Java Spring Boot Application"
+
+# Note I am not using volumes as running spring-boot:run would not trigger class reloading
+
+# The application's .jar file
+ARG JAR_FILE=target/*.jar
+
+# Add the application's .jar to the container
+COPY ${JAR_FILE} app.jar
+
+# Set app root folder
+WORKDIR /app
+
+# Copy required shell scripts and files
+COPY topics.txt .
+COPY create-topics.sh .
+
+# Change permissions to allow execution of shell script
+RUN chmod +x /app/create-topics.sh
+
+# Set deploy environment
+ENV DEPLOY_ENV=dev
+
+# Network: Set any necessary network configuration
+# Health check: Set any necessary health check commands
+
+# Specify startup command
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+
+# Execute custom script
+CMD ["/app/create-topics.sh"]
+
+# Indicate the app listens on the following ports at runtime.
+EXPOSE 8080

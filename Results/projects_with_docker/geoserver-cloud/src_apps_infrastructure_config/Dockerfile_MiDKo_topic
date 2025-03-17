@@ -1,0 +1,43 @@
+# Select the base image
+FROM $REPOSITORY/gs-cloud-base-jre:$TAG AS builder
+
+WORKDIR /app
+
+# Copy the source code
+COPY src /app/src
+COPY pom.xml /app
+
+# Build the application using Maven
+RUN mvn clean install
+
+# Set the build context
+WORKDIR /app/target
+
+# Copy build dependencies
+COPY ${JAR_FILE} application.jar
+RUN java -Djarmode=layertools -jar application.jar extract
+
+# Copy other required files
+
+# Remove unnecessary files
+RUN rm -rf /tmp/*
+
+# Generate a minimal image
+FROM $REPOSITORY/gs-cloud-base-jre:$TAG
+
+# Set environment variables
+ENV SPRING_PROFILES_ACTIVE=native,standalone
+ENV CONFIG_NATIVE_PATH=/etc/geoserver
+ENV CONFIG_GIT_URI=https://github.com/geoserver/geoserver-cloud-config.git
+ENV SPRING_CLOUD_CONFIG_SERVER_GIT_DEFAULT_LABEL=master
+ENV CONFIG_GIT_BASEDIR=/tmp/git_config
+ENV XDG_CONFIG_HOME=/tmp
+ENV JAVA_TOOL_OPTIONS="${DEFAULT_JAVA_TOOL_OPTIONS} -XX:SharedArchiveFile=application.jsa"
+
+# Change to root directory
+WORKDIR /
+
+# Copy files from builder
+
+# Run the application
+ENTRYPOINT ["java", "-XX:ArchiveClassesAtExit=application.jsa", "-Dspring.context.exit=onRefreshed", "-Dserver.port=0", "-Dmanagement.server.port=0", "org.springframework.boot.loader.JarLauncher"]

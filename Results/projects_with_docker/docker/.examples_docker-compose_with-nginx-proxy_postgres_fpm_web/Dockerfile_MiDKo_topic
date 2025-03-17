@@ -1,0 +1,21 @@
+# Use official nginx alpine image as the base image
+FROM nginx:alpine
+
+# Copy the Nginx configuration file 
+COPY nginx.conf /etc/nginx/nginx.conf
+
+# Create application folder which will contain our jar file
+RUN mkdir -p /app
+
+# Copy built Spring Boot jar file to created application folder
+COPY app.jar /app
+
+# Expose port 8080 to the outside world
+EXPOSE 8080
+
+# Switch to non-root user to mitigate any potential risks 
+RUN addgroup -S app && adduser -S app -G app
+USER app
+
+# Start Nginx and keep it from running background
+CMD nginx && java -jar /app/app.jar

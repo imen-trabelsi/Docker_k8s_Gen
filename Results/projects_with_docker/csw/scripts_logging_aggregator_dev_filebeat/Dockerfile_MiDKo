@@ -1,0 +1,44 @@
+# Dockerfile
+
+# Define the base image
+FROM docker.elastic.co/beats/filebeat:${ELK_VERSION}
+
+# Add a software repository for Redis
+RUN echo "deb http://packages.redis.io/stable/debian stretch main" | tee /etc/apt/sources.list.d/redis.list
+
+# Install Dependencies
+RUN apt-get update -y && apt-get install -y \
+    apt-transport-https \
+    ssh \
+    git \
+    ca-certificates \
+    scala \
+    sbt \
+    redis-server \
+
+# Setting up working directory
+WORKDIR /usr/src/app
+
+# Copy the content of project
+COPY . .
+
+# Compile and package the application
+RUN sbt clean compile package
+
+# Copy the configuration files
+COPY .env .
+COPY docker-compose.yml .
+COPY scripts/logging_aggregator/dev/filebeat/Dockerfile ./config/
+
+# Expose the necessary port
+EXPOSE 8888
+
+# Define environment variables
+ENV REDIS_CONNECTION_STRING 'localhost:6379'
+ENV ELASTIC_CONNECTION_STRING 'localhost:9200'
+ENV ELK_VERSION '7.3.0'
+
+# Define the entry point
+ENTRYPOINT ["java", "-Xmx768m"]
+
+CMD [ "-jar", "target/scala-2.12/app.jar" ]

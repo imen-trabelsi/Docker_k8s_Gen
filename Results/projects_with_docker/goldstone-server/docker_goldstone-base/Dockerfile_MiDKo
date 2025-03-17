@@ -1,0 +1,39 @@
+# Pull Base Image
+FROM solinea/gunicorn:19.3.0
+
+# Set environment variables
+ENV DJANGO_ADMIN_EMAIL=root@localhost \
+    DJANGO_SETTINGS_MODULE=goldstone.settings.docker \
+    APPDIR=/app \
+
+# Set work directory
+WORKDIR ${APPDIR}
+
+# Copy application files
+COPY config ${APPDIR}/config
+COPY docker-entrypoint.sh /
+
+# Create necessary user and do permissions management
+RUN useradd -m ${APPUSER} \
+    && chown -R ${APPUSER}:staff /usr/share/nginx/html/static \
+    && chown -R ${APPUSER}:staff ${APPDIR} \
+
+# Install required system-level packages and python packages
+RUN buildReqs='python2.7-dev gcc g++' \
+    && preReqs='libffi-dev libssl-dev libpq-dev git' \
+    && apt-get update -y -qq \
+    && apt-get install -y -qq $buildReqs $preReqs \
+    && mkdir -p /usr/share/nginx/html/static \
+    && su - ${APPUSER} -c ". /venv/bin/activate && pip install -r ${APPDIR}/config/requirements.txt" \
+    && apt-get remove -y $buildReqs \
+    && apt-get autoremove -y \
+    && apt-get clean \
+
+# Expose port
+EXPOSE 8000
+
+# Set user
+USER ${APPUSER}
+
+# Run app
+CMD ["/docker-entrypoint.sh"]

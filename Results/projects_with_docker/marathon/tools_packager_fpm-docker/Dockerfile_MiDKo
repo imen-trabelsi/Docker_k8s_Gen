@@ -1,0 +1,24 @@
+# Dockerfile
+FROM ruby:2.5
+
+# Build Arguments
+ARG FPM_VERSION=1.10.2
+
+# Set the working directory
+WORKDIR /build
+
+# Install necessary dependencies
+RUN apt-get update && apt-get install -y rpm
+
+# Install fpm
+RUN gem install fpm --version=${FPM_VERSION}
+
+# Copy files into container
+COPY tools/packager/fpm-docker/Dockerfile .
+COPY Jenkinsfile .
+
+# Create necessary directories
+RUN mkdir /build
+
+# Run command
+CMD ["fpm"]

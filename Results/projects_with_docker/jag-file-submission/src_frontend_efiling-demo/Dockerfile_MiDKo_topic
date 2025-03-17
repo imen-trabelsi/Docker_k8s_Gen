@@ -1,0 +1,37 @@
+# Step 1: Build stage
+FROM node:18-alpine AS build
+
+RUN mkdir -p /app
+WORKDIR /app
+
+# Dependencies
+COPY package.json yarn.lock ./
+RUN yarn install --production=true
+RUN yarn add --dev react-app-rewired
+
+# Build app
+COPY . .
+RUN yarn build --production=true \
+    && rm -rf /usr/share/nginx/html/ \
+
+# Step 2: Run stage
+FROM nginx:alpine
+
+# Workdir and copy instructions
+WORKDIR /usr/share/nginx/html
+
+# Copy configuration files
+COPY src/frontend/efiling-demo/.env.production .env
+COPY src/frontend/efiling-demo/nginx.conf /etc/nginx/conf.d/
+
+# Remove the default Nginx configuration file 
+RUN rm /etc/nginx/conf.d/default.conf
+
+# Provide permissions
+RUN apk add --no-cache bash \
+    && chmod g+rwx /var/cache/nginx /var/run /var/log/nginx \
+    && chmod g+rwx /usr/share/nginx/html/ \
+
+EXPOSE 80
+
+CMD ["/bin/bash", "-c", "/usr/share/nginx/html/env.sh && nginx -g 'daemon off;'"]

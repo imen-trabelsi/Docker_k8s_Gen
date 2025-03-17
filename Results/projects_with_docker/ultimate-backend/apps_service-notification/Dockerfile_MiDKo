@@ -1,0 +1,32 @@
+# Use the official lightweight Node.js 12-alpine image.
+FROM node:12-alpine
+
+# Update and Upgrade the Image
+RUN apk --no-cache upgrade
+
+# Create a directory for the application and use it
+RUN mkdir -p /nest
+WORKDIR /nest
+
+# Copy package.json and package-lock.json before other files
+# Utilise Docker cache to save re-installing dependencies if unchanged
+COPY package*.json ./
+
+# Install dependencies
+RUN yarn global add @nestjs/cli && yarn install --production=false
+
+# Copy the rest of the service
+COPY . .
+
+# Build the microservice
+RUN nest build proto-schema
+RUN nest build service-notification
+
+# Set the NODE_ENV environment variable
+ENV NODE_ENV production
+
+# Expose the port
+EXPOSE 50044
+
+# Run command
+CMD ["node", "dist/apps/service-notification/main.js"]

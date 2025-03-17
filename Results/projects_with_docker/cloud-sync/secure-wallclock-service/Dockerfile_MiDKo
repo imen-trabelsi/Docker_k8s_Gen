@@ -1,0 +1,28 @@
+# Base Image
+FROM node:8
+
+# Labels
+LABEL version="2.0.0"
+LABEL description="This is a Wall Clock microservice"
+
+# Create app directory
+RUN mkdir -p /usr/src/wallclockservice
+WORKDIR /usr/src/wallclockservice
+
+# Cleanup npm install
+RUN rm -rf /usr/local/lib/node_modules/npm \
+    && mkdir /usr/local/lib/node_modules/npm \
+    && curl -sL https://github.com/npm/npm/archive/v5.3.0.tar.gz | tar xz -C /usr/local/lib/node_modules/npm --strip-components=1 \
+
+# Install dependencies
+COPY package.json /usr/src/wallclockservice/
+RUN npm install
+
+# Copy using wildcard if any new files were added
+COPY . /usr/src/wallclockservice
+
+# Expose the port
+EXPOSE 80
+
+# Exec command
+CMD [ "npm", "start" ]

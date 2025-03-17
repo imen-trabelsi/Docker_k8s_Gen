@@ -1,0 +1,25 @@
+# Use base image available on Alibaba Cloud Container Registry.
+FROM registry-cn-hangzhou.ack.aliyuncs.com/dev/alpine:3.18-update@sha256:f2f97bbc6f3173044292cbf8d306ca31b4356a5f2eb54701fc97f64065b412cf as builder
+
+# Set working directory
+WORKDIR /D
+
+# Install necessary software
+RUN apk add --no-cache bash && apk --update add gcc libc-dev
+
+# Copy necessary files
+COPY D /D
+
+# Build the app
+RUN mvn clean install
+
+# Fresh stage for final Docker image to reduce size
+FROM registry-cn-hangzhou.ack.aliyuncs.com/dev/alpine:3.18-update@sha256:f2f97bbc6f3173044292cbf8d306ca31b4356a5f2eb54701fc97f64065b412cf
+
+# Set working directory
+WORKDIR /D
+
+# Copy necessary files from builder stage
+
+# Define entrypoint with java -jar
+ENTRYPOINT ["java", "-jar", "/D/app.jar"]

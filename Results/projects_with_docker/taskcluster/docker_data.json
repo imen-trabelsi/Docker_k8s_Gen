@@ -1,0 +1,96 @@
+{
+    "docker_info": {
+        "base_image": "node:22.13.1",
+        "multi_stage_build": true,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "DOCKER_FLOW_VERSION"
+        ],
+        "envs": [
+            "ENV HOME=/app"
+        ],
+        "copy_instructions": [
+            "COPY /.yarn /base/yarn/.yarn/",
+            "COPY /.yarn /base/yarn-ui/.yarn/",
+            "COPY /.yarn /base/yarn-client/.yarn/",
+            "WORKDIR /base/yarn-client",
+            "WORKDIR /base/yarn",
+            "WORKDIR /base/app",
+            "COPY . /base/app",
+            "WORKDIR /base/app/ui",
+            "WORKDIR /app"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/app/entrypoint\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p /base/cache",
+                "ENV YARN_CACHE_FOLDER=/base/cache"
+            ],
+            [
+                "mkdir -p /base/yarn",
+                "COPY /yarn.lock /.yarnrc.yml /package.json /base/yarn/"
+            ],
+            [
+                "mkdir -p /base/yarn-ui",
+                "COPY /ui/yarn.lock /.yarnrc.yml /ui/package.json /base/yarn-ui/"
+            ],
+            [
+                "mkdir -p /base/yarn-client",
+                "COPY /clients/client/yarn.lock /.yarnrc.yml /clients/client/package.json /base/yarn-client/"
+            ],
+            [
+                "corepack enable && \\",
+                "yarn workspaces focus --all --production"
+            ],
+            [
+                "yarn workspaces focus --all --production",
+                "WORKDIR /base/yarn-ui"
+            ],
+            [
+                "yarn install --immutable && \\",
+                "mkdir -p /base/app/ui /base/app/clients/client &&",
+                "cp -r /base/yarn/node_modules /base/app/ &&",
+                "cp -r /base/yarn-ui/node_modules /base/app/ui/ &&",
+                "cp -r /base/yarn-client/node_modules /base/app/clients/client/"
+            ],
+            [
+                "chmod +x entrypoint",
+                ""
+            ],
+            [
+                "if [ -n \"${DOCKER_FLOW_VERSION}\" ]; then \\",
+                "echo \"${DOCKER_FLOW_VERSION}\" > version.json;",
+                "else",
+                "echo \\{\\\"version\\\": \\\"83.2.4\\\", \\\"commit\\\": \\\"local\\\", \\\"source\\\": \\\"https://github.com/taskcluster/taskcluster\\\", \\\"build\\\": \\\"NONE\\\"\\} > version.json;",
+                "fi"
+            ],
+            [
+                "yarn build",
+                "WORKDIR /base/app"
+            ],
+            [
+                "/bin/bash -c \"\\",
+                "rm -rf .git;",
+                "rm -rf clients/client-{go,py,web,test};",
+                "rm -rf {services,libraries}/*/test;",
+                "rm -rf db/test db/versions;",
+                "rm -rf ui/node_modules ui/src ui/test;",
+                "\""
+            ],
+            [
+                "apk --no-cache add --update nginx bash",
+                "COPY --from=build /base/app /app"
+            ]
+        ]
+    }
+}

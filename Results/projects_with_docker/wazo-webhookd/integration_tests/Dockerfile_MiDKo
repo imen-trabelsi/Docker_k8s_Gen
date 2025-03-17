@@ -1,0 +1,28 @@
+# Base Image
+FROM wazoplatform/wazo-webhookd
+
+# Environment Variables
+ENV PYTHONDONTWRITEBYTECODE='true'
+
+# Setting Work Directory
+WORKDIR /usr/src/wazo-webhookd
+
+# Installing System Utilities
+RUN apt-get -q update && apt-get -yq install --no-install-recommends procps
+
+# Copying Files to Container
+COPY . /usr/src/wazo-webhookd
+
+# Further deeping into the directory 
+WORKDIR /usr/src/wazo-webhookd/integration_tests/plugins/sentinel
+
+# Install Python Packages
+RUN python3 -m pip install -e .
+
+# Append Certificates
+RUN cat /usr/src/wazo-webhookd/integration_tests/assets/ssl/mockserver/mockserver.crt >> /opt/venv/lib/python3.9/site-packages/certifi/cacert.pem
+RUN cat /usr/src/wazo-webhookd/integration_tests/assets/fake-apple-ca/certs/server.crt >> /opt/venv/lib/python3.9/site-packages/certifi/cacert.pem
+
+# App Execution
+CMD ["wazo-webhookd",, "-d"]
+

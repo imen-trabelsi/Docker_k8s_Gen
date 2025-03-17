@@ -1,0 +1,26 @@
+# Start from the ruby image from Docker Hub
+FROM ruby:2.7
+
+# Ensure we install build dependencies
+RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs
+
+# Set the working directory inside the image
+WORKDIR /myapp
+
+# Copy the project's Gemfile and Gemfile.lock into the current directory inside the image
+# These are instructions Ruby needs for setting up and running the project
+COPY Gemfile /myapp/Gemfile
+COPY Gemfile.lock /myapp/Gemfile.lock
+
+# Running bundle install to install the project's dependencies
+RUN bundle install
+
+# Copy the whole project into the image
+# We do this after installing dependencies to enable Docker's caching abilities
+COPY . /myapp
+
+# Expose port 3000 on the image since this is the port that our rails server runs on
+EXPOSE 3000
+
+# This command will run when the container starts and it will start the rails server
+CMD ["rails", "server", "-b", "0.0.0.0"]

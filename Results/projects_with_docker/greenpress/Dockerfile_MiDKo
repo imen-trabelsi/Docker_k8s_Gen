@@ -1,0 +1,28 @@
+# Base Image
+FROM node:16.5
+# Setup Work Directory
+WORKDIR /usr/src/app
+
+# Copy package and package-lock files
+COPY package*.json ./
+
+# Run Commands
+RUN npm install --unsafe-perm
+RUN npm run build
+
+# Environment Variable
+ENV NODE_ENV=development
+
+# Copy All Files
+COPY . .
+
+# Build and Clean up
+RUN npm run clean
+ENV NODE_ENV=production
+RUN npm run install:prod-only
+
+# Expose Port
+EXPOSE 8080
+
+# Entrypoint
+CMD [ "node", "index.js" ]

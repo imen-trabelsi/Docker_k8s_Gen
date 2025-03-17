@@ -1,0 +1,17 @@
+FROM openjdk:8
+
+WORKDIR /usr/src/app
+
+RUN apt-get update && \
+    apt-get -y install maven wget git && \
+    mkdir /usr/src/app && \
+    git clone --single-branch -b tcat-map https://github.com/cuappdev/ithaca-transit-backend.git /usr/src/app && \
+    git clone --single-branch -b 0.13 https://github.com/graphhopper/graphhopper.git && \
+    wget https://tcat-gtfs.s3.amazonaws.com/tcat-ny-us.zip && \
+    cd graphhopper && \
+
+WORKDIR /usr/src/app/graphhopper
+
+EXPOSE 8988
+
+CMD ["java", "-Xmx8g", "-Xms8g"]

@@ -1,0 +1,50 @@
+# Base image
+FROM python:3.13-slim
+
+# Environment
+ENV PYTHONUNBUFFERED=1
+ENV ETH_HASH_BACKEND=pysha3
+ENV DJANGO_SETTINGS_MODULE=config.settings.production
+ENV DJANGO_DOT_ENV_FILE=.env.tracing.sample
+ENV APP_HOME=/app
+
+# Working directory
+WORKDIR ${APP_HOME}
+
+# Update system packages, Install build dependencies, remove build dependencies and clean up after install
+RUN set -ex \
+&& buildDeps=" \
+build-essential \
+git \
+libssl-dev \
+libpq-dev \
+" \
+&& apt-get update \
+&& apt-get upgrade -y \
+&& apt-get install -y --no-install-recommends $buildDeps tmux postgresql-client \
+&& pip install -U --no-cache-dir wheel setuptools pip \
+&& pip install --no-cache-dir -r requirements.txt \
+&& apt-get purge -y --auto-remove $buildDeps \
+&& rm -rf /var/lib/apt/lists/* \
+&& groupadd -g 999 python \
+&& useradd -u 999 -r -g python python \
+&& mkdir -p /nginx \
+
+# Add and install Python Dependencies
+COPY requirements.txt ./
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Switch to low privilege user
+USER python
+
+# Copy project files
+COPY --chown=python:python . .
+
+# Expose port
+EXPOSE 
+
+#Collect static files
+RUN DJANGO_SETTINGS_MODULE=config.settings.production DJANGO_DOT_ENV_FILE=.env.tracing.sample python manage.py collectstatic --noinput
+
+# CMD/ENTRYPOINT instructions
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

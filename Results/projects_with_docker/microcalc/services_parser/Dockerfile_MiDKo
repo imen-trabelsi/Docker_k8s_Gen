@@ -1,0 +1,24 @@
+# Use the base image defined by user
+FROM maven:3-jdk-8-alpine AS build
+
+# Set working directory in the container
+WORKDIR /app
+
+# Copy pom.xml and download dependencies
+COPY pom.xml /app/
+RUN mvn -B verify -fn
+
+# Copy the source code into the container
+COPY . /app
+RUN mvn -B clean package
+
+# Set up the run command defined by the user
+CMD ["java", "-jar", "/app/target/parser.jar"]
+
+# Expose the port defined by the user
+EXPOSE 8080
+
+# Copy the .jar file into the container
+
+# Entry point for the application
+ENTRYPOINT ["java", "-jar","/parser.jar"]

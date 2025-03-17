@@ -1,0 +1,62 @@
+#Stage 1: Base Image
+FROM node:${NODE_VER} as dev
+USER root
+
+# System dependencies
+RUN apk add --no-cache dumb-init libc6-compat
+WORKDIR /oada
+COPY ./package.json .
+
+# Node.js dependencies
+COPY ./.yarnrc.yml .
+COPY ./yarn.lock .
+
+# Application dependencies
+COPY ./libs/models/package.json ./libs/models/
+COPY ./libs/lib-arangodb/package.json ./libs/lib-arangodb/
+COPY ./libs/lib-config/package.json ./libs/lib-config/
+COPY ./libs/lib-kafka/package.json ./libs/lib-kafka/
+COPY ./libs/lib-prom/package.json ./libs/lib-prom/
+COPY ./libs/pino-debug/package.json ./libs/pino-debug/
+COPY ./services/auth/package.json ./services/auth/
+COPY ./services/http-handler/package.json ./services/http-handler/
+COPY ./services/permissions-handler/package.json ./services/permissions-handler/
+COPY ./services/rev-graph-update/package.json ./services/rev-graph-update/
+COPY ./services/shares/package.json ./services/shares/
+COPY ./services/startup/package.json ./services/startup/
+COPY ./services/sync-handler/package.json ./services/sync-handler/
+COPY ./services/users/package.json ./services/users/
+COPY ./services/webhooks/package.json ./services/webhooks/
+COPY ./services/well-known/package.json ./services/well-known/
+COPY ./services/write-handler/package.json ./services/write-handler/
+
+RUN corepack yarn install --immutable
+RUN corepack yarn sdks vscode vim
+USER node
+
+# Stage 2: Build
+FROM dev as build
+WORKDIR /oada
+COPY . . 
+
+RUN corepack yarn build --verbose && rm -rfv .yarn .pnp.*
+
+# Stage 3: Production
+FROM node:${NODE_VER} as prod
+USER root
+
+COPY ./utils/entrypoint.sh /entrypoint.sh
+COPY ./oada.config.mjs /oada.config.mjs
+
+WORKDIR /oada/services/${OADA_SERVICE}
+
+RUN chmod u+x /entrypoint.sh && chown node:node /entrypoint.sh
+USER node
+
+ENV OADA_SERVICE=${OADA_SERVICE}
+ENV INSPECT=
+ENV COREPACK_HOME=/oada/.cache/node/corepack
+ENV PORT=8080
+EXPOSE 8080
+
+CMD ["/usr/bin/dumb-init", "--rewrite", "15:2", "--", "/entrypoint.sh"]

@@ -1,0 +1,32 @@
+FROM ubuntu:16.04 
+
+ENV REFRESHED_AT 2017-09-13
+
+RUN apt-get -qq update && \
+    apt-get -qq install curl unzip nodejs npm && \
+
+WORKDIR /project
+
+COPY package.json ./
+
+RUN npm install
+
+# Consul Setup and installation
+RUN cd /usr/sbin && \
+    curl -L https://releases.hashicorp.com/consul/0.8.0/consul_0.8.0_linux_amd64.zip > /tmp/consul.zip && \
+
+COPY consul.json /config/
+
+# Consul web UI installation
+RUN mkdir -p /webui/ && \
+    cd /webui && \
+    curl -L https://releases.hashicorp.com/consul/0.8.0/consul_0.8.0_web_ui.zip > /webui/webui.zip && \
+
+EXPOSE 53/udp
+
+# Add project files
+COPY . /project
+
+ENTRYPOINT ["/usr/sbin/consul", "agent", "-ui", "-config-dir=/config"]
+
+CMD ["npm", "start"]

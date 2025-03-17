@@ -1,0 +1,18 @@
+FROM golang:1.13
+
+WORKDIR $GOPATH
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    libicu-dev \
+
+# Install Go Dependencies
+RUN go get github.com/mattn/goveralls \
+    && go get github.com/haya14busa/goverage \
+    && go get -x github.com/wadey/gocovmerge \
+    && go get golang.org/x/lint/golint \
+
+COPY . .
+
+EXPOSE <defined-port>
+
+ENTRYPOINT ["<spring-boot-executable-command>"]

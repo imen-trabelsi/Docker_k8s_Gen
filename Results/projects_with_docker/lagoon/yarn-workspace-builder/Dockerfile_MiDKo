@@ -1,0 +1,30 @@
+# This Dockerfile does not need to have multi-stage builds as specified by the user
+# The base image is specified through 'UPSTREAM_REPO' and 'UPSTREAM_TAG'
+
+FROM ${UPSTREAM_REPO:-uselagoon}/node-22-builder:${UPSTREAM_TAG:-latest}
+
+# Installing application dependencies
+# Copying the package.json and yarn.lock files
+COPY package.json yarn.lock .env.defaults tsconfig.json /app/
+
+# Copy required Node packages
+COPY node-packages /app/node-packages
+
+# Copy package.json of different services
+COPY services/api/package.json /app/services/api/
+COPY services/auth-server/package.json /app/services/auth-server/
+COPY services/webhook-handler/package.json /app/services/webhook-handler/
+COPY services/webhooks2tasks/package.json /app/services/webhooks2tasks/
+
+# Setting the working directory
+WORKDIR /app
+
+# Install the project dependencies
+RUN yarn install --frozen-lockfile
+
+# Build the common packages
+RUN cd /app/node-packages/commons && yarn build
+
+# No specific user, execution command, networking, health check, exposed ports or labels were provided by the user
+
+CMD [ "npm", "start" ]

@@ -1,0 +1,29 @@
+{
+    "docker_info": {
+        "base_image": "mongo:3.4",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV AUTH yes",
+            "ENV STORAGE_ENGINE wiredTiger",
+            "ENV JOURNALING yes"
+        ],
+        "copy_instructions": [
+            "ADD mongodb_run.sh /run.sh",
+            "ADD mongodb_password.sh /set_mongodb_password.sh"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/run.sh\"]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

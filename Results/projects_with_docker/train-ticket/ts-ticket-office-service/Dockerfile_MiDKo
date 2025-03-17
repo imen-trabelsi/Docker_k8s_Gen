@@ -1,0 +1,31 @@
+# Start with a base image containing Java runtime
+FROM java:8-jdk-alpine
+
+# The application's jar file
+ARG JAR_FILE=target/*.jar
+
+# Set timezone
+RUN apk add --no-cache tzdata
+ENV TZ=Asia/Shanghai
+
+# Create app directory
+RUN mkdir -p /app
+
+# Set work directory
+WORKDIR /app
+
+# Add necessary files and folders
+COPY ./node_modules /app/node_modules
+COPY ./package.json /app/
+COPY ./public /app/public
+COPY ./bin /app/bin
+COPY ./app.js /app/
+
+# Copy project files and folders to the docker image
+COPY ${JAR_FILE} /app/app.jar
+
+# Run the jar file 
+ENTRYPOINT ["java","-jar","/app/app.jar"]
+
+# Expose the port
+EXPOSE 16108

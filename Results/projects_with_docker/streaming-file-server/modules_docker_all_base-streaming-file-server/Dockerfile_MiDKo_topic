@@ -1,0 +1,47 @@
+# Use OpenJDK v13 as base image
+FROM openjdk:13-jdk-alpine3.10 as builder
+
+# We are working in /home/appuser directory
+WORKDIR /home/appuser
+
+# Set default environment variables
+ENV JAVA_OPTS="${JAVA_OPTS} ${JAVA_OPTS_ARGS}"
+
+# Install necessary packages
+RUN apk add --no-cache --update bash sudo wget busybox-suid openssh-client  && \
+    adduser -h /home/appuser -s /bin/bash -D -u 1025 appuser wheel          && \
+    echo 'appuser ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers                  && \
+    sed -i 's/.*requiretty$/Defaults !requiretty/' /etc/sudoers             && \
+    apk del --no-cache busybox-suid openssh-client                          && \
+
+# Copy Maven pom.xml
+COPY pom.xml /home/appuser
+
+# Copy application source
+COPY src /home/appuser/src
+
+# Create build with Maven
+RUN maven clean package
+
+# Start a new stage to create an optimized and smaller Docker image
+FROM openjdk:13-jdk-alpine3.10 as runner
+
+# Copy over the built artifact from the previous stage
+
+# Set the working directory
+WORKDIR /app
+
+# Set the user
+USER appuser
+
+# Expose application ports
+EXPOSE 8080
+
+# Set the maintainer label
+LABEL MAINTAINER='Maksim'
+
+# Set health check instruction
+HEALTHCHECK --interval=5m --timeout=3s CMD curl -f http://localhost:8080/ || exit 1
+
+# Set the entry point
+CMD java -jar app.jar

@@ -1,0 +1,33 @@
+# This is the basic Docker instructions to build a Docker image for a Spring Boot Microservice
+
+# Specify the base image
+FROM mysql:8.0.12
+
+# Specify the maintainer of the Dockerfile
+LABEL maintainer="<maintainer email>"
+
+# Set the working directory in the container to /app
+WORKDIR /app
+
+# Copy package.json and package-lock.json to the working directory
+COPY package*.json /app/
+
+# Install dependencies specified in package.json
+RUN npm install
+
+# Copy the other source code files to the working directory
+COPY . /app
+
+# Copy the database initialization script to the database initialization directory
+COPY ./deploys/dockers/mysqldb/mysqldb-init.sql /docker-entrypoint-initdb.d/
+
+# Expose the required port
+EXPOSE 8080
+
+# Set environment variables, replace <variables> with your real variables
+ENV PATH=/app/node_modules/.bin:$PATH
+
+# Start the application when a container is instantiated from the image
+CMD [ "npm", "start" ]
+
+

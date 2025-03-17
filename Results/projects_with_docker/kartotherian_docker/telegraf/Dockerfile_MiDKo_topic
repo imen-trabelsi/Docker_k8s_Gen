@@ -1,0 +1,27 @@
+# Base Image
+FROM telegraf:1.8-alpine@sha256:7f6873f5745fe9b4f610c5dcfaaa73d7cd75adb63bd770bb70c26a7e85c94a2a
+
+# Set Working Directory Inside the container
+WORKDIR /app
+
+# Add Python Path
+ENV PATH="/root/.poetry/bin:$PATH"
+
+# Install Poetry
+RUN curl -sSL https://install.python-poetry.org | sh
+
+# Copy Python Dependencies
+COPY pyproject.toml ./
+
+# Install Python Dependencies
+RUN poetry install
+
+# Copy Application and Configuration Files
+COPY . /app
+COPY telegraf/telegraf.conf /etc/telegraf/telegraf.conf
+
+# Expose Ports
+EXPOSE 80
+
+# Define Entrypoint
+ENTRYPOINT [ "python", "-m", "server" ]

@@ -1,0 +1,37 @@
+# Start with the XebiaLabs' XL Deploy Base Image
+FROM xebialabs/xl-deploy:9.5.1
+
+# Update Image
+RUN apt-get update -y
+
+# Set Working Directory to /tmp as Docker uses a layered file system, 
+# this will help to cache the Docker layers for Gradle and improve the speed of building image.
+WORKDIR /tmp
+
+# Copy the Gradle dependencies file first for efficient caching
+COPY build.gradle ./ 
+
+# Run Gradle clean and download dependencies
+RUN gradle clean downloadDeps
+
+# Copy Microservice Project Source Files
+COPY . ./
+
+# Build the Spring Boot Project
+RUN gradle build
+
+# Expose Required/Specified Ports
+EXPOSE 8080
+EXPOSE 8081
+
+# Copy the application's Jar into the image
+COPY --from=build /tmp/build/libs/*.jar /app.jar
+
+# Specify the startup command
+ENTRYPOINT ["java","-jar","/app.jar"]
+
+# Copy Configuration
+COPY default-conf/* /opt/xebialabs/xl-deploy-server/default-conf/
+
+# Set useful metadata about your Dockerfile
+LABEL version="1.0" description="Spring Boot Microservice Dockerfile"

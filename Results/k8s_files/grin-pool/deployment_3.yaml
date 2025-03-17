@@ -1,0 +1,37 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: splunk
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        run: splunk
+    spec:
+      containers:
+      - command:
+        - sleep
+        - '9999999'
+        env:
+        - name: SPLUNK_START_ARGS
+          value: --accept-license
+        - name: SPLUNK_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              key: password.txt
+              name: splunk
+        image: grin-pool/splunk:latest
+        name: splunk
+        ports:
+        - containerPort: 8000
+        - containerPort: 9997
+        volumeMounts:
+        - mountPath: /opt/splunk
+          name: splunk
+      imagePullSecrets:
+      - name: regsecret
+      volumes:
+      - name: splunk
+        persistentVolumeClaim:
+          claimName: splunk

@@ -1,0 +1,39 @@
+{
+    "docker_info": {
+        "base_image": "${UPSTREAM_REPO:-uselagoon}/mariadb-10.6:${UPSTREAM_TAG:-latest}",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "root",
+            "mysql"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "UPSTREAM_REPO",
+            "UPSTREAM_TAG",
+            "LAGOON_VERSION"
+        ],
+        "envs": [
+            "ENV LAGOON_VERSION=$LAGOON_VERSION",
+            "ENV MARIADB_DATABASE=infrastructure \\"
+        ],
+        "copy_instructions": [
+            "COPY ./legacy-migration-scripts/* /legacy-migration-scripts/",
+            "COPY password-entrypoint.bash /lagoon/entrypoints/55-generate-env.sh",
+            "COPY ./rerun_initdb.sh /rerun_initdb.sh",
+            "COPY ./legacy_rerun_initdb.sh /legacy_rerun_initdb.sh"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apk add --no-cache openssh-keygen",
+                ""
+            ],
+            [
+                "chown -R mysql /legacy-migration-scripts/ \\",
+                "&& /bin/fix-permissions /legacy-migration-scripts/"
+            ]
+        ]
+    }
+}

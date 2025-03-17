@@ -1,0 +1,18 @@
+# Use base image
+FROM python:2.7-onbuild
+
+# Install dependencies
+COPY requirements.txt .
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy application code to the container
+COPY . /usr/src/app
+
+# Set the working directory
+WORKDIR /usr/src/app
+
+# Expose the application on port 8000
+EXPOSE 8000
+
+# Execute the application
+CMD ["gunicorn", "app:app", "-b", "0.0.0.0:8000"]

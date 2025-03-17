@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Spring Boot",
+        "dependencies": {
+            "pom.xml": "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n    <modelVersion>4.0.0</modelVersion>\n\n\n    <artifactId>spring-jsf</artifactId>\n    <packaging>jar</packaging>\n\n    <parent>\n        <groupId>org.tsdes.intro.spring</groupId>\n        <artifactId>intro-spring</artifactId>\n        <version>0.0.1-SNAPSHOT</version>\n    </parent>\n\n\n    <dependencies>\n\n        <dependency>\n            <groupId>org.joinfaces</groupId>\n            <artifactId>jsf-spring-boot-starter</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>javax.enterprise</groupId>\n            <artifactId>cdi-api</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>javax.servlet.jsp.jstl</groupId>\n            <artifactId>javax.servlet.jsp.jstl-api</artifactId>\n        </dependency>\n\n        <dependency>\n            <groupId>org.glassfish.jaxb</groupId>\n            <artifactId>jaxb-runtime</artifactId>\n        </dependency>\n\n        <dependency>\n            <groupId>org.springframework.boot</groupId>\n            <artifactId>spring-boot-starter-actuator</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.springframework.boot</groupId>\n            <artifactId>spring-boot-starter-web</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.springframework.boot</groupId>\n            <artifactId>spring-boot-starter-validation</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.springframework.boot</groupId>\n            <artifactId>spring-boot-starter-data-jpa</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>com.h2database</groupId>\n            <artifactId>h2</artifactId>\n        </dependency>\n\n\n    </dependencies>\n\n    <build>\n        <plugins>\n            <plugin>\n                <groupId>org.springframework.boot</groupId>\n                <artifactId>spring-boot-maven-plugin</artifactId>\n                <configuration>\n                    <finalName>spring-jsf</finalName>\n                </configuration>\n                <executions>\n                    <execution>\n                        <goals>\n                            <goal>repackage</goal>\n                        </goals>\n                        <configuration>\n                            <classifier>exec</classifier>\n                        </configuration>\n                    </execution>\n                </executions>\n            </plugin>\n        </plugins>\n    </build>\n\n\n</project>"
+        },
+        "database": null,
+        "build_system": "Maven",
+        "config_files": {
+            "intro/spring/jsf/Dockerfile": "FROM adoptopenjdk/openjdk11:alpine\n\nCOPY target/spring-jsf-exec.jar .\n\n\nCMD java -jar spring-jsf-exec.jar"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "pom.xml"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

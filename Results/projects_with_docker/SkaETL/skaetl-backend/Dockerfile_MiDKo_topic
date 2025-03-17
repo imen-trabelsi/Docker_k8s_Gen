@@ -1,0 +1,35 @@
+# Step 1: Base image
+FROM openjdk:8u151-jdk as builder
+
+# Step 2: Define the working directory in the docker image
+WORKDIR application
+
+# Step 3: Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Step 4: Copy the project files
+COPY pom.xml .
+
+# Step 5: Copy the sources
+# Note: It's better to separate com.mands from sources to leverage Docker caching capabilities. It's good for local dev.
+COPY src src
+
+# Step 6: Package the application
+RUN chmod +x ./mvnw
+RUN ./mvnw package -DskipTests
+RUN mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+
+# Step 7: Use a smaller base image to reduce the final image size
+FROM openjdk:8u151-jdk
+COPY startup.sh /usr/bin/startup.sh
+RUN chmod +x /usr/bin/startup.sh
+
+# Expose the port
+EXPOSE 8080
+
+# Set environment variables
+# This is usually specified by the user. It might contain database URL, credentials, etc.
+
+# CMD/ENTRYPOINT
+CMD ["/usr/bin/startup.sh"]

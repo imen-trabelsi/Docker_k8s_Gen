@@ -1,0 +1,22 @@
+# Base image
+FROM openjdk:8-jdk-alpine
+
+# Expose the application's port
+EXPOSE 8085
+
+# Set environment variables
+ENV REDIS_HOST=redis-service
+ENV REDIS_PORT=6379
+ENV REDIS_PASSWORD=
+
+# Copy Maven dependencies
+COPY pom.xml pom.xml
+
+# Copy project files into the docker image
+COPY src /src
+
+# Copy .jar file into the container
+COPY target/*.jar /app.jar
+
+# Define the entry point of the container 
+ENTRYPOINT ["java","-jar","/app.jar", "--spring.profiles.active=prod"]

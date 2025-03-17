@@ -1,0 +1,41 @@
+# Use the specified base image
+FROM ${IMAGE_REPO:-lagoon}/yarn-workspace-builder AS builder
+
+# Set the working directory
+WORKDIR /app
+
+# Set environment variables
+ENV LAGOON_VERSION=${LAGOON_VERSION}
+ENV NODE_ENV=production
+
+# Copy the dependencies file
+COPY package.json .
+
+# Install dependencies
+RUN npm install
+
+# Copy the rest of your app's source code from your host to your image filesystem.
+COPY . .
+
+# Build the application
+RUN yarn build
+
+# Stage 2: Serve the app
+FROM ${UPSTREAM_REPO:-lagoon}/yarn-workspace-builder
+
+# Set the working directory
+WORKDIR /app/services/api/
+
+# Copy production artifacts from builder
+
+# Copy necessary scripts and files
+COPY --from=yarn-workspace-builder /app/.env.defaults .
+COPY wait-for-mariadb.sh /lagoon/entrypoints/99-wait-for-mariadb.sh
+RUN chmod +x /lagoon/entrypoints/99-wait-for-mariadb.sh
+
+# Expose the port
+# Please update accordingly to your application
+EXPOSE 8080
+
+# Define the command to run your app using CMD which defines your runtime
+CMD ["node", "-r", "dotenv-extended/config", "dist/index"]

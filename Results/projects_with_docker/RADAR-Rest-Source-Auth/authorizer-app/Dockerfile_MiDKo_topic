@@ -1,0 +1,42 @@
+# Multistage Docker build
+# Stage 1: Build stage
+FROM --platform=$BUILDPLATFORM gradle:jdk8 as builder
+COPY build.gradle.kts /home/gradle/src
+WORKDIR /home/gradle/src
+RUN gradle clean build
+
+# Stage 2: Production stage
+FROM openjdk:8-jdk-alpine
+ARG BASE_HREF
+ENV JAVA_OPTS=""
+
+# Copy entrypoints, fix the permissions to allow running them and use optimization.conf for nginx
+COPY docker/30-env-subst.sh /entrypoint.sh
+COPY docker/optimization.conf /etc/nginx/conf.d/
+RUN chmod +x /entrypoint.sh
+RUN apk add --no-cache bash
+
+COPY --from=builder /home/gradle/src/build/libs/*.jar app.jar
+
+# Set environment variable for the microservice
+ENV SPRING_OUTPUT ANSI_COLOR_DISABLED=true
+ENV SPRING_JPA_SHOW SQL=false
+
+# Set entrypoint to our bash script and default to run Spring Boot application
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+
+COPY --chown=101 docker/default.conf /etc/nginx/conf.d/
+COPY ./ /app/
+WORKDIR /app
+RUN yarn install
+RUN yarn build
+
+# Health check
+HEALTHCHECK CMD curl --fail http://localhost:8080/actuator/health || exit 1
+
+# Use the unprivileged user for the running container
+USER 101
+
+# Exposed port
+EXPOSE 8080

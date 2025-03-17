@@ -1,0 +1,26 @@
+{
+    "docker_info": {
+        "base_image": "open-liberty:19.0.0.9-microProfile3-java11",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8081"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD --chown=1001:0 build/libs/player-service.war /config/dropins",
+            "ADD --chown=1001:0 build/libs/postgresql-*.jar /config/postgresql",
+            "COPY --chown=1001:0 src/main/liberty/config /config/"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "printf 'httpPort=8081\\n\\",
+                "httpsPort=8444' > /config/bootstrap.properties"
+            ]
+        ]
+    }
+}

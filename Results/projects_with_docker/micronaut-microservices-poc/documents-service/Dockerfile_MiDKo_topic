@@ -1,0 +1,17 @@
+# Use base image from AdoptOpenJDK
+FROM adoptopenjdk/openjdk14:jre-14.0.2_12-alpine AS builder
+
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
+
+# Set the working directory in the Docker container
+WORKDIR /workspace/app
+
+# Take the Maven build output and copy it into the Docker image
+COPY target/documents-service*.jar documents-service.jar
+
+# Copy the .jar file into our Docker container
+COPY ${JAR_FILE} documents-service.jar
+
+# Execute the application
+ENTRYPOINT ["java","-jar","/documents-service.jar"]

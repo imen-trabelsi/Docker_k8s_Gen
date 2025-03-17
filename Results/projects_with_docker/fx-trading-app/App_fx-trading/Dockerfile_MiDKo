@@ -1,0 +1,29 @@
+# Start with a base image containing Java runtime
+FROM maven:3.6.2-jdk-11-slim AS build
+
+# The application's .jar file
+ARG JAR_FILE=target/*.jar
+
+# Dependencies
+COPY pom.xml /tmp/
+COPY src /tmp/src/
+
+# Change to the app directory
+WORKDIR /tmp/
+
+# Package the application
+RUN mvn package -DskipTests
+
+# Start a new stage with a smaller base image to reduce image size 
+FROM openjdk:11-jre-slim
+
+# Make port 80 available to the world outside this container
+EXPOSE 8080
+
+# Set the application's .jar file
+
+# Run the jar file 
+ENTRYPOINT ["/usr/local/openjdk-11/bin/java", "-jar", "/trading-service.jar"]
+
+# Add a healthcheck 
+HEALTHCHECK CMD curl --fail http://localhost:8080/health || exit 1

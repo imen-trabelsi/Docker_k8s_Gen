@@ -1,0 +1,34 @@
+# Base Image
+FROM mcr.microsoft.com/vscode/devcontainers/go:0-${VARIANT}
+
+# Arguments
+ARG VARIANT=1-bullseye
+ARG NODE_VERSION="none"
+
+# Create app directory
+WORKDIR /usr/src/app
+
+# Install app dependencies
+COPY package.json ./
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Handle Node installation if needed
+RUN if [ "${NODE_VERSION}" != "none" ]; then su vscode -c "umask 0002 && . /usr/local/share/nvm/nvm.sh && nvm install ${NODE_VERSION} 2>&1"; fi
+
+# Copy static files
+COPY assets/demo-cloud-native.xml ./assets/demo-cloud-native.xml
+
+# Copy Configuration files
+COPY .env ./
+COPY docker-compose.yml ./
+COPY docker-compose.override.yml ./
+COPY src/go/.devcontainer/Dockerfile ./src/go/.devcontainer/
+
+# Expose ports
+EXPOSE 8080
+
+# Command to start service
+CMD [ "npm", "start" ]

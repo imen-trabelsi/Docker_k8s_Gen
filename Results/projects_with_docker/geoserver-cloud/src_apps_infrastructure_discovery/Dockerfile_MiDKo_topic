@@ -1,0 +1,42 @@
+# Use chosen base image by user
+FROM $REPOSITORY/gs-cloud-base-jre:$TAG AS builder
+
+# Information Provided by the User (Build Arguments)
+ARG REPOSITORY=geoservercloud
+ARG TAG=latest
+ARG JAR_FILE=target/gs-cloud-*-bin.jar
+
+# Project files
+WORKDIR /workspace/app
+COPY pom.xml .
+COPY src ./src
+
+# Build Project with Maven
+RUN mvn -B -DskipTests clean package && \
+    mkdir -p target/dependency && \
+
+# Copy project files
+COPY ${JAR_FILE} application.jar
+
+# Create a non-root user and switch to it
+RUN adduser --disabled-password --gecos '' --shell '/sbin/nologin' app && \
+USER app
+
+# Set the JAVA_TOOL_OPTIONS environment variable
+ENV JAVA_TOOL_OPTIONS="${DEFAULT_JAVA_TOOL_OPTIONS} -XX:SharedArchiveFile=application.jsa"
+
+# Run the jar
+RUN java -Djarmode=layertools -jar application.jar extract
+
+RUN true
+RUN java -XX:ArchiveClassesAtExit=application.jsa \
+-Dspring.context.exit=onRefreshed \
+-Dspring.profiles.active=standalone \
+-Dserver.port=0 -Dmanagement.server.port=0 \
+RUN rm -rf /tmp/*
+
+# Expose port
+EXPOSE 8080
+
+# Container start-up
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]

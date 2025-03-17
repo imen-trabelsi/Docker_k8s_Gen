@@ -1,0 +1,53 @@
+# Use the base image with Java 11
+FROM eclipse-temurin:11 as builder
+
+# Workspace Directory in Container
+WORKDIR /command-side-project-service
+
+# Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy the application's pom.xml
+COPY pom.xml .
+
+# Resolve All maven dependencies
+RUN ./mvnw dependency:go-offline -B
+
+# Copy your other files
+COPY src ./src
+
+# Warmup Layer with All Dependencies and All Classes of the Project
+RUN ./mvnw install -DskipTests
+
+# Copy your other files
+COPY src ./src
+
+# Package the Project with Dependencies
+RUN ./mvnw package -DskipTests
+
+# Moving to Second Stage to Reduce the Image Size
+FROM eclipse-temurin:11
+
+# Workspace Directory in Container
+WORKDIR /command-side-project-service
+
+# Persistent / Shared Storage
+VOLUME /tmp
+
+# Copy the Jar File from the First Stage
+
+# Make port 8082 available to the world outside this container
+EXPOSE 8082
+
+# Copy your other files
+COPY wait-for-it.sh /wait-for-it.sh
+
+# Allow script to be executable
+RUN chmod 777 /wait-for-it.sh
+
+# Run Commands
+RUN bash -c 'touch /app.jar'
+
+# Run the jar file 
+CMD ["java","-Djava.security.egd=file:/dev/./urandom","-Dspring.profiles.active=docker","-jar","/app.jar"]

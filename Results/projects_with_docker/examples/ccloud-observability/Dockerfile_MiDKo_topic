@@ -1,0 +1,26 @@
+# Use the official maven/Java 11 image to create a build artifact.
+FROM maven:3.6.3-jdk-11-slim AS builder
+
+# Copy pom.xml and src code to the container
+WORKDIR /tmp/java
+COPY pom.xml .
+COPY checkstyle/suppressions.xml /tmp/java/checkstyle/suppressions.xml
+COPY checkstyle.xml /tmp/java/checkstyle.xml
+COPY src/ /tmp/java/src/
+
+# Package application code
+RUN mvn package
+
+# ubuntu base image
+FROM ubuntu:20.04
+
+# Install git
+RUN apt-get update && apt-get install -y iptables git
+
+# Copy application jar file to container
+
+# Open port 8080
+EXPOSE 8080
+
+# Run the app
+ENTRYPOINT ["java","-jar","/app.jar"]

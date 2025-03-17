@@ -1,0 +1,25 @@
+{
+    "docker_info": {
+        "base_image": "eclipse-temurin:21-jre",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [
+            "maintainer=\"GeoServer"
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV DEFAULT_JAVA_TOOL_OPTIONS=\"\\",
+            "ENV JAVA_TOOL_OPTIONS=\"${DEFAULT_JAVA_TOOL_OPTIONS}\"",
+            "ENV JAVA_OPTS="
+        ],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "USE_SYSTEM_CA_CERTS=true /__cacert_entrypoint.sh"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,29 @@
+{
+    "docker_info": {
+        "base_image": "alpine:3.10",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY entrypoint.sh /entrypoint.sh"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/entrypoint.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --no-cache git curl bash",
+                ""
+            ]
+        ]
+    }
+}

@@ -1,0 +1,36 @@
+# Start with base image
+FROM openjdk:11.0.5-jre-stretch
+
+# Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy the POM
+COPY pom.xml .
+
+# Copy configuration files
+COPY .env .
+
+# Copy other source code files
+COPY src src
+
+# Build application
+RUN ./mvnw package -DskipTests
+
+# Copy build jar file 
+COPY modules/apps/file-server/build/libs/*.jar /tmp/app.jar
+
+# Sets chmod for the application's entrypoint
+RUN chmod 755 /tmp/app.jar
+
+# Setting environment variables
+ENV SPRING_APPLICATION_JSON=linux-services/file-server/Dockerfile
+
+# Exposed port
+EXPOSE 8002
+
+# Health check instructions
+HEALTHCHECK --retries=33 CMD curl -f http://127.0.0.1:8002/actuator/health || exit 1
+
+# Command to run the application
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/tmp/app.jar"]

@@ -1,0 +1,45 @@
+# Start from python:3.10-bullseye image
+FROM python:3.10-bullseye
+
+# Author of Dockerfile
+LABEL authors="nick"
+
+# Set Python to run in unbuffered mode
+ENV PYTHONUNBUFFERED=1
+
+# Create directory
+RUN mkdir -p /app/gs1-digitallink-toolkit
+
+# Copy flask Application
+COPY src/gs1-digitallink-toolkit /app/gs1-digitallink-toolkit
+
+# Set Working directory
+WORKDIR /app
+
+# Copy requirements.txt 
+COPY src/requirements.txt /app/
+
+# Copy application files
+COPY src /app/
+
+#Update packages and install curl
+RUN apt-get update && apt-get install -y curl 
+
+# Install node js
+RUN curl -sL https://deb.nodesource.com/setup_18.x | bash -
+RUN apt-get install -y nodejs nano
+
+# Initialize node js package
+RUN npm init es6
+
+# Install gs1encoder using npm
+RUN npm install --save gs1encoder
+
+# Install application from requirements
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Expose port 3000
+EXPOSE 3000
+
+# Run the app.py when the container launches
+CMD ["python","-m", "main"]

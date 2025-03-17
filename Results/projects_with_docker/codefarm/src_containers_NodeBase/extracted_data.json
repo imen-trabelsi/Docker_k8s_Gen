@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"NodeBase\",\n  \"version\": \"0.0.0\",\n  \"description\": \"Base image for Code Farm node applications\",\n  \"scripts\": {\n    \"build\": \"../../bs/build.sh\",\n    \"extract\": \"../../bs/extract.sh\",\n    \"load\": \"../../bs/load.sh\",\n    \"unload\": \"../../bs/unload.sh\"\n  },\n  \"author\": \"Marcus Christensson <marcus.christensson@combitech.se>\",\n  \"license\": \"MIT\"\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "src/containers/NodeBase/Dockerfile": "#\n# Base image for Code Farm node applications\n#\n# In containers that inherit this file, EXPOSE ports and set CMD.\n#\n# Example Dockerfile:\n# FROM codefarm/nodebase:0.0.0\n#\n\nFROM node:8\nLABEL Description=\"Base image for Code Farm node applications\" Version=\"1.0\"\n\nENV user codefarm\nENV farmerHome /home/$user\nENV npmDir ${farmerHome}/npm\nENV appRoot ${farmerHome}/codefarm\n\nRUN groupadd --system $user && useradd --system --create-home --gid $user $user\n\n# Dependency weak-value-map needs node-gyp\nRUN npm install -g node-gyp\n\nUSER ${user}\n\nENV DISABLE_LINK_LIBS \"npm installation disabled\"\n\n# Create data directory where default volume can be mounted\nRUN mkdir -p $farmerHome/data && chown -R $user $farmerHome/data -R && chgrp -R $user $farmerHome/data\n\n# Create app directory\nRUN mkdir -p ${appRoot}/src/app/me\nWORKDIR ${appRoot}/src/app/me\n\n# 1. Add app dependency specification. This is done first to utilize docker caching.\nONBUILD COPY [ \"package.json\", \"yarn.lock\", \"${appRoot}/src/app/me/\" ]\n\nONBUILD USER root\nONBUILD RUN chown $user --recursive ${appRoot}\nONBUILD USER $user\n\n# Create a link .node_modules in home directory to let nodejs require()\n# resolve globally installed modules.\n# See https://nodejs.org/api/modules.html#modules_loading_from_the_global_folders\nONBUILD RUN ln -s ${farmerHome}/.config/yarn/global/node_modules ${farmerHome}/.node_modules\n\nONBUILD ENV gitroot ${appRoot}\nONBUILD RUN test -f package.json && \\\n  yarn --production || \\\n  echo \"No package.json\"\n\n# 2. Add app source\nONBUILD COPY . ${appRoot}/src/app/me\nONBUILD USER root\nONBUILD RUN find ${appRoot}/src/app/me -path './node_modules' -prune -o -print0 | xargs -0 chown $user\nONBUILD USER $user\n\nCMD [ \"yarn\", \"run\", \"start-rel\" ]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            "Dockerfile",
+            "package.json",
+            "yarn.lock"
+        ],
+        "folders": []
+    }
+}

@@ -1,0 +1,37 @@
+# Use the base image specified by the user
+FROM public.ecr.aws/docker/library/node:20-bookworm-slim
+
+# Set the working directory 
+WORKDIR /usr/src/app/webapp
+
+# Add config file 
+COPY config/tsconfig-base.json /usr/src/config/
+
+# Add the webapp files
+COPY ./webapp /usr/src/app/webapp
+
+# Include static files
+COPY static/README.md /usr/src/app/webapp/static/
+COPY assets/README.md /usr/src/app/webapp/assets/
+COPY assets/icons/browserconfig.xml /usr/src/app/webapp/assets/icons/
+COPY assets/icons/manifest.json /usr/src/app/webapp/assets/icons/
+COPY assets/package.json /usr/src/app/webapp/assets/
+COPY content/webapp/components/AudioPlayer/README.md /usr/src/app/webapp/content/components/AudioPlayer/
+COPY content/webapp/components/BackToResults/README.md /usr/src/app/webapp/content/components/BackToResults/
+COPY content/webapp/components/Contact/README.md /usr/src/app/webapp/content/components/Contact/
+COPY content/webapp/components/Contributors/README.md /usr/src/app/webapp/content/components/Contributors/
+COPY content/webapp/components/CopyButtons/README.md /usr/src/app/webapp/content/components/CopyButtons/
+
+# Install dependencies
+COPY package*.json ./ 
+
+# Run yarn and clean cache recursively
+RUN npm install -g yarn && yarn && yarn cache clean
+
+# This dockerfile does not specify an EXPOSE command, implying it may not serve any network services.
+# You may want to add an "EXPOSE" command if your application requires it.
+# EXPOSE 
+
+
+# CMD or ENTRYPOINT command
+CMD ["node", "server.js"]

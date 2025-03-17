@@ -1,0 +1,46 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/sdk:5.0",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "WORKDIR /src",
+            "COPY [\"src/Services/CertificateProcessing/CertificateProcessing.API/CertificateProcessing.API.csproj\", \"src/Services/CertificateProcessing/CertificateProcessing.API/\"]",
+            "COPY . .",
+            "WORKDIR \"/src/src/Services/CertificateProcessing/CertificateProcessing.API\"",
+            "WORKDIR /app",
+            "COPY --from=publish /app/publish ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"dotnet\",",
+                    "\"CertificateProcessing.API.dll\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "dotnet restore \"src/Services/CertificateProcessing/CertificateProcessing.API/CertificateProcessing.API.csproj\"",
+                ""
+            ],
+            [
+                "dotnet build \"CertificateProcessing.API.csproj\" -c Release -o /app/build",
+                ""
+            ],
+            [
+                "dotnet publish \"CertificateProcessing.API.csproj\" -c Release -o /app/publish",
+                ""
+            ]
+        ]
+    }
+}

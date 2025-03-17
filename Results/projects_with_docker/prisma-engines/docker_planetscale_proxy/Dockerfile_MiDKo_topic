@@ -1,0 +1,50 @@
+# Base Image
+FROM ghcr.io/mattrobenolt/ps-http-sim:v0.0.11 AS builder
+WORKDIR /app
+
+# Install Tools
+RUN apt-get update && apt-get install -y \
+    cargo \
+    libpq-dev \
+    postgresql-client \
+
+# Set Rust toolchain version
+ARG RUST_VERSION="1.81.0"
+ENV RUSTUP_HOME=/usr/local/rustup \
+    CARGO_HOME=/usr/local/cargo \
+RUN curl https://sh.rustup.rs -sSf | sh -s -- -y --default-toolchain ${RUST_VERSION}
+
+# Copying over necessary files
+COPY ./Cargo.toml ./Cargo.toml
+
+# Building our microservice
+COPY . /app
+RUN cargo build --release
+
+# Referencing intermediate base image
+FROM ghcr.io/mattrobenolt/ps-http-sim:v0.0.11
+WORKDIR /app
+
+# Copy Binary to our final base
+
+# Security considerations
+
+# Networking considerations
+
+# Health checks
+
+# Exposed Ports
+
+# Copy Instructions:
+COPY --from=planetscale-proxy /ps-http-sim /ps-http-sim
+
+# Setting execution command
+ENTRYPOINT ["/ps-http-sim"]
+
+# Run Commands 
+
+# Environment Variables
+
+# Labels
+
+# Users

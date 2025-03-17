@@ -1,0 +1,29 @@
+# grab base image of elasticsearch
+FROM docker.elastic.co/elasticsearch/elasticsearch:${ELASTIC_VERSION:-8.17.3} AS builder
+
+# set maintainer
+LABEL maintainer="cooltuhin8@gmail.com"
+
+# set some useful arguments and environment variables
+ARG MAVEN_VERSION=3.6.3
+ENV MAVEN_HOME /usr/share/maven
+ENV MAVEN_CONFIG "$USER_HOME_DIR/.m2"
+
+# install utils
+RUN yum update -y && yum install -y git curl tar xmlstarlet gzip
+
+# install jdk
+RUN yum install -y java-1.8.0-openjdk
+
+# install maven
+RUN mkdir -p $MAVEN_HOME \
+  && curl -fsSL http://apache.osuosl.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz \
+
+# add your spring-boot microservice’s .jar to container
+COPY ./target/spring-boot-microservice-*.jar /tmp
+
+# expose that port
+EXPOSE 8080
+
+# command line to run your application
+CMD ["java", "-jar", "/tmp/spring-boot-microservice-*.jar"]

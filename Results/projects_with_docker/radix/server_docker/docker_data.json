@@ -1,0 +1,27 @@
+{
+    "docker_info": {
+        "base_image": "limit0/php56:imagick-latest",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV SYMFONY_ENV=dev",
+            "ENV APP_ENV=dev"
+        ],
+        "copy_instructions": [
+            "COPY docker/vhost.conf /etc/apache2/sites-available/000-default.conf",
+            "COPY docker/php.ini /usr/local/etc/php/conf.d/zzz_php.ini",
+            "ADD docker/entrypoint.sh /app/entrypoint.sh"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "setcap CAP_NET_BIND_SERVICE=+eip /usr/sbin/apache2",
+                "# USER www-data"
+            ]
+        ]
+    }
+}

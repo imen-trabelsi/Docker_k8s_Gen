@@ -1,0 +1,21 @@
+FROM eclipse-temurin:8-jdk-focal
+
+LABEL maintainer="Michael"
+
+ENV DEBIAN_FRONTEND noninteractive
+
+WORKDIR /app
+
+COPY ./ /app
+
+RUN ./gradlew clean shadowDistTar
+
+RUN if [ -e /app/build/libs/app-0.0.1-SNAPSHOT-all.jar ] ; then mv /app/build/libs/app-0.0.1-SNAPSHOT-all.jar /app/build/libs/yacy_grid_mcp-0.0.1-SNAPSHOT-all.jar; fi
+
+COPY ./conf /app/conf/
+
+COPY --from=appbuilder /app/build/libs/yacy_grid_mcp-0.0.1-SNAPSHOT-all.jar ./app/build/libs/
+
+EXPOSE 8100
+
+CMD ["java", "-Xms320M", "-Xmx2G", "-jar", "/app/build/libs/yacy_grid_mcp-0.0.1-SNAPSHOT-all.jar"]

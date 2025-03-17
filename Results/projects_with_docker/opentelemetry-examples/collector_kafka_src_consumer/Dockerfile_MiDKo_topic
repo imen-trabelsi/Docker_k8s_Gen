@@ -1,0 +1,22 @@
+# Set base image
+FROM golang:1.19
+
+# Create a working directory
+WORKDIR /app
+
+# Copy all files to the working directory
+COPY . .
+
+# Initialize the go module and download dependencies
+RUN go mod init opentelementry-examples-kafka
+RUN go mod tidy
+
+# Build the Binary
+RUN go build -o consumer .
+
+# Expose necessary ports
+# Please specify the port if needed
+# Ex: EXPOSE 8080
+
+# Set the execution command
+ENTRYPOINT ["./consumer"]

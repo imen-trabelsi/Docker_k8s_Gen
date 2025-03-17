@@ -1,0 +1,41 @@
+# Use the official Microsoft image from the dockerhub
+FROM mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim AS build-env
+
+# Set the work directory
+WORKDIR /app
+
+# Install curl and nodejs
+RUN apt-get update && apt-get install -y curl
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash - && apt-get install -y nodejs
+
+# Copy everything to the work directory
+COPY . ./
+
+# Restore the necessary dotnet packages
+RUN dotnet restore "Web/Web.csproj"
+
+# Change the work directory
+WORKDIR /app/src/Web
+
+# Build the project
+RUN dotnet build "Web.csproj" -c Release -o /app/build
+
+FROM build-env AS publish
+RUN dotnet publish "Web.csproj" -c Release -o /app/publish
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0-bullseye-slim
+
+# Set the environment variable
+ENV ASPNETCORE_URLS=http://+:80;https://+:443
+
+# Expose the ports
+EXPOSE 80
+EXPOSE 443
+
+WORKDIR /app
+
+# Copy files from publish container
+
+# Set the entrypoint
+ENTRYPOINT ["dotnet", "Web.dll"]

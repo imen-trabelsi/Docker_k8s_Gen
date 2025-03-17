@@ -1,0 +1,134 @@
+{
+    "docker_info": {
+        "base_image": "python:3.12.7",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV ZEEGUU_RESOURCES_FOLDER=/zeeguu-resources",
+            "ENV NLTK_DATA=$ZEEGUU_RESOURCES_FOLDER/nltk_data/",
+            "ENV SCRAPER_FOLDER=/tmp/.newspaper_scraper",
+            "ENV ZEEGUU_CONFIG=/Zeeguu-API/default_docker.cfg"
+        ],
+        "copy_instructions": [
+            "COPY ./setup.py /Zeeguu-API/setup.py",
+            "WORKDIR /Zeeguu-API",
+            "COPY . /Zeeguu-API"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apt-get clean all",
+                "RUN apt-get update"
+            ],
+            [
+                "apt-get upgrade -y",
+                "RUN apt-get dist-upgrade -y"
+            ],
+            [
+                "apt-get install acl",
+                ""
+            ],
+            [
+                "apt-get -y install git",
+                ""
+            ],
+            [
+                "apt-get install -y mysql\\*",
+                ""
+            ],
+            [
+                "apt-get install -y default-libmysqlclient-dev",
+                ""
+            ],
+            [
+                "apt-get install -y mysql\\*",
+                ""
+            ],
+            [
+                "apt-get install -y default-libmysqlclient-dev",
+                ""
+            ],
+            [
+                "apt-get install -y \\",
+                "apache2",
+                "apache2-dev",
+                "vim"
+            ],
+            [
+                "pip install mod_wsgi",
+                ""
+            ],
+            [
+                "/bin/bash -c 'mod_wsgi-express install-module | tee /etc/apache2/mods-available/wsgi.{load,conf}'",
+                "RUN a2enmod wsgi"
+            ],
+            [
+                "a2enmod headers",
+                ""
+            ],
+            [
+                "echo '\\n\\",
+                "<VirtualHost *:8080>\\n",
+                "WSGIDaemonProcess zeeguu_api home=/zeeguu-data/ python-path=/Zeeguu-API/\\n",
+                "WSGIScriptAlias / /Zeeguu-API/zeeguu_api.wsgi\\n",
+                "<Location />\\n",
+                "WSGIProcessGroup zeeguu_api\\n",
+                "WSGIApplicationGroup %{GLOBAL}\\n",
+                "</Location>\\n",
+                "<Directory \"/Zeeguu-API\">\\n",
+                "<Files \"zeeguu_api.wsgi\">\\n",
+                "Require all granted\\n",
+                "</Files>\\n",
+                "</Directory>\\n",
+                "ErrorLog ${APACHE_LOG_DIR}/error.log\\n",
+                "LogLevel info\\n",
+                "CustomLog ${APACHE_LOG_DIR}/access.log combined\\n",
+                "</VirtualHost>' > /etc/apache2/sites-available/zeeguu-api.conf"
+            ],
+            [
+                "chown -R www-data:www-data /var/www",
+                ""
+            ],
+            [
+                "sed -i \"s,Listen 80,Listen 8080,g\" /etc/apache2/ports.conf",
+                ""
+            ],
+            [
+                "mkdir /Zeeguu-API",
+                "COPY ./requirements.txt /Zeeguu-API/requirements.txt"
+            ],
+            [
+                "python -m pip install -r requirements.txt",
+                ""
+            ],
+            [
+                "mkdir -p $ZEEGUU_RESOURCES_FOLDER",
+                ""
+            ],
+            [
+                "python setup.py develop #Installs the nltk resources in the /zeeguu_resources/nltk_data",
+                ""
+            ],
+            [
+                "python install_stanza_models.py",
+                ""
+            ],
+            [
+                "mkdir -p $SCRAPER_FOLDER # -p does not report error if folder already exists",
+                ""
+            ],
+            [
+                "chown -R www-data:www-data $SCRAPER_FOLDER",
+                "RUN chown -R www-data:www-data $ZEEGUU_RESOURCES_FOLDER"
+            ],
+            [
+                "a2dissite 000-default.conf",
+                "RUN a2ensite zeeguu-api"
+            ]
+        ]
+    }
+}

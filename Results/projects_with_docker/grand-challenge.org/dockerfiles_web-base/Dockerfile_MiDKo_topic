@@ -1,0 +1,43 @@
+# Use specified Python version base image
+FROM python:${PYTHON_VERSION}-slim-buster AS build
+
+# Improve security by creating non-root user
+RUN useradd -m django
+
+# Set environment variable
+ENV PYTHONUNBUFFERED=1\
+    POETRY_HOME="/opt/poetry" \
+    POETRY_VIRTUALENVS_IN_PROJECT=true \
+    POETRY_NO_INTERACTION=1 \
+
+# Copy Project File
+WORKDIR /opt/poetry
+COPY --chown=django:django pyproject.toml /opt/poetry
+COPY --chown=django:django poetry.lock /opt/poetry
+
+# Install dependencies
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+    libpng-dev \
+    libjpeg-dev \
+    libjpeg62-turbo-dev \
+    libfreetype6-dev \
+    libxft-dev \
+    libffi-dev \
+    wget \
+    gettext \
+    && wget -O get-poetry.py https://install.python-poetry.org \
+    && python get-poetry.py --version 1.1.6 \
+
+# Copy static files
+COPY --chown=django:django ./static /static
+
+# Copy the application code to the container
+WORKDIR /app
+COPY . /app
+
+# Set the user for subsequent commands
+USER django
+
+# Run the application
+CMD ["gunicorn", "myapp.wsgi:application", "--bind=0.0.0.0:8000"]

@@ -1,0 +1,47 @@
+{
+    "docker_info": {
+        "base_image": "node:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3005",
+            "5000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /webui",
+            "COPY package.json /webui/",
+            "COPY . /webui",
+            "COPY entrypoint.sh /"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/entrypoint.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "yarn",
+                ""
+            ],
+            [
+                "set -ex && \\",
+                "apt-get update &&",
+                "apt-get --no-install-recommends --yes install",
+                "vim",
+                "net-tools",
+                "procps"
+            ],
+            [
+                "yarn build",
+                "RUN yarn global add serve"
+            ]
+        ]
+    }
+}

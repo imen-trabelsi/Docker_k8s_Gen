@@ -1,0 +1,32 @@
+# Use the official Java base image (open-liberty:19.0.0.9-microProfile3-java11) given by the user
+FROM open-liberty:19.0.0.9-microProfile3-java11
+
+# Set the working directory in the Docker container
+WORKDIR /app
+
+# Copy the build file into the container
+COPY build.gradle .
+
+# Run Gradle build
+RUN chmod +x ./gradlew &&\
+
+# Copy the project into the container
+COPY / .
+
+# Set permissions on the build files to ensure they are executable
+RUN chmod 755 /app/build/libs/*.jar
+
+# Add game-service.war file to specific directory
+COPY --chown=1001:0 build/libs/game-service.war /config/dropins
+
+# Copy the application configuration files into the container
+COPY --chown=1001:0 src/main/liberty/config /config/
+
+# Set environment for HTTP and HTTPS ports
+RUN printf 'httpPort=8080\n\
+
+# Expose port 8080 for the application
+EXPOSE 8080
+
+# Specify the command to run when the container starts
+CMD java -jar /app/build/libs/*.jar

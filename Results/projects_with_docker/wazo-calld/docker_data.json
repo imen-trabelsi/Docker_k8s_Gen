@@ -1,0 +1,55 @@
+{
+    "docker_info": {
+        "base_image": "python:3.9-slim-bullseye",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "9500"
+        ],
+        "user": [],
+        "labels": [
+            "maintainer=\"Wazo"
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV PATH=\"/opt/venv/bin:$PATH\"",
+            "ENV PATH=\"/opt/venv/bin:$PATH\""
+        ],
+        "copy_instructions": [
+            "COPY . /usr/src/wazo-calld",
+            "WORKDIR /usr/src/wazo-calld",
+            "COPY --from=compile-image /opt/venv /opt/venv",
+            "COPY ./etc/wazo-calld /etc/wazo-calld",
+            "COPY ./bin/wazo-pdf2fax /usr/bin/wazo-pdf2fax"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"wazo-calld\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "python -m venv /opt/venv",
+                "# Activate virtual env"
+            ],
+            [
+                "pip install -r requirements.txt",
+                "RUN pip install ."
+            ],
+            [
+                "true \\",
+                "&& apt-get -q update",
+                "&& apt-get -yq install --no-install-recommends ghostscript",
+                "&& adduser --quiet --system --group --home /var/lib/wazo-calld wazo-calld",
+                "&& mkdir -p /etc/wazo-calld/conf.d",
+                "&& mkdir -p /var/spool/asterisk/voicemail",
+                "&& install -o www-data -g www-data /dev/null /var/log/wazo-calld.log",
+                "&& chown root:www-data /usr/bin/wazo-pdf2fax",
+                "&& rm -fr /var/lib/apt/lists/*"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,38 @@
+# Use the base image
+FROM $DAOS_DOCKER_IMAGE_NSP/daos-agent-$LINUX_DISTRO:$DAOS_DOCKER_IMAGE_TAG
+
+# Set the label
+LABEL maintainer="daos@daos.groups.io"
+
+# Copy necessary files
+COPY daos-bash.sh /tmp/daos-bash.in
+
+# Install dependencies
+RUN for it in DAOS_VERSION ; do \
+if eval "[[ -z \$$it ]]" ; then \
+echo "[ERROR] Docker build argument $it is not defined" ; \
+exit 1 ; \
+fi ; \
+done && \
+echo "[INFO] Installing DAOS containerization dependencies" ; \
+dnf install -y \
+sudo \
+xz && \
+
+# Configure DAOS Agent entry point
+RUN echo "[INSTALL] Installing DAOS Agent entry point" ; \
+for it in DAOS_CLIENT_UNAME DAOS_CLIENT_GNAME ; do \
+if eval "[[ -z \$$it ]]" ; then \
+echo "[ERROR] Docker build argument $it is not defined" ; \
+exit 1 ; \
+fi ; \
+done && \
+sed --regexp-extended \
+--expression "s/@DAOS_CLIENT_UNAME@/${DAOS_CLIENT_UNAME}/" \
+--expression "s/@DAOS_CLIENT_GNAME@/${DAOS_CLIENT_GNAME}/" \
+/tmp/daos-bash.in > /usr/local/sbin/daos-bash && \
+chmod 755 /usr/local/sbin/daos-bash && \
+
+# Set entrypoint and default command
+ENTRYPOINT ["/usr/local/sbin/daos-bash"]
+CMD ["-i"]

@@ -1,0 +1,32 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Spring Boot",
+        "dependencies": {
+            "pom.xml": "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n<project xmlns=\"http://maven.apache.org/POM/4.0.0\"\n\txmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n\txsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n\t<modelVersion>4.0.0</modelVersion>\n\n\t<groupId>com.banking.sofware.design</groupId>\n\t<artifactId>fx-trading</artifactId>\n\t<version>0.0.1-SNAPSHOT</version>\n\t<packaging>jar</packaging>\n\n\t<name>fx-trading</name>\n\t<description>FX trading service for Banking Software Design course Trading app</description>\n\n\t<parent>\n\t\t<groupId>org.springframework.boot</groupId>\n\t\t<artifactId>spring-boot-starter-parent</artifactId>\n\t\t<version>2.0.4.RELEASE</version>\n\t\t<relativePath /> <!-- lookup parent from repository -->\n\t</parent>\n\t\n\t<profiles>\n\t    <profile>\n\t        <id>dev</id>\n\t        <activation>\n\t            <activeByDefault>true</activeByDefault>\n\t        </activation>\n\t        <properties>\n\t            <spring.profiles.active>dev</spring.profiles.active>\n\t        </properties>\n\t    </profile>\n\t    <profile>\n\t        <id>prod</id>\n\t        <properties>\n\t            <spring.profiles.active>prod</spring.profiles.active>\n\t        </properties>\n\t    </profile>\n\t</profiles>\n\n\t<properties>\n\t\t<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>\n\t\t<project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>\n\t\t<java.version>11</java.version>\n\t</properties>\n\n\t<dependencies>\n\t\t<dependency>\n\t\t\t<groupId>org.springframework.boot</groupId>\n\t\t\t<artifactId>spring-boot-starter-data-jpa</artifactId>\n\t\t</dependency>\n\t\t<dependency>\n\t\t\t<groupId>org.springframework.boot</groupId>\n\t\t\t<artifactId>spring-boot-starter-security</artifactId>\n\t\t</dependency>\n\t\t<dependency>\n\t\t\t<groupId>org.springframework.boot</groupId>\n\t\t\t<artifactId>spring-boot-starter-web</artifactId>\n\t\t</dependency>\n\n\t\t<dependency>\n\t\t\t<groupId>org.postgresql</groupId>\n\t\t\t<artifactId>postgresql</artifactId>\n\t\t\t<scope>runtime</scope>\n\t\t</dependency>\n\t\t<dependency>\n\t\t\t<groupId>org.springframework.boot</groupId>\n\t\t\t<artifactId>spring-boot-starter-tomcat</artifactId>\n\t\t\t<scope>provided</scope>\n\t\t</dependency>\n\t\t<dependency>\n\t\t\t<groupId>org.springframework.boot</groupId>\n\t\t\t<artifactId>spring-boot-starter-test</artifactId>\n\t\t\t<scope>test</scope>\n\t\t</dependency>\n\t\t<dependency>\n\t\t\t<groupId>org.springframework.security</groupId>\n\t\t\t<artifactId>spring-security-test</artifactId>\n\t\t\t<scope>test</scope>\n\t\t</dependency>\n\n\t\t<dependency>\n\t\t\t<groupId>javax.xml.bind</groupId>\n\t\t\t<artifactId>jaxb-api</artifactId>\n\t\t</dependency>\n\n\t\t<dependency>\n    \t\t<groupId>org.javassist</groupId>\n    \t\t<artifactId>javassist</artifactId>\n    \t\t<version>3.23.1-GA</version>\n\t\t</dependency>\n\n\t\t<dependency>\n\t\t\t<groupId>org.mockito</groupId>\n\t\t\t<artifactId>mockito-core</artifactId>\n\t\t\t<version>2.23.0</version>\n\t\t\t<scope>test</scope>\n\t\t</dependency>\n\n\t\t<dependency>\n\t\t\t<groupId>org.apache.commons</groupId>\n\t\t\t<artifactId>commons-lang3</artifactId>\n\t\t</dependency>\n\n\t</dependencies>\n\n\t<build>\n\t\t<plugins>\n\t\t\t<plugin>\n\t\t\t\t<groupId>org.springframework.boot</groupId>\n\t\t\t\t<artifactId>spring-boot-maven-plugin</artifactId>\n\t\t\t</plugin>\n\t\t</plugins>\n\t</build>\n\n\n</project>\n"
+        },
+        "database": "PostgreSQL",
+        "build_system": "Maven",
+        "config_files": {
+            "App/docker-compose.yml": "version: \"3\"\r\nservices:\r\n  ui:\r\n    build: ./ui\r\n    ports: \r\n      -  \"80:80\"\r\n  users:\r\n    build: ./user-administration\r\n    ports: \r\n      -  \"8200:8200\"\r\n  trading: \r\n    build: ./fx-trading\r\n    ports:\r\n      - \"8210:8210\"\r\n  quote:\r\n    build: ./quote-service\r\n    ports:\r\n      - \"8220:8220\"\r\n  db:\r\n    image: postgres\r\n    environment:\r\n        POSTGRES_PASSWORD: \"admin\"\r\n    volumes:\r\n        - postgres-db:/var/lib/postgresql/data\r\n        - ./fx-trading/database_setup/db_setup.sql:/docker-entrypoint-initdb.d/1.sql\r\n        - ./user-administration/database_setup/db_setup.sql:/docker-entrypoint-initdb.d/2.sql\r\n\r\n    ports:\r\n      - \"54320:5432\"\r\nvolumes:\r\n    postgres-db:",
+            "App/fx-trading/Dockerfile": "FROM maven:3.6.2-jdk-11-slim AS MAVEN_TOOL_CHAIN\r\nCOPY pom.xml /tmp/\r\nCOPY src /tmp/src/\r\nWORKDIR /tmp/\r\nRUN mvn package -Pprod -DskipTests\r\n\r\nFROM openjdk:11.0.4-jre\r\nCOPY --from=MAVEN_TOOL_CHAIN /tmp/target/fx-trading-0.0.1-SNAPSHOT.jar /trading-service.jar\r\nCMD /usr/local/openjdk-11/bin/java -jar /trading-service.jar"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".gitignore",
+            "Dockerfile",
+            "Dockerfile_after_maven",
+            "mvnw",
+            "mvnw.cmd",
+            "pom.xml"
+        ],
+        "folders": [
+            ".mvn",
+            "bin",
+            "database_setup",
+            "src"
+        ]
+    }
+}

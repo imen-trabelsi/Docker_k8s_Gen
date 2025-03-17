@@ -1,0 +1,48 @@
+# Stage 1
+FROM ubuntu:jammy AS builder
+
+# Build Arguments
+ENV NODE_MAJOR=20
+ENV BUNDLER_VERSION='2.4.13'
+ENV RUBY_VERSION='3.3.4'
+ENV USER=markus
+ENV UID=1001
+
+RUN useradd -m -u $UID -s /bin/bash $USER
+
+COPY --chown=${USER}:${USER} package.json /app/
+
+# Install node.js from node setup scripts
+ADD https://deb.nodesource.com/setup_$NODE_MAJOR.x /tmp/setup_node.sh
+
+RUN sh /tmp/setup_node.sh && \
+
+WORKDIR /app
+
+RUN npm install
+
+# Stage 2
+FROM ubuntu:jammy
+
+ENV NODE_MAJOR=20
+ENV BUNDLER_VERSION='2.4.13'
+ENV RUBY_VERSION='3.3.4'
+ENV USER=markus
+ENV UID=1001
+
+# Environment Variables
+ENV GEM_HOME="/bundle"
+ENV PATH="$GEM_HOME/bin:$GEM_HOME/gems/bin:$PATH"
+ENV RAILS_ENV=production
+ENV NODE_ENV=production
+
+RUN useradd -m -u $UID -s /bin/bash $USER
+
+WORKDIR /app
+
+COPY --chown=${USER}:${USER} .dockerfiles/.env /app/
+COPY --chown=${USER}:${USER} .dockerfiles/Dockerfile /app/
+
+USER $USER
+
+CMD ["npm", "start"]

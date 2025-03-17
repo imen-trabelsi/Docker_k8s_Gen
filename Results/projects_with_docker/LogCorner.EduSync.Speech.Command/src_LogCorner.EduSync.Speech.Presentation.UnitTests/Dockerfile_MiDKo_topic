@@ -1,0 +1,19 @@
+# Dockerfile
+FROM mcr.microsoft.com/dotnet/sdk:7.0
+
+WORKDIR /app
+WORKDIR /src
+COPY ["LogCorner.EduSync.Speech.Presentation.UnitTests/LogCorner.EduSync.Speech.Presentation.UnitTests.csproj", "LogCorner.EduSync.Speech.Presentation.UnitTests/"]
+COPY ["LogCorner.EduSync.Speech.Presentation/LogCorner.EduSync.Speech.Presentation.csproj", "LogCorner.EduSync.Speech.Presentation/"]
+COPY ["LogCorner.EduSync.Speech.Application/LogCorner.EduSync.Speech.Application.csproj", "LogCorner.EduSync.Speech.Application/"]
+COPY ["LogCorner.EduSync.Speech.Domain/LogCorner.EduSync.Speech.Domain.csproj", "LogCorner.EduSync.Speech.Domain/"]
+COPY ["LogCorner.EduSync.Speech.SharedKernel/LogCorner.EduSync.Speech.SharedKernel.csproj", "LogCorner.EduSync.Speech.SharedKernel/"]
+COPY ["LogCorner.EduSync.Speech.Infrastructure/LogCorner.EduSync.Speech.Infrastructure.csproj", "LogCorner.EduSync.Speech.Infrastructure/"]
+RUN dotnet restore "LogCorner.EduSync.Speech.Presentation.UnitTests/LogCorner.EduSync.Speech.Presentation.UnitTests.csproj"
+WORKDIR "/src/LogCorner.EduSync.Speech.Presentation.UnitTests"
+COPY . .
+RUN dotnet build "LogCorner.EduSync.Speech.Presentation.UnitTests.csproj" -c Release -o /app/build
+RUN dotnet publish "LogCorner.EduSync.Speech.Presentation.UnitTests.csproj" -c Release -o /app/publish
+
+WORKDIR /app
+CMD ["dotnet", "/app/publish/LogCorner.EduSync.Speech.Presentation.UnitTests.dll"]

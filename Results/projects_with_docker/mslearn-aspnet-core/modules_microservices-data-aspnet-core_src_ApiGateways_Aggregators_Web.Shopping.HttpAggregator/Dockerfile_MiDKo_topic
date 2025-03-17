@@ -1,0 +1,31 @@
+# Use an official .NET runtime as a parent image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS base
+WORKDIR /app
+
+# Set up environment
+ENV ASPNETCORE_ENVIRONMENT=Production
+ENV ASPNETCORE_URLS=http://+:80
+
+# Expose requirements
+EXPOSE 80
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+WORKDIR /src
+
+# Copy csproj and restore as distinct layers
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "./"]
+RUN dotnet restore "./Web.Shopping.HttpAggregator.csproj"
+
+# Copy everything else and build
+COPY . .
+WORKDIR "/src/src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator"
+RUN dotnet build "Web.Shopping.HttpAggregator.csproj" -c Release -o /app/publish
+
+FROM build AS publish
+RUN dotnet publish "Web.Shopping.HttpAggregator.csproj" -c Release -o /app/publish
+
+FROM base AS final
+WORKDIR /app
+
+ENTRYPOINT ["dotnet", "Web.Shopping.HttpAggregator.dll"]

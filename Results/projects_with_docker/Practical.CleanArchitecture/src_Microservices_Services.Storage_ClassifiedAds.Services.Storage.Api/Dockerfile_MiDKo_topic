@@ -1,0 +1,27 @@
+# Use the specified base image
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
+
+WORKDIR /ClassifiedAds.Microservices
+
+# Copy csproj and restore dependencies
+COPY ./Common/ClassifiedAds.Application/*.csproj ./Common/ClassifiedAds.Application/
+RUN dotnet restore ./Common/ClassifiedAds.Application/ClassifiedAds.Application.csproj
+
+COPY ./Common/ClassifiedAds.Infrastructure/*.csproj ./Common/ClassifiedAds.Infrastructure/
+RUN dotnet restore ./Common/ClassifiedAds.Infrastructure/ClassifiedAds.Infrastructure.csproj
+
+COPY ./Services.Storage/ClassifiedAds.Services.Storage.Api/*.csproj ./Services.Storage/ClassifiedAds.Services.Storage.Api/
+RUN dotnet restore ./Services.Storage/ClassifiedAds.Services.Storage.Api/ClassifiedAds.Services.Storage.Api.csproj
+
+# Copy everything else and build
+COPY . ./
+RUN dotnet publish ./Services.Storage/ClassifiedAds.Services.Storage.Api/ClassifiedAds.Services.Storage.Api.csproj -c Release -o out
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/sdk:9.0
+
+WORKDIR /ClassifiedAds.Microservices
+
+
+# Set the entry point
+ENTRYPOINT ["dotnet", "ClassifiedAds.Services.Storage.Api.dll"]

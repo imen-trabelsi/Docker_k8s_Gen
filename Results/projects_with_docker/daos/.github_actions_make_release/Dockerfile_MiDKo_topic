@@ -1,0 +1,22 @@
+# The initial image specification
+FROM alpine:3.10
+
+# Add PIP dependencies (i.e. requirements.txt)
+COPY requirements.txt /
+
+# Running necessary dependencies installation
+RUN apk add --no-cache git curl bash 
+RUN apk add --update py-pip python-dev
+
+# Install all PIP dependencies
+RUN pip install -r requirements.txt
+
+# Copying all necessary files 
+COPY . ..
+COPY entrypoint.sh /entrypoint.sh
+
+# Setting the Entry point
+ENTRYPOINT ["/entrypoint.sh"]
+
+# Making the entry point executable
+RUN chmod +x /entrypoint.sh

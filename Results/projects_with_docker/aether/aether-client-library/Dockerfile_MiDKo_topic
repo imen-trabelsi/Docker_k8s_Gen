@@ -1,0 +1,24 @@
+# Base image
+FROM python:3.10-slim
+
+# Environment variables
+ENV VIRTUAL_ENV=/var/run/aether/venv
+ENV PATH="$VIRTUAL_ENV/bin:$PATH"
+ARG VERSION=0.0.0
+
+# Create directories and install required packages
+RUN apt-get update -qq > /dev/null && \
+    apt-get -qq --yes --allow-downgrades --allow-remove-essential --allow-change-held-packages install gcc libssl-dev > /dev/null && \
+    mkdir -p $VIRTUAL_ENV && \
+    python3 -m venv $VIRTUAL_ENV && \
+    mkdir -p /var/tmp && \
+
+# Update pip and install dependencies
+COPY ./conf/pip /code/conf/pip
+COPY ./ /code
+WORKDIR /code
+
+RUN pip install -q --upgrade pip && \
+
+# Entrypoint
+ENTRYPOINT ["/code/entrypoint.sh"]

@@ -1,0 +1,26 @@
+FROM $DAOS_DOCKER_IMAGE_NSP/daos-agent-$LINUX_DISTRO:$DAOS_DOCKER_IMAGE_TAG
+
+ARG DAOS_DOCKER_IMAGE_NSP
+ARG LINUX_DISTRO
+ARG DAOS_DOCKER_IMAGE_TAG
+ARG DAOS_VERSION
+ARG DAOS_CLIENT_UNAME
+ARG DAOS_CLIENT_GNAME
+
+COPY daos-bash.sh /tmp/daos-bash.in
+
+RUN for it in DAOS_VERSION ; do                                                                \
+done && \
+echo "[INFO] Installing DAOS containerization dependencies" ; \
+dnf install -y sudo xz && \
+dnf clean all && \
+echo "[INSTALL] Installing DAOS Agent entry point" ;                                       \
+done && \
+sed --regexp-extended --expression "s/@DAOS_CLIENT_UNAME@/${DAOS_CLIENT_UNAME}/" --expression "s/@DAOS_CLIENT_GNAME@/${DAOS_CLIENT_GNAME}/" /tmp/daos-bash.in > /usr/local/sbin/daos-bash && \
+chmod 755 /usr/local/sbin/daos-bash && \
+
+ENTRYPOINT ["/usr/local/sbin/daos-bash"]
+
+CMD ["-i"]
+
+LABEL maintainer="daos@daos.groups.io"

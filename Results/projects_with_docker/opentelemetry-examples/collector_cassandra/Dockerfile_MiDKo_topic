@@ -1,0 +1,21 @@
+# Use the base Image provided by the user.
+FROM curlimages/curl:7.82.0 AS curler
+
+# Set Work Directory
+WORKDIR /
+
+# Set User
+USER root
+
+# Provide necessary environment Variables.
+ENV JMX_JAR_VERSION=v1.14.0
+
+# Copy Necessary Files
+
+# Necessary Run Commands
+RUN curl -L --output /opentelemetry-jmx-metrics.jar \
+RUN curl -L -s \
+
+# EntryPoint and Command
+ENTRYPOINT ["","/otelcol-contrib"]
+CMD ["--config",,"/etc/otel/config.yaml"]

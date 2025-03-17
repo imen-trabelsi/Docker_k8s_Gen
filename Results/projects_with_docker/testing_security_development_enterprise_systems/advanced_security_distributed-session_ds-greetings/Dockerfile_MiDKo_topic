@@ -1,0 +1,38 @@
+# Base Image
+FROM adoptopenjdk/openjdk11:alpine as build
+
+# Set the current working directory in the Docker image
+WORKDIR /app
+
+# Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy the actual source code to the Docker image
+COPY src src
+
+# Copy pom.xml file where the dependencies are listed
+COPY pom.xml .
+
+# Package our application code
+RUN ./mvnw install -DskipTests
+
+# Start with a base image containing Java runtime
+FROM adoptopenjdk/openjdk11:alpine
+
+# Add Maintainer Info
+LABEL maintainer="email@domain.com"
+
+# The application's jar file
+ARG JAR_FILE=target/*.jar
+
+# Copy the application's jar to the container
+
+# Add Redis as our database
+RUN apk add redis
+
+# Expose the port the app runs on
+EXPOSE 8080
+
+# Run the jar file 
+ENTRYPOINT ["java", "-jar", "greetings.jar"]

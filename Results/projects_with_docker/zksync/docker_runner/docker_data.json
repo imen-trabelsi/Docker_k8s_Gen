@@ -1,0 +1,23 @@
+{
+    "docker_info": {
+        "base_image": "tcardonne/github-runner",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "apk update",
+                "RUN apk add py-pip python3-dev libffi-dev openssl-dev gcc libc-dev make"
+            ],
+            [
+                "pip install docker-compose"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,37 @@
+# Starts the Dockerfile by setting the base image
+FROM nextcloud:fpm
+
+# It's a good idea to set the maintainer of the image
+LABEL maintainer="your-email@example.com"
+
+#Safety measure to stop if something fails
+RUN set -ex; \
+
+# Save current state
+savedAptMark="$(apt-mark showmanual)"; \
+
+# Updating package list
+apt-get update; \
+
+# Installing dependencies
+apt-get install -y --no-install-recommends libc-client-dev libkrb5-dev; \
+
+# Configure PHP extension
+docker-php-ext-configure imap --with-kerberos --with-imap-ssl; \
+docker-php-ext-install imap; \
+
+# Removing unnecessary packages
+apt-mark auto \ 
+  && apt-mark manual $savedAptMark \ 
+  && apt-get purge -y --auto-remove -o APT::AutoRemove::RecommendsImportant=false; \
+
+# Clear cache
+
+# Copy project files into the docker image
+COPY . /var/www/html
+
+# Expose the required ports, replace 8080 if required 
+EXPOSE 8080
+
+#Run the application
+CMD ["php-fpm"]

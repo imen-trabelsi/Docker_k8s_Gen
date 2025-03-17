@@ -1,0 +1,52 @@
+{
+    "docker_info": {
+        "base_image": "python:3.13-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "999:999"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "APP_HOME=/app"
+        ],
+        "envs": [
+            "ENV PYTHONUNBUFFERED=1",
+            "ENV ETH_HASH_BACKEND=pysha3"
+        ],
+        "copy_instructions": [
+            "WORKDIR ${APP_HOME}",
+            "COPY requirements.txt ./",
+            "COPY --chown=python:python . ."
+        ],
+        "execution": [],
+        "run": [
+            [
+                "set -ex \\",
+                "&& buildDeps=\"",
+                "build-essential",
+                "git",
+                "libssl-dev",
+                "libpq-dev",
+                "\"",
+                "&& apt-get update",
+                "&& apt-get upgrade -y",
+                "&& apt-get install -y --no-install-recommends $buildDeps tmux postgresql-client",
+                "&& pip install -U --no-cache-dir wheel setuptools pip",
+                "&& pip install --no-cache-dir -r requirements.txt",
+                "&& apt-get purge -y --auto-remove $buildDeps",
+                "&& rm -rf /var/lib/apt/lists/*"
+            ],
+            [
+                "groupadd -g 999 python && \\",
+                "useradd -u 999 -r -g python python &&",
+                "mkdir -p /nginx &&",
+                "chown -R python:python /nginx ${APP_HOME}"
+            ],
+            [
+                "DJANGO_SETTINGS_MODULE=config.settings.production DJANGO_DOT_ENV_FILE=.env.tracing.sample python manage.py collectstatic --noinput"
+            ]
+        ]
+    }
+}

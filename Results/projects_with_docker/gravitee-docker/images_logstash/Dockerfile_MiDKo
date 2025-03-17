@@ -1,0 +1,28 @@
+# Set the base image
+FROM docker.elastic.co/logstash/logstash:${logstash_version}
+
+# Install dependencies
+COPY requirements.txt /requirements.txt
+RUN pip install -r requirements.txt
+
+# Copy static files and directories
+COPY images/logstash/Dockerfile logstash-codec-gzip_lines-3.0.4.gem /etc/logstash/logstash-codec-gzip_lines-3.0.4.gem
+
+# Run specific commands
+RUN bin/logstash-plugin install --no-verify /etc/logstash/logstash-codec-gzip_lines-3.0.4.gem
+
+# Expose ports (if any)
+
+# Set command and entry point instructions (if any)
+
+# Set labels (if any)
+
+# Set user (if any)
+
+# Set environment variable (if any)
+
+# Health Checks (if any)
+
+# Networking (if any)
+
+# Execution Command (if any)

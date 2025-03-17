@@ -1,0 +1,16 @@
+# Build Stage
+FROM maven:3.8.1-openjdk-11-slim as build
+WORKDIR /app
+COPY .mvn .mvn
+COPY mvnw .
+COPY pom.xml .
+RUN ./mvnw -B dependency:go-offline
+COPY src src
+RUN ./mvnw -B package
+RUN mv target/customer-self-service-backend-0.0.2-SNAPSHOT.jar app.jar
+
+# Production Stage
+FROM openjdk:21-slim-buster
+WORKDIR /app
+EXPOSE 8080
+ENTRYPOINT ["java", "-jar", "app.jar"]

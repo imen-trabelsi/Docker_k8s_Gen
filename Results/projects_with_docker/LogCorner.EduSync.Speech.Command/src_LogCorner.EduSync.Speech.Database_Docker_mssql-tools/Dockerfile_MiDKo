@@ -1,0 +1,10 @@
+# Base image
+FROM mcr.microsoft.com/mssql-tools
+
+# Set working directory
+WORKDIR /app
+
+# Copy files to the working directory
+COPY /src/Restore/logcorner-edusync-speech-database_Create.sql ./ 
+
+# If we had more information here we might install dependencies, expose ports, set env variables, etc.

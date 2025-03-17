@@ -1,0 +1,39 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.12-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8545"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD . /go-ethereum"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"geth\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --no-cache make gcc musl-dev linux-headers git",
+                ""
+            ],
+            [
+                "cd /go-ethereum && make geth",
+                ""
+            ],
+            [
+                "apk add --no-cache ca-certificates",
+                "COPY --from=builder /go-ethereum/build/bin/geth /usr/local/bin/"
+            ]
+        ]
+    }
+}

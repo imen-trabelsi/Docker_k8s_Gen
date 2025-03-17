@@ -1,0 +1,34 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"udagram-frontend\",\n  \"version\": \"0.0.1\",\n  \"author\": \"Ionic Framework\",\n  \"homepage\": \"https://ionicframework.com/\",\n  \"scripts\": {\n    \"ng\": \"ng\",\n    \"start\": \"ng serve\",\n    \"build\": \"ng build\",\n    \"test\": \"ng test\",\n    \"lint\": \"ng lint\",\n    \"e2e\": \"ng e2e\"\n  },\n  \"private\": true,\n  \"dependencies\": {\n    \"@angular/common\": \"^8.2.14\",\n    \"@angular/core\": \"^8.2.14\",\n    \"@angular/forms\": \"^8.2.14\",\n    \"@angular/http\": \"^7.2.2\",\n    \"@angular/platform-browser\": \"^8.2.14\",\n    \"@angular/platform-browser-dynamic\": \"^8.2.14\",\n    \"@angular/router\": \"^8.2.14\",\n    \"@ionic-native/core\": \"^5.0.0\",\n    \"@ionic-native/splash-screen\": \"^5.0.0\",\n    \"@ionic-native/status-bar\": \"^5.0.0\",\n    \"@ionic/angular\": \"^4.1.0\",\n    \"core-js\": \"^2.5.4\",\n    \"rxjs\": \"~6.5.4\",\n    \"zone.js\": \"~0.9.1\"\n  },\n  \"devDependencies\": {\n    \"@angular-devkit/architect\": \"~0.12.3\",\n    \"@angular-devkit/build-angular\": \"^0.803.24\",\n    \"@angular-devkit/core\": \"~7.2.3\",\n    \"@angular-devkit/schematics\": \"~7.2.3\",\n    \"@angular/cli\": \"~8.3.25\",\n    \"@angular/compiler\": \"~8.2.14\",\n    \"@angular/compiler-cli\": \"~8.2.14\",\n    \"@angular/language-service\": \"~8.2.14\",\n    \"@ionic/angular-toolkit\": \"~1.4.0\",\n    \"@types/jasmine\": \"~2.8.8\",\n    \"@types/jasminewd2\": \"~2.0.3\",\n    \"@types/node\": \"~10.12.0\",\n    \"@typescript-eslint/eslint-plugin\": \"^2.20.0\",\n    \"@typescript-eslint/parser\": \"^2.20.0\",\n    \"codelyzer\": \"~4.5.0\",\n    \"jasmine-core\": \"~2.99.1\",\n    \"jasmine-spec-reporter\": \"~4.2.1\",\n    \"karma\": \"~3.1.4\",\n    \"karma-chrome-launcher\": \"~2.2.0\",\n    \"karma-coverage-istanbul-reporter\": \"~2.0.1\",\n    \"karma-jasmine\": \"~1.1.2\",\n    \"karma-jasmine-html-reporter\": \"^0.2.2\",\n    \"protractor\": \"~5.4.0\",\n    \"ts-node\": \"~8.0.0\",\n    \"tslint\": \"~5.12.0\",\n    \"typescript\": \"^3.5.3\"\n  },\n  \"description\": \"An Ionic project\"\n}\n"
+        },
+        "database": null,
+        "build_system": "npm",
+        "config_files": {
+            "deployment/docker/docker-compose.yml": "version: \"3\"\nservices:\n  reverseproxy:\n      image: hmisonne/reverseproxy\n      ports:\n          - 8080:8080\n      restart: always\n      depends_on:\n        - udagram-user\n        - udagram-feed     \n  udagram-user:\n    image: hmisonne/udagram-user\n    volumes:\n      - $HOME/.aws:/root/.aws\n    environment:\n      POSTGRES_USERNAME : $POSTGRES_USERNAME\n      POSTGRES_PASSWORD: $POSTGRES_PASSWORD \n      POSTGRES_DB: $POSTGRES_DATABASE \n      POSTGRES_HOST: $POSTGRES_HOST \n      AWS_REGION: $AWS_REGION \n      AWS_PROFILE: $AWS_PROFILE \n      AWS_MEDIA_BUCKET: $AWS_BUCKET\n      JWT_SECRET: $JWT_SECRET\n      URL: $URL\n  udagram-feed:\n    image: hmisonne/udagram-feed\n    volumes:\n      - $HOME/.aws:/root/.aws\n    environment:\n      POSTGRES_USERNAME: $POSTGRES_USERNAME\n      POSTGRES_PASSWORD: $POSTGRES_PASSWORD \n      POSTGRES_DB: $POSTGRES_DATABASE \n      POSTGRES_HOST: $POSTGRES_HOST \n      AWS_REGION: $AWS_REGION \n      AWS_PROFILE: $AWS_PROFILE \n      AWS_MEDIA_BUCKET: $AWS_BUCKET\n      JWT_SECRET: $JWT_SECRET\n      URL: $URL\n  udagram-frontend:\n    image: hmisonne/udagram-frontend\n    ports:\n      - \"8100:80\"",
+            "deployment/docker/Dockerfile": "FROM nginx:alpine\n \nCOPY nginx.conf /etc/nginx/nginx.conf",
+            "deployment/docker/nginx.conf": "worker_processes 1;\n  \nevents { worker_connections 1024; }\nerror_log /dev/stdout debug;\n\nhttp {\n\n    sendfile on;\n\n    upstream user {\n        server udagram-user:8080;\n    }\n\n    upstream feed {\n        server udagram-feed:8080;\n    }\n    \n    proxy_set_header   Host $host;\n    proxy_set_header   X-Real-IP $remote_addr;\n    proxy_set_header   X-Forwarded-For $proxy_add_x_forwarded_for;\n    proxy_set_header   X-Forwarded-Host $server_name;\n    \n    server {\n        listen 8080;\n        location /api/v0/feed {\n            proxy_pass         http://feed;\n        }\n        location /api/v0/users {\n            proxy_pass         http://user;\n        }            \n    }\n\n}"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".dockerignore",
+            ".eslintrc.json",
+            ".gitignore",
+            ".npmrc",
+            "Dockerfile",
+            "package-lock.json",
+            "package.json",
+            "tsconfig.json",
+            "tslint.json"
+        ],
+        "folders": [
+            "mock",
+            "src"
+        ]
+    }
+}

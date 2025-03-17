@@ -1,0 +1,46 @@
+{
+    "docker_info": {
+        "base_image": "maven:3-eclipse-temurin-11",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /usr/src/app",
+            "COPY pom.xml pom.xml",
+            "COPY --from=build /usr/src/app/opentracing-specialagent-1.7.0.jar /app/",
+            "COPY --from=build /usr/src/app/target/client-1.0-SNAPSHOT.jar /app/"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "java",
+                    "-javaagent:/app/opentracing-specialagent-1.7.0.jar",
+                    "\\"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update",
+                "RUN apt-get install -y curl"
+            ],
+            [
+                "update-ca-certificates -f",
+                ""
+            ],
+            [
+                "curl -o opentracing-specialagent-1.7.0.jar https://repo1.maven.org/maven2/io/opentracing/contrib/specialagent/opentracing-specialagent/1.7.0/opentracing-specialagent-1.7.0.jar",
+                "COPY src ./src"
+            ],
+            [
+                "mvn -f /usr/src/app/pom.xml clean package",
+                ""
+            ]
+        ]
+    }
+}

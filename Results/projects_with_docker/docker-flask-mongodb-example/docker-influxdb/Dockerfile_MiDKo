@@ -1,0 +1,16 @@
+# Use influxdb:1.8 as the base image
+FROM influxdb:1.8
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the shell script and give it the necessary permissions
+COPY entrypoint.sh ./
+RUN  chmod u+x entrypoint.sh
+
+# Entry point command
+ENTRYPOINT ["/app/entrypoint.sh"]
+
+# As there were no exposed ports provided in the user input, 
+# this line is commented. Replace 'PORT' with actual port number when necessary.
+# EXPOSE PORT

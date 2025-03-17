@@ -1,0 +1,33 @@
+# Use base image provided by user
+FROM node:22.13.1-bookworm
+
+# Create a dedicated directory for application and switch to it
+WORKDIR /app
+
+# Installing build dependencies needs to be done as root
+USER root
+
+# Install dependencies
+COPY requirements.txt requirements.txt
+RUN pip install -r requirements.txt
+
+# Copy application and static files to the container
+COPY .env /app/.env
+COPY taskcluster/config.yml /app/taskcluster/config.yml
+COPY docker-compose.yml /app/docker-compose.yml
+COPY . .
+
+# User provided run commands
+RUN mkdir -p /builds && \
+    useradd -d /builds/worker -s /bin/bash -m worker && \
+    mkdir /builds/worker/artifacts && \
+RUN apt-get update && apt-get install -y \
+        firefox-esr \
+        xvfb && \
+
+# Switch back to non-root user
+USER worker
+
+# User provided execution command
+CMD ["/bin/bash", "--login"]
+

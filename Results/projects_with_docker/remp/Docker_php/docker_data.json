@@ -1,0 +1,101 @@
+{
+    "docker_info": {
+        "base_image": "php:8.3.17-fpm",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "UID",
+            "GID",
+            "UNAME"
+        ],
+        "envs": [
+            "ENV BUILD_DEPS g++ build-essential libsasl2-dev libssl-dev",
+            "ENV RUN_DEPS libzip-dev libicu-dev git wget vim curl less gnupg zlib1g-dev libpng-dev libjpeg-dev libonig-dev",
+            "ENV COMPOSER_HOME /composer",
+            "ENV PATH /composer/vendor/bin:$PATH",
+            "ENV PATH /root/.yarn/bin:$PATH",
+            "ENV YARN_CACHE_FOLDER /yarn"
+        ],
+        "copy_instructions": [
+            "ADD xdebug.ini /tmp/xdebug.ini",
+            "ADD log.conf /usr/local/etc/php-fpm.d/zz-log.conf",
+            "ADD remp.sh /usr/local/bin/remp.sh"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "/usr/local/bin/remp.sh"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "groupadd -g ${GID} -o ${UNAME}",
+                ""
+            ],
+            [
+                "usermod -a -G ${UNAME} www-data",
+                ""
+            ],
+            [
+                "useradd -m -u ${UID} -g ${GID} -o -s /bin/bash ${UNAME}",
+                ""
+            ],
+            [
+                "apt-get update && apt-get install -y ${BUILD_DEPS} ${RUN_DEPS} \\",
+                "&& pecl install xdebug && docker-php-ext-enable xdebug",
+                "&& docker-php-ext-configure intl",
+                "&& docker-php-ext-configure gd --with-jpeg=/usr/include/",
+                "&& docker-php-ext-install -j$(nproc) pdo_mysql bcmath mbstring zip intl sockets pcntl gd",
+                "&& apt-get purge",
+                "-y --auto-remove",
+                "-o APT::AutoRemove::RecommendsImportant=false",
+                "${BUILD_DEPS}"
+            ],
+            [
+                "cat /tmp/xdebug.ini >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini",
+                ""
+            ],
+            [
+                "curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer",
+                ""
+            ],
+            [
+                "mkdir -p /composer/cache && chown -R ${UID}:${GID} /composer/cache",
+                ""
+            ],
+            [
+                "rm -rf /var/lib/apt/lists/*",
+                ""
+            ],
+            [
+                "curl -sL https://deb.nodesource.com/setup_18.x | bash -",
+                ""
+            ],
+            [
+                "apt-get install -y nodejs",
+                ""
+            ],
+            [
+                "npm install --global yarn@v2",
+                ""
+            ],
+            [
+                "mkdir -p ${YARN_CACHE_FOLDER} && chmod -R 777 ${YARN_CACHE_FOLDER}",
+                ""
+            ],
+            [
+                "chmod 777 /var/www/html",
+                ""
+            ],
+            [
+                "chmod +x /usr/local/bin/remp.sh",
+                ""
+            ]
+        ]
+    }
+}

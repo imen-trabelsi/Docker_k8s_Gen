@@ -1,0 +1,17 @@
+# Use official base image of Microsoft's .NET to reduce the risk of malwares and other security threats
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+WORKDIR /app
+
+# Copy csproj and restore dependencies
+COPY *.csproj ./
+RUN dotnet restore
+
+# Copy everything else and build
+COPY . ./
+RUN dotnet publish -c Release -o out
+
+# Generate runtime image
+FROM mcr.microsoft.com/dotnet/sdk:6.0
+WORKDIR /app
+EXPOSE 80
+ENTRYPOINT ["dotnet", "Ordering.SignalrHub.dll"]

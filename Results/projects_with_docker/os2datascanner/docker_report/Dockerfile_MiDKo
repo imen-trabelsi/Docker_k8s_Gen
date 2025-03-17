@@ -1,0 +1,45 @@
+# Stage 1: Build the frontend
+FROM node:14 as frontend
+WORKDIR /code/src/os2datascanner/projects/report/reportapp
+
+COPY src/os2datascanner/projects/report/reportapp/package.json .
+COPY src/os2datascanner/projects/report/reportapp/package-lock.json .
+COPY src/os2datascanner/projects/report/reportapp/postcss.config.js .
+COPY src/os2datascanner/projects/report/reportapp/webpack.dev.js .
+COPY src/os2datascanner/projects/report/reportapp/webpack.prod.js .
+COPY src/os2datascanner/projects/report/reportapp/static/src ./static/src
+COPY src/os2datascanner/projects/report/reportapp/static/3rdparty ./static/3rdparty
+
+RUN npm ci
+RUN npm run prod
+
+# Stage 2: Build the backend
+FROM python:3.9 as backend
+
+ARG SUPERCRONIC_VERSION=v0.1.12
+ARG SUPERCRONIC_SHA1SUM=048b95b48b708983effb2e5c935a1ef8483d9e3e
+
+WORKDIR /code/requirements/sys-requirements
+COPY requirements/sys-requirements/sys-requirements-common.txt .
+
+WORKDIR /code/requirements/python-requirements
+COPY requirements/python-requirements/requirements-report.txt .
+
+WORKDIR /code
+COPY . .
+
+RUN pip install poetry \
+    && poetry config virtualenvs.create false \
+
+RUN useradd -ms /bin/bash os2ds_report
+USER os2ds_report
+
+WORKDIR /code/src/os2datascanner
+
+EXPOSE 5000
+
+ENV PYTHONUNBUFFERED=1 
+LABEL org.opencontainers.image.title="OS2datascanner"
+
+ENTRYPOINT ["/code/docker/docker-entrypoint.sh"]
+CMD ["npm", "run", "dev"]

@@ -1,0 +1,33 @@
+# Start with the base image
+FROM openlmis/awscli:latest
+
+# Install necessary packages
+RUN apk update && apk add postgresql-dev gcc python3-dev musl-dev
+
+# Set work directory to app
+WORKDIR /app
+
+# Copy the requirements file
+COPY requirements.txt /app/requirements.txt
+
+# Install python requirements
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Copy static files
+COPY . /app
+
+# Make the start script executable
+RUN chmod u+x /start-instance.sh
+
+# Copy the start script
+COPY start-instance.sh /start-instance.sh
+
+# Define the environment variables
+ENV FLASK_APP run.py
+ENV FLASK_RUN_HOST 0.0.0.0
+
+# Expose port
+EXPOSE 5000
+
+# Run the script
+CMD ["/start-instance.sh"]

@@ -1,0 +1,36 @@
+{
+    "docker_info": {
+        "base_image": "python:3.6",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /requirements/sys-requirements",
+            "COPY requirements/sys-requirements .",
+            "WORKDIR /requirements/python-requirements"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "rm sys-requirements-for-bash-install.txt",
+                "# Combine all system dependencies"
+            ],
+            [
+                "cat sys-requirements-*.txt > sys-requirements.txt",
+                "RUN cat sys-requirements.txt"
+            ],
+            [
+                "set -ex \\",
+                "# Install system dependencies from file."
+            ],
+            [
+                "pip install --no-cache-dir pip-tools==5.3.1",
+                "COPY requirements/python-requirements ."
+            ]
+        ]
+    }
+}

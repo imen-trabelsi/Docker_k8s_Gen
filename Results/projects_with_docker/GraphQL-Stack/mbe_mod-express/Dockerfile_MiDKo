@@ -1,0 +1,23 @@
+# Use the official lightweight Node.js 14-alpine image.
+# https://hub.docker.com/r/library/node
+FROM node:14-alpine
+
+# Creating working directory
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
+
+# Copy application dependency manifests to the container image.
+# A wildcard is used to ensure copy both package.json AND package-lock.json (if available)
+COPY package*.json ./
+
+# Install production dependencies.
+RUN npm install --only=production
+
+# Copy local code to the container image.
+COPY . .
+
+# Expose the port the app runs in
+EXPOSE 8080
+
+# The command to start the nodejs app
+CMD [ "npm", "start" ]

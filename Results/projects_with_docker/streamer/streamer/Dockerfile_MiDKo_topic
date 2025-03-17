@@ -1,0 +1,59 @@
+# Specifying the base image
+FROM almalinux:8
+
+# Specifying labels
+LABEL maintainer="donders.ru.nl.app_maintainer"
+LABEL application="donders.ru.nl.app_name"
+LABEL code_repository="donders.ru.nl.app_code_repository"
+
+# Installing dependencies
+RUN ulimit -n 1024 && yum -y install wget gcc gcc-c++ \
+RUN mkdir -p /tmp 
+WORKDIR /tmp
+RUN ulimit -n 1024 && yum -y install supervisor sshpass pv expect
+RUN yum clean all
+RUN rm -rf /var/cache/yum/*
+
+RUN rm -rf /tmp/*
+
+ADD https://nodejs.org/dist/latest-v10.x/node-v10.24.1-linux-x64.tar.xz /tmp
+
+# Setting up Node.js
+RUN if [ ! -d node-v10.24.1-linux-x64 ]; then tar xf node-v10.24.1-linux-x64.tar.xz; fi \
+
+ENV PATH="/opt/nodejs/bin:$PATH"
+
+# Setting up working directory
+WORKDIR /opt/streamer
+COPY package.json package.json
+RUN npm install -g node-gyp --unsafe-perm
+RUN npm install --unsafe-perm
+
+# Copying application code to Docker image
+COPY bin ./bin
+COPY lib ./lib
+COPY config ./config
+COPY start_streamer.sh start_streamer.sh
+COPY supervisord.conf /opt/streamer/supervidord.conf
+
+RUN chmod +x bin/* 
+RUN chmod +x start_streamer.sh 
+
+# Specifying the entry point and command
+CMD [ "/usr/bin/supervisord", "-c", "/opt/streamer/supervisord.conf" ]
+
+# Health check
+# Please add the specific command in CMD attribute for health check of the application
+# Example: HEALTHCHECK CMD curl --fail http://localhost:8080/actuator/health || exit 1
+
+# Exposing required ports
+# Please mention the specific port that is required to be exposed
+# EXPOSE required_port
+
+# Setting the user
+# Please add the specific user after creating that user in Dockerfile
+# USER username
+
+# Setting the environment variable
+# Please mention the specific environment variable
+# ENV ENV VAR

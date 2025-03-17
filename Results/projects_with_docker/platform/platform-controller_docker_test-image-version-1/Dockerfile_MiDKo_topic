@@ -1,0 +1,37 @@
+# Start from Java base image
+FROM openjdk:8-jdk-alpine as builder
+
+WORKDIR /workspace/app
+
+COPY pom.xml .
+COPY src ./src
+
+# Build with maven
+RUN mvn clean package -DskipTests
+
+FROM busybox:latest
+
+# Copy necessary files
+COPY .env .env
+COPY docker-compose.yml docker-compose.yml
+COPY platform-controller/docker/test-image-version-1/Dockerfile Dockerfile
+
+EXPOSE 8080
+
+# Set necessary environment variables
+ENV JAVA_OPTS="" \
+    SPRING_PROFILES_ACTIVE=prod \
+    SPRING_DATASOURCE_URL=jdbc:mysql://localhost:3306/myapp \
+    SPRING_DATASOURCE_USERNAME=root \
+    SPRING_DATASOURCE_PASSWORD=password \
+    SPRING_JPA_HIBERNATE_DDL_AUTO=update \
+    SPRING_REDIS_HOST=localhost \
+
+# For security purposes, consider running as non root user.
+RUN addgroup -S spring && adduser -S spring -G spring
+USER spring:spring
+
+# Command to start the spring boot application
+ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app.jar" ]
+
+HEALTHCHECK CMD sleep 1 || exit 1

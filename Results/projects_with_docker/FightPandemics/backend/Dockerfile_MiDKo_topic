@@ -1,0 +1,41 @@
+# Define the base image
+FROM node:latest AS builder
+WORKDIR /app
+
+# Inject GIT_COMMIT argument into the build process
+ARG GIT_COMMIT
+ENV GIT_COMMIT $GIT_COMMIT
+
+# Copy package.json and package-lock.json for utilizing Docker cache 
+COPY package.json package-lock.json ./
+
+# Install app dependencies including devDependencies
+RUN npm ci 
+
+# Copy the rest of the code
+COPY . .
+
+# Create a new production build stage
+FROM node:latest as production
+
+# Create a non-root user named node
+RUN useradd -r -u 1001 -g node node
+USER node
+
+# Set NODE_ENV environment variable
+ENV NODE_ENV=production
+
+# Set the working directory
+WORKDIR /app
+
+# Copy files necessary for the app to run from the builder stage
+
+# Health check 
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s \
+   CMD curl -f http://localhost:3000/ || exit 1
+
+# Expose the correct port
+EXPOSE 3000
+
+# Application execution command
+CMD ["npm", "start"]

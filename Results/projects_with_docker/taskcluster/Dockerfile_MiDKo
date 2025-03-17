@@ -1,0 +1,62 @@
+# Step 1: Build stage
+FROM node:22.13.1 AS build
+
+# Define working directory
+WORKDIR /base/
+
+# Install required tools
+RUN npm install -g corepack
+
+# Handle Yarn configuration
+RUN mkdir -p /base/yarn /base/yarn-client /base/yarn-ui /base/app /base/cache
+
+COPY /.yarn /base/yarn/.yarn/
+COPY /.yarn /base/yarn-ui/.yarn/
+COPY /.yarn /base/yarn-client/.yarn/
+
+COPY /yarn.lock /.yarnrc.yml /package.json /base/yarn/
+COPY /ui/yarn.lock /.yarnrc.yml /ui/package.json /base/yarn-ui/
+COPY /clients/client/yarn.lock /.yarnrc.yml /clients/client/package.json /base/yarn-client/
+
+WORKDIR /base/yarn-client
+RUN corepack enable && \
+
+WORKDIR /base/yarn-ui
+RUN yarn install --immutable && \
+    mkdir -p /base/app/ui /base/app/clients/client && \
+    cp -r /base/yarn/node_modules /base/app/ && \
+    cp -r /base/yarn-ui/node_modules /base/app/ui/ && \
+
+COPY . /base/app/
+
+WORKDIR /base/app
+RUN node generate-env-js.js && \
+
+# Step 2: Runtime stage
+
+FROM node:22.13.1-alpine AS runtime
+
+# Define working directory
+WORKDIR /app/
+
+# Install nginx and bash
+RUN apk --no-cache add nginx bash
+
+# Clean up of unnecessary files and folders
+RUN rm -rf .git; \
+    rm -rf clients/client-{go,py,web,test}; \
+    rm -rf {services,libraries}/*/test; \
+    rm -rf db/test db/versions; \
+
+# Copy built artifacts from build stage
+
+
+# Expose port 8080 for the app
+EXPOSE 8080
+
+# Set environment variables
+ENV YARN_CACHE_FOLDER=/base/cache
+ENV HOME=/app
+
+# Set entrypoint
+ENTRYPOINT ["/app/entrypoint"]

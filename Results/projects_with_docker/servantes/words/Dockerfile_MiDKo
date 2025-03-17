@@ -1,0 +1,24 @@
+# Use base image
+FROM python:3.6-alpine
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy everything in the current directory to the workdir in the container
+COPY . /app
+
+# Install required python packages
+RUN pip install -r requirements.txt
+
+# Specify the command to run
+CMD [ "python", "main.py" ]
+
+# Expose the application on port 5000
+EXPOSE 5000
+
+# Set necessary environment variables, if any
+# ENV <VAR_NAME>=<VALUE>
+
+# Set Labels, if any
+# LABEL <key>=<value>
+

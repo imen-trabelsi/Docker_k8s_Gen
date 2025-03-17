@@ -1,0 +1,897 @@
+{
+    "source_code_info": {
+        "language": null,
+        "framework": null,
+        "dependencies": {},
+        "database": null,
+        "build_system": null,
+        "config_files": [],
+        "static_files": null
+    },
+    "project_structure": [
+        {
+            "path": ".gitignore",
+            "type": "blob"
+        },
+        {
+            "path": ".travis.yml",
+            "type": "blob"
+        },
+        {
+            "path": "LICENSE",
+            "type": "blob"
+        },
+        {
+            "path": "Readme.md",
+            "type": "blob"
+        },
+        {
+            "path": "build_all.sh",
+            "type": "blob"
+        },
+        {
+            "path": "chapters",
+            "type": "tree"
+        },
+        {
+            "path": "chapters/Architecture.md",
+            "type": "blob"
+        },
+        {
+            "path": "chapters/BDD.md",
+            "type": "blob"
+        },
+        {
+            "path": "chapters/BusinessComponents.md",
+            "type": "blob"
+        },
+        {
+            "path": "chapters/Conclusions.md",
+            "type": "blob"
+        },
+        {
+            "path": "chapters/Consuming_REST.md",
+            "type": "blob"
+        },
+        {
+            "path": "chapters/Exposing_SOAP.md",
+            "type": "blob"
+        },
+        {
+            "path": "chapters/IntegrationTesting.md",
+            "type": "blob"
+        },
+        {
+            "path": "chapters/Interceptors.md",
+            "type": "blob"
+        },
+        {
+            "path": "chapters/MessageDrivenBeans.md",
+            "type": "blob"
+        },
+        {
+            "path": "chapters/Persistence.md",
+            "type": "blob"
+        },
+        {
+            "path": "chapters/UI_JSF.md",
+            "type": "blob"
+        },
+        {
+            "path": "chapters/VolatileOverview.md",
+            "type": "blob"
+        },
+        {
+            "path": "client",
+            "type": "tree"
+        },
+        {
+            "path": "client/.gitignore",
+            "type": "blob"
+        },
+        {
+            "path": "client/Readme.md",
+            "type": "blob"
+        },
+        {
+            "path": "client/demos",
+            "type": "tree"
+        },
+        {
+            "path": "client/demos/demo1.tcf",
+            "type": "blob"
+        },
+        {
+            "path": "client/pom.xml",
+            "type": "blob"
+        },
+        {
+            "path": "client/src",
+            "type": "tree"
+        },
+        {
+            "path": "client/src/main",
+            "type": "tree"
+        },
+        {
+            "path": "client/src/main/java",
+            "type": "tree"
+        },
+        {
+            "path": "client/src/main/java/CartWSDemo.java",
+            "type": "blob"
+        },
+        {
+            "path": "client/src/main/java/Main.java",
+            "type": "blob"
+        },
+        {
+            "path": "client/src/main/java/api",
+            "type": "tree"
+        },
+        {
+            "path": "client/src/main/java/api/TCFPublicAPI.java",
+            "type": "blob"
+        },
+        {
+            "path": "client/src/main/java/cli",
+            "type": "tree"
+        },
+        {
+            "path": "client/src/main/java/cli/commands",
+            "type": "tree"
+        },
+        {
+            "path": "client/src/main/java/cli/commands/Bye.java",
+            "type": "blob"
+        },
+        {
+            "path": "client/src/main/java/cli/commands/CartManagement.java",
+            "type": "blob"
+        },
+        {
+            "path": "client/src/main/java/cli/commands/ListCatalogueContents.java",
+            "type": "blob"
+        },
+        {
+            "path": "client/src/main/java/cli/commands/OrderCookie.java",
+            "type": "blob"
+        },
+        {
+            "path": "client/src/main/java/cli/commands/Play.java",
+            "type": "blob"
+        },
+        {
+            "path": "client/src/main/java/cli/commands/ProcessCart.java",
+            "type": "blob"
+        },
+        {
+            "path": "client/src/main/java/cli/commands/RegisterCustomer.java",
+            "type": "blob"
+        },
+        {
+            "path": "client/src/main/java/cli/commands/RemoveCookie.java",
+            "type": "blob"
+        },
+        {
+            "path": "client/src/main/java/cli/commands/ShowCart.java",
+            "type": "blob"
+        },
+        {
+            "path": "client/src/main/java/cli/commands/TrackOrder.java",
+            "type": "blob"
+        },
+        {
+            "path": "client/src/main/java/cli/framework",
+            "type": "tree"
+        },
+        {
+            "path": "client/src/main/java/cli/framework/Command.java",
+            "type": "blob"
+        },
+        {
+            "path": "client/src/main/java/cli/framework/Shell.java",
+            "type": "blob"
+        },
+        {
+            "path": "client/src/main/resources",
+            "type": "tree"
+        },
+        {
+            "path": "client/src/main/resources/CartWS.wsdl",
+            "type": "blob"
+        },
+        {
+            "path": "client/src/main/resources/CustomerCareWS.wsdl",
+            "type": "blob"
+        },
+        {
+            "path": "docker",
+            "type": "tree"
+        },
+        {
+            "path": "docker/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "docker/client",
+            "type": "tree"
+        },
+        {
+            "path": "docker/client/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "docker/client/build.sh",
+            "type": "blob"
+        },
+        {
+            "path": "docker/client/publish.sh",
+            "type": "blob"
+        },
+        {
+            "path": "docker/client/run.sh",
+            "type": "blob"
+        },
+        {
+            "path": "docker/docker-compose.yml",
+            "type": "blob"
+        },
+        {
+            "path": "docker/partners",
+            "type": "tree"
+        },
+        {
+            "path": "docker/partners/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "docker/partners/build.sh",
+            "type": "blob"
+        },
+        {
+            "path": "docker/partners/publish.sh",
+            "type": "blob"
+        },
+        {
+            "path": "docker/partners/run.sh",
+            "type": "blob"
+        },
+        {
+            "path": "docker/tcf",
+            "type": "tree"
+        },
+        {
+            "path": "docker/tcf/Dockerfile",
+            "type": "blob"
+        },
+        {
+            "path": "docker/tcf/build.sh",
+            "type": "blob"
+        },
+        {
+            "path": "docker/tcf/publish.sh",
+            "type": "blob"
+        },
+        {
+            "path": "docker/tcf/resources",
+            "type": "tree"
+        },
+        {
+            "path": "docker/tcf/resources/manager-context.xml",
+            "type": "blob"
+        },
+        {
+            "path": "docker/tcf/resources/start-tcf.sh",
+            "type": "blob"
+        },
+        {
+            "path": "docker/tcf/resources/tomcat-user.xml",
+            "type": "blob"
+        },
+        {
+            "path": "docker/tcf/run.sh",
+            "type": "blob"
+        },
+        {
+            "path": "docs",
+            "type": "tree"
+        },
+        {
+            "path": "docs/archi.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/archi_cart.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/archi_impl.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/asynch.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/bdd_feature.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/bdd_intellij.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/bdd_overview.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/big_pict.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/business.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/database.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/ide_datasource.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/interfaces.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/isa.graffle",
+            "type": "tree"
+        },
+        {
+            "path": "docs/isa.graffle/data.plist",
+            "type": "blob"
+        },
+        {
+            "path": "docs/isa.graffle/image1.eps",
+            "type": "blob"
+        },
+        {
+            "path": "docs/isa.graffle/image10.pdf",
+            "type": "blob"
+        },
+        {
+            "path": "docs/isa.graffle/image11.pdf",
+            "type": "blob"
+        },
+        {
+            "path": "docs/isa.graffle/image12.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/isa.graffle/image3.eps",
+            "type": "blob"
+        },
+        {
+            "path": "docs/isa.graffle/image5.eps",
+            "type": "blob"
+        },
+        {
+            "path": "docs/isa.graffle/image6.pdf",
+            "type": "blob"
+        },
+        {
+            "path": "docs/isa.graffle/image7.pdf",
+            "type": "blob"
+        },
+        {
+            "path": "docs/isa.graffle/image8.pdf",
+            "type": "blob"
+        },
+        {
+            "path": "docs/isa.graffle/image9.pdf",
+            "type": "blob"
+        },
+        {
+            "path": "docs/tech_stack.png",
+            "type": "blob"
+        },
+        {
+            "path": "docs/webflow.png",
+            "type": "blob"
+        },
+        {
+            "path": "dotNet",
+            "type": "tree"
+        },
+        {
+            "path": "dotNet/Readme.md",
+            "type": "blob"
+        },
+        {
+            "path": "dotNet/compile.sh",
+            "type": "blob"
+        },
+        {
+            "path": "dotNet/src",
+            "type": "tree"
+        },
+        {
+            "path": "dotNet/src/BusinessObjects.cs",
+            "type": "blob"
+        },
+        {
+            "path": "dotNet/src/IPaymentService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "dotNet/src/PaymentService.cs",
+            "type": "blob"
+        },
+        {
+            "path": "dotNet/src/Server.cs",
+            "type": "blob"
+        },
+        {
+            "path": "ides",
+            "type": "tree"
+        },
+        {
+            "path": "ides/intelliJ",
+            "type": "tree"
+        },
+        {
+            "path": "ides/intelliJ/README.md",
+            "type": "blob"
+        },
+        {
+            "path": "ides/intelliJ/arquillian_plugin.png",
+            "type": "blob"
+        },
+        {
+            "path": "ides/intelliJ/configure_tomEE.png",
+            "type": "blob"
+        },
+        {
+            "path": "ides/intelliJ/run_with_arquilian.png",
+            "type": "blob"
+        },
+        {
+            "path": "ides/intelliJ/with_javaagent.png",
+            "type": "blob"
+        },
+        {
+            "path": "j2e",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/Readme.md",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/pom.xml",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/main",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/main/java",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/main/java/fr",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/CartModifier.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/CartProcessor.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/CatalogueExploration.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/ControlledPayment.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/CustomerFinder.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/CustomerRegistration.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/OrderProcessing.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/Payment.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/Tracker.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/asynchronous",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/asynchronous/KitchenPrinter.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/asynchronous/KitchenPrinterAck.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/components",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/components/CartBean.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/components/CashierBean.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/components/CatalogueBean.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/components/CustomerRegistryBean.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/components/KitchenBean.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/components/carts",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/components/carts/CartStatefulBean.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/components/carts/CartStatelessBean.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/entities",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/entities/Cookies.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/entities/Customer.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/entities/Item.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/entities/Order.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/entities/OrderStatus.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/exceptions",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/exceptions/AlreadyExistingCustomerException.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/exceptions/EmptyCartException.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/exceptions/ExternalPartnerException.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/exceptions/PaymentException.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/exceptions/UncheckedException.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/exceptions/UnknownCustomerException.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/exceptions/UnknownOrderId.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/interceptors",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/interceptors/CartCounter.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/interceptors/ItemVerifier.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/interceptors/LogParameters.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/managed",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/managed/CustomerBean.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/managed/OrderBean.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/managed/Signal.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/managed/StatisticsBean.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/managed/TrackerBean.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/utils",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/utils/BankAPI.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/utils/CookieScheduler.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/utils/Database.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/webservice",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/webservice/CartWebService.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/webservice/CartWebServiceImpl.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/webservice/CustomerCareService.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/java/fr/unice/polytech/isa/tcf/webservice/CustomerCareServiceImpl.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/resources",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/main/resources/META-INF",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/main/resources/META-INF/persistence.xml",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/resources/bank.properties",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/webapp",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/main/webapp/WEB-INF",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/main/webapp/WEB-INF/ejb-jar.xml",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/webapp/WEB-INF/faces-config.xml",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/webapp/WEB-INF/resources.xml",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/webapp/WEB-INF/web.xml",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/webapp/customer.xhtml",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/webapp/index.jsp",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/webapp/order.xhtml",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/webapp/statistics.xhtml",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/main/webapp/tracker.xhtml",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/test",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/test/java",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/test/java/arquillian",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/test/java/arquillian/AbstractTCFTest.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/test/java/features",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/test/java/features/OrderingCookies.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/test/java/fr",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/test/java/fr/unice",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/test/java/fr/unice/polytech",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/test/java/fr/unice/polytech/isa",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/test/java/fr/unice/polytech/isa/tcf",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/test/java/fr/unice/polytech/isa/tcf/business",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/test/java/fr/unice/polytech/isa/tcf/business/CartTest.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/test/java/fr/unice/polytech/isa/tcf/business/CashierTest.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/test/java/fr/unice/polytech/isa/tcf/business/CatalogueTest.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/test/java/fr/unice/polytech/isa/tcf/business/CustomerRegistryTest.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/test/java/fr/unice/polytech/isa/tcf/business/KitchenTest.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/test/java/fr/unice/polytech/isa/tcf/integration",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/test/java/fr/unice/polytech/isa/tcf/integration/PaymentIntegrationTest.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/test/java/fr/unice/polytech/isa/tcf/persistence",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/test/java/fr/unice/polytech/isa/tcf/persistence/CascadingTest.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/test/java/fr/unice/polytech/isa/tcf/persistence/ConstraintsTest.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/test/java/fr/unice/polytech/isa/tcf/persistence/LazyLoadingTest.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/test/java/fr/unice/polytech/isa/tcf/persistence/StorageTest.java",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/test/resources",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/test/resources/arquillian.xml",
+            "type": "blob"
+        },
+        {
+            "path": "j2e/src/test/resources/features",
+            "type": "tree"
+        },
+        {
+            "path": "j2e/src/test/resources/features/OrderingCookies.feature",
+            "type": "blob"
+        }
+    ]
+}

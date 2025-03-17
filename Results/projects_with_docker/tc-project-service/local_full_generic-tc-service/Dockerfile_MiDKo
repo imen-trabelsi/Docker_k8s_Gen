@@ -1,0 +1,36 @@
+# Pull base image
+FROM node:8.11.3 AS build
+
+# ARGs defined by user
+ARG GIT_URL
+ARG GIT_BRANCH
+ARG BYPASS_TOKEN_VALIDATION
+
+# Environment variables
+ENV GIT_URL=${GIT_URL}
+ENV GIT_BRANCH=${GIT_BRANCH}
+ENV BYPASS_TOKEN_VALIDATION=${BYPASS_TOKEN_VALIDATION}
+
+# Set working directory
+WORKDIR /opt/app
+
+# Clone the code from the repository
+RUN git clone ${GIT_URL} .
+
+# Checkout the required branch
+RUN git checkout -b node-branch origin/${GIT_BRANCH}
+
+# Install dependencies
+RUN npm install
+
+# Bypass token if required
+RUN if [ ${BYPASS_TOKEN_VALIDATION} -eq 1 ]; then sed -i '/decodedToken = jwt.decode/a \      callback(undefined, decodedToken.payload); return;' node_modules/tc-core-library-js/lib/auth/verifier.js; fi
+
+# Copy entrypoint script
+COPY docker-entrypoint.sh /opt/docker-entrypoint.sh
+
+# Permission for the entrypoint file
+RUN chmod +x /opt/docker-entrypoint.sh
+
+# Specify the command to run 
+ENTRYPOINT ["/opt/docker-entrypoint.sh"]

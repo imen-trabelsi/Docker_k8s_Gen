@@ -1,0 +1,37 @@
+# Start from the Ubuntu Trusty base image
+FROM ubuntu:trusty
+
+# Set Environment Variable
+ENV NGHTTP2_VER 895da9a
+
+# Update Ubuntu
+RUN apt-get update && \
+    apt-get upgrade -y && \
+    apt-get install -y git-core build-essential wget \
+     autotools-dev libtool pkg-config zlib1g-dev libcunit1-dev libssl-dev libxml2-dev libevent-dev automake autoconf make binutils \
+
+# Copy the source files to the WORKDIR
+WORKDIR /root
+COPY . .
+
+# Install NGhttp2
+RUN git clone https://github.com/tatsuhiro-t/nghttp2.git && \
+    cd nghttp2 && \
+    git reset --hard $NGHTTP2_VER && \
+    autoreconf -i && \
+    automake && \
+    autoconf && \
+    ./configure && \
+    make && \
+
+# Install curl with Nghttp2
+WORKDIR /root/curl-7.45.0
+RUN wget http://curl.haxx.se/download/curl-7.45.0.tar.gz && \
+    tar -zxvf curl-7.45.0.tar.gz && \
+    ./configure --with-ssl --with-nghttp2=/usr/local && \
+    make && \
+    make install && \
+
+# Set the executable to be run when the container is started
+ENTRYPOINT ["/usr/local/bin/curl"]
+CMD ["-h"]

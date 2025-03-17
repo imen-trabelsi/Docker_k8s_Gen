@@ -1,0 +1,26 @@
+# Base Image
+FROM node:12-alpine
+
+# Create App Directory
+WORKDIR /app
+
+# Install App Dependencies
+COPY package.json package-lock.json ./
+RUN npm ci
+
+# Bundle App Source
+COPY . .
+
+# Build Application
+RUN npm run build
+
+# Exposed Port
+EXPOSE 3000
+
+# Copy Static Files
+COPY --from=builder /app/build /usr/share/nginx/html
+COPY nginx/nginx.conf /etc/nginx/nginx.conf
+COPY nginx/default.conf.template /etc/nginx/templates/default.conf.template
+
+# Execution Command
+CMD [ "nginx", "-g", "daemon off;" ]

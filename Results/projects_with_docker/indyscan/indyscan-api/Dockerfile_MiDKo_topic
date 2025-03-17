@@ -1,0 +1,43 @@
+# Set the Base Image
+FROM node:12.14.0-alpine3.9 as BUILD 
+
+LABEL org.label-schema.schema-version="1.0" org.label-schema.vendor="Indyscan.io" org.label-schema.name="IndyscanAPI" org.label-schema.description="Indyscan org.label-schema.vcs-url="https://github.com/Patrik-Stas/indyscan"
+
+# Update Packages and Install Dependencies
+RUN apk update && apk upgrade && \
+    apk add --no-cache bash git openssh make g++ python && \
+    npm install -g npm@8.7.0 && \
+
+# Set Work Directory
+WORKDIR /usr/src/app/indyscan-storage
+
+# Copy Files
+COPY indyscan-storage ./
+
+# Set Work Directory
+WORKDIR /usr/src/app/indyscan-api
+
+# Copy Files
+COPY indyscan-api/package*.json ./
+
+# Set Environment Variables
+ENV ES_URL ${ES_URL}
+ENV PORT ${PORT:-"3708"}
+ENV NETWORKS_CONFIG_PATH ${NETWORKS_CONFIG_PATH:-"./config-networks/localhost.json"}
+ENV LOG_LEVEL ${LOG_LEVEL:-"info"}
+ENV LOG_HTTP_REQUESTS ${LOG_HTTP_REQUESTS:-"false"}
+ENV LOG_HTTP_RESPONSES ${LOG_HTTP_RESPONSES:-"false"}
+
+# Install Dependencies
+RUN npm ci --only=prod
+
+# Copy Files
+COPY indyscan-api ./
+
+WORKDIR /usr/src/app/indyscan-api
+
+# Expose Port
+EXPOSE ${PORT}
+
+# Set the Docker Command
+CMD [ "npm", "run", "start" ]

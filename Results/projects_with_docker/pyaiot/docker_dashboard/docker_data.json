@@ -1,0 +1,45 @@
+{
+    "docker_info": {
+        "base_image": "pyaiot/base:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8080"
+        ],
+        "user": [],
+        "labels": [
+            "maintainer=\"alexandre.abadie@inria.fr\""
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD run.sh /run.sh"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/run.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get install -y curl",
+                "RUN curl -sL https://deb.nodesource.com/setup_13.x | bash -"
+            ],
+            [
+                "apt-get install -y nodejs",
+                ""
+            ],
+            [
+                "cd /opt && git clone https://github.com/pyaiot/pyaiot",
+                "RUN cd /opt/pyaiot/pyaiot/dashboard/static && npm install && cd"
+            ],
+            [
+                "chmod +x /run.sh",
+                ""
+            ]
+        ]
+    }
+}

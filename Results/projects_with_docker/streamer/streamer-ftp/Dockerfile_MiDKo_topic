@@ -1,0 +1,20 @@
+FROM node:14-alpine
+
+WORKDIR /usr/src/app
+
+COPY package*.json ./
+
+RUN npm install
+
+COPY . .
+
+# Secure the container
+RUN echo UID_MAX 60000 >> /etc/login.defs
+COPY sshd_config /etc/ssh/sshd_config
+
+# Add Redis
+RUN apk add --no-cache redis
+
+EXPOSE 8080
+
+CMD [ "npm", "start" ]

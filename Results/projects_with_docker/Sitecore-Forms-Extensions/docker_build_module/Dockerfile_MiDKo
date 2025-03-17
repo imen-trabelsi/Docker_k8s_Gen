@@ -1,0 +1,23 @@
+# Builder stage
+FROM ${TOOLING_IMAGE} AS builder
+WORKDIR /module
+# copy source code, configuration files, dependencies etc
+COPY . /module/
+
+# Build stage
+FROM ${BASE_IMAGE} as build
+WORKDIR /module
+COPY --from=tooling \tools\ /module/tools
+
+# Expose your required ports
+EXPOSE <your-required-ports>
+
+#Perform any additional configuration and set environment variables
+
+# Required Commands
+COPY .\cm \module\cm
+COPY .\cd \module\cd
+COPY .\db \module\db
+
+# Setting entrypoint and CMD
+ENTRYPOINT [ "<your-command>" ]

@@ -1,0 +1,26 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Java",
+        "dependencies": {
+            "build.gradle.kts": "plugins {\n  id(\"org.hypertrace.repository-plugin\") version \"0.4.0\"\n  id(\"org.hypertrace.ci-utils-plugin\") version \"0.3.0\"\n  id(\"org.hypertrace.docker-java-application-plugin\") version \"0.9.0\" apply false\n  id(\"org.hypertrace.docker-publish-plugin\") version \"0.9.0\" apply false\n  id(\"org.hypertrace.jacoco-report-plugin\") version \"0.2.0\" apply false\n}\n\nsubprojects {\n  group = \"org.hypertrace.service\"\n\n  pluginManager.withPlugin(\"java\") {\n    configure<JavaPluginExtension> {\n      sourceCompatibility = JavaVersion.VERSION_11\n      targetCompatibility = JavaVersion.VERSION_11\n    }\n  }\n}"
+        },
+        "database": null,
+        "build_system": "Gradle",
+        "config_files": {
+            "hypertrace-service/Dockerfile": "ARG HYPERTRACE_UI_VERSION\nFROM hypertrace/hypertrace-ui:${HYPERTRACE_UI_VERSION} AS ui\n\nFROM hypertrace/java:11\nLABEL maintainer=\"Hypertrace 'https://www.hypertrace.org/'\"\nWORKDIR /app\nCOPY build/docker/libs libs/\nCOPY build/docker/resources resources/\nCOPY build/docker/classes classes/\nCOPY --from=ui /usr/share/nginx/html resources/hypertrace-ui\nCOPY docker_entrypoint.sh docker_entrypoint.sh\nENTRYPOINT [\"/app/docker_entrypoint.sh\"]\nEXPOSE 9001 9002 2020\nHEALTHCHECK --interval=2s --start-period=15s --timeout=2s CMD wget -qO- http://127.0.0.1:9002/health &> /dev/null || exit 1\nENV SERVICE_NAME=hypertrace-service JAVA_OPTS=\"\""
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "build.gradle.kts",
+            "docker_entrypoint.sh"
+        ],
+        "folders": [
+            "helm",
+            "src"
+        ]
+    }
+}

@@ -1,0 +1,40 @@
+# Use the provided base image
+FROM mcr.microsoft.com/dotnet/core/sdk:3.1 as build-env
+
+# Set the working directory
+WORKDIR /src
+
+# Restore the AirportService project
+COPY ["HostedServices/AirportService/AirportService.csproj", "HostedServices/AirportService/"]
+RUN dotnet restore "HostedServices/AirportService/AirportService.csproj"
+
+# Restore the shared kernel projects
+COPY ["SharedKernel/Utils/Utils.csproj", "SharedKernel/Utils/"]
+COPY ["SharedKernel/Contracts/Contracts.csproj", "SharedKernel/Contracts/"]
+RUN dotnet restore "SharedKernel/Utils/Utils.csproj"
+RUN dotnet restore "SharedKernel/Contracts/Contracts.csproj"
+
+# Copy the rest of the service files and build
+COPY . .
+WORKDIR "/src/HostedServices/AirportService"
+RUN dotnet build "AirportService.csproj" -c Release -o /app/build
+
+# Publish the service
+RUN dotnet publish "AirportService.csproj" -c Release -o /app/publish
+
+# Start a new stage to minimize the final image
+FROM mcr.microsoft.com/dotnet/core/aspnet:3.1
+
+# Set working directory
+WORKDIR /app
+
+# Copy the published files from the build environment
+
+# Expose the appropriate port
+EXPOSE 81
+
+# Set the environment variables necessary for your application
+# ENV ...
+
+# Start the service when the container launches
+ENTRYPOINT ["dotnet", "AirportService.dll", "--environment=Docker"]

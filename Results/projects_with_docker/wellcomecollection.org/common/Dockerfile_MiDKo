@@ -1,0 +1,22 @@
+# Dockerfile
+FROM public.ecr.aws/docker/library/node:20-bookworm-slim
+
+ENV NODE_ENV=production
+
+# Set the working directory to /usr/src/app/webapp
+WORKDIR /usr/src/app/webapp
+
+# Copy package.json and yarn.lock to the current working directory
+COPY package.json yarn.lock ./
+
+# Install AWS CLI
+RUN apt-get update && apt-get install -y awscli
+
+# Install all dependencies
+RUN npm install --production
+
+# Copy the rest of the code
+COPY . .
+
+# Run the app
+CMD [ "npm", "start" ]

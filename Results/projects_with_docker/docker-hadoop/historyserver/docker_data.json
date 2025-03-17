@@ -1,0 +1,39 @@
+{
+    "docker_info": {
+        "base_image": "bde2020/hadoop-base:2.0.0-hadoop3.2.1-java8",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8188"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [
+            "HEALTHCHECK CMD curl -f http://localhost:8188/ || exit 1"
+        ],
+        "build_args": [],
+        "envs": [
+            "ENV YARN_CONF_yarn_timeline___service_leveldb___timeline___store_path=/hadoop/yarn/timeline"
+        ],
+        "copy_instructions": [
+            "ADD run.sh /run.sh"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/run.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir -p /hadoop/yarn/timeline",
+                "VOLUME /hadoop/yarn/timeline"
+            ],
+            [
+                "chmod a+x /run.sh",
+                ""
+            ]
+        ]
+    }
+}

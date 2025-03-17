@@ -1,0 +1,63 @@
+{
+    "docker_info": {
+        "base_image": "python:3.8-slim-buster",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "50051"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV GOPATH \"\"",
+            "ENV PATH ${PATH}:/app/bin"
+        ],
+        "copy_instructions": [
+            "WORKDIR /go",
+            "COPY . ./",
+            "COPY ./setup.py /src/medifor/",
+            "COPY ./python/ /src/medifor/python/",
+            "COPY --from=gobuild /go/cmd/analyticproxy/analyticproxy /app/bin/",
+            "COPY --from=gobuild /go/cmd/medifor/medifor /app/bin/",
+            "COPY --from=gobuild /go/cmd/analyticworker/analyticworker /app/bin",
+            "COPY --from=gobuild /go/cmd/analyticworkflow/analyticworkflow /app/bin",
+            "COPY --from=gobuild /go/cmd/fusionworker/fusionworker /app/bin",
+            "COPY --from=pybuild /usr/local/lib/python3.8/ /usr/local/lib/python3.8/"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "['python',",
+                    "'-m',",
+                    "'medifor',",
+                    "'--help']"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "cd cmd/analyticproxy && go build; cd -; \\",
+                "cd cmd/medifor && go build; cd -",
+                "cd cmd/analyticworker && go build; cd -",
+                "cd cmd/analyticworkflow && go build; cd -",
+                "cd cmd/fusionworker && go build; cd -"
+            ],
+            [
+                "mkdir -p /src/medifor/python \\",
+                "&& apt-get update",
+                "&& apt-get install -y g++"
+            ],
+            [
+                "pip install -U pip && pip install /src/medifor",
+                ""
+            ],
+            [
+                "mkdir -p /app/bin \\",
+                "&& apt-get update",
+                "&& apt-get install -y libmagic1"
+            ]
+        ]
+    }
+}

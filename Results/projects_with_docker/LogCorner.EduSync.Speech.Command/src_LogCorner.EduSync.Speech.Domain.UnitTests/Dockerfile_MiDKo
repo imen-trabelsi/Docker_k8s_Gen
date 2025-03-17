@@ -1,0 +1,27 @@
+# Step 1: Build
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
+
+WORKDIR /src
+
+# installing all the required dependencies for your project
+COPY ["LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Domain.UnitTests/LogCorner.EduSync.Speech.Domain.UnitTests.csproj", "LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Domain.UnitTests/"]
+COPY ["LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.SharedKernel/LogCorner.EduSync.Speech.Command.SharedKernel.csproj", "LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.SharedKernel/"]
+COPY ["LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Domain/LogCorner.EduSync.Speech.Domain.csproj", "LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Domain/"]
+
+WORKDIR "/src/LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Domain.UnitTests"
+
+RUN dotnet restore "LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Domain.UnitTests/LogCorner.EduSync.Speech.Domain.UnitTests.csproj"
+COPY . .
+
+WORKDIR "/src/"
+
+RUN dotnet build "LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Domain.UnitTests/LogCorner.EduSync.Speech.Domain.UnitTests.csproj" -c Release -o /app/build
+
+# Step 2: Publish
+FROM build AS publish
+RUN dotnet publish "LogCorner.EduSync.Speech/LogCorner.EduSync.Speech.Domain.UnitTests/LogCorner.EduSync.Speech.Domain.UnitTests.csproj" -c Release -o /app/publish
+
+# Step 3: Final Stage
+FROM mcr.microsoft.com/dotnet/aspnet:5.0
+WORKDIR /app
+ENTRYPOINT ["dotnet", "LogCorner.EduSync.Speech.Domain.UnitTests.dll"]

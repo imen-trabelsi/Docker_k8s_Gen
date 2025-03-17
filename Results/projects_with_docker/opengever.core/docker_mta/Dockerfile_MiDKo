@@ -1,0 +1,40 @@
+# Python 3.9 is the minimal base image for any Python application
+# Here, the base image is user-provided alpine:3.20
+FROM alpine:3.20
+
+# Setting up the working directory
+WORKDIR /app
+
+# Install required system packages and dependencies
+RUN apk update && \
+    apk add --no-cache \
+    postfix \
+    python3 \
+    py3-jinja2 \
+    pip3 && \
+
+# Add source code of the app to the image
+COPY . /app
+
+# Set python for execution
+ENTRYPOINT ["python3"]
+
+# Install the Python dependencies. pyproject.toml contains the dependencies.
+COPY pyproject.toml ./
+RUN pip3 install poetry && \
+
+# Ensure scripts in .local are usable:
+ENV PATH=/root/.local/bin:$PATH
+
+# Copy the files from docker/mta/ to necessary places
+COPY docker/mta/conf /etc/postfix
+COPY docker/mta/configure-postfix.py docker/mta/mta2plone.py docker/mta/docker-entrypoint.sh /usr/local/bin/
+
+# Provide the necessary permission to the above files
+RUN chmod +x /usr/local/bin/configure-postfix.py /usr/local/bin/mta2plone.py /usr/local/bin/docker-entrypoint.sh
+
+# Specify the command to start the application
+CMD ["/usr/local/bin/docker-entrypoint.sh"]
+
+# Inform Docker that the container is listening on port 25
+EXPOSE 25

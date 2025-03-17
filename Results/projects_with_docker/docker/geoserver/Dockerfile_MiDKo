@@ -1,0 +1,27 @@
+FROM tomcat:8.0-jre8
+
+# Environment Variables
+ENV GEOSERVER_URL="/geoserver" 
+ENV GEOSERVER_DATA_DIR="/opt/geoserver/data_dir" 
+
+# Updates and dependencies installation
+RUN apt-get update \
+    && apt-get install -y \
+    unzip \
+
+RUN mkdir -p $GEOSERVER_DATA_DIR
+
+RUN wget --no-verbose -O geoserver-2.11.4-war.zip -L "https://sourceforge.net/projects/geoserver/files/GeoServer/2.11.4/geoserver-2.11.4-war.zip/download" && \
+    unzip geoserver-2.11.4-war.zip && \
+    mv geoserver.war /root/ && \
+
+RUN sed "125i<Context path=\"$GEOSERVER_URL\" docBase=\"/root/geoserver.war\"/>" /usr/local/tomcat/conf/server.xml > /root/server.xml && \
+
+# Copy entrypoint script
+COPY docker-entrypoint.sh /
+
+# Expose port 8080
+EXPOSE 8080
+
+# Docker Entry-Point
+ENTRYPOINT ["/docker-entrypoint.sh"]

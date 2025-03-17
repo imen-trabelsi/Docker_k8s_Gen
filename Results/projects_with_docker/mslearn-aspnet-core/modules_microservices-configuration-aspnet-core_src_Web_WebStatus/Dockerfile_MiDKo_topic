@@ -1,0 +1,35 @@
+# Use the official microsoft .NET SDK runtime as a parent image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+# Set the working directory
+WORKDIR /src
+
+# Copy csproj and restore dependencies
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+# ... repeat for other csproj files
+
+# Copy everything else and build
+COPY . .
+RUN dotnet restore "eShop-Learn.sln"
+
+# Build the project
+RUN dotnet build "eShop-Learn.sln" -c Release -o /app
+
+# Define environment variable
+# ENV ...
+
+# Run the application
+FROM build AS publish
+RUN dotnet publish --no-restore "WebStatus.csproj" -c Release -o /app/publish
+
+# Final stage / image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+WORKDIR /app
+
+# Copy from build image
+
+# Expose port 80
+EXPOSE 80
+
+# Run the command
+ENTRYPOINT ["dotnet", "WebStatus.dll"]

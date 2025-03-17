@@ -1,0 +1,23 @@
+# Use ukwa/crawl-streams:master as base image
+FROM ukwa/crawl-streams:master
+
+# Install the necessary dependencies using pip
+RUN pip install -r /tmp/requirements.txt
+
+# Set the working directory to /app
+WORKDIR /app
+
+# Copy the Python requirements file to the Docker image
+COPY requirements.txt /tmp/requirements.txt
+
+# Copy the test directories into Docker
+COPY tests /tests
+
+# Copy the rest of the project code
+COPY . .
+
+# Make sure scripts in .local are usable:
+ENV PATH=/root/.local/bin:$PATH
+
+# Default command to execute    
+ENTRYPOINT ["robot", "--exitonfailure"]

@@ -1,0 +1,26 @@
+# Base image
+FROM remp/telegraf:1.23.3
+
+# Add necessary scripts and files
+COPY telegraf.conf /etc/telegraf/telegraf.conf
+
+# update system and install necessary dependencies
+RUN apk update
+RUN apk add ca-certificates
+RUN update-ca-certificates
+RUN apk add openssl
+
+# Copy package.json for npm install
+COPY package.json .
+
+# Install dependencies using npm
+RUN npm install
+
+# Bundle app source
+COPY . .
+
+# Expose the container port
+EXPOSE 80
+
+# Set the default command to run when a container launches
+CMD ["telegraf"]

@@ -1,0 +1,32 @@
+# Use the specified base image
+FROM mcr.microsoft.com/vscode/devcontainers/base:ubuntu-22.04
+
+# Set the working directory inside the container
+WORKDIR /app
+
+# The user-provided environment variables would be set here
+# Example: ARG DB_URI
+# ENV DB_URI=${DB_URI}
+
+# Use wildcard to copy the package.json and package-lock.json if it exists
+COPY package*.json ./
+
+# Installing the dependencies
+RUN npm install
+
+# If running in production mode, only install dependencies necessary for production
+# This step can be uncommented if needed
+# RUN npm ci --only=production
+
+# Copy the rest of the application to the Docker environment
+COPY . .
+
+# Open up the correct port within the Docker container 
+# The user would provide the necessary port here. For example, 8080
+# EXPOSE 8080
+
+# The following would run the application
+# Example: CMD [ "npm", "start" ]
+
+# The user can also specify more complex start scripts or health checks
+# HEALTHCHECK CMD curl --fail http://localhost:8080/ || exit 1

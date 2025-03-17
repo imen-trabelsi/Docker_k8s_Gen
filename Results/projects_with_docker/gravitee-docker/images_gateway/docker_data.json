@@ -1,0 +1,50 @@
+{
+    "docker_info": {
+        "base_image": "alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8082"
+        ],
+        "user": [],
+        "labels": [
+            "maintainer=\"contact@graviteesource.com\"",
+            "maintainer=\"contact@graviteesource.com\""
+        ],
+        "health_checks": [],
+        "build_args": [
+            "GRAVITEEIO_VERSION=0"
+        ],
+        "envs": [
+            "ENV GRAVITEEIO_HOME /opt/graviteeio-gateway",
+            "ENV GRAVITEEIO_HOME /opt/graviteeio-gateway"
+        ],
+        "copy_instructions": [
+            "COPY --from=builder ${GRAVITEEIO_HOME} ${GRAVITEEIO_HOME}",
+            "WORKDIR ${GRAVITEEIO_HOME}"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"./bin/gravitee\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --update zip unzip netcat-openbsd wget",
+                ""
+            ],
+            [
+                "wget https://download.gravitee.io/graviteeio-apim/distributions/graviteeio-full-${GRAVITEEIO_VERSION}.zip --no-check-certificate -P /tmp/ \\",
+                "&& unzip /tmp/graviteeio-full-${GRAVITEEIO_VERSION}.zip -d /tmp/",
+                "&& mv /tmp/graviteeio-full-${GRAVITEEIO_VERSION}/graviteeio-gateway* ${GRAVITEEIO_HOME}",
+                "&& rm -rf /tmp/*"
+            ],
+            [
+                "chgrp -R 0 ${GRAVITEEIO_HOME} && \\",
+                "chmod -R g=u ${GRAVITEEIO_HOME}"
+            ]
+        ]
+    }
+}

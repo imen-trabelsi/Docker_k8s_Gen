@@ -1,0 +1,22 @@
+# Specify the base image
+FROM node:12.16.1-alpine
+
+# Create app directory in docker container
+WORKDIR /usr/src/app
+
+# Handle package installation layer
+COPY package*.json ./
+RUN npm install
+
+# Copy app source to the docker image
+COPY . .
+
+# Indicate the port number the container should expose
+EXPOSE 8080
+
+# Set necessary environment variables
+ENV NODE_ENV=production
+ENV DATABASE_URL=postgresql://postgres:yourpassword@localhost:5432/my_database
+
+# Indicate the command npm start to run your app
+CMD ["npm", "start"]

@@ -1,0 +1,40 @@
+# Stage 1: Build
+FROM golang:1.23.5-alpine as builder
+
+# Set working directory
+WORKDIR /app
+
+COPY lambda-functions/event-receiver/go.mod lambda-functions/event-receiver/go.sum ./
+COPY lambda-functions/event-receiver/app/ ./
+COPY lambda-functions/event-receiver/internal/ ./internal
+
+# Installing dependencies
+RUN apk add --no-cache zip=3.0-r13
+RUN go mod download
+
+# Build the application
+RUN GOOS=linux GOARCH=arm64 CGO_ENABLED=0 go build -tags lambda.norpc -o bootstrap . \
+RUN zip event-receiver.zip bootstrap
+
+# Stage 2: Production Environment
+FROM node:16-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy necessary files from previous stage and project folder
+COPY lambda-functions/event-receiver/app/ ./
+COPY lambda-functions/event-receiver/internal/ ./internal/
+COPY ./localstack/localstack-init.sh /etc/localstack/init/ready.d/localstack-init.sh
+
+# Install necessary dependencies
+RUN apk add --no-cache zip=3.0-r13
+
+# Make the shell script executable
+RUN chmod 545 /etc/localstack/init/ready.d/localstack-init.sh
+
+# Expose the ports
+EXPOSE 8080
+
+# Start command
+CMD [ "node", "server.js" ]

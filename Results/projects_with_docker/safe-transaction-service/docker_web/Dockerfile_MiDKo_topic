@@ -1,0 +1,57 @@
+# Base image
+FROM python:3.13-slim
+
+# Working directory
+WORKDIR /app
+
+# Labels
+# You can set here other labels according to your needs
+
+# Environment variables
+ENV PYTHONUNBUFFERED=1 
+ENV ETH_HASH_BACKEND=pysha3 
+
+# Build arguments
+ARG APP_HOME=/app
+
+# Copy instructions
+COPY requirements.txt ./  
+COPY --chown=python:python . . 
+
+# Run commands
+RUN set -ex \
+&& buildDeps=" \
+build-essential \
+git \
+libssl-dev \
+libpq-dev \
+" \
+&& apt-get update \
+&& apt-get upgrade -y \
+&& apt-get install -y --no-install-recommends $buildDeps tmux postgresql-client \
+&& pip install -U --no-cache-dir wheel setuptools pip \
+&& pip install --no-cache-dir -r requirements.txt \
+&& apt-get purge -y --auto-remove $buildDeps \
+&& rm -rf /var/lib/apt/lists/* \
+&& groupadd -g 999 python && \
+useradd -u 999 -r -g python python \
+&& mkdir -p /nginx \
+&& chown -R python:python /nginx ${APP_HOME} \
+
+# User
+USER 999:999
+
+# Exposed ports
+# Set here Exposed Ports according to your needs, e.g. EXPOSE 8000
+
+# Health Checks
+# Set here Health Checks according to your needs
+
+# Deployment
+# Set here Deployment instructions according to your needs
+
+# Networking
+# Set here Networking instructions according to your needs
+
+# Execution command
+# Set here Execution Command according to your needs, e.g CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]

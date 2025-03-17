@@ -1,0 +1,37 @@
+{
+    "docker_info": {
+        "base_image": "node:10",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8888"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /usr/src/app",
+            "COPY package*.json ./"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"node\",",
+                    "\"server.js\",",
+                    "\"--CONF_FILE\",",
+                    "\"./config.prod.json\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "npm install",
+                "COPY . ."
+            ]
+        ]
+    }
+}

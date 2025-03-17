@@ -1,0 +1,34 @@
+# Set Base image
+FROM python:3.10-slim AS builder
+
+# Sets environment variable
+ENV VIRTUAL_ENV=/var/run/aether/venv \
+
+# Creating the user.
+RUN useradd -ms /bin/false aether
+
+# Set working directory
+WORKDIR /code
+
+# Includes files from local file system to the filesystem of the image
+COPY --chown=aether:aether ./conf/pip /code/conf/pip
+COPY --chown=aether:aether ./ /code
+
+# Installing required packages
+RUN apt-get update -qq > /dev/null && \
+    apt-get -qq --yes --allow-downgrades --allow-remove-essential --allow-change-held-packages install gcc > /dev/null && \
+    mkdir -p $VIRTUAL_ENV && \
+    python3 -m venv $VIRTUAL_ENV && \
+    pip install -q --upgrade pip && \
+    pip install -q -r /code/conf/pip/requirements.txt && \
+    mkdir -p /var/tmp && \
+    echo $VERSION > /var/tmp/VERSION && \
+
+# Every Docker image can configure the following metadata: The label instruction
+LABEL description="Aether
+
+# Expose Port
+EXPOSE 8080
+
+# Starting point for the container.
+ENTRYPOINT ["/code/entrypoint.sh"]

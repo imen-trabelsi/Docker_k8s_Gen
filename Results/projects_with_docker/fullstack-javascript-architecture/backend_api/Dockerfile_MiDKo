@@ -1,0 +1,22 @@
+# Base Image
+FROM node:10
+
+# Create App Directory
+RUN mkdir -p /user/src/app
+WORKDIR /user/src/app
+
+# Install App Dependencies
+COPY package*.json ./
+RUN npm install --quiet && npm cache clean --force
+
+# Copy App source
+COPY . ./
+
+# Build the app
+RUN npm run build:prod
+
+# Expose the application on port 8000
+EXPOSE 8000
+
+# Define the command to run the app
+ENTRYPOINT ["node", "build/index.js"]

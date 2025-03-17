@@ -1,0 +1,35 @@
+# Use official base image of Ubuntu
+FROM ubuntu:18.04
+
+# Update system libraries
+RUN apt-get update -y && \
+    apt-get upgrade -y && \
+    apt-get install -y gcc g++ make && \
+
+
+# Copy the Go modules manifests
+COPY go.mod go.sum /opt/multicloud/k8s/orchestrator/
+
+# Ensure Go dependencies are in the image
+RUN go mod download
+
+# Copy the working files and sets user permissions
+COPY --chown=onap ./orchestrator /opt/multicloud/k8s/orchestrator
+RUN chown onap:onap /opt/multicloud/k8s/orchestrator -R
+
+# Switch to the onap user
+USER onap
+
+# Change WorkDir
+WORKDIR /opt/multicloud/k8s/orchestrator
+
+# Environment Variables for proxy
+ENV http_proxy $HTTP_PROXY
+ENV https_proxy $HTTPS_PROXY
+ENV no_proxy $NO_PROXY
+
+# Expose necessary port for the application
+EXPOSE 9015
+
+# Command to run the application
+CMD ["./orchestrator"]

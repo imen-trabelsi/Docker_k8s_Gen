@@ -1,0 +1,25 @@
+# Using base image
+FROM node:10
+
+# Port to be exposed
+EXPOSE 5000
+
+# Create working directory for the application
+RUN mkdir -p /user/src/app
+WORKDIR /user/src/app
+
+# Copy package.json and Install app dependencies in a separate layer to leverage Docker caching
+COPY package*.json ./
+RUN npm install --quiet
+
+# Install global npm packages 
+RUN npm install -g serve
+
+# Copying source files from host to container
+COPY . .
+
+# Building application
+RUN npm run build
+
+# Serve the application
+ENTRYPOINT ["serve", "-s", "build", "-p", "5000"]

@@ -1,0 +1,33 @@
+# We are using multi-stage building process
+# Stage 1 (Build phase)
+FROM pitstop-dotnet-sdk-base:1.0 AS build-env
+WORKDIR /app
+
+COPY *.csproj ./
+RUN dotnet restore
+
+COPY . ./
+RUN dotnet publish -c Release -o out
+
+# Stage 2 (Deployment phase)
+FROM pitstop-dotnet-sdk-base:1.0
+WORKDIR /app
+
+# Copy build output from build-env
+
+# Health checks are subject for future improvements
+
+# Expose ports (according to the User input)
+# EXPOSE <port number>
+
+# Environment variables are subject to User's inputs
+# ENV NAME=VALUE
+
+# Labels are subject to User's inputs
+# LABEL com.example.vendor="ACME Incorporated"
+
+# Running as non-root user
+# USER <user>
+
+
+ENTRYPOINT ["dotnet", "Pitstop.InvoiceService.dll"]

@@ -1,0 +1,58 @@
+{
+    "docker_info": {
+        "base_image": "$REPOSITORY/gs-cloud-base-jre:$TAG",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "REPOSITORY=geoservercloud",
+            "TAG=latest",
+            "JAR_FILE=target/gs-cloud-*-bin.jar"
+        ],
+        "envs": [
+            "ENV JAVA_TOOL_OPTIONS=\"${DEFAULT_JAVA_TOOL_OPTIONS} \\"
+        ],
+        "copy_instructions": [
+            "COPY ${JAR_FILE} application.jar",
+            "WORKDIR /opt/app/bin",
+            "COPY --from=builder dependencies/ ./",
+            "COPY --from=builder snapshot-dependencies/ ./",
+            "COPY --from=builder spring-boot-loader/ ./"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apt update && apt install -y --no-install-recommends unzip",
+                ""
+            ],
+            [
+                "java -Djarmode=layertools -jar application.jar extract",
+                ""
+            ],
+            [
+                "apt update \\",
+                "&& apt -y upgrade",
+                "&& apt install -y --no-install-recommends",
+                "fonts-dejavu",
+                "fonts-dejavu-extra",
+                "fonts-deva",
+                "fonts-font-awesome",
+                "fonts-freefont-ttf",
+                "fonts-material-design-icons-iconfont",
+                "fonts-materialdesignicons-webfont",
+                "fonts-roboto",
+                "&& apt clean",
+                "&& apt purge -y",
+                "&& apt autoremove --purge -y",
+                "&& rm -rf /var/cache/apt/*",
+                "&& rm -rf /var/lib/apt/lists/*"
+            ],
+            [
+                "mkdir -p /opt/app/data_directory /data/geowebcache \\",
+                "&& chmod 0777 /opt/app/data_directory /data/geowebcache"
+            ]
+        ]
+    }
+}

@@ -1,0 +1,27 @@
+# Start with the base image
+FROM openjdk:8-jre-alpine
+
+# Set environment variables
+ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \
+    APP_HOME=/app \
+
+# Create application directory
+RUN mkdir $APP_HOME
+
+# Set the application directory as the working directory
+WORKDIR $APP_HOME
+
+# Add the application's .war within the Docker image
+COPY *.war /app.war
+
+# Copy the static files to the application's directory within the Docker image
+COPY store/src/main/resources/logback-spring.xml $APP_HOME
+
+# Copy the Dockerfile to the application's directory within the Docker image
+COPY store/src/main/docker/Dockerfile $APP_HOME
+
+# Expose container's ports to the host
+EXPOSE 8081
+
+# Define the execution command
+CMD echo "The application will start in ${JHIPSTER_SLEEP}s..." && \

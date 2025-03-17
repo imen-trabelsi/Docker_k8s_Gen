@@ -1,0 +1,28 @@
+# Start from openjdk:21-slim-buster as base
+FROM openjdk:21-slim-buster
+
+# Create directory in container
+WORKDIR /app
+
+# Copy defined files into our /app folder
+COPY .mvn .mvn
+COPY mvnw .
+COPY pom.xml .
+
+# Run maven commands
+RUN ./mvnw -B dependency:go-offline
+
+# Copy other files
+COPY src src
+
+# Build the application
+RUN ./mvnw -B package
+
+# Copy the jar file
+COPY --from=build target/spring-boot-admin-0.0.2-SNAPSHOT.jar .
+
+# Expose the port
+EXPOSE 9000
+
+# Set the startup command
+ENTRYPOINT ["java", "-jar", "spring-boot-admin-0.0.2-SNAPSHOT.jar"]

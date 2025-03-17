@@ -1,0 +1,45 @@
+# Use the official Node.js 16 image from Docker Hub
+FROM node:16 as build
+
+# Set the working directory
+WORKDIR /usr/src/app
+
+# Copy the project files into the working directory
+COPY ./ ./
+
+# Install dependencies
+RUN npm install dotenv 
+RUN npm install pm2 -g
+
+# Build the project
+RUN npm install
+RUN npm run build
+
+# Assign the version
+RUN rm ./version.txt
+RUN openssl rand -hex 12 > version.txt
+
+
+##### Stage 2 : Setup the runtime container
+FROM node:16
+
+# Set the working directory
+WORKDIR /usr/src/app
+
+# Copy the built application from the build container
+
+# Set environment variables
+ENV PM2_HOME="/home/node/app/.pm2"
+
+# Change ownership and permissions
+RUN chmod -R 775 /usr/src/app/dist
+RUN chown -R 1000:root /usr/src/app/dist
+
+# Expose the application on port 3000
+EXPOSE 3000
+
+# Set the user for the process to run
+USER 1000
+
+# Set the command to run the app using PM2
+CMD ["pm2-runtime","dist/src/server.js"]

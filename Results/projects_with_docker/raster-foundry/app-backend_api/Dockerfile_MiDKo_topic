@@ -1,0 +1,21 @@
+# Set the base image to openjdk with gdal support
+FROM quay.io/azavea/openjdk-gdal:2.4-jdk8-slim
+
+# Create a new user 'rf' and set it as the current user
+RUN adduser --system --disabled-password --home /var/lib/rf --shell /sbin/nologin --disabled-password --group rf
+USER rf
+
+# Set work directory
+WORKDIR /var/lib/rf
+
+# Copy the JAR
+COPY ./target/scala-2.12/api-assembly.jar /var/lib/rf/
+
+# Expose the specified port 
+EXPOSE 8080
+
+# Set entry point
+ENTRYPOINT ["java"]
+
+# Set commands to execute on container startup
+CMD ["-XX:+UnlockExperimentalVMOptions", "-XX:+UseCGroupMemoryLimitForHeap", "-jar", "api-assembly.jar"]

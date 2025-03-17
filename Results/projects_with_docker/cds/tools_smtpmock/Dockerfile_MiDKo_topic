@@ -1,0 +1,31 @@
+# Start from golang:1.23 image
+FROM golang:1.23 as builder
+
+RUN apk --no-cache add ca-certificates
+WORKDIR $GOPATH/src/github.com/ovh/cds/tools/smtpmock
+
+# Copy the local package files to the container's workspace.
+COPY . $GOPATH/src/github.com/ovh/cds/tools/smtpmock
+
+# Build the smtpmocksrv command inside the container.
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o /tmp/smtpmocksrv github.com/ovh/cds/tools/smtpmock/server
+
+# Build the smtpmockcli command inside the container.
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -a -o /tmp/smtpmockcli github.com/ovh/cds/tools/smtpmock/cli
+
+# Run the smtpmocksrv by default when the container starts.
+ENTRYPOINT ["./smtpmocksrv"]
+
+FROM golang:1.23
+WORKDIR /root/
+
+# Copy the smtpmocksrv and smtpmockcli from the builder container.
+
+# Make the smtpmocksrv executable.
+RUN chmod +x ./smtpmocksrv
+
+# Run the application.
+CMD ["start"]
+
+# Document that the service listens on port 2023.
+EXPOSE 2023

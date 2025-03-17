@@ -1,0 +1,50 @@
+# syntax=docker/dockerfile:1
+# Build stage
+FROM node:14 AS builder
+LABEL maintainer="Yuki"
+WORKDIR /app
+
+# Copying the existing application
+COPY . .
+
+# Installing global dependencies
+RUN apt-get update && apt-get install -y ca-certificates wget --no-install-recommends \
+&& wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" PNPM_VERSION="10.4.1" sh - && \
+pnpm add turbo --global && \
+
+# Installing application dependencies
+RUN pnpm install --frozen-lockfile && \
+
+# Environment variables
+ENV NODE_ENV=production
+ENV optDir="/opt"
+ENV appDir="${optDir}/slackbot-proxy"
+ENV PNPM_HOME="/root/.local/share/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
+# Moving the build to the optDir
+WORKDIR ${optDir}
+WORKDIR ${appDir}
+COPY appDir/apps/slackbot-proxy .
+
+# Cleaning up unnecessary folders and files
+RUN rm -rf apps/slackbot-proxy/node_modules && mv out/node_modules apps/slackbot-proxy/node_modules
+
+# Archiving the necessary files and folders
+RUN tar -zcf packages.tar.gz package.json apps/slackbot-proxy/package.json apps/slackbot-proxy/dist apps/slackbot-proxy/.env apps/slackbot-proxy/node_modules && \
+tar -xf packages.tar.gz && \
+
+# Runtime stage
+FROM base:latest
+WORKDIR /app
+
+# Copying from builder
+
+# Setting the user to "node"
+USER node
+
+# Exposing the necessary port
+EXPOSE 8080
+
+# Running the application
+CMD ["node", "-r", "dotenv-flow/config", "dist/index.js"]

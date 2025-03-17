@@ -1,0 +1,19 @@
+{
+    "docker_info": {
+        "base_image": "rabbitmq:3.13.7-management",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "apt-get update && apt-get install -y gettext"
+            ]
+        ]
+    }
+}

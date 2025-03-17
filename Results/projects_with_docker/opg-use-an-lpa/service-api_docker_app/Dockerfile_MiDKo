@@ -1,0 +1,29 @@
+# Stage 1 - the build process
+FROM php:8.1.29-fpm-alpine3.20 AS builder
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
+COPY service-api/docker/app/app-php.ini /usr/local/etc/php/conf.d/
+COPY service-api/docker/app/fpm-pool.ini /usr/local/etc/php-fpm.d/zz-logging.conf
+COPY service-api/docker/app/health-check.sh /usr/local/bin/health-check.sh
+WORKDIR /app
+COPY --from=composer /usr/bin/composer /usr/bin/
+COPY service-api/app/composer.json service-api/app/composer.lock /app/
+COPY service-api/app /app
+RUN set -xe \
+    && apk add --update --no-cache fcgi \
+    && install-php-extensions apcu gmp opcache \
+    && rm /usr/bin/install-php-extensions \
+    && composer install --prefer-dist --no-dev --no-interaction --no-scripts --optimize-autoloader \
+    && composer check-platform-reqs \
+    && install-php-extensions xdebug-stable \
+
+# Stage 2 - the production environment
+FROM php:8.1.29-fpm-alpine3.20 AS production
+COPY --from=mlocati/php-extension-installer /usr/bin/install-php-extensions /usr/bin/
+COPY --from=composer /usr/bin/composer /usr/bin/
+COPY service-api/docker/app/app-php.development.ini /usr/local/etc/php/conf.d/app-php.ini
+COPY scripts/docker_hardening/harden.sh /harden.sh
+RUN /harden.sh && rm /harden.sh
+USER www-data
+WORKDIR /app
+ENV OPG_PHP_POOL_CHILDREN_MAX "25"
+CMD ["php-fpm"]

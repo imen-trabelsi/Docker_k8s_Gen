@@ -1,0 +1,32 @@
+FROM golang:alpine AS builder
+
+# Installing dependencies
+RUN apk --no-cache add openssl wget git
+ENV GOPATH=/go
+RUN go get -u github.com/golang/dep/cmd/dep
+
+# Creating Application Directory
+RUN mkdir -p /go/src/github.com/pclubiitk/puppy-love/service/signup
+WORKDIR /go/src/github.com/pclubiitk/puppy-love/service/signup
+
+# Copy Gopkg.toml and Gopkg.lock
+COPY Gopkg.toml Gopkg.lock ./
+RUN dep ensure -v -vendor-only
+
+# Copy remaining source code files and build
+COPY . .
+RUN go build
+
+# Stage 2 : Run Image
+FROM alpine
+RUN apk --no-cache add ca-certificates
+
+# Copy from Builder Stage
+WORKDIR /root/
+RUN mkdir -p /go/bin
+
+# Set up entry point
+ENTRYPOINT ["/go/bin/signup"]
+
+# Expose the application on port 3001
+EXPOSE 3001

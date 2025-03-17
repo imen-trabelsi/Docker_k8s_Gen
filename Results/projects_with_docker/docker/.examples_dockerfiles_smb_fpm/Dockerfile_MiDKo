@@ -1,0 +1,14 @@
+# Use the base image provided by the user
+FROM nextcloud:fpm
+
+# Ensure that any missing dependencies are installed
+RUN apt-get update && apt-get install -y procps smbclient && rm -rf /var/lib/apt/lists/*
+
+# Copy the configuration files from the project to the docker container
+COPY .config/* /var/www/html/
+
+# Expose the default port for the web server
+EXPOSE 80
+
+# Set the entry point for the docker container
+CMD ["apache2-foreground"]

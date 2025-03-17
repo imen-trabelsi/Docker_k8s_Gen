@@ -1,0 +1,15 @@
+# Step 1: Use the provided base image
+FROM eclipse-temurin:11
+
+# Step 2: Copy the compiled JAR file into the image
+COPY *.jar /app.jar
+COPY wait-for-it.sh /wait-for-it.sh
+
+# Step 3: Give necessary permissions
+RUN bash -c 'touch /app.jar' && bash -c 'chmod 777 /wait-for-it.sh'
+
+# Step 4: Expose necessary ports
+EXPOSE 8083
+
+# Step 5: Define the execution command
+CMD ["java","-Dspring.profiles.active=docker","-jar","/app.jar"]

@@ -1,0 +1,46 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/dotnet/sdk:5.0",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "80"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "WORKDIR /src",
+            "COPY [\"src/Services/ExamManagement/ExamManagement.API/ExamManagement.API.csproj\", \"src/Services/ExamManagement/ExamManagement.API/\"]",
+            "COPY . .",
+            "WORKDIR \"/src/src/Services/ExamManagement/ExamManagement.API\"",
+            "WORKDIR /app",
+            "COPY --from=publish /app/publish ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"dotnet\",",
+                    "\"ExamManagement.API.dll\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "dotnet restore \"src/Services/ExamManagement/ExamManagement.API/ExamManagement.API.csproj\"",
+                ""
+            ],
+            [
+                "dotnet build \"ExamManagement.API.csproj\" -c Release -o /app/build",
+                ""
+            ],
+            [
+                "dotnet publish \"ExamManagement.API.csproj\" -c Release -o /app/publish",
+                ""
+            ]
+        ]
+    }
+}

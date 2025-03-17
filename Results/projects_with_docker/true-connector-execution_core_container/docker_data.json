@@ -1,0 +1,49 @@
+{
+    "docker_info": {
+        "base_image": "eclipse-temurin:11-jre-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "65534"
+        ],
+        "labels": [
+            "maintainer=\"gabriele.deluca@eng.it\""
+        ],
+        "health_checks": [
+            "HEALTHCHECK --interval=5s --retries=12 --timeout=10s CMD curl --fail -k https://localhost:8449/about/version || exit 1"
+        ],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /home/nobody",
+            "COPY target/dependency-jars /home/nobody/app/dependency-jars",
+            "ADD target/application.jar /home/nobody/app/application.jar"
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "java",
+                    "-jar",
+                    "/home/nobody/app/application.jar"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --no-cache wget openssl curl cosign",
+                "#RUN  apt-get update",
+                "#  && apt-get install -y wget",
+                "#  && rm -rf /var/lib/apt/lists/"
+            ],
+            [
+                "mkdir -p /home/nobody/data/sd && mkdir -p /home/nobody/data/log/ecc && mkdir -p /.sigstore",
+                ""
+            ],
+            [
+                "chown -R nobody:nogroup /home/nobody && chown -R nobody:nogroup /.sigstore",
+                ""
+            ]
+        ]
+    }
+}

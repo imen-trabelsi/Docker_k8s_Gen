@@ -1,0 +1,23 @@
+# Pull the base image with openjdk version 11.
+FROM openjdk:11-jre-slim
+
+# Set the current working directory inside the docker image
+WORKDIR /usr/share/website/gateway
+
+# Copy the jar file and the keystore into the image
+COPY target/*-exec.jar /usr/share/website/gateway/gateway-exec.jar
+
+# Copy keystore to the image
+COPY keystore /usr/share/website/gateway/keystore
+
+# Make port 443 available to the world outside this container
+EXPOSE 443
+
+# The application's jar file
+ENV JAR_FILE=/usr/share/website/gateway/gateway-exec.jar
+
+# Add bash to the image
+RUN apt-get update && apt-get install bash
+
+# Run the jar file 
+ENTRYPOINT ["/usr/bin/java", "-jar", "/usr/share/website/gateway/gateway-exec.jar"]

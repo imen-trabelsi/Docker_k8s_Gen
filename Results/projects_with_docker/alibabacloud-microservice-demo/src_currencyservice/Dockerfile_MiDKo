@@ -1,0 +1,30 @@
+# The base image
+FROM registry.cn-beijing.aliyuncs.com/edas_unified/jct_dw_8_4_4:0.1
+
+# Install Maven
+RUN apt-get update \
+
+# Add the project files to the Docker image
+COPY . /usr/src/mymaven
+
+# Set the working directory
+WORKDIR /usr/src/mymaven
+
+# Build the project
+RUN mvn clean install
+
+# Copy Arthas
+COPY --from=hengyunabc/arthas:latest /opt/arthas /opt/arthas
+
+# Set the working directory
+WORKDIR /app
+
+# Copy jar file, start script to app directory in the image
+COPY /currencyservice-provider/target/currencyservice-provider-1.0.0-SNAPSHOT.jar /app
+COPY /start.sh /app
+
+# Expose the application on port 8080
+EXPOSE 8080
+
+# Set the start command
+CMD ["/app/start.sh"]

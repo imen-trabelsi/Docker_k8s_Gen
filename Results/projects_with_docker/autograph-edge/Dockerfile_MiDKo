@@ -1,0 +1,53 @@
+# Use multi-stage builds to use Go as base image for creating executable
+FROM golang:${GO_VERSION} AS builder
+
+# Set environment variables for Go
+ENV GO111MODULE=on CGO_ENABLED=1
+
+WORKDIR /builder
+COPY go.mod .
+RUN go mod download
+
+# Copy the code into the container
+COPY . .
+
+# Build the application
+RUN go build -o main .
+
+# Start a new stage from base image to keep our final image clean and minimal
+FROM base:latest
+
+# Ensure that we install the necessary dependencies in a non-interactive mode
+ENV DEBIAN_FRONTEND='noninteractive'
+
+# Add sources for bookworm-backports
+RUN echo "deb http://deb.debian.org/debian/ bookworm-backports main" > /etc/apt/sources.list.d/bookworm-backports.list && \
+
+# Update and upgrade packages, and install necessary dependencies
+RUN apt-get update && \
+    apt-get -y upgrade && \
+    apt-get -y install --no-install-recommends \
+    clang \
+    gcc \
+    libltdl-dev \
+    git \
+    golang-${GO_VERSION} \
+    curl \
+
+# Clean up immediately after packaging installation to avoid this layer being bloated with
+RUN apt-get clean && \
+
+# Copy files and built binaries from builder image, set correct work directory
+COPY autograph-edge.yaml /app
+
+# Create a non-root user with uid 10001 and a home directory 
+RUN useradd --uid 10001 --home-dir /app --shell /sbin/nologin app
+USER app
+
+WORKDIR /app
+COPY . /app/src
+COPY version.json /app
+
+EXPOSE 8080
+
+CMD ["/usr/local/bin/autograph-edge"]

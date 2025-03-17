@@ -1,0 +1,31 @@
+#Base image
+FROM @docker.account@/java-base
+
+# Set environment variables 
+ENV BROKER_HOST=${BROKER_HOST:-message-broker}
+ENV BROKER_PORT=${BROKER_PORT:-5672}
+ENV BROKER_INTERNAL_USERNAME=${BROKER_INTERNAL_USERNAME:-internalUsername}
+ENV BROKER_INTERNAL_PASSWORD=${BROKER_INTERNAL_PASSWORD:-internalPassword}
+ENV CONSUMER_HOST=${CONSUMER_HOST:-telemetry}
+ENV DATASTORE_ADDR es
+ENV DATASTORE_PORT 9200
+ENV DATASTORE_CLIENT org.eclipse.kapua.service.datastore.client.rest.RestDatastoreClient
+ENV SQL_DB_ADDR db
+ENV SQL_DB_PORT 3306
+ENV SERVICE_BROKER_ADDR failover:(amqp://events-broker:5672)?jms.sendTimeout=1000
+ENV JAVA_OPTS "-Dcommons.db.schema.update=true 
+
+# Copy project files to the docker image
+COPY maven /
+
+# Set Working Directory to maven
+WORKDIR /maven
+
+# Expose 8080 port
+EXPOSE 8080
+
+#dependent library for running the executable jar file
+COPY assembly/consumer/telemetry/docker/Dockerfile /
+
+# Set the startup command to execute the jar
+ENTRYPOINT ["/run-consumer-telemetry"]

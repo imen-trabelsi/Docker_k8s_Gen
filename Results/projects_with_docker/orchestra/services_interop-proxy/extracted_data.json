@@ -1,0 +1,27 @@
+{
+    "source_code_info": {
+        "language": "Elixir",
+        "framework": null,
+        "dependencies": {
+            "mix.exs": "defmodule InteropProxy.Mixfile do\n  use Mix.Project\n\n  def project do\n    [\n      app: :interop_proxy,\n      version: \"0.1.0\",\n      elixir: \"~> 1.8\",\n      elixirc_paths: elixirc_paths(Mix.env),\n      compilers: [:phoenix] ++ Mix.compilers,\n      start_permanent: Mix.env == :prod,\n      deps: deps()\n    ]\n  end\n\n  def application do\n    [\n      extra_applications: [\n        :flasked, :logger, :runtime_tools, :httpoison, :exprotobuf\n      ],\n      mod: {InteropProxy.Application, []}\n    ]\n  end\n\n  defp elixirc_paths(:test), do: [\"lib\", \"test/support\"]\n  defp elixirc_paths(_),     do: [\"lib\"]\n\n  defp deps do\n    [\n      {:cowboy, \"~> 2.6\"},\n      {:distillery, \"~> 1.3\", runtime: false},\n      {:exprotobuf, \"~> 1.2.9\"},\n      {:gpb, \"~> 4.12.0\"},\n      {:flasked, \"~> 0.4.0\"},\n      {:httpoison, \"~> 1.5\"},\n      {:phoenix, \"~> 1.4\"},\n      {:phoenix_pubsub, \"~> 1.1\"},\n      {:plug_cowboy, \"~> 2.0\"},\n      {:poison, \"~> 3.1.0\"}\n    ]\n  end\nend\n"
+        },
+        "database": null,
+        "build_system": "Mix",
+        "config_files": {
+            "services/interop-proxy/Dockerfile": "FROM elixir:1.8-alpine as builder\n\nWORKDIR /builder\n\nENV MIX_ENV=prod\n\n# Setting up the package manager.\nRUN mix local.hex --force && mix local.rebar --force\n\nCOPY interop-proxy/mix.exs .\n\n# Fetching and then compiling our deps first.\nRUN mix deps.get && mix deps.compile\n\nCOPY interop-proxy .\nCOPY common/messages lib/messages\n\n# Make a release so we can copy it later. (Cleaning mime since we\n# have the custom protobuf mime type.)\nRUN mix compile && mix deps.clean mime --build && mix release\n\n# Moving the archive to the top directory so it can be accessed\n# easily below.\nRUN cp _build/prod/rel/interop_proxy/releases/*/interop_proxy.tar.gz .\n\n# Making the production image now.\nFROM alpine:3.9\n\nWORKDIR /app\n\n# Bash is needed because of distillery and libssl is needed by\n# :erlang.crypto.\nRUN apk --no-cache add \\\n    bash \\\n    libssl1.1\n\n# Getting the archive from the builder, then uncompressing it.\nCOPY --from=builder /builder/interop_proxy.tar.gz .\n\nRUN tar -xzf interop_proxy.tar.gz && \\\n    rm -rf interop_proxy.tar.gz\n\nENV LANG=\"C.UTF-8\"\n\nEXPOSE 8000\n\nCMD /app/bin/interop_proxy foreground\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".gitignore",
+            "Dockerfile",
+            "Makefile",
+            "README.md",
+            "package.json"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

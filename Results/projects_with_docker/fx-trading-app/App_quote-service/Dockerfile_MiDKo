@@ -1,0 +1,25 @@
+# Use Maven Slim as Base image
+FROM maven:3.6.2-jdk-11-slim as build
+
+# Set Working Directory
+WORKDIR /tmp
+
+# Copy POM file
+COPY pom.xml /tmp/
+
+# Use only necessary dependencies
+RUN mvn dependency:go-offline
+
+# Copy the source code
+COPY src /tmp/src/
+
+# Package the application
+RUN mvn package -Pprod -DskipTests
+
+# Final Stage 
+FROM openjdk:11-jre-slim
+
+# Copy the built JAR from the previous stage
+
+# Entry point to execute the jar
+ENTRYPOINT ["/usr/local/openjdk-11/bin/java", "-jar", "/quote-service.jar"]

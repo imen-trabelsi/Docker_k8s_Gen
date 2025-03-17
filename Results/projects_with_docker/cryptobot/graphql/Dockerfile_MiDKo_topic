@@ -1,0 +1,23 @@
+# Base Image
+FROM openjdk:${VERSION}-alpine
+
+# Build Arguments
+ARG VERSION=14
+
+# Environment Variables
+ENV JAVA_OPTIONS="-Dcom.sun.management.jmxremote -Xmx128m"
+
+RUN apk --no-cache add curl
+
+# Copy application jar
+COPY build/libs/*-all.jar /bin/app.jar
+
+# Expose ports
+EXPOSE 8080
+
+# Health check
+HEALTHCHECK --interval=30s --timeout=3s \
+  CMD curl -f http://localhost:8080/actuator/health || exit 1
+
+# Run Command
+CMD ["java", "-jar", "/bin/app.jar"]

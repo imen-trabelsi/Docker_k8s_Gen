@@ -1,0 +1,61 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: yacygridmcp
+  name: yacygridmcp
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: yacygridmcp
+  template:
+    metadata:
+      labels:
+        app: yacygridmcp
+    spec:
+      containers:
+      - image: gcr.io/yacygrid/yacygridmcp:latest
+        imagePullPolicy: IfNotPresent
+        livenessProbe:
+          httpGet:
+            path: /health
+            port: 80
+        name: yacygridmcp
+        ports:
+        - containerPort: 80
+        readinessProbe:
+          httpGet:
+            path: /ready
+            port: 80
+        resources:
+          limits:
+            cpu: 500m
+            ephemeral-storage: 1Gi
+            memory: 512Mi
+          requests:
+            cpu: 100m
+            ephemeral-storage: 500Mi
+            memory: 128Mi
+        securityContext:
+          allowPrivilegeEscalation: false
+          capabilities:
+            drop:
+            - ALL
+          readOnlyRootFilesystem: true
+          runAsGroup: 1000
+          runAsUser: 1000
+      serviceAccountName: default
+      volumes: []
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: yacygridmcp
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: yacygridmcp
+  type: ClusterIP

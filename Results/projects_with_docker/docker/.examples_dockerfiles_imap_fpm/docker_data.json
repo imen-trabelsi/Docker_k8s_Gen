@@ -1,0 +1,32 @@
+{
+    "docker_info": {
+        "base_image": "nextcloud:fpm",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "set -ex; \\",
+                "",
+                "savedAptMark=\"$(apt-mark showmanual)\";",
+                "",
+                "apt-get update;",
+                "apt-get install -y --no-install-recommends",
+                "libc-client-dev",
+                "libkrb5-dev",
+                ";",
+                "",
+                "docker-php-ext-configure imap --with-kerberos --with-imap-ssl;",
+                "docker-php-ext-install imap;",
+                "",
+                "# reset apt-mark's \"manual\" list so that \"purge --auto-remove\" will remove all build dependencies"
+            ]
+        ]
+    }
+}

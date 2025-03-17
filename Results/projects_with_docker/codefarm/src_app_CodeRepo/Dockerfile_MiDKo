@@ -1,0 +1,32 @@
+# Use specified base image
+FROM codefarm/appnodebase:0.0.0
+
+# Set the working directory
+WORKDIR /usr/src/app
+
+# Install git and netcat-openbsd
+RUN apt-get update &&	\
+
+# Set git user email and name
+RUN git config --global user.email "farmer@nowhere.all"
+RUN git config --global user.name "The Farmer"
+
+# Copy package.json and yarn.lock files
+COPY package*.json ./
+
+# Install dependencies
+RUN npm install --only=production
+
+# Copy all project files
+COPY . .
+
+# Build the app
+RUN npm run build
+
+# Switch to root user
+USER root
+
+# Start the app
+CMD [ "npm", "start" ]
+
+# No exposed ports or health checks specified.

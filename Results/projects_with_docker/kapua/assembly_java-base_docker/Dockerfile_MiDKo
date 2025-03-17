@@ -1,0 +1,36 @@
+# Docker base image
+FROM @docker.base.image@
+
+# Set JAVA_HOME
+ENV JAVA_HOME=/usr/lib/jvm/jre-openjdk
+
+# Install Java and other dependencies
+RUN microdnf install -y \
+java-11-openjdk-headless \
+curl \
+openssl \
+tar \
+gzip \
+shadow-utils && \
+microdnf clean all && \
+mkdir -p /opt/jolokia && \
+curl -s @jolokia.agent.url@ -o /opt/jolokia/jolokia-jvm-agent.jar && \
+mkdir -p /etc/opt/kapua && \
+openssl req -x509 -newkey rsa:4096 -keyout /etc/opt/kapua/key.pem -out /etc/opt/kapua/cert.pem -days 365 -nodes -subj '/O=Eclipse Kapua/C=XX' && \
+openssl pkcs8 -topk8 -in /etc/opt/kapua/key.pem -out /etc/opt/kapua/key.pk8 -nocrypt && \
+chmod +r /etc/opt/kapua/key.pk8 && \
+
+# Copy the project files
+COPY . .
+
+# Configure and build the Spring Boot service
+RUN mvn clean install -DskipTests
+
+# Copy the jar file
+COPY target/*.jar app.jar
+
+# Expose the required port
+EXPOSE 8778
+
+# Execute the java -jar command
+ENTRYPOINT ["java", "-jar", "/app.jar"]

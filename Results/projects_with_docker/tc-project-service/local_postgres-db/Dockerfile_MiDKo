@@ -1,0 +1,40 @@
+# Start with a base image containing Java runtime
+FROM openjdk:11-jdk-slim AS builder
+
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
+
+# The application's jar file
+ARG JAR_FILE=target/*.jar
+
+# Add the application's jar to the container
+COPY ${JAR_FILE} app.jar
+
+# Run the jar file 
+ENTRYPOINT ["java","-jar","/app.jar"]
+
+# Add necessary build steps
+COPY . /usr/src/app
+
+WORKDIR /usr/src/app
+
+# Install dependencies
+RUN mvn clean package -DskipTests
+
+# Postgresql base image
+FROM postgres:12.3
+
+# Copy the shell script for creating multiple databases in Postgres
+COPY create-multiple-postgresql-databases.sh /docker-entrypoint-initdb.d/
+
+# Environment variables required for the script
+ENV POSTGRES_USER postgres
+ENV POSTGRES_PASSWORD postgres
+
+# Port exposed to the outside world
+EXPOSE 5432
+
+# Copy the built jar file from builder to the new stage
+
+# Run the jar file 
+ENTRYPOINT [ "java", "-jar", "/app.jar"]

@@ -1,0 +1,30 @@
+#Dockerfile
+# Use the base image provided by the user
+FROM nats
+
+# It's recommended practice to set maintainer
+LABEL maintainer="your_email@example.com"
+
+# Copy the go mod file and download dependencies
+COPY server/go.mod ./
+RUN go mod download
+
+# Copy the docker-compose file
+COPY docker-compose.yml ./server/
+
+# Copy the nats server configuration as specified by the user
+COPY nats-server.conf /nats-server.conf
+
+# Copy the rest of your code
+COPY . .
+
+# Run the go build command to compile our application within the docker instance
+RUN GOOS=linux GOARCH=amd64 go build -ldflags="-w -s" -o ./server/main
+
+# Expose the port as per user requirement.
+# This hasn't been specified so I'm setting a random value
+EXPOSE 8080
+
+# Set the correct entry point and CMD/ENTRYPOINT instructions
+# This also needs to be specified by the user.
+ENTRYPOINT [ "/server/main" ]

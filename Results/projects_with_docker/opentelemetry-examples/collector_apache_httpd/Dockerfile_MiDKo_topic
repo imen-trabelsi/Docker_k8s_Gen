@@ -1,0 +1,12 @@
+# Start from the base image
+FROM httpd:2.4
+
+# Copy configuration files
+COPY ./httpd.conf /usr/local/apache2/conf/httpd.conf
+COPY ./httpd-info.conf /usr/local/apache2/conf/extra/httpd-info.conf
+
+# Expose necessary ports
+EXPOSE 80 443
+
+# Default command
+CMD ["httpd-foreground"]

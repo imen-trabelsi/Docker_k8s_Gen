@@ -1,0 +1,36 @@
+{
+    "docker_info": {
+        "base_image": "python:3.9-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /seed",
+            "COPY . ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/seed/generate-votes.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apt-get update \\",
+                "&& apt-get install -y --no-install-recommends",
+                "apache2-utils",
+                "&& rm -rf /var/lib/apt/lists/*"
+            ],
+            [
+                "python make-data.py",
+                ""
+            ]
+        ]
+    }
+}

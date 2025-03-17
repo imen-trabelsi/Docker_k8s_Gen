@@ -1,0 +1,33 @@
+{
+    "docker_info": {
+        "base_image": "eventuateio/eventuate-mysql8:$EVENTUATE_COMMON_VERSION",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "EVENTUATE_COMMON_VERSION",
+            "EVENTUATE_COMMON_VERSION",
+            "EVENTUATE_SAGA_VERSION"
+        ],
+        "envs": [],
+        "copy_instructions": [
+            "COPY compile-schema-per-service.sh /docker-entrypoint-initdb.d/4.compile-schema-per-service.sh",
+            "ADD https://raw.githubusercontent.com/eventuate-foundation/eventuate-common/$EVENTUATE_COMMON_VERSION/mysql/1.initialize-database.sql /docker-entrypoint-initdb.d/template1",
+            "ADD https://raw.githubusercontent.com/eventuate-foundation/eventuate-common/$EVENTUATE_COMMON_VERSION/mysql/2.initialize-database.sql /docker-entrypoint-initdb.d/template2",
+            "ADD https://raw.githubusercontent.com/eventuate-tram/eventuate-tram-sagas/$EVENTUATE_SAGA_VERSION/mysql/tram-saga-schema.sql /docker-entrypoint-initdb.d/template3"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "cat /docker-entrypoint-initdb.d/template? | sed -e 's/eventuate.offset_store/offset_store/' -e /eventuate/d > /docker-entrypoint-initdb.d/template",
+                ""
+            ],
+            [
+                "touch /docker-entrypoint-initdb.d/5.schema-per-service.sql",
+                "RUN chown mysql -R /docker-entrypoint-initdb.d"
+            ]
+        ]
+    }
+}

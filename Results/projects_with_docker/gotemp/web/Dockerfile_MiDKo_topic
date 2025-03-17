@@ -1,0 +1,37 @@
+# Using user provided base image
+FROM node:alpine as build
+
+# Set the working directory in the Docker image
+WORKDIR /goTemp/web/sapper
+
+# Copy package json to install dependencies
+COPY ./sapper/package*.json ./
+
+# Installing dependencies
+RUN npm install
+
+# Copying source files
+COPY ./sapper .
+
+# Building the application
+RUN npm run build
+
+# Final Image
+FROM node:alpine
+
+# Setting the working directory for the final image
+WORKDIR /goTemp/web/sapper
+
+# Copy built files from build image
+
+# Setting an environment variable
+ENV HOST=0.0.0.0
+
+# Exposing the required ports
+EXPOSE 3000 10000
+
+# Health check command
+HEALTHCHECK CMD curl --fail http://localhost:3000 || exit 1
+
+# Default command to run the application
+CMD ["npm", "run", "start"]

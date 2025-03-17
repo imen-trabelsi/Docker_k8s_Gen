@@ -1,0 +1,42 @@
+# - Start with the base image
+FROM ubuntu:24.04
+
+# - The build arguments for this Docker file
+ARG VERSION="dev" 
+ARG BESU_USER=besu 
+ARG BUILD_DATE 
+ARG VCS_REF
+
+# Metadata labels for this Docker image
+LABEL org.label-schema.build-date=$BUILD_DATE
+
+# The operating system user that would run all the instructions of Docker file
+USER root
+
+# Environment variables for this Docker image
+ENV NO_PROXY_CACHE="-o Acquire::BrokenProxy=true -o Acquire::http::No-Cache=true -o Acquire::http::Pipeline-Depth=0"
+ENV BESU_RPC_HTTP_HOST 0.0.0.0
+ENV BESU_RPC_WS_HOST 0.0.0.0
+ENV BESU_GRAPHQL_HTTP_HOST 0.0.0.0
+ENV BESU_PID_PATH "/tmp/pid"
+ENV OTEL_RESOURCE_ATTRIBUTES="service.name=besu,service.version=$VERSION"
+ENV OLDPATH="${PATH}"
+ENV PATH="/opt/besu/bin:${OLDPATH}"
+ENV BESU_USER_NAME=${BESU_USER}
+
+# - Copy the files form outside to the working directory
+WORKDIR /opt/besu
+COPY --chown=besu:besu besu /opt/besu/
+
+# - Run(update) the packages and
+# - Giving execution permissions to the entrypoint script
+RUN apt-get update $NO_PROXY_CACHE  && \
+
+# - The command to be run in the docker container
+ENTRYPOINT ["besu-entry.sh"]
+
+# - Check the health of the application by running this command
+HEALTHCHECK --start-period=5s --interval=5s --timeout=1s --retries=10 CMD bash -c "[ -f /tmp/pid ]"
+
+# - The port number to expose when a container of this image will be run
+EXPOSE 8545

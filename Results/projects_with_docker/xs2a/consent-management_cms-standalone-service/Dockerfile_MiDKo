@@ -1,0 +1,22 @@
+# Specify the base image
+FROM adorsys/java:11
+
+# Add maintainer info
+LABEL maintainer="https://git.adorsys.de/adorsys/xs2a/aspsp-xs2a"
+
+# Set work directory
+WORKDIR /opt/consents
+
+# Set environment variables
+ENV JAVA_OPTS="-Xmx1024m -Dserver.port=8080"
+ENV JAVA_TOOL_OPTIONS="-Xmx1024m"
+
+# Copy the necessary files
+COPY ./target/consent-management*jar /opt/consents/consent-management.jar
+
+# Expose the required port
+EXPOSE 8080
+
+# Provide execution command
+CMD ["exec", "$JAVA_HOME/bin/java", "$JAVA_OPTS", "-jar", "/opt/consents/consent-management.jar"]
+

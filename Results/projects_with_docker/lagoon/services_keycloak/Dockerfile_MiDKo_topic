@@ -1,0 +1,51 @@
+# Use the base image provided by the user
+FROM registry.access.redhat.com/ubi9 AS builder
+
+# Maintain metadata
+LABEL maintainer="amazee.io"
+
+# Set Environment variables
+ENV LAGOON_VERSION=$LAGOON_VERSION
+ENV DATABASE_VENDOR=$DATABASE_VENDOR
+ENV LAGOON=keycloak
+ENV TMPDIR=/tmp
+ENV=/home/.bashrc
+
+# Set user to root
+USER root
+
+# Install necessary dependencies
+RUN dnf install --installroot /mnt/rootfs nc jq openssl curl unzip --releasever 9 --setopt install_weak_deps=false --nodocs -y
+RUN dnf --installroot /mnt/rootfs clean all
+RUN apk add --no-cache zip
+
+# Copy required files for the application to run
+COPY custom-mapper/. .
+COPY javascript /tmp/lagoon-scripts
+COPY --from=ubi-micro-build /mnt/rootfs /
+COPY --from=commons /lagoon /lagoon
+COPY --from=commons /bin/fix-permissions /bin/ep /bin/docker-sleep /bin/
+COPY --from=commons /home /home
+COPY entrypoints/kc-startup.sh /lagoon/kc-startup.sh
+COPY entrypoints/wait-for-mariadb.sh /lagoon/entrypoints/98-wait-for-mariadb.sh
+COPY entrypoints/default-keycloak-entrypoint.sh /lagoon/entrypoints/99-default-keycloak-entrypoint.sh
+COPY startup-scripts /opt/keycloak/startup-scripts
+COPY themes/lagoon /opt/keycloak/themes/lagoon
+COPY --from=commons /tmp/lagoon-scripts.jar /opt/keycloak/providers/lagoon-scripts.jar
+COPY lagoon-realm-base-import.json /lagoon/seed/lagoon-realm-base-import.json
+
+# Set directory permissions
+RUN chmod g+w /etc/passwd && mkdir -p /home
+
+# Download necessary libraries and setup the environment
+WORKDIR /opt
+RUN architecture=$(case $(uname -m) in x86_64 | amd64) echo "amd64" ;; aarch64 | arm64 | armv8) echo "arm64" ;; *) echo "amd64" ;; esac) \
+RUN curl -O https://download.newrelic.com/newrelic/java-agent/newrelic-agent/current/newrelic-java.zip
+RUN unzip newrelic-java.zip
+RUN rm newrelic-java.zip
+RUN curl -sSLo /opt/keycloak/providers/keycloak-home-idp-discovery.jar https://github.com/sventorben/keycloak-home-idp-discovery/releases/download/v26.0.1/keycloak-home-idp-discovery.jar
+RUN /opt/keycloak/bin/kc.sh build
+
+# Set the execution command
+ENTRYPOINT ["/sbin/tini", "--", "/lagoon/entrypoints.bash"]
+CMD ["start"]

@@ -1,0 +1,17 @@
+# Pull the base image
+FROM composer/composer:latest
+
+# Set working directory
+WORKDIR /src/app
+
+# Copy dependency definitions and source code
+COPY . /src/app/
+
+# Install dependencies
+RUN composer install && \
+
+# Expose correct ports
+EXPOSE 80
+
+# Set correct entrypoint
+ENTRYPOINT ["php", "-S", "0.0.0.0:80"]

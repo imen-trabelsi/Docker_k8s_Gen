@@ -1,0 +1,35 @@
+# Dockerfile
+FROM alpine:3.20
+
+# Arguments
+ARG BUILD_DATE
+ARG NAME
+ARG VCS_REF
+ARG VERSION
+
+# Labels
+LABEL org.label-schema.build-date=$BUILD_DATE \
+  org.label-schema.name=$NAME \
+  org.label-schema.vcs-ref=$VCS_REF \
+  org.label-schema.version=$VERSION \
+  org.label-schema.schema-version="1.0" \
+  maintainer="barcus@tou.nu" \
+  
+# Updating packages and installing dependencies
+RUN apk update && \
+  apk add --no-cache bareos bareos-postgresql postgresql-client curl tzdata tar && \
+  mkdir /run/bareos && \
+  chown bareos /run/bareos && \
+  chmod u+x /usr/local/bin/webhook-notify && \
+  tar czf /bareos-dir.tgz /etc/bareos && \
+
+# Copy instructions
+COPY webhook-notify /usr/local/bin/webhook-notify
+COPY docker-entrypoint.sh /docker-entrypoint.sh
+
+# Exposed port
+EXPOSE 9101
+
+# Command instructions
+ENTRYPOINT ["/docker-entrypoint.sh"]
+CMD ["/usr/sbin/bareos-dir",, "-u",, "bareos",, "-f"]

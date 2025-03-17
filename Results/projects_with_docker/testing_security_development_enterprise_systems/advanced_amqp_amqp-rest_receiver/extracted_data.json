@@ -1,0 +1,25 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Spring Boot",
+        "dependencies": {
+            "pom.xml": "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n    <modelVersion>4.0.0</modelVersion>\n\n    <artifactId>amqp-rest-receiver</artifactId>\n    <packaging>jar</packaging>\n\n    <parent>\n        <groupId>org.tsdes.advanced.amqp</groupId>\n        <artifactId>amqp-rest</artifactId>\n        <version>0.0.1-SNAPSHOT</version>\n    </parent>\n\n\n\n    <dependencies>\n\n        <dependency>\n            <groupId>org.springframework.boot</groupId>\n            <artifactId>spring-boot-starter-web</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.springframework.boot</groupId>\n            <artifactId>spring-boot-starter-amqp</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.springframework.boot</groupId>\n            <artifactId>spring-boot-starter-actuator</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>ch.qos.logback</groupId>\n            <artifactId>logback-classic</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.slf4j</groupId>\n            <artifactId>jcl-over-slf4j</artifactId>\n        </dependency>\n\n        <dependency>\n            <groupId>org.testcontainers</groupId>\n            <artifactId>testcontainers</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.testcontainers</groupId>\n            <artifactId>junit-jupiter</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.springframework.boot</groupId>\n            <artifactId>spring-boot-starter-test</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>io.rest-assured</groupId>\n            <artifactId>rest-assured</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.awaitility</groupId>\n            <artifactId>awaitility</artifactId>\n        </dependency>\n\n    </dependencies>\n\n    <build>\n        <plugins>\n            <plugin>\n                <groupId>org.springframework.boot</groupId>\n                <artifactId>spring-boot-maven-plugin</artifactId>\n                <configuration>\n                    <finalName>receiver</finalName>\n                </configuration>\n            </plugin>\n        </plugins>\n    </build>\n\n\n\n</project>"
+        },
+        "database": null,
+        "build_system": "Maven",
+        "config_files": {
+            "advanced/amqp/amqp-rest/docker-compose.yml": "version: '3.3'\n\nservices:\n  rabbitmq:\n    image:  \"rabbitmq:3\"\n\n  sender:\n    build:\n        context: ./sender\n        dockerfile: Dockerfile\n    ports:\n       - \"9000:8080\"\n    depends_on:\n       # do not start this image until RabbitMQ is started\n       - rabbitmq\n\n  # Starting the same service twice.\n  # To access it from localhost, need to bind them\n  # to different TCP ports.\n\n\n  receiver_0:\n     build:\n        context: ./receiver\n        dockerfile: Dockerfile\n     ports:\n        - \"9001:8080\"\n     depends_on:\n        - rabbitmq\n\n  receiver_1:\n    build:\n        context: ./receiver\n        dockerfile: Dockerfile\n    ports:\n        - \"9002:8080\"\n    depends_on:\n        - rabbitmq",
+            "advanced/amqp/amqp-rest/receiver/Dockerfile": "FROM adoptopenjdk/openjdk11:alpine\n\nCOPY target/receiver.jar .\n\nCMD java -jar receiver.jar"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "pom.xml"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

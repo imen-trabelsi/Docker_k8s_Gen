@@ -1,0 +1,17 @@
+# Base Image
+FROM java:8-jre
+
+# Set Working Directory
+WORKDIR /app
+
+# Copy POM and SRC
+COPY ./target/ts-execute-service-1.0.jar /app/
+
+# Run Commands
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone
+
+# Expose Port
+EXPOSE 12386
+
+# Entry point or execution command
+ENTRYPOINT ["java", "-Xmx200m", "-jar", "/app/ts-execute-service-1.0.jar"]

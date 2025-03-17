@@ -1,0 +1,34 @@
+# Base Image
+FROM node:8
+
+# Copy Instructions
+COPY common/ /usr/src/common
+COPY package.json /usr/src/common
+WORKDIR /usr/src
+COPY statscontroller/src /usr/src/statscontroller/src
+WORKDIR /usr/src/statscontroller
+COPY statscontroller/Gruntfile.js /usr/src/statscontroller/
+COPY statscontroller/package.json /usr/src/statscontroller/
+
+# Environment Variables
+ENV NODE_ENV production
+
+# Exposed Ports
+EXPOSE 4001
+
+# Run Commands
+RUN rm -rf /usr/local/lib/node_modules/npm \
+RUN mkdir -p /usr/src/common
+WORKDIR /usr/src/common
+RUN npm install
+RUN mkdir -p /usr/src/statscontroller
+RUN npm install grunt-cli -g
+RUN mkdir -p /usr/src/statscontroller/src
+WORKDIR /usr/src/statscontroller/src
+RUN npm install
+
+# Label
+LABEL version="2.0.0" \
+
+# Execution Command
+CMD ["npm", "start"]

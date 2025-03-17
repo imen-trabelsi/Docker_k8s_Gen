@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "Ruby",
+        "framework": "Ruby",
+        "dependencies": {
+            "Gemfile": "source \"https://rubygems.org\"\n# Hello! This is where you manage which Jekyll version is used to run.\n# When you want to use a different version, change it below, save the\n# file and run `bundle install`. Run Jekyll with `bundle exec`, like so:\n# Note: you probably want to set a local bundle path with : /usr/local/bin/bundle config set path 'vendor/bundle'\n#\n#     bundle exec jekyll serve\n#\n# This will help ensure the proper Jekyll version is running.\n# Happy Jekylling!\n# gem \"jekyll\", \"~> 4.0.0\"\n# This is the default theme for new Jekyll sites. You may change this to anything you like.\ngem \"minima\", \"~> 2.5\"\n# To upgrade, run `bundle update github-pages`.\ngem \"github-pages\", group: :jekyll_plugins\n# If you have any plugins, put them here!\ngroup :jekyll_plugins do\n  gem \"jekyll-feed\", \"~> 0.12\"\n  gem 'jekyll-octicons'\nend\n\ngem \"jekyll-github-metadata\"\n\n# Windows and JRuby does not include zoneinfo files, so bundle the tzinfo-data gem\n# and associated library.\ninstall_if -> { RUBY_PLATFORM =~ %r!mingw|mswin|java! } do\n  gem \"tzinfo\", \"~> 1.2\"\n  gem \"tzinfo-data\"\nend\n\n# Performance-booster for watching directories on Windows\ngem \"wdm\", \"~> 0.1.1\", :install_if => Gem.win_platform?\n\ngem \"faraday\", \"< 1.0\"\n\n# I like asciidoc & sitemaps\ngroup :jekyll_plugins do\n  gem 'jekyll-asciidoc'\n  gem 'jekyll-sitemap'\nend\n"
+        },
+        "database": "PostgreSQL",
+        "build_system": "Bundler",
+        "config_files": {
+            "subrepos/docker-stacks/scipy-notebook/Dockerfile": "# Copyright (c) Jupyter Development Team.\n# Distributed under the terms of the Modified BSD License.\nARG BASE_CONTAINER=jupyter/minimal-notebook\nFROM $BASE_CONTAINER\n\nLABEL maintainer=\"Jupyter Project <jupyter@googlegroups.com>\"\n\nUSER root\n\n# ffmpeg for matplotlib anim & dvipng+cm-super for latex labels\nRUN apt-get update && \\\n    apt-get install -y --no-install-recommends ffmpeg dvipng cm-super && \\\n    apt-get clean && rm -rf /var/lib/apt/lists/*\n\nUSER $NB_UID\n\n# Install Python 3 packages\nRUN conda install --quiet --yes \\\n    'beautifulsoup4=4.9.*' \\\n    'conda-forge::blas=*=openblas' \\\n    'bokeh=2.2.*' \\\n    'bottleneck=1.3.*' \\\n    'cloudpickle=1.6.*' \\\n    'cython=0.29.*' \\\n    'dask=2021.1.*' \\\n    'dill=0.3.*' \\\n    'h5py=3.1.*' \\\n    'ipywidgets=7.6.*' \\\n    'ipympl=0.6.*'\\\n    'matplotlib-base=3.3.*' \\\n    'numba=0.52.*' \\\n    'numexpr=2.7.*' \\\n    'pandas=1.2.*' \\\n    'patsy=0.5.*' \\\n    'protobuf=3.14.*' \\\n    'pytables=3.6.*' \\\n    'scikit-image=0.18.*' \\\n    'scikit-learn=0.24.*' \\\n    'scipy=1.6.*' \\\n    'seaborn=0.11.*' \\\n    'sqlalchemy=1.3.*' \\\n    'statsmodels=0.12.*' \\\n    'sympy=1.7.*' \\\n    'vincent=0.4.*' \\\n    'widgetsnbextension=3.5.*'\\\n    'xlrd=2.0.*' && \\\n    conda clean --all -f -y && \\\n    fix-permissions \"${CONDA_DIR}\" && \\\n    fix-permissions \"/home/${NB_USER}\"\n\n# Install facets which does not have a pip or conda package at the moment\nWORKDIR /tmp\nRUN git clone https://github.com/PAIR-code/facets.git && \\\n    jupyter nbextension install facets/facets-dist/ --sys-prefix && \\\n    rm -rf /tmp/facets && \\\n    fix-permissions \"${CONDA_DIR}\" && \\\n    fix-permissions \"/home/${NB_USER}\"\n\n# Import matplotlib the first time to build the font cache.\nENV XDG_CACHE_HOME=\"/home/${NB_USER}/.cache/\"\n\nRUN MPLBACKEND=Agg python -c \"import matplotlib.pyplot\" && \\\n    fix-permissions \"/home/${NB_USER}\"\n\nUSER $NB_UID\n\nWORKDIR $HOME\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "prepare.sh"
+        ],
+        "folders": [
+            "examples"
+        ]
+    }
+}

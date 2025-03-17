@@ -1,0 +1,23 @@
+# base image
+FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build-env
+WORKDIR /app
+
+# copy csproj and restore as distinct layers
+WORKDIR /src
+COPY ["src/Services/ExamManagement/ExamManagement.API/ExamManagement.API.csproj", "src/Services/ExamManagement/ExamManagement.API/"]
+COPY . .
+RUN dotnet restore "src/Services/ExamManagement/ExamManagement.API/ExamManagement.API.csproj"
+
+#build and publish
+WORKDIR "/src/src/Services/ExamManagement/ExamManagement.API"
+RUN dotnet build "ExamManagement.API.csproj" -c Release -o /app/build
+RUN dotnet publish "ExamManagement.API.csproj" -c Release -o /app/publish
+
+# build runtime image
+FROM mcr.microsoft.com/dotnet/sdk:5.0
+
+WORKDIR /app
+
+EXPOSE 80
+
+ENTRYPOINT ["dotnet", "ExamManagement.API.dll"]

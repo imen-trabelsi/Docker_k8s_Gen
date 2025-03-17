@@ -1,0 +1,34 @@
+{
+    "source_code_info": {
+        "language": "JavaScript",
+        "framework": "Node.js",
+        "dependencies": {
+            "package.json": "{\n  \"name\": \"api\",\n  \"version\": \"1.0.0\",\n  \"description\": \"API application\",\n  \"main\": \"index.js\",\n  \"scripts\": {\n    \"seed\": \"babel-node src/setup/server/seeder.js\",\n    \"setup\": \"npm install && npm run seed\",\n    \"start\": \"nodemon src/index.js --exec babel-node\",\n    \"start:prod\": \"npm run build:prod && npm run start:server\",\n    \"build:prod\": \"babel src -s -D -d build\",\n    \"start:server\": \"node build/index.js\"\n  },\n  \"husky\": {\n    \"hooks\": {\n      \"pre-commit\": \"pretty-quick --staged\"\n    }\n  },\n  \"keywords\": [],\n  \"author\": \"\",\n  \"license\": \"ISC\",\n  \"dependencies\": {\n    \"axios\": \"0.21.1\",\n    \"bcrypt\": \"5.0.0\",\n    \"body-parser\": \"1.19.0\",\n    \"cors\": \"2.8.5\",\n    \"dotenv\": \"8.2.0\",\n    \"express\": \"4.17.1\",\n    \"fullstack-validator\": \"1.0.0\",\n    \"i18n-js\": \"3.8.0\",\n    \"ip\": \"1.1.5\",\n    \"jsonwebtoken\": \"8.5.1\",\n    \"lodash\": \"4.17.21\",\n    \"moment\": \"^2.29.1\",\n    \"mongoose\": \"5.11.18\",\n    \"morgan\": \"1.10.0\",\n    \"multer\": \"1.4.2\",\n    \"nodemailer\": \"6.4.18\",\n    \"prop-types\": \"15.7.2\",\n    \"react\": \"17.0.1\",\n    \"react-dom\": \"17.0.1\",\n    \"sharp\": \"0.27.2\"\n  },\n  \"devDependencies\": {\n    \"@babel/cli\": \"7.13.0\",\n    \"@babel/core\": \"7.13.1\",\n    \"@babel/node\": \"7.13.0\",\n    \"@babel/plugin-transform-runtime\": \"7.13.7\",\n    \"@babel/preset-env\": \"7.13.5\",\n    \"@babel/preset-react\": \"7.12.13\",\n    \"@babel/runtime\": \"7.13.7\",\n    \"husky\": \"^4.3.8\",\n    \"nodemon\": \"2.0.7\",\n    \"prettier\": \"2.2.1\",\n    \"pretty-quick\": \"^3.1.0\"\n  }\n}\n"
+        },
+        "database": "MongoDB",
+        "build_system": "npm",
+        "config_files": {
+            "backend/api/Dockerfile": "FROM node:10\nRUN mkdir -p /user/src/app\nWORKDIR /user/src/app\nCOPY ./package*.json ./\nRUN npm install --quiet\nCOPY . ./\nRUN npm run build:prod\nEXPOSE 8000\nENTRYPOINT [\"node\", \"build/index.js\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".babelrc",
+            ".dockerignore",
+            ".env.dev.example",
+            ".env.prod.example",
+            ".gitignore",
+            ".prettierrc",
+            "Dockerfile",
+            "nodemon.json",
+            "package-lock.json",
+            "package.json"
+        ],
+        "folders": [
+            "public",
+            "src",
+            "uploads"
+        ]
+    }
+}

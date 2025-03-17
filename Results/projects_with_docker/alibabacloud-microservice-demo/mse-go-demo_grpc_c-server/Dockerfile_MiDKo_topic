@@ -1,0 +1,31 @@
+# Start from the base image golang:1.19-alpine3.16
+FROM golang:1.19-alpine3.16 AS build
+
+# Update APK repositories and add dependencies
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+RUN apk --update add gcc libc-dev
+
+# Set GOPROXY environment variable
+ENV GOPROXY=https://goproxy.cn,direct
+
+# Add all the source code into /workspace directory
+COPY . /workspace
+WORKDIR /workspace
+
+# Build the application
+RUN --mount=type=cache,target=/go \
+
+# Staging
+FROM alpine:3.16 as stage
+WORKDIR /app
+
+# Final Stage
+FROM alpine:3.16
+RUN sed -i 's/dl-cdn.alpinelinux.org/mirrors.tuna.tsinghua.edu.cn/g' /etc/apk/repositories
+RUN apk --update add libc-dev
+
+# Expose port 50051
+EXPOSE 50051
+
+# Running the binary file
+CMD ["/app/c-server"]

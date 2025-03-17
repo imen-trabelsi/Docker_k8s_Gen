@@ -1,0 +1,28 @@
+# Use Base Image
+FROM maven:3.6.3-jdk-11-slim
+
+# Install Important Packages
+RUN apt-get update && apt-get install -y iptables git
+
+# Set Working Directory
+WORKDIR /tmp/java
+
+# Copy Necessary Files
+COPY pom.xml .
+COPY checkstyle/suppressions.xml /tmp/java/checkstyle/suppressions.xml
+COPY checkstyle.xml /tmp/java/checkstyle.xml
+COPY src/ /tmp/java/src/
+
+# Build the Project
+RUN mvn package
+
+# Expose Relevant Ports
+# NOTE: Replace xxxx with the actual port (As it's not provided before, assuming a default Spring Boot port)
+EXPOSE 8080
+
+# Run the Spring Boot App
+CMD ["java", "-jar", "target/my-spring-boot-app-1.0-SNAPSHOT.jar"]
+
+# Note:
+# Please replace 'my-spring-boot-app-1.0-SNAPSHOT.jar' with the actual name of your built jar file from the `mvn package` command.
+# Also this Dockerfile does not contain multi-stage build, healthchecks and user setup due to missing information.

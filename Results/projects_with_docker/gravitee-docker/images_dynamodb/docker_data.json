@@ -1,0 +1,43 @@
+{
+    "docker_info": {
+        "base_image": "eclipse-temurin:11-jre-focal",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8000"
+        ],
+        "user": [],
+        "labels": [
+            "maintainer=\"contact@graviteesource.com\""
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /opt/dynamodb"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"java\",",
+                    "\"-Djava.library.path=./DynamoDBLocal_lib\",",
+                    "\"-jar\",",
+                    "\"DynamoDBLocal.jar\",",
+                    "\"-dbPath\",",
+                    "\"/var/lib/dynamodb\",",
+                    "\"-optimizeDbBeforeStartup\",",
+                    "\"-port\",",
+                    "\"8000\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --update openssl",
+                "RUN wget -O /opt/dynamodb/dynamodb_local_latest.tar.gz https://s3.eu-central-1.amazonaws.com/dynamodb-local-frankfurt/dynamodb_local_latest.tar.gz",
+                "&& tar xfz /opt/dynamodb/dynamodb_local_latest.tar.gz",
+                "&& rm -f /opt/dynamodb/dynamodb_local_latest.tar.gz"
+            ]
+        ]
+    }
+}

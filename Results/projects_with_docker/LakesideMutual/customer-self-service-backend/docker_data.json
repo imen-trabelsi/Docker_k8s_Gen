@@ -1,0 +1,41 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:21-slim-buster",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8080"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY .mvn .mvn",
+            "COPY mvnw .",
+            "COPY pom.xml .",
+            "COPY src src",
+            "COPY --from=build target/customer-self-service-backend-0.0.2-SNAPSHOT.jar ."
+        ],
+        "execution": [
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"java\",",
+                    "\"-jar\",",
+                    "\"customer-self-service-backend-0.0.2-SNAPSHOT.jar\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "./mvnw -B dependency:go-offline",
+                ""
+            ],
+            [
+                "./mvnw -B package",
+                ""
+            ]
+        ]
+    }
+}

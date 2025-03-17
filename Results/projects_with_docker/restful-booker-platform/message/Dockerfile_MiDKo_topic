@@ -1,0 +1,27 @@
+# Start from the base image
+FROM openjdk:21-slim
+
+# Environment Variables
+ENV authDomain=rbp-auth
+ENV profile=dev
+
+# Working Directory
+WORKDIR /usr/local/message
+
+# Add source code to the container
+COPY . /usr/local/message
+
+# Copy target files
+COPY target ./
+
+# Expose Ports required by the application
+EXPOSE 8080
+
+# Set the entrypoint
+ENTRYPOINT ["java", "-jar", "-Dspring.profiles.active=$profile", "target/restful-booker-platform-message-*.jar"]
+
+# Generate image with maven wrapper and the necessary dependencies 
+# This ensures quicker successive builds thanks to Docker's layer caching 
+COPY pom.xml ./
+COPY src ./src/
+RUN mvn clean package

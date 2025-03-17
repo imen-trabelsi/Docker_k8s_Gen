@@ -1,0 +1,30 @@
+# Use base image provided by the user
+FROM mcr.microsoft.com/vscode/devcontainers/python:0-${VARIANT}
+
+# Set environment variables
+ENV PYTHONFAULTHANDLER=1 \
+    NODE_VERSION="none" \
+    POETRY_VERSION=1.1.10 \
+
+# Expose ports (replace ${PORT} with actual port number)
+EXPOSE ${PORT}
+
+# Install dependencies
+RUN pip install poetry==$POETRY_VERSION pre-commit
+COPY ../poetry.lock ../pyproject.toml /tmp/pip-tmp/rasa/
+
+# Install project dependencies
+RUN cd /tmp/pip-tmp/rasa && poetry config virtualenvs.create false \
+
+# Install Node.js if not equals to "none"
+RUN if [ "${NODE_VERSION}" != "nne" ]; then su vscode -c "umask 0002 && . /usr/local/share/nvm/nvm.sh && nvm install ${NODE_VERSION} 2>&1"; fi
+
+# Copy code and config files to container
+# Assuming source code is at the root of the project directory
+COPY . .
+
+# Set the entrypoint (replace "entrypoint.sh" with actual entrypoint script)
+ENTRYPOINT ["entrypoint.sh"]
+
+# Start the server (replace "start_server.py" with actual server script)
+CMD ["python", "start_server.py"]

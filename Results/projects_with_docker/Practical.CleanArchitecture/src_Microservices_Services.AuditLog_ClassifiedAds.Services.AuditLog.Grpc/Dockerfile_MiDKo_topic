@@ -1,0 +1,35 @@
+# Use the dotnet SDK image as the base image
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build-env
+
+# Define the working directory
+WORKDIR /ClassifiedAds.Microservices
+
+# Copy the csproj files and restore the dependencies
+COPY ./Common/ClassifiedAds.Application/*.csproj ./Common/ClassifiedAds.Application/
+COPY ./Common/ClassifiedAds.CrossCuttingConcerns/*.csproj ./Common/ClassifiedAds.CrossCuttingConcerns/
+COPY ./Common/ClassifiedAds.Domain/*.csproj ./Common/ClassifiedAds.Domain/
+COPY ./Common/ClassifiedAds.Infrastructure/*.csproj ./Common/ClassifiedAds.Infrastructure/
+COPY ./Services.AuditLog/ClassifiedAds.Services.AuditLog/*.csproj ./Services.AuditLog/ClassifiedAds.Services.AuditLog/
+COPY ./Services.AuditLog/ClassifiedAds.Services.AuditLog.Grpc/*.csproj ./Services.AuditLog/ClassifiedAds.Services.AuditLog.Grpc/
+
+# Restore the dotnet dependencies
+RUN dotnet restore ./Common/ClassifiedAds.Application/ClassifiedAds.Application.csproj
+RUN dotnet restore ./Common/ClassifiedAds.Infrastructure/ClassifiedAds.Infrastructure.csproj
+RUN dotnet restore ./Services.AuditLog/ClassifiedAds.Services.AuditLog/ClassifiedAds.Services.AuditLog.csproj
+RUN dotnet restore ./Services.AuditLog/ClassifiedAds.Services.AuditLog.Grpc/ClassifiedAds.Services.AuditLog.Grpc.csproj
+
+# Copy the rest of the working directory contents
+COPY . .
+
+# Build the application in release mode and publish the output
+RUN dotnet publish ./Services.AuditLog/ClassifiedAds.Services.AuditLog.Grpc/ClassifiedAds.Services.AuditLog.Grpc.csproj -c Release -o out
+
+# Start a new image from the dotnet runtime image
+FROM mcr.microsoft.com/dotnet/runtime:9.0
+
+WORKDIR /ClassifiedAds.Microservices
+
+# Copy the published files from the build stage
+
+# Define the entry point that will be used when the container is run
+ENTRYPOINT ["dotnet", "ClassifiedAds.Services.AuditLog.Grpc.dll"]

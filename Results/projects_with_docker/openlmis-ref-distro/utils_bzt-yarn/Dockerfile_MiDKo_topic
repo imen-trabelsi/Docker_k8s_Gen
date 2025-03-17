@@ -1,0 +1,36 @@
+# Use the specified base image
+FROM blazemeter/taurus:1.15.1
+
+# Install necessary dependencies
+RUN apt-get update && apt-get install -y postgresql-client python3-pip && rm -rf /var/lib/apt/lists/*
+
+# Set environment variables
+ENV PYTHONUNBUFFERED 1
+
+# Copy necessary files
+COPY ./utils/bzt-yarn/Dockerfile /Dockerfile
+COPY ./requirements.txt /requirements.txt
+COPY .env ./
+COPY docker-compose.yml ./
+COPY docker-compose.override.yml ./
+
+# Install project dependencies
+RUN pip3 install -r /requirements.txt
+
+# Set the working directory
+WORKDIR /app
+
+# Copy project files into the docker image
+COPY . ./
+
+# Expose default port for Spring Boot
+EXPOSE 8080
+
+# Install yarn and build the project
+RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - && \
+    echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
+    apt-get update && \
+    apt-get install yarn && \
+
+# Provide default command
+CMD ["flask", "run", "--host=0.0.0.0"]

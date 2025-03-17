@@ -1,0 +1,24 @@
+# Dockerfile 
+
+# Define base Image
+FROM openjdk:8-jre-alpine
+
+# Set environment variables 
+ENV APP_FILE config-service-1.0-SNAPSHOT.jar
+ENV APP_HOME /app
+
+# Create APP_HOME and give it the necessary permissions
+RUN mkdir -p $APP_HOME 
+RUN chmod 755 $APP_HOME
+
+# Copy the packaged jar file into our docker image
+COPY target/$APP_FILE $APP_HOME/
+
+WORKDIR $APP_HOME
+
+# Expose the ports
+EXPOSE 8088
+
+# Command to start our application
+ENTRYPOINT [ "sh", "-c" ]
+CMD ["exec java -jar $APP_FILE"]

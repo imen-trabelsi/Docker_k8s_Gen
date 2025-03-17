@@ -1,0 +1,25 @@
+{
+    "docker_info": {
+        "base_image": "mongo:7-jammy",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [
+            "authors=\"nick\""
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV DEBIAN_FRONTEND=noninteractive",
+            "ENV ACCEPT_EULA=Y",
+            "ENV TZ=Europe/London"
+        ],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "apt-get update -y && apt-get dist-upgrade -y"
+            ]
+        ]
+    }
+}

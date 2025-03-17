@@ -1,0 +1,35 @@
+{
+    "docker_info": {
+        "base_image": "logstash:2.1",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "5514"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY logstash /logstash"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"logstash\",",
+                    "\"-f\",",
+                    "\"/logstash/conf.d\",",
+                    "\"-w\",",
+                    "\"1\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "/opt/logstash/bin/plugin install logstash-filter-translate",
+                "RUN /opt/logstash/bin/plugin install logstash-input-http"
+            ]
+        ]
+    }
+}

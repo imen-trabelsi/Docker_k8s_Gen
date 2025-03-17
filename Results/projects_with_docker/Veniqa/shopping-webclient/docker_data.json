@@ -1,0 +1,44 @@
+{
+    "docker_info": {
+        "base_image": "node:lts-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY package*.json ./",
+            "COPY . ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"http-server\",",
+                    "\"dist\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "npm install -g http-server",
+                ""
+            ],
+            [
+                "npm install",
+                ""
+            ],
+            [
+                "npm run build",
+                ""
+            ]
+        ]
+    }
+}

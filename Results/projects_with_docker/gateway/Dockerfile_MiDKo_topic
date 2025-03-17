@@ -1,0 +1,27 @@
+# set base image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build-env
+WORKDIR /src
+
+# Copy csproj and restore as distinct layers
+COPY ./*.csproj ./
+RUN dotnet restore
+
+# Copy everything else and build
+COPY . ./
+RUN dotnet build -c Release -o /app
+
+# Copy the application files
+WORKDIR /app
+
+# Final Stage
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+WORKDIR /app
+
+# Set environment variables
+ENV ASPNETCORE_URLS=http://*:80
+
+# Expose the application on port 80
+EXPOSE 80
+
+# Run the application
+ENTRYPOINT ["dotnet", "GhostNetwork.Gateway.Api.dll"]

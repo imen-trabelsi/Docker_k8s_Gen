@@ -1,0 +1,35 @@
+FROM node:23-slim
+
+# Environment variables
+ENV DEBIAN_FRONTEND noninteractive
+ENV REACT_APP_API_ENDPOINT /api/2/
+
+# Prerequisites
+RUN apt-get -qq -y update && apt-get -qq -y install rsync
+
+# Creating Application Source Code Directory
+RUN mkdir /alephui
+WORKDIR /alephui
+
+# Installing python dependencies
+COPY requirements.txt .
+RUN pip install -r requirements.txt
+
+# Copying source code
+COPY .prettierrc /alephui/.prettierrc
+COPY tsconfig.json /alephui/tsconfig.json
+COPY package.json /alephui
+COPY package-lock.json /alephui
+COPY craco.config.js /alephui
+COPY i18n /alephui/i18n
+COPY public /alephui/public
+COPY src /alephui/src
+
+# Installing node modules
+RUN npm install && \
+
+# Exposing Ports
+EXPOSE 5000
+
+# Running Python Application
+CMD ["npm", "start"]

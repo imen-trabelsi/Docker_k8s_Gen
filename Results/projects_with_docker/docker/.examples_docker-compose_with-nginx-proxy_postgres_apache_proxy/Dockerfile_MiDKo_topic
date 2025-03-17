@@ -1,0 +1,22 @@
+# Start from the user-provided base image
+FROM nginxproxy/nginx-proxy:alpine
+
+# Copy necessary files from project to docker image
+COPY uploadsize.conf /etc/nginx/conf.d/uploadsize.conf
+
+# Expose required ports if specified by user - N/A in this scenario
+# EXPOSE <port>
+
+# Set required environment variables - N/A in this scenario
+# ENV VARIABLE_NAME=value
+
+# Set Health Checks if specified by user - N/A in this scenario
+
+# Set build arguments if specified by user - N/A in this scenario
+# ARG <arg_name=value>
+
+# Set run commands if specified by user - N/A in this scenario
+# RUN <command>
+
+# Define the execution command if specified by user - N/A in this scenario
+# CMD ["<command>", "<param1>", ...]

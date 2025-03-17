@@ -1,0 +1,35 @@
+# Set the base image
+FROM node:14-alpine
+
+# Creating app directory
+WORKDIR /usr/src/app
+
+# Installing app dependencies
+COPY package*.json ./
+
+# Installing any missing dependencies for the Node.js runtime environment
+RUN apk add --no-cache --virtual .gyp \
+        python \
+        make \
+        g++ \
+    && npm install \
+
+# Bundling app source
+COPY . .
+
+# Adding permissions for the scripting files and making sure they are executable
+RUN chmod +x package.json
+
+# Exposing the necessary port for the application to run through
+EXPOSE 8080
+
+# Creating a non-root user and giving necessary permissions to run the application
+RUN addgroup -S app && adduser -S -G app app
+USER app
+
+# Setting the necessary environment variable(s)
+# ENV PORT=8080
+# Customize the variable(s) as required
+
+# Using CMD command to start our application
+CMD [ "npm", "start" ]

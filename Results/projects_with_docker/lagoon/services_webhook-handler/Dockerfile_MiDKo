@@ -1,0 +1,24 @@
+# Use the provided base image
+FROM ${IMAGE_REPO:-lagoon}/yarn-workspace-builder
+
+# Set WORKDIR
+WORKDIR /app/services/webhook-handler/
+
+# Set environment variable
+ENV LAGOON_VERSION=$LAGOON_VERSION
+ENV NODE_ENV production
+
+# Copy necessary files
+COPY --from=yarn-workspace-builder /app /app
+COPY --from=yarn-workspace-builder /app/.env.defaults .
+COPY . .
+
+# Install dependencies
+RUN yarn install
+
+# Verification and building
+RUN yarn check --verify-tree
+RUN yarn build
+
+# Final command to execute
+CMD ["yarn", "start"]

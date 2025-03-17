@@ -1,0 +1,30 @@
+# Use a lighter version of Node as a parent image
+FROM node:14-alpine
+
+# Make the 'app' folder the current working directory
+WORKDIR /app
+
+# Copy project specification and dependencies
+COPY package*.json ./
+
+# Install all dependencies
+RUN npm install 
+
+# If building for production, only install production dependencies
+RUN npm ci --only=production 
+
+# Copy all files into the image
+COPY . .
+
+# Health check instruction
+HEALTHCHECK --interval=5m --timeout=3s \
+  CMD node healthcheck.js || exit 1
+
+# Exposed Ports
+EXPOSE 6379
+
+# Copy Instructions
+COPY redis.conf /usr/local/etc/redis/redis.conf
+
+# Server runs on start command
+CMD [ "npm", "start" ]

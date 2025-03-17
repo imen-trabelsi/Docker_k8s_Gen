@@ -1,0 +1,23 @@
+{
+    "docker_info": {
+        "base_image": "public.ecr.aws/docker/library/alpine:latest",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY --link tests tests",
+            "WORKDIR /tests"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apk update && apk upgrade && apk add --update --no-cache jq sipp curl",
+                ""
+            ]
+        ]
+    }
+}

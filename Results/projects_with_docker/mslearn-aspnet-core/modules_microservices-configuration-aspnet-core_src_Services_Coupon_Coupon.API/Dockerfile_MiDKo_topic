@@ -1,0 +1,28 @@
+# Use the official base .NET 6.0 sdk image from Microsoft.
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+# Set the working directory
+WORKDIR /src
+
+# Copy csproj and restore as distinct layers
+COPY ["NuGet.config", "./"]
+COPY ["docker-compose.dcproj", "./"]
+COPY ["eShop-Learn.sln", "./"]
+COPY . .
+
+# Run dotnet restore
+RUN dotnet restore "eShop-Learn.sln"
+
+# Copy everything else and build the project
+WORKDIR "/src/src/Services/Coupon/Coupon.API"
+RUN dotnet publish --no-restore "Coupon.API.csproj" -c Release -o /app/publish
+
+# Build runtime image
+FROM mcr.microsoft.com/dotnet/runtime:6.0
+WORKDIR /app
+
+# Expose port 80
+EXPOSE 80
+
+# Set the entry point
+ENTRYPOINT ["dotnet", "Coupon.API.dll"]

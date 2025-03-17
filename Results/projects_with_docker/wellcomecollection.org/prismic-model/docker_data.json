@@ -1,0 +1,33 @@
+{
+    "docker_info": {
+        "base_image": "public.ecr.aws/docker/library/node:20-bookworm-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY ./package.json /repo/package.json",
+            "COPY ./yarn.lock /repo/yarn.lock",
+            "COPY config/tsconfig-base.json /config/tsconfig-base.json",
+            "COPY . /repo",
+            "WORKDIR /repo/prismic-model"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"true\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "yarn && yarn install --frozen-lockfile",
+                ""
+            ]
+        ]
+    }
+}

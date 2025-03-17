@@ -1,0 +1,29 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Java",
+        "dependencies": {
+            "pom.xml": "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n\txsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n\t<modelVersion>4.0.0</modelVersion>\n\t<groupId>com.radanalyticsio.datapipeline</groupId>\n\t<artifactId>streaming-online-analytics-parent</artifactId>\n\t<version>1.0.0-SNAPSHOT</version>\n\t<packaging>pom</packaging>\n\t<name>Streaming Online Analytics :: Parent</name>\n\t<modules>\n\t\t<module>kafka-utils</module>\n\t\t<module>messaging-service</module>\n\t</modules>\n\t<build>\n\t\t<plugins>\n\t\t\t<plugin>\n\t\t\t\t<artifactId>maven-compiler-plugin</artifactId>\n\t\t\t\t<version>3.2</version>\n\t\t\t\t<configuration>\n\t\t\t\t\t<source>1.8</source>\n\t\t\t\t\t<target>1.8</target>\n\t\t\t\t</configuration>\n\t\t\t</plugin>\n\t\t</plugins>\n\t</build>\n</project>\n"
+        },
+        "database": null,
+        "build_system": "Maven",
+        "config_files": {
+            "docker-compose.yml": "version: '2'\n\nservices:\n  mongo:\n    image: mongo\n    container_name: mongo\n    volumes:\n      - /data/db:/data/db\n#    ports:\n#      - \"27017:27017\"\n  zookeeper:\n    image: bzcareer/docker-zookeeper\n    container_name: zookeeper-coordination-service\n    ports:\n      - \"2181:2181\"\n      - \"2888:2888\"\n      - \"3888:3888\"\n  kafka:\n    image: bzcareer/docker-kafka\n    container_name: kafka-messaging-service\n    links:\n      - zookeeper:zookeeper\n    environment:\n      - \"KAFKA_SERVICE_SERVICE_HOST=zookeeper\"\n    ports:\n      - \"9092:9092\"\n      - \"9999:9999\"\n  sparkMaster:\n    image: radanalyticsio/openshift-spark\n    container_name: sparkMaster\n    ports:\n      - \"8081:8080\"\n      - \"7077:7077\"\n  sparkWorker1:\n    image: radanalyticsio/openshift-spark\n    container_name: sparkWorker1\n    command: /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker spark://sparkMaster:7077\n    ports:\n      - \"8082:8081\"\n    links:\n      - sparkMaster:sparkMaster\n    environment:\n      - \"SPARK_MASTER_ADDRESS=spark://sparkMaster:7077\"\n      - \"SPARK_USER=bob\"\n  messaging-service:\n    build:\n      context: messaging-service\n      dockerfile: Dockerfile\n    ports:\n      - \"8080:8080\"\n    links:\n      - mongo:mongo\n      - kafka:kafkaETL\n    environment:\n      - \"KAFKA_URI=kafkaETL:9092\"\n      - \"MONGODB_HOST=mongo\"\n      - \"MONGODB_PORT=27017\"\n#  spark-streaming-service:\n#    build:\n#      context: spark-streaming-service\n#      dockerfile: Dockerfile\n#    ports:\n#      - \"4040:4040\"\n#    links:\n#      - kafka:kafkabroker\n#      - sparkMaster:sparkMasterURL\n#      - zookeeper:zookeeperservice\n#    environment:\n#      - \"KAFKA_URI=kafkabroker:9092\"\n#      - \"ZOOKEEPER_URI=zookeeperservice:2181\"\n#      - \"SPARK_MASTER_URL=spark://sparkMasterURL:7077\"\n#      - \"SPARK_USER=bob\"\n  order-web-ui:\n    container_name: order-web-ui\n    build:\n      context: web\n      dockerfile: Dockerfile\n    ports:\n      - \"8181:8181\"\n    links:\n      - messaging-service:messaging-service\n      - mongo:mongodb\n    environment:\n      - \"MONGO_URL=mongodb://mongodb:27017/sampledb\"\n      - \"OPENSHIFT_DATAPIPELINE_CAMEL_URL=http://messaging-service:8080\"\n",
+            "py-structure-streaming/Dockerfile": "FROM docker.io/radanalyticsio/openshift-spark\n\nMAINTAINER Zak Hassan zak.hassan1010@gmail.com\n\n#ENV SPARK_MASTER_URL spark://zhassan.yyz.redhat.com:7077\n#ENV RECOMMEND_SERVICE_SERVICE_HOST zhassan.yyz.redhat.com\n\n#RUN mkdir -p /opt/spark\n#RUN apk update\n#RUN apk add bash curl tar unzip nodejs\n\nADD ./pyorder-processing.py   /opt\n\nADD ./entrypoint.sh   /opt\n\n#ADD ./spark-2.0.1-bin-hadoop2.7 /opt/spark\n\nWORKDIR /opt\n\nEXPOSE 8080\n\nENTRYPOINT [\"./entrypoint.sh\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "Testing123.ipynb",
+            "build-docker.sh",
+            "entrypoint.sh",
+            "make-push.sh",
+            "pyorder-processing.py",
+            "runContainer.sh",
+            "runSparkJob.sh"
+        ],
+        "folders": []
+    }
+}

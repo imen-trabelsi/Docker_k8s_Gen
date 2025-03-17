@@ -1,0 +1,43 @@
+{
+    "source_code_info": {
+        "language": "PHP",
+        "framework": "PHP",
+        "dependencies": {
+            "composer.json": "{\n    \"name\": \"erik-dubbelboer/php-redis-admin\",\n    \"description\": \"Simple web interface to manage Redis databases.\",\n    \"version\": \"1.6.0\",\n    \"license\": \"CC-BY-ND\",\n    \"homepage\": \"https://github.com/ErikDubbelboer/phpRedisAdmin\",\n    \"authors\": [\n        {\n            \"name\": \"Erik Dubbelboer\",\n            \"email\": \"erik@dubbelboer.com\",\n            \"homepage\": \"http://blog.dubbelboer.com\",\n            \"role\": \"Developer\"\n        }\n    ],\n    \"require\": {\n        \"predis/predis\": \"1.0.3\"\n    },\n    \"minimum-stability\": \"stable\",\n    \"target-dir\": \"ErikDubbelboer/phpRedisAdmin\"    \n}\n"
+        },
+        "database": "Redis",
+        "build_system": "Composer",
+        "config_files": {
+            "docker-compose.yml": "version: '2'\n\nservices:\n\n#  graylog-mongo:\n#    image: \"mongo:3.0\"\n#    volumes:\n#      - ./graylog/data/mongo:/data/db\n\n#  graylog-elasticsearch:\n#    image: \"elasticsearch:2\"\n#    command: \"elasticsearch -Des.cluster.name='graylog'\"\n#    environment:\n#      ES_HEAP_SIZE: 1g\n#    volumes:\n#      - ./graylog/data/elasticsearch:/usr/share/elasticsearch/data\n\n#  graylog:\n#    image: graylog2/server:2.0.1-1\n#    volumes:\n#      - ./graylog/data/journal:/usr/share/graylog/data/journal\n#      - ./graylog/config:/usr/share/graylog/data/config\n#    environment:\n#      GRAYLOG_REST_TRANSPORT_URI: http://127.0.0.1:12900\n#    links:\n#      - graylog-mongo:mongo\n#      - graylog-elasticsearch:elasticsearch\n#    ports:\n#      - \"9000:9000\"\n#      - \"12900:12900\"\n#      - \"12201:12201\"\n#      - \"12201/udp:12201/udp\"\n\n  redis:\n    image: redis:3.0\n    restart: always\n    networks:\n      common_network:\n        aliases:\n          - redis\n\n  mongodb:\n    image: mongo:3.2.11\n    command: mongod --auth\n    ports:\n      - \"27017:27017\"\n    volumes:\n      - ./mongo_data_dir:/data/db\n    restart: always\n    networks:\n      common_network:\n        aliases:\n          - mongodb\n\n  solr:\n    image: solr:6.6.0\n    ports:\n      - \"8983:8983\"\n    volumes:\n      - ./solr-cores:/opt/solr/server/solr\n    command: bin/solr -m 8g -f\n    environment:\n      LOG4J_PROPS: /opt/solr/server/solr/log4j.properties\n    restart: always\n    networks:\n      common_network:\n        aliases:\n         - solr\n  web:\n    build:\n      context: web-service\n    image: web\n    volumes:\n      - ./web-service/site:/var/www/site\n    ports:\n      - \"80:80\"\n    restart: always\n    environment:\n      MONGO_USER: admin\n      MONGO_PASSWORD: place_your_password_here\n    networks:\n      common_network:\n        aliases:\n          - web\n    depends_on:\n      - redis\n      - mongodb\n      - solr\n\n  streammanager:\n    build:\n      context: stream-manager-service\n    image: streammanager:lightweight\n    volumes:\n      - ./stream-manager-service/conf:/stream_manager/conf\n    restart: always\n    environment:\n      MONGO_USER: admin\n      MONGO_PASSWORD: place_your_password_here\n    networks:\n      common_network:\n        aliases:\n          - streammanager\n    depends_on:\n      - redis\n      - mongodb\n      - solr\n#    logging:\n#      driver: gelf\n#      options:\n#        gelf-address: \"udp://localhost:12201\"\n\nnetworks:\n  common_network:\n",
+            "web-service/site/phpRedisAdmin/Dockerfile": "FROM composer/composer\n\nADD . /src/app/\nWORKDIR /src/app\n\nRUN \\\n  composer install && \\\n  cp includes/config.environment.inc.php includes/config.inc.php\n\nEXPOSE 80\n\nENTRYPOINT [ \"php\", \"-S\", \"0.0.0.0:80\" ]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "README.markdown",
+            "composer.json",
+            "composer.lock",
+            "delete.php",
+            "edit.php",
+            "export.php",
+            "flush.php",
+            "import.php",
+            "index.php",
+            "info.php",
+            "logout.php",
+            "overview.php",
+            "rename.php",
+            "save.php",
+            "ttl.php",
+            "view.php"
+        ],
+        "folders": [
+            "css",
+            "images",
+            "includes",
+            "js"
+        ]
+    }
+}

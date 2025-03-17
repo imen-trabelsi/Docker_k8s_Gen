@@ -1,0 +1,55 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  annotations:
+    scheduler.alpha.kubernetes.io/critical-pod: ''
+  labels:
+    tier: control-plane
+  name: stork
+  namespace: kube-system
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      name: stork
+  strategy:
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 1
+    type: RollingUpdate
+  template:
+    metadata:
+      annotations:
+        scheduler.alpha.kubernetes.io/critical-pod: ''
+      labels:
+        name: stork
+        tier: control-plane
+    spec:
+      affinity:
+        podAntiAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+          - labelSelector:
+              matchExpressions:
+              - key: name
+                operator: In
+                values:
+                - stork
+            topologyKey: kubernetes.io/hostname
+      containers:
+      - command:
+        - /stork
+        - --driver=pxd
+        - --verbose
+        - --leader-elect=true
+        - --health-monitor-interval=120
+        env:
+        - name: PX_SERVICE_NAME
+          value: portworx-api
+        image: openstorage/stork:2.4.0
+        imagePullPolicy: Always
+        name: stork
+        resources:
+          requests:
+            cpu: '0.1'
+      hostPID: false
+      serviceAccountName: stork-account

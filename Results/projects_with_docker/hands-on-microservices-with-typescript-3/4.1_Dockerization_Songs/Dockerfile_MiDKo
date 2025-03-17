@@ -1,0 +1,37 @@
+FROM node:8.13-slim
+
+# Create app directory
+RUN mkdir -p /opt/my-musik/
+WORKDIR /opt/my-musik/
+
+# A wildcard is used to ensure both package.json AND package-lock.json are copied
+# where available (npm@5+)
+COPY package.json package-lock.json ./
+
+# Install app dependencies and 
+# move our node_modules under /opt/node_modules to cache them and get the smaller Docker container size
+RUN npm install typescript -g && \
+    npm install --no-optional && \
+    node_modules/.bin/gulp && \
+    mkdir -p /opt/my-musik/ && \
+    cd /opt/my-musik && \
+    npm install --no-optional --only=prod && \
+
+# Bundle app source
+COPY gulpfile.js ./
+COPY tsconfig.json ./
+COPY tslint.json ./
+COPY songs.json ./
+COPY config.json ./
+COPY Dockerfile ./
+COPY src ./src
+COPY --from=build-env /opt/my-musik/dist ./dist
+COPY --from=build-env /opt/my-musik/package.json ./
+COPY --from=build-env /opt/my-musik/config.json ./
+COPY --from=build-env /opt/my-musik/songs.json ./
+
+# Expose the application on port 3000 
+EXPOSE 3000
+
+# Define the command to run the app
+CMD ["node","dist/app.js"]

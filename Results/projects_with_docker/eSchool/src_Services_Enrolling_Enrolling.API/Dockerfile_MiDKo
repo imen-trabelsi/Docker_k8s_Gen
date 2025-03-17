@@ -1,0 +1,25 @@
+# Common base stage for build and runtime
+FROM build AS base
+WORKDIR /app
+
+# Build stage
+FROM build AS build
+WORKDIR /src
+COPY ["src/Services/Enrolling/Enrolling.API/Enrolling.API.csproj", "src/Services/Enrolling/Enrolling.API/"]
+COPY ["src/Services/Enrolling/Enrolling.Infrastructure/Enrolling.Infrastructure.csproj", "src/Services/Enrolling/Enrolling.Infrastructure/"]
+COPY ["src/Services/Enrolling/Enrolling.Domain/Enrolling.Domain.csproj", "src/Services/Enrolling/Enrolling.Domain/"]
+COPY ["src/Libraries/OpenTelemetry/OpenTelemetry.csproj", "src/Libraries/OpenTelemetry/"]
+COPY . .
+WORKDIR "/src/src/Services/Enrolling/Enrolling.API"
+RUN dotnet restore "Enrolling.API.csproj"
+RUN dotnet build "Enrolling.API.csproj" -c Release -o /app/build
+
+# Publish
+FROM build AS publish
+RUN dotnet publish "Enrolling.API.csproj" -c Release -o /app/publish
+
+# Final stage / image
+FROM base AS final
+WORKDIR /app
+EXPOSE 80
+ENTRYPOINT [ "dotnet", "Enrolling.API.dll" ]

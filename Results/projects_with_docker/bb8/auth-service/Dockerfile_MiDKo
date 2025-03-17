@@ -1,0 +1,28 @@
+# Use the official Node.js 12.16 as our base image
+FROM node:12.16
+
+# Set our working directory inside the image
+WORKDIR /usr/app
+
+# Copy package.json and package-lock.json
+COPY package*.json ./
+
+# Install app dependencies
+RUN yarn
+
+# Copy all other source code to work directory
+COPY . /usr/app
+
+# TypeScript
+RUN yarn build
+
+# Set necessary environments for our Docker image
+ENV NODE_ENV production
+ENV DATABASE_URL mysql://[user]:[password]@[host]:[port]/[database]
+ENV PORT 3000
+
+# Expose port 3000 to the outside
+EXPOSE 3000
+
+# Start the application
+CMD [ "yarn", "start:prod" ]

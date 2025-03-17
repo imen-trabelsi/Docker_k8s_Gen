@@ -1,0 +1,38 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Flask",
+        "dependencies": {
+            "requirements.txt": "amqp==2.2.1\naniso8601==1.2.1\nasn1crypto==0.22.0\nbackports-abc==0.5\nbcrypt==3.1.3\nbilliard==3.5.0.3\ncelery==4.1.0\ncertifi==2017.7.27.1\ncffi==1.10.0\nchardet==3.0.4\nclick==6.7\nconfigparser==3.5.0\ncoverage==4.4.1\ncryptography==2.0.3\nenum34==1.1.6\nflake8==3.4.1\nFlask==0.12.2\nFlask-PyMongo==0.5.1\nFlask-RESTful==0.3.6\nFlask-SQLAlchemy==2.2\nfuncsigs==1.0.2\nfunctools32==3.2.3.post2\nfuture==0.16.0\ngtextfsm==0.2.1\ngunicorn==19.7.1\nidna==2.6\nipaddress==1.0.18\nitsdangerous==0.24\nJinja2==2.9.6\njsonschema==2.6.0\njunos-eznc==2.1.5\nkombu==4.1.0\nlxml==3.8.0\nMarkupSafe==1.0\nmccabe==0.6.1\nmock==2.0.0\nncclient==0.5.3\nnetaddr==0.7.19\nnetmiko==1.4.2\nparamiko==2.2.1\npbr==3.1.1\nprogress==1.3\npsycopg2==2.7.3.1\npyasn1==0.3.3\npycodestyle==2.3.1\npycparser==2.18\npyeapi==0.8.1\npyflakes==1.5.0\npymongo==3.5.1\nPyNaCl==1.1.2\npyntc==0.0.5\npynxos==0.0.3\npyserial==3.4\npython-dateutil==2.6.1\npytz==2017.2\nPyYAML==3.12\nredis==2.10.6\nrequests==2.18.4\nscp==0.10.2\nsingledispatch==3.4.0.3\nsix==1.10.0\nsockjs-tornado==1.0.3\nSQLAlchemy==1.1.14\ntailon==1.3.0\nterminal==0.4.0\ntornado==4.5.2\ntornado-http-auth==1.1.0\nurllib3==1.22\nvine==1.1.4\nWerkzeug==0.12.2"
+        },
+        "database": "PostgreSQL",
+        "build_system": "pip",
+        "config_files": {
+            "docker-compose.yml": "version: '2'\nservices:\n  nginx:\n    image: nginx\n    links:\n      - web:web\n      - flower:flower\n    volumes:\n      - ./static:/var/www\n      - ./nginx/conf.d:/etc/nginx/conf.d\n      - ./nginx/ssl:/etc/nginx/ssl\n    ports:\n      - 80:80\n      - 443:443\n      - 8443:8443\n\n    depends_on:\n      - web\n\n  web:\n    restart: always\n    build: .\n    command: \"python app.py\"\n    links:\n      - redis:redis\n      - mongo:mongo\n    depends_on:\n      - redis\n      - mongo\n    volumes:\n      - ./src:/src\n    expose:\n      - \"8000\"\n    environment:\n      CALLBACK_API: http://web:5000/api/upgrade\n      LOGBIN_API: http://web:5000/api/logbin\n      REGIONS_API: http://web:5000/api/regions\n      IMAGES_API: http://web:5000/api/images\n\n  flower:\n    restart: always\n    build: .\n    command: \"celery flower -A tasks.celery --basic_auth=admin:password --address=0.0.0.0 --port=5555\"\n    links:\n      - redis:redis\n      - mongo:mongo\n    depends_on:\n      - redis\n      - mongo\n    volumes:\n      - ./src:/src\n    expose:\n      - \"8000\"\n    environment:\n      CALLBACK_API: http://web:5000/api/upgrade\n      LOGBIN_API: http://web:5000/api/logbin\n      REGIONS_API: http://web:5000/api/regions\n      IMAGES_API: http://web:5000/api/images\n\n  worker:\n    build: .\n    command: \"celery -E --loglevel=DEBUG -A tasks.celery worker\"\n    restart: always\n\n    links:\n      - mongo:mongo\n      - redis:redis\n    depends_on:\n      - redis\n      - mongo\n    environment:\n      CALLBACK_API: http://web:5000/api/upgrade\n      LOGBIN_API: http://web:5000/api/logbin\n      REGIONS_API: http://web:5000/api/regions\n      IMAGES_API: http://web:5000/api/images\n\n\n  redis:\n    image: redis:latest\n\n\n  mongo:\n    image: mongo:latest\n    expose:\n      - 27017\n\n",
+            "Dockerfile": "FROM python:2.7-onbuild\nCOPY . /usr/src/app\n# https://github.com/mher/flower/issues/735\nWORKDIR /tmp\nRUN git clone https://github.com/kecorbin/flower\nWORKDIR /tmp/flower\nRUN python setup.py install\nWORKDIR /usr/src/app\nCMD gunicorn app:app -b 0.0.0.0:8000"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            ".gitignore",
+            "Dockerfile",
+            "LICENSE",
+            "README.md",
+            "app.py",
+            "docker-compose.yml",
+            "flowerconfig.py",
+            "images.yaml",
+            "regions.yaml",
+            "requirements.txt",
+            "start.sh",
+            "tasks.py"
+        ],
+        "folders": [
+            "nginx",
+            "pyosupgrade",
+            "static",
+            "templates"
+        ]
+    }
+}

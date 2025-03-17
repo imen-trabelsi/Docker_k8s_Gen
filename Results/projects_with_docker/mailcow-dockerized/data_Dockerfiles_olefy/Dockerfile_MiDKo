@@ -1,0 +1,35 @@
+# Use official PHP Alpine image
+FROM alpine:3.20
+
+# Label maintainer
+LABEL maintainer="maintainer@example.com"
+
+# Ensure all the required packages and dependencies are installed
+RUN apk add --virtual .build-deps gcc musl-dev python3-dev libffi-dev openssl-dev cargo \
+&& apk add --update --no-cache python3 py3-pip openssl tzdata libmagic \
+&& pip3 install --upgrade pip \
+&& pip3 install --upgrade asyncio python-magic \
+&& pip3 install --upgrade https://github.com/decalage2/oletools/archive/master.zip \
+
+WORKDIR /app
+COPY olefy.py /app/
+
+# Copy application files to container
+COPY bootstrap.py /app/bootstrap.py
+COPY docker-entrypoint.sh /app/docker-entrypoint.sh
+COPY . /app
+
+# Change ownership to secure the application
+RUN chown -R nobody:nobody /app /tmp
+
+# Switch to nobody user
+USER nobody
+
+# Set environment variable
+ENV PIP_BREAK_SYSTEM_PACKAGES=1
+
+# Expose default app port
+EXPOSE 8080
+
+# Command to execute at container start
+CMD ["python3", "-u", "/app/olefy.py"]

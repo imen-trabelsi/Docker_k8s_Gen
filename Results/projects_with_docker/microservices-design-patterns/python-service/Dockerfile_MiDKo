@@ -1,0 +1,31 @@
+# Base image
+FROM python:3.9-slim-buster
+
+# Set working directory in the container
+WORKDIR /app
+
+# Copy app content to /app
+COPY ./app /app
+
+# Environmental variables
+ENV LISTEN_PORT $PORT
+ENV NGINX_MAX_UPLOAD 10m
+
+# Install Dependencies
+RUN apt-get update && apt-get install -y \
+    ffmpeg \
+    libsm6 \
+    libxext6 \
+    tesseract-ocr \
+
+# Configure JWT Algorithm
+RUN echo "\n\nJWT_ALGORITHM = 'RS256'" >> ./app/.env
+
+# Upgrade pip and install Python dependencies
+RUN pip install --upgrade pip && pip install --no-cache-dir -r ./app/requirements.txt
+
+# Expose the app port
+EXPOSE $PORT
+
+# Start the application
+CMD [ "python3", "app/main.py" ]

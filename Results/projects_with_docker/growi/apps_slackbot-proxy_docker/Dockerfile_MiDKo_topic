@@ -1,0 +1,53 @@
+# Use a smaller base image to reduce footprint
+FROM node:12-alpine as builder
+
+# Set global pnpm variables 
+ENV optDir="/opt"
+ENV PNPM_HOME="/root/.local/share/pnpm"
+ENV PATH="$PNPM_HOME:$PATH"
+
+# Installing dependencies
+RUN apk update && apk add --no-cache git bash curl openssl ca-certificates wget && \
+    wget -qO- https://get.pnpm.io/install.sh | ENV="$HOME/.shrc" SHELL="$(which sh)" PNPM_VERSION="10.4.1" sh - && \
+    pnpm add turbo --global && \
+
+# setup work directory
+WORKDIR ${optDir}
+
+# Copy local files to the image
+COPY . .
+
+# setup app directory
+ENV appDir="${optDir}/slackbot-proxy"
+WORKDIR ${appDir}/apps/slackbot-proxy
+
+# Install the application
+RUN pnpm install --frozen-lockfile && \
+    turbo run build --filter @growi/slackbot-proxy && \
+    pnpm deploy out --prod --filter @growi/slackbot-proxy && \
+
+# archive necessary files
+RUN tar -zcf packages.tar.gz package.json apps/slackbot-proxy/package.json apps/slackbot-proxy/dist apps/slackbot-proxy/.env apps/slackbot-proxy/node_modules && \
+
+# Runtime stage: use a smaller base image to reduce runtime image footprint
+FROM base:latest
+
+# expose port
+EXPOSE 8080
+
+# Coping files from builder 
+
+# Set environment variables to production
+ENV NODE_ENV=production
+
+# Set user to node
+USER node
+
+# Define working directory
+WORKDIR ${optDir}/slackbot-proxy/apps/slackbot-proxy
+
+# Run the application
+CMD ["node", "-r", "dotenv-flow/config", "dist/index.js"]
+
+# Labels
+LABEL maintainer="Yuki"

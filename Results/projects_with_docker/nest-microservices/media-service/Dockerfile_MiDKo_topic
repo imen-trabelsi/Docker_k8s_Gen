@@ -1,0 +1,21 @@
+# Begin from base image
+FROM node:12
+
+# Create app directory
+WORKDIR /app/mediaservice
+
+# Bundle app source
+COPY package.json package-lock.json /app/mediaservice/
+RUN npm cache clean --force && npm install --no-optional
+
+# Copy everything else into the image
+COPY . /app/mediaservice/
+
+# Build the application
+RUN npm run build
+
+# Expose the port
+EXPOSE 8080
+
+# Set the command to run the application
+CMD [ "npm", "start" ]

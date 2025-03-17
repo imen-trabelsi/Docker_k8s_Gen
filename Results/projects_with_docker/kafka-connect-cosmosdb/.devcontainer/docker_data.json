@@ -1,0 +1,58 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/vscode/devcontainers/java:0-${VARIANT}",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [
+            "$USERNAME"
+        ],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "VARIANT=\"11\"",
+            "USERNAME=\"vscode\"",
+            "INSTALL_MAVEN=\"true\"",
+            "MAVEN_VERSION=\"3.6.3\"",
+            "INSTALL_AZURE_CLI=\"true\"",
+            "INSTALL_CONFLUENT=\"true\"",
+            "CONFLUENT_VERSION=\"6.0\"",
+            "CONFLUENT_CLI_VERSION=\"v1.16.0\"",
+            "INSTALL_DOCKER=\"true\""
+        ],
+        "envs": [
+            "ENV DEBIAN_FRONTEND=noninteractive",
+            "ENV  LOG_DIR=/home/$USERNAME/logs"
+        ],
+        "copy_instructions": [
+            "COPY .devcontainer/library-scripts /tmp/library-scripts/"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "curl https://packages.microsoft.com/config/debian/10/packages-microsoft-prod.deb --output /tmp/packages-microsoft-prod.deb && \\",
+                "dpkg -i /tmp/packages-microsoft-prod.deb &&",
+                "apt-get update &&",
+                "apt-get -y install --no-install-recommends apt-utils dialog &&",
+                "apt-get -y install --no-install-recommends apt-transport-https ca-certificates software-properties-common libssl-dev libffi-dev",
+                "build-essential gnupg-agent dnsutils httpie bash-completion curl wget git unzip jq lsb-release procps gnupg2 powershell &&",
+                "apt-get -y upgrade"
+            ],
+            [
+                "if [ \"${INSTALL_MAVEN}\" = \"true\" ]; then su vscode -c \"source /usr/local/sdkman/bin/sdkman-init.sh && sdk install maven \\\"${MAVEN_VERSION}\\\"\"; fi",
+                ""
+            ],
+            [
+                "if [ \"$INSTALL_AZURE_CLI\" = \"true\" ]; then bash /tmp/library-scripts/azcli-debian.sh; fi",
+                ""
+            ],
+            [
+                "if [ \"$INSTALL_CONFLUENT\" = \"true\" ]; then bash /tmp/library-scripts/confluent-debian.sh \"${CONFLUENT_VERSION}\" \"${CONFLUENT_CLI_VERSION}\"; fi",
+                ""
+            ],
+            [
+                "if [ \"${INSTALL_DOCKER}\" = \"true\" ]; then bash /tmp/library-scripts/docker-debian.sh \"${USERNAME}\"; fi",
+                ""
+            ]
+        ]
+    }
+}

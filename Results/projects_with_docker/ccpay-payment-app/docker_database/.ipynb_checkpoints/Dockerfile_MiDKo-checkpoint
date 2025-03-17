@@ -1,0 +1,34 @@
+# Use base image
+FROM postgres:16.2
+
+# Copy the init-db.sh script to the docker-entrypoint-initdb.d directory
+COPY init-db.sh /docker-entrypoint-initdb.d/
+
+# Set the environment variables
+ENV POSTGRES_DB=payment
+ENV POSTGRES_USER=payment
+ENV POSTGRES_PASSWORD=payment
+
+# Install gradle
+RUN apt-get update && apt-get install -y gradle
+
+# Set work directory to app
+WORKDIR /app
+
+# Copy . 
+COPY . .
+
+# Build the application with gradle
+RUN gradle build
+
+# Copy the build file to the container
+COPY build/libs/*.jar app.jar
+
+# Expose the necessary ports
+EXPOSE 5432
+
+# Health check command
+HEALTHCHECK --interval=10s --timeout=10s --retries=10 CMD psql -c 'select 1' -d payment -U payment
+
+# Execution command
+CMD ["java", "-jar", "/app.jar"]

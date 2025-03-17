@@ -1,0 +1,22 @@
+# Start with a base image containing JAVA runtime
+FROM openjdk:8-jre-alpine
+
+# The application's jar file
+ARG JAR_FILE=target/cartservice-provider-1.0.0-SNAPSHOT.jar
+
+# Add the application's jar to the container
+COPY ${JAR_FILE} cartservice-provider.jar
+
+# Change directory
+WORKDIR /app
+
+# Copy application jar file to docker image
+COPY ./target/cartservice-provider-1.0.0-SNAPSHOT.jar /app
+
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
+
+# Run the jar file
+ENTRYPOINT ["sh", "-c"]
+
+CMD ["java", "-jar", "/app/cartservice-provider-1.0.0-SNAPSHOT.jar"]

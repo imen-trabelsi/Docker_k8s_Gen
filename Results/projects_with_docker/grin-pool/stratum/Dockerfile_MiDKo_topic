@@ -1,0 +1,49 @@
+# Stage 1: Build Time
+FROM rust:1.40 as builder
+
+WORKDIR /stratum
+COPY src/. /stratum/src/
+COPY Cargo.toml grin-pool.toml /stratum/
+
+# Run commands
+RUN set -ex && \
+    apt-get update && \
+    apt-get --no-install-recommends --yes install \
+    clang \
+    libclang-dev \
+    llvm-dev \
+    libncurses5 \
+    libncursesw5 \
+    libssl-dev \
+    libssl1.1 \
+    cmake \
+    git \
+    vim \
+    net-tools \
+    procps && \
+    echo "set mouse=v" >> /root/.vimrc && \
+
+# Stage 2: Run Time
+FROM debian:buster-slim
+COPY grin-pool.toml /usr/local/bin/
+COPY run.sh /
+
+# Expose Ports
+EXPOSE 3333
+
+# Environment Variables
+ENV RUST_BACKTRACE=1
+ENV PATH=/usr/local/bin:$PATH
+
+# Install necessary runtime packages
+RUN set -ex && \
+    apt-get update && \
+    apt-get --no-install-recommends --yes install \
+    libssl-dev \
+    libssl1.1 \
+    procps \
+    htop \
+    net-tools \
+
+# Set entry point
+CMD ["/run.sh"]

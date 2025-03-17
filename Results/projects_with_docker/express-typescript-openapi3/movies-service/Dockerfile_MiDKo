@@ -1,0 +1,37 @@
+# Pull the base image
+FROM node:10.15.3-alpine
+
+# Create a group and user
+RUN addgroup -S nupp && adduser -S -g nupp nupp
+
+# Assign Environment Variable
+ENV HOME=/home/nupp
+
+WORKDIR $HOME/app
+
+# Grant permissions for the non-root user
+RUN chown -R nupp:nupp $HOME/* /usr/local/ && \
+
+# Copy package.json and package-lock.json before other files
+# Utilise Docker cache to save re-installing node modules if unchanged
+COPY package*.json ./
+
+# Switch to the user
+USER nupp
+
+# Install dependencies 
+RUN npm cache clean --force && \
+    npm install && \
+
+# Copy all files
+COPY . $HOME/app/
+
+# Download dumb-init.
+# dumb-init is a small Docker utility that allows for proper signal propagation and simpler process cleanup.
+ADD https://github.com/Yelp/dumb-init/releases/download/v1.1.1/dumb-init_1.1.1_amd64 /usr/local/bin/dumb-init
+
+# Expose the necessary port
+EXPOSE 8080
+
+# Execute command
+CMD ["dumb-init", "npm", "run", "dev"]

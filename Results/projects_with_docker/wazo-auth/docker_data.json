@@ -1,0 +1,65 @@
+{
+    "docker_info": {
+        "base_image": "python:3.9-slim-bullseye",
+        "multi_stage_build": true,
+        "exposed_ports": [
+            "9497"
+        ],
+        "user": [],
+        "labels": [
+            "maintainer=\"Wazo"
+        ],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV PATH=\"/opt/venv/bin:$PATH\"",
+            "ENV PATH=\"/opt/venv/bin:$PATH\""
+        ],
+        "copy_instructions": [
+            "COPY requirements.txt /usr/src/wazo-auth/",
+            "WORKDIR /usr/src/wazo-auth",
+            "COPY setup.py /usr/src/wazo-auth/",
+            "COPY wazo_auth /usr/src/wazo-auth/wazo_auth",
+            "COPY --from=compile-image /opt/venv /opt/venv",
+            "COPY ./etc/wazo-auth /etc/wazo-auth",
+            "COPY ./templates /var/lib/wazo-auth/templates"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"wazo-auth\",",
+                    "\"--db-upgrade-on-startup\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "python -m venv /opt/venv",
+                "# Activate virtual env"
+            ],
+            [
+                "apt-get -q update",
+                "RUN apt-get -yq install --no-install-recommends gcc libldap2-dev libsasl2-dev"
+            ],
+            [
+                "pip install -r requirements.txt",
+                ""
+            ],
+            [
+                "python setup.py install",
+                ""
+            ],
+            [
+                "true \\",
+                "&& adduser --quiet --system --group --home /var/lib/wazo-auth wazo-auth",
+                "&& apt-get -q update",
+                "&& apt-get -yq install --no-install-recommends libldap2-dev libsasl2-dev xmlsec1",
+                "&& mkdir -p /etc/wazo-auth/conf.d",
+                "&& mkdir -p /etc/wazo-auth/templates.d",
+                "&& install -o wazo-auth -g wazo-auth /dev/null /var/log/wazo-auth.log",
+                "&& rm -rf /var/lib/apt/lists/*"
+            ]
+        ]
+    }
+}

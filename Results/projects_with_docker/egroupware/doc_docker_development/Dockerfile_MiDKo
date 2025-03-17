@@ -1,0 +1,34 @@
+FROM node:20-bookworm-slim
+
+# Environment variables
+ENV VERSION=dev-master
+ENV PHP_VERSION=8.2
+
+# Copy instruction
+COPY entrypoint.sh /
+
+# Run commands
+RUN set -e \
+    && apt-get update \
+    && apt-get install -y apt-transport-https software-properties-common curl \
+    && curl -o /etc/apt/trusted.gpg.d/php.gpg https://packages.sury.org/php/apt.gpg \
+    && echo "deb https://packages.sury.org/php/ $(lsb_release -sc) main" > /etc/apt/sources.list.d/php.list \
+    && apt-get update \
+    && bash -c "apt-get install -y php$PHP_VERSION-{cli,mysql,gd,xsl,bz2,opcache,tidy,zip,bcmath,mbstring,ldap,curl,fpm,pgsql,gmp}" \
+
+# Working Directory
+WORKDIR /usr/src/app
+
+# Installing app dependencies
+COPY package*.json ./
+RUN npm install
+
+# Bundling app source
+COPY . .
+
+# Bind to port 9000
+EXPOSE 9000
+
+# Defining CMD & ENTRYPOINT
+ENTRYPOINT ["/entrypoint.sh"]
+CMD ["php-fpm", "--nodaemonize"]

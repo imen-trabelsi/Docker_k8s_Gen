@@ -1,0 +1,37 @@
+# Use an official Node runtime as a parent image
+FROM node:14-buster
+
+# Set the working directory in the container
+WORKDIR /usr/src/app
+
+# Add metadata to an image
+LABEL version="1.0"
+
+# Update PATH environment variable
+ENV NPM_CONFIG_PREFIX=/home/node/.npm-global
+ENV PATH=$PATH:/home/node/.npm-global/bin
+
+# Install any necessary dependencies using Node's package manager
+RUN mkdir -p $NPM_CONFIG_PREFIX && \
+yarn global add \
+elm@0.19.1 \
+elm-format@0.8.5 \
+elm-test@0.19.1-revision6 \
+uglify-js@3.13.4 \
+
+# Copy the current directory contents into the container
+COPY . .
+
+# Compile the Go application
+RUN go mod download
+
+# This container exposes port
+EXPOSE 
+
+# Run the Go application when the container launches
+ENTRYPOINT ["", ""]
+
+# If not specified, the default is CMD 
+CMD [""]
+
+

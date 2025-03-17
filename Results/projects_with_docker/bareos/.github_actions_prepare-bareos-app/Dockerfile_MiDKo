@@ -1,0 +1,11 @@
+# Use a base image
+FROM docker:stable
+
+# Update the base image
+RUN apk update && apk add --no-cache curl bash && rm -rf /var/cache/apk/*
+
+# Copy files
+COPY entrypoint.sh /entrypoint.sh
+
+# Set the entrypoint
+ENTRYPOINT ["/entrypoint.sh"]

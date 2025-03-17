@@ -1,0 +1,47 @@
+# Use base image from the user’s input
+FROM $BASE_CONTAINER
+
+# Specify the maintainer
+LABEL maintainer="Jupyter”
+
+# Switch to root user
+USER root
+
+# Install dependencies
+RUN apt-get update && apt-get install -yq --no-install-recommends \
+    build-essential \
+    vim-tiny \
+    git \
+    inkscape \
+    libsm6 \
+    libxext-dev \
+    libxrender1 \
+    lmodern \
+    netcat \
+
+# Add user and switch to the user
+ARG NB_UID
+RUN adduser --disabled-password --gecos '' --uid $NB_UID jupyter
+USER $NB_UID
+
+# Set environment variables
+ENV BUNDLE_PATH /bundle
+ENV BUNDLE_BIN /bundle/bin
+ENV PATH $BUNDLE_BIN:$PATH
+
+# Copy files from project into Docker image
+COPY Gemfile Gemfile
+COPY subrepos/docker-stacks/minimal-notebook/Dockerfile Dockerfile
+COPY . .
+
+# Expose ports
+EXPOSE 8787
+
+# Configure bundler and PATH
+RUN echo 'export GEM_HOME="$BUNDLE_PATH"' >> ~/.bashrc
+RUN echo 'export PATH="$BUNDLE_BIN:$PATH"' >> ~/.bashrc
+RUN gem install bundler
+RUN bundle install
+
+# Run the application
+CMD ["bundle", "exec", "rails", "server", "-b", "0.0.0.0"]

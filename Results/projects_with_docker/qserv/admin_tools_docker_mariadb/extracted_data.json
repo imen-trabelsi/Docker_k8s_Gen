@@ -1,0 +1,21 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "pyproject.toml": "[tool.black]\nline-length = 110\ntarget-version = ['py38']\n"
+        },
+        "database": null,
+        "build_system": "poetry",
+        "config_files": {
+            "admin/tools/docker/mariadb/Dockerfile": "#-------------------------------------------------------------------------------------------------------------\n# MariaDB + scisql image targets for Qserv\n#\n# These images are expected to change relatively infrequently (built by CI perhaps once or twice yearly; not\n# routinely built by developers), only as MariaDB or scisql upgrades are needed by Qserv.\n#\n# First up: the 'mariadb-scisql-builder' target, which builds a container image in which the scisql extension\n# is built. The starting point here should be the same base image as the targeted off-the-shelf MariaDB image\n# (see Dockerfile 'FROM' line for the targeted MariaDB release in https://github.com/MariaDB/mariadb-docker.)\n#\n# Scisql is cloned, built from source, and left installed to /usr/local.\n#-------------------------------------------------------------------------------------------------------------\n\nFROM ubuntu:focal AS mariadb-scisql-builder\n\nRUN apt-get update \\\n    && apt-get install -y curl \\\n    && curl -LsS https://r.mariadb.com/downloads/mariadb_repo_setup | bash -s -- --mariadb-server-version=\"mariadb-11.4.4\" \\\n    && apt-get install -y g++ make git python3 libmariadb-dev \\\n    && update-alternatives --install /usr/bin/python python /usr/bin/python3 0\n\nRUN cd /tmp \\\n    && git clone https://github.com/smonkewitz/scisql \\\n    && cd scisql \\\n    && git checkout tags/0.3.11 -b 0.3.11 \\\n    && ./configure \\\n    && make -j8 install\n\nRUN cd /tmp/scisql \\\n    && PYTHONPATH=/usr/local/python python -c \"\\\nfrom scisql import configure; \\\nconfigure.init_config(None, None, None, None, None); \\\nconfigure.apply_templates('/usr/local/templates', 'build'); \\\n\"\n\nRUN chmod a+r /tmp/scisql/build/deploy.mysql\n\n#-------------------------------------------------------------------------------------------------------------\n# The 'mariadb-scisql' target layers just the runtime artifacts from the builder target above on top of an\n# off-the-shelf mariadb image.  This produces a generic \"mariadb with scisql installed\" container image.\n#-------------------------------------------------------------------------------------------------------------\n\nFROM mariadb:11.4.4 AS mariadb-scisql\nCOPY --from=mariadb-scisql-builder /tmp/scisql/build/libscisql-scisql_0.3.so /usr/lib/mysql/plugin\nCOPY --from=mariadb-scisql-builder /tmp/scisql/build/deploy.mysql /docker-entrypoint-initdb.d/scisql.sql\n\n#-------------------------------------------------------------------------------------------------------------\n# The 'lite-mariadb' target further customizes the generic 'mariadb-scisql' image above by adding a 'qserv'\n# user, creating directories with appropriate ownership at locations expected to be used for bind-mounts in\n# the qserv operating environment, and setting the default runtime user to 'qserv'.  This image is the\n# artifact to be used for all MariaDB instantiations within a Qserv deployment.\n#-------------------------------------------------------------------------------------------------------------\n\nFROM mariadb-scisql AS lite-mariadb\n\nRUN useradd --uid 1000 qserv\n\nRUN mkdir -p /qserv/data /qserv/data/results /config-etc /var/log/mysql \\\n    && chown qserv:qserv /qserv/data /qserv/data/results /config-etc /var/log/mysql\n\nUSER qserv\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile"
+        ],
+        "folders": []
+    }
+}

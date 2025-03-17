@@ -1,0 +1,48 @@
+# Base image
+FROM node:22.12-alpine as base
+
+WORKDIR /app
+
+# Copy the project files
+COPY package.json .
+COPY . .
+
+# Set environment variables
+ENV RUSTUP_HOME=/usr/local/rustup \
+    NODE_ENV=production \
+    API_ORIGIN=${API_ORIGIN} \
+    FRONTEND_URL=${FRONTEND_URL} \
+
+# Install dependencies
+RUN apk add --no-cache jq yq wget g++ libc-dev python3 make
+
+# Install turbo
+RUN npm install -g "turbo@$(jq -r '.devDependencies.turbo' < package.json)"
+
+# Install Rust
+RUN wget -q -O- https://sh.rustup.rs | sh -s -- -y --default-toolchain none --profile minimal
+
+# Install wasm-opt
+RUN cargo install wasm-opt --debug
+
+# Yarn install and cache clean
+RUN yarn install --immutable && yarn cache clean
+
+WORKDIR /usr/local/
+COPY rust-toolchain.toml .
+
+WORKDIR /usr/local/src/
+
+# Prune, copy and build
+RUN turbo prune --scope='@apps/hash-frontend' --docker && \
+
+RUN cp -R .cargo Cargo.toml Cargo.lock /app/out/full/ && rm -rf target/
+
+# Set user
+RUN addgroup -S hash && adduser -S frontend -G hash
+RUN chown -R frontend:hash .next
+
+USER frontend
+
+# Run commands
+CMD ["yarn", "--cache-folder", "/tmp/yarn-cache", "--global-folder", "/tmp/yarn-global", "start"]

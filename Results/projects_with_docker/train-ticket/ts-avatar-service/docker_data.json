@@ -1,0 +1,54 @@
+{
+    "docker_info": {
+        "base_image": "python:3",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "17001"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV PYTHONUNBUFFERED=TRUE"
+        ],
+        "copy_instructions": [
+            "WORKDIR /app"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"gunicorn\",",
+                    "\"-w\",",
+                    "\"4\",",
+                    "\"-b\",",
+                    "\"0.0.0.0:17001\",",
+                    "\"app:app\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "/bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && echo 'Asia/Shanghai' >/etc/timezone",
+                ""
+            ],
+            [
+                "apt update -y",
+                "RUN apt install -y cmake"
+            ],
+            [
+                "apt install -y libgl1-mesa-glx",
+                ""
+            ],
+            [
+                "mkdir -p /app",
+                "ADD . /app/"
+            ],
+            [
+                "pip install -r requirements.txt",
+                ""
+            ]
+        ]
+    }
+}

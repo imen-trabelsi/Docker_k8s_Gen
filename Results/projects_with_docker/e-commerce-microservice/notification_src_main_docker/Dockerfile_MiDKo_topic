@@ -1,0 +1,38 @@
+# 1. Generate an optimised Dockerfile.
+FROM openjdk:8-jre-alpine as builder
+
+# 2. Set the correct environment variables and dependencies.
+ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \
+
+# 3. Ensure the correct entry point and CMD/ENTRYPOINT instructions.
+ENTRYPOINT ["./entrypoint.sh"]
+
+# Build application
+WORKDIR /home/jhipster
+RUN apk update && apk add gradle
+
+COPY build.gradle .
+COPY src ./src
+RUN gradle build
+
+# Multi-stage Dockerfile
+FROM openjdk:8-jre-alpine
+
+ENV JAVA_OPTS ""
+
+# 4. Include the correct exposed ports and necessary copy instructions.
+# Copy the jar file
+
+# Expose the port
+EXPOSE 8082
+
+# Copy script
+COPY entrypoint.sh ./
+RUN chmod 755 entrypoint.sh && chown jhipster:jhipster entrypoint.sh
+
+#create user and give necessary permissions
+RUN adduser -D -s /bin/sh jhipster
+USER jhipster
+
+# Run the jar file
+ENTRYPOINT ["sh", "-c", "java $JAVA_OPTS -jar /app.war"]

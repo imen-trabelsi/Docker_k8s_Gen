@@ -1,0 +1,28 @@
+# Base Image
+FROM library/postgres:12-bullseye
+
+# Environment Variables
+ENV TASKS_API_PASSWORD=tasks_api_password
+ENV MODEL_API_PASSWORD=model_api_password
+
+# Copy Instructions
+COPY ./entrypoint.sh /entrypoint.sh 
+
+# Permission for execution
+RUN chmod +x /entrypoint.sh
+
+# Copy Application Files
+COPY . .
+
+# Dependencies
+COPY yarn.lock .
+RUN yarn install --production
+
+# Expose Ports (The user didn't specify any ports. Normally, you need to expose the application port.)
+#EXPOSE <ApplicatioPort>
+
+# Health Checks (The user didn't specify any health checks. However, Docker supports the HEALTHCHECK instruction for this.)
+#HEALTHCHECK CMD curl --fail http://localhost:<Port> || exit 1
+
+# Command to run the application
+CMD ["/entrypoint.sh", "postgres"]

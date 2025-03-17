@@ -1,0 +1,28 @@
+# Use the adorsys/java:11 as base image
+FROM adorsys/java:11
+
+# Set the maintainer
+LABEL maintainer="https://git.adorsys.de/adorsys/xs2a/aspsp-xs2a"
+
+# Set the work directory and give permissions
+RUN mkdir -p /opt/xs2a-starter/logs/ 
+RUN chmod 777 /opt/xs2a-starter/logs/
+WORKDIR /opt/xs2a-starter
+
+# Set environment variables
+ENV JAVA_OPTS -Xmx1024m -Dserver.port=8080
+ENV JAVA_TOOL_OPTIONS -Xmx1024m
+
+# Insert necessary build commands (if any) here
+
+# Copy jar file into docker image
+COPY ./target/xs2a-standalone-starter-exec.jar /opt/xs2a-starter/xs2a-standalone-starter.jar
+
+# Make the service run on a non-root user
+USER 1001
+
+# Expose the micrsoservice’s port
+EXPOSE 8080
+
+# Execute the application 
+CMD exec $JAVA_HOME/bin/java $JAVA_OPTS -jar /opt/xs2a-starter/xs2a-standalone-starter.jar

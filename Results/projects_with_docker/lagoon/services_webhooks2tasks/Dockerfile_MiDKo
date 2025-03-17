@@ -1,0 +1,17 @@
+# The base image 
+FROM ${IMAGE_REPO:-lagoon}/yarn-workspace-builder
+
+# Set the environment variables
+ENV LAGOON_VERSION=$LAGOON_VERSION \
+
+# Add the current source to the container
+WORKDIR /app/services/webhooks2tasks/
+COPY --from=yarn-workspace-builder /app /app
+COPY --from=yarn-workspace-builder /app/.env.defaults .
+COPY . .
+
+# Install your application's dependencies
+RUN yarn check --verify-tree && yarn build
+
+# Command to start the service
+CMD ["yarn", "start"]

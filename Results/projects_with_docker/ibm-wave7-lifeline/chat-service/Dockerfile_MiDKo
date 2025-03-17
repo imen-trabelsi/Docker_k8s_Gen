@@ -1,0 +1,26 @@
+# Use the base image provided by the user
+FROM openjdk:11
+
+# Making a directory in the container
+RUN mkdir /app
+WORKDIR /app
+
+# Copying the project code into the container
+COPY ./src /app/src
+COPY pom.xml /app
+
+# Execute mvn clean install to download dependencies and build the project
+RUN mvn -f /app/pom.xml clean install
+
+# Add the build output (jar file) into the desired location
+COPY ./target/chat-service-0.0.1-SNAPSHOT.jar /usr/src/chat-service-0.0.1-SNAPSHOT.jar
+
+# Set the working directory 
+WORKDIR usr/src
+
+# Specify the entry point 
+ENTRYPOINT ["java","-jar","chat-service-0.0.1-SNAPSHOT.jar"]
+
+# Expose the necessary ports 
+EXPOSE 8080
+EXPOSE 443

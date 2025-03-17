@@ -1,0 +1,28 @@
+# Use the base image of Ubuntu latest
+FROM ubuntu:latest
+
+# Copy required files to the Docker environment
+COPY ./bin /million-song-library/bin
+COPY ./msl-pages /million-song-library/msl-pages
+COPY ./server /million-song-library/server
+COPY ./docs /million-song-library/docs
+
+# Set the working directory in the Docker environment
+WORKDIR /million-song-library/msl-pages
+
+# Install the necessary dependencies
+RUN echo -e "\n\033[0;35mINSTALLING BASIC OS ........................\033[0m\n" && \
+    apt-get update && \
+    apt-get install -y software-properties-common libpng-dev sudo python default-jdk wget git-core curl tomcat7 tomcat7-docs tomcat7-admin tomcat7-examples && \
+    echo -e "\n\033[0;35mRUNNING SETUP SCRIPT........................\033[0m\n" && \
+    cd /million-song-library/bin/provision && sudo chmod +x validate-requirements.sh java-setup.sh basic-dep-setup.sh && bash java-setup.sh && bash ./basic-dep-setup.sh && \
+    cd /million-song-library/bin && sudo chmod +x setup.sh && bash setup.sh -n -s -v -y && \
+
+# Copy server files to the Tomcat webapps directory
+COPY server/eureka.war /var/lib/tomcat7/webapps
+
+# Expose the required port
+EXPOSE 8080
+
+# Set entrypoint
+ENTRYPOINT ["/bin/bash"]

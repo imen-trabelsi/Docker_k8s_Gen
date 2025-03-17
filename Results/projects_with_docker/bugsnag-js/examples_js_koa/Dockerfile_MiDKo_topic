@@ -1,0 +1,26 @@
+# Base Image
+FROM node:8@sha256:a681bf74805b80d03eb21a6c0ef168a976108a287a74167ab593fc953aac34df
+
+# Set Workdir
+WORKDIR /usr/src/app
+
+# Copy package* files
+COPY package* ./ 
+
+# Run npm installation
+RUN npm install
+
+# Copy app source to workdir
+COPY . .
+
+# Set environment variables
+ENV NODE_ENV=production
+
+# Expose and set correct port details
+EXPOSE 8080
+
+# CMD to start the app  
+CMD ["npm", "start"]
+
+# Healthcheck instructions
+HEALTHCHECK --interval=10s --timeout=5s --start_period=5s --retries=3 CMD [ "node", "healthcheck.js" ]

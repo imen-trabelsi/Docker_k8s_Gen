@@ -1,0 +1,14 @@
+# Use the base image with Java 8
+FROM java:8-jre
+
+# Copy local code to the container image
+COPY ./target/ts-station-service-1.0.jar /app/
+
+# Change the timezone to Shanghai
+RUN /bin/cp /usr/share/zoneinfo/Asia/Shanghai /etc/localtime && \
+
+# This container exposes port 12345 to the outside world
+EXPOSE 12345
+
+# Our application will run this command when the container starts
+CMD ["java", "-Xmx200m", "-jar", "/app/ts-station-service-1.0.jar"]

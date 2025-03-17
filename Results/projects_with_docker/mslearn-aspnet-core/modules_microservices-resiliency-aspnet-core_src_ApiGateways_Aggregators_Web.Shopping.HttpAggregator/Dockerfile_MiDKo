@@ -1,0 +1,18 @@
+# Start with the base image
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build 
+WORKDIR /src
+
+# Copy csproj and restore as distinct layers for cache
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+RUN dotnet restore "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj"
+
+# Copy everything else and build
+COPY . .
+WORKDIR "/src/src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator"
+RUN dotnet publish --no-restore "Web.Shopping.HttpAggregator.csproj" -c Release -o /app/publish
+
+# Final stage / image
+FROM mcr.microsoft.com/dotnet/aspnet:6.0
+WORKDIR /app
+EXPOSE 80
+ENTRYPOINT ["dotnet", "Web.Shopping.HttpAggregator.dll"]

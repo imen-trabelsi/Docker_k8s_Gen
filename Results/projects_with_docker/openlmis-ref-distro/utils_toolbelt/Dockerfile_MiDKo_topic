@@ -1,0 +1,43 @@
+# Starting from a Python base image
+FROM python:3.7-alpine
+
+# Maintainer of the Dockerfile
+LABEL maintainer="username@example.com"
+
+# Install useful tools
+RUN apk add --no-cache bash curl jq
+
+# Expose the port the app listens on
+EXPOSE 5000
+
+# Copy requirements file and install dependencies
+COPY requirements.txt /app/
+RUN pip install -r /app/requirements.txt
+
+# Set work directory
+WORKDIR /app
+
+# Copy application source
+COPY . /app
+
+# Ensure that Python output is sent straight to terminal (unbuffered)
+ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
+
+# Provide metadata
+LABEL version="1.0"
+LABEL description="This is a Flask application dockerized, running on Alpine 3.9 base Image"
+
+# Postgres environment variables
+ENV POSTGRES_URL="localhost:5432/db"
+ENV POSTGRES_USER="username"
+ENV POSTGRES_PW="password"
+ENV POSTGRES_DB="my_database"
+
+# Authentication
+RUN chmod 755 /app
+
+USER nobody
+
+# Execution command
+CMD ["/bin/bash"]

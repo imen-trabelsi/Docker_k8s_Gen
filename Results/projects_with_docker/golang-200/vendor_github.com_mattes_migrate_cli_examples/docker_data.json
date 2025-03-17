@@ -1,0 +1,30 @@
+{
+    "docker_info": {
+        "base_image": "ubuntu:xenial",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "apt-get update && \\",
+                "apt-get install -y curl apt-transport-https"
+            ],
+            [
+                "curl -L https://packagecloud.io/mattes/migrate/gpgkey | apt-key add - && \\",
+                "echo \"deb https://packagecloud.io/mattes/migrate/ubuntu/ xenial main\" > /etc/apt/sources.list.d/migrate.list &&",
+                "apt-get update &&",
+                "apt-get install -y migrate"
+            ],
+            [
+                "migrate -version",
+                ""
+            ]
+        ]
+    }
+}

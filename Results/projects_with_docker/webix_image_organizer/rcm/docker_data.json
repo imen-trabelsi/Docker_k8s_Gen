@@ -1,0 +1,51 @@
+{
+    "docker_info": {
+        "base_image": "node:20.17.0-alpine3.20",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /app",
+            "COPY package.json ./",
+            "COPY package-lock.json ./",
+            "COPY . ./"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"npm\",",
+                    "\"start\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk add --no-cache git",
+                ""
+            ],
+            [
+                "git --version",
+                ""
+            ],
+            [
+                "npm -v",
+                ""
+            ],
+            [
+                "npm install",
+                ""
+            ],
+            [
+                "npm install react-scripts@5.0.1 -g",
+                ""
+            ]
+        ]
+    }
+}

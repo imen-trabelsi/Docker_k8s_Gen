@@ -1,0 +1,27 @@
+# Set the base image
+FROM maven:3.6.3-jdk-11-slim AS build
+WORKDIR /app
+
+# Copy maven executable to the image
+COPY mvnw .
+COPY .mvn .mvn
+
+# Copy the project files to the image
+COPY pom.xml .
+COPY src ./src
+
+# Build the project
+RUN mvn -f pom.xml clean package -DskipTests
+
+# Create final image
+FROM openjdk:11-jre-slim
+WORKDIR /app
+
+# Copy the executable to the final image
+
+# Set variables and arguments
+ENV JAVA_OPTS=""
+EXPOSE 16101
+
+# Run the application
+ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -jar /app/app.jar" ]

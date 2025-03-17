@@ -1,0 +1,15 @@
+# Use Microsoft's official build .NET image.
+# https://hub.docker.com/_/microsoft-dotnet-core-sdk/
+FROM mcr.microsoft.com/dotnet/aspnet
+
+# Set the working directory in the docker container
+WORKDIR /app
+
+# Copy the application files to the container
+COPY ./pub .
+
+# Expose API port to the outside
+EXPOSE 80
+
+# Entrypoint to run the dll
+ENTRYPOINT ["dotnet", "NurseCron.Certifications.WebApi.dll"]

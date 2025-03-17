@@ -1,0 +1,25 @@
+# Use the base image provided by user
+FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
+
+# Compilation environment - Copy csproj and restore dependencies
+WORKDIR /src
+COPY *.csproj ./
+RUN dotnet restore
+
+# Copy everything else and build
+COPY . .
+RUN dotnet publish -c Release -o /app/publish
+
+# Final stage / image
+FROM mcr.microsoft.com/dotnet/sdk:6.0
+
+WORKDIR /app
+
+# Set necessary environment variables for your application
+# ENV VARNAME=value
+
+# Expose the required ports
+EXPOSE 80
+
+# Start command
+ENTRYPOINT ["dotnet", "Coupon.API.dll"]

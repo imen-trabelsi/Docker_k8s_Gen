@@ -1,0 +1,21 @@
+# Use specified base image
+FROM eclipse-temurin:11-jre-focal
+
+# Set the maintainer label
+LABEL maintainer="contact@graviteesource.com"
+
+# Add openssl and wget
+RUN apk add --update openssl wget
+
+# Set the working directory
+WORKDIR /opt/dynamodb
+
+# Download and extract dynamodb_local_latest
+RUN wget -O /opt/dynamodb/dynamodb_local_latest.tar.gz https://s3.eu-central-1.amazonaws.com/dynamodb-local-frankfurt/dynamodb_local_latest.tar.gz && \
+    tar xfz /opt/dynamodb/dynamodb_local_latest.tar.gz && \
+
+# Expose the specified port
+EXPOSE 8000
+
+# Set command instructions
+CMD ["java", "-Djava.library.path=./DynamoDBLocal_lib", "-jar", "DynamoDBLocal.jar", "-dbPath", "/var/lib/dynamodb", "-optimizeDbBeforeStartup", "-port", "8000"]

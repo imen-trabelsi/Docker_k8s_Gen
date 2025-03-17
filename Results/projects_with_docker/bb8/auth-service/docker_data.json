@@ -1,0 +1,31 @@
+{
+    "docker_info": {
+        "base_image": "node:12.16",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /usr/app",
+            "COPY . ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "yarn",
+                    "start:prod"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "yarn",
+                "RUN yarn build"
+            ]
+        ]
+    }
+}

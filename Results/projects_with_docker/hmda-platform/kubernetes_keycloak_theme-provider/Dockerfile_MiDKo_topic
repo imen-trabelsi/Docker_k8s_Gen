@@ -1,0 +1,32 @@
+# Use alpine:latest as base image
+FROM alpine:latest
+
+# Install required software packages
+RUN apk update --no-cache && apk add --no-cache openjdk8-jre bash sbt
+
+# Add a group and a user
+ENV THEME_PROVIDER_USER="themeprovider"
+RUN addgroup -g 1000 -S ${THEME_PROVIDER_USER} && \
+
+# Set environment variables
+ENV JAVA_HOME=/usr/lib/jvm/java-1.8-openjdk/jre
+ENV PATH="$JAVA_HOME/bin:${PATH}"
+ENV SBT_OPTS="-Xms512M -Xmx1024M -Xss2M -XX:+CMSClassUnloadingEnabled -XX:+UseConcMarkSweepGC"
+
+# Copy application JAR and shell script
+COPY ./target/scala-2.12/*.jar app.jar 
+COPY ./entrypoint.sh entrypoint.sh
+COPY themes/hmda /themes
+
+# Change owner and permission for the shell script
+RUN chown ${THEME_PROVIDER_USER}:${THEME_PROVIDER_USER} ./entrypoint.sh
+RUN chmod +x ./entrypoint.sh
+
+# Change to non-root privilege
+USER ${THEME_PROVIDER_USER}
+
+# Expose the necessary port
+EXPOSE 8080
+
+# execute entrypoint.sh
+ENTRYPOINT ["./entrypoint.sh"]

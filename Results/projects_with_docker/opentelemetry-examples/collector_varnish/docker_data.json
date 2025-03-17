@@ -1,0 +1,30 @@
+{
+    "docker_info": {
+        "base_image": "golang:1.19",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "COPY --from=builder /go/prometheus_varnish_exporter/prometheus_varnish_exporter /usr/local/bin"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "apt update",
+                "RUN apt -y install git"
+            ],
+            [
+                "git clone https://github.com/jonnenauha/prometheus_varnish_exporter.git",
+                "WORKDIR /go/prometheus_varnish_exporter"
+            ],
+            [
+                "git checkout 1.6.1",
+                "RUN go build"
+            ]
+        ]
+    }
+}

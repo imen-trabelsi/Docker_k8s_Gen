@@ -1,0 +1,17 @@
+# Start with a base image containing Java runtime (The image tag can be different based on user preference)
+FROM openjdk:8-jdk-alpine
+
+# Add Maintainer Info
+LABEL maintainer="your-name@example.com"
+
+# Make port 8080 available to the world outside this container
+EXPOSE 8080
+
+# The application's jar file
+ARG JAR_FILE=target/zuul-ws.jar
+
+# Add the application's jar to the container
+COPY ${JAR_FILE} zuul-ws.jar
+
+# Run the jar file 
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/zuul-ws.jar"]

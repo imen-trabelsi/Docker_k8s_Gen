@@ -1,0 +1,31 @@
+{
+    "docker_info": {
+        "base_image": "python:3.7-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /usr/src/app",
+            "COPY basicload.py ./"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"python\",",
+                    "\"basicload.py\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk --no-cache add apache2-utils",
+                ""
+            ]
+        ]
+    }
+}

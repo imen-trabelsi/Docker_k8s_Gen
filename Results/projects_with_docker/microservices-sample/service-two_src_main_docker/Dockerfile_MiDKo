@@ -1,0 +1,20 @@
+# Base Image
+FROM --platform=linux/arm64/v8 openjdk:11-jre-slim as build
+
+# Add Metadata
+LABEL vendor="Mudigal" \
+
+# Copy the jar file
+COPY service-two.jar app.jar
+
+# Provide permission to 'touch' the jar
+RUN /bin/sh -c 'touch /app.jar'
+
+# Exposing the port
+EXPOSE 8084
+
+# Setting Java Options
+ENV JAVA_OPTS=""
+
+# Setting the startup command for the container
+ENTRYPOINT [ "sh", "-c", "java $JAVA_OPTS -Djava.security.egd=file:/dev/./urandom -jar /app.jar" ]

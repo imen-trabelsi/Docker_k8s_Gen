@@ -1,0 +1,36 @@
+# Use official openjdk image with alpine as the base image
+FROM openjdk:8-jre-alpine as builder
+
+# Set application directory and source directory
+ENV APP_HOME=/app
+ENV SOURCE_CODE=/usr/src/app
+
+# Copy pom.xml separately to ensure Maven dependency layer is recreated only when dependencies have changed
+COPY pom.xml $SOURCE_CODE/pom.xml
+
+# Copy project source code
+COPY src $SOURCE_CODE/src
+
+# Change to source code directory
+WORKDIR $SOURCE_CODE
+
+# Install app dependencies using maven
+RUN mvn clean package -DskipTests
+
+# Start a new stage in our multi-stage build, maintaining only what we need
+FROM openjdk:8-jre-alpine
+
+# Set working directory
+WORKDIR $APP_HOME
+
+# Copy only the built jar file from the previous stage
+
+# Configure environment variables for app file and home
+ENV APP_FILE=config-service-1.0-SNAPSHOT.jar
+ENV APP_HOME=/app
+
+# Use `sh -c` to provide execution command
+ENTRYPOINT ["sh", "-c", "java -jar $APP_FILE"]
+
+# Expose Port 8088 for further use
+EXPOSE 8088

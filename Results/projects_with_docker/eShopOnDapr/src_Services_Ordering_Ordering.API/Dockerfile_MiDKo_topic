@@ -1,0 +1,49 @@
+# Define build arguments
+ARG NET_IMAGE=7.0-bullseye-slim
+
+# Set base image
+FROM mcr.microsoft.com/dotnet/sdk:${NET_IMAGE} AS build
+
+# Set working directory
+WORKDIR /src
+
+# Copy csproj and restore as distinct layers 
+COPY ["src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/Web.Shopping.HttpAggregator.csproj", "src/ApiGateways/Aggregators/Web.Shopping.HttpAggregator/"]
+COPY ["src/BuildingBlocks/EventBus/EventBus.csproj", "src/BuildingBlocks/EventBus/"]
+COPY ["src/BuildingBlocks/Healthchecks/Healthchecks.csproj", "src/BuildingBlocks/Healthchecks/"]
+COPY ["src/Services/Basket/Basket.API/Basket.API.csproj", "src/Services/Basket/Basket.API/"]
+COPY ["src/Services/Catalog/Catalog.API/Catalog.API.csproj", "src/Services/Catalog/Catalog.API/"]
+COPY ["src/Services/Identity/Identity.API/Identity.API.csproj", "src/Services/Identity/Identity.API/"]
+COPY ["src/Services/Ordering/Ordering.API/Ordering.API.csproj", "src/Services/Ordering/Ordering.API/"]
+COPY ["src/Services/Payment/Payment.API/Payment.API.csproj", "src/Services/Payment/Payment.API/"]
+COPY ["src/Web/BlazorClient.Host/BlazorClient.Host.csproj", "src/Web/BlazorClient.Host/"]
+COPY ["src/Web/BlazorClient/BlazorClient.csproj", "src/Web/BlazorClient/"]
+COPY ["src/Web/WebStatus/WebStatus.csproj", "src/Web/WebStatus/"]
+COPY ["docker-compose.dcproj", "./"]
+COPY ["NuGet.config", "./"]
+COPY ["eShopOnDapr.sln", "./"]
+
+# Restore the project
+RUN dotnet restore "src/Services/Ordering/Ordering.API/Ordering.API.csproj"
+
+# Copy everything else and build
+COPY . .
+WORKDIR "/src/src/Services/Ordering/Ordering.API"
+RUN dotnet publish --no-restore "Ordering.API.csproj" -c Release -o /app/publish
+
+# Final stage/image
+FROM mcr.microsoft.com/dotnet/sdk:${NET_IMAGE}
+
+# Set working directory
+WORKDIR /app
+
+# Copy from build stage
+
+# Set environment variables
+ENV ASPNETCORE_URLS=http://+:80
+
+# Expose port 80
+EXPOSE 80
+
+# Set entrypoint
+ENTRYPOINT ["dotnet", "Ordering.API.dll"]

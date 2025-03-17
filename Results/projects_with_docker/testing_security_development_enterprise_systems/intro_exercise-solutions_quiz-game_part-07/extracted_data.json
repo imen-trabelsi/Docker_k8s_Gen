@@ -1,0 +1,24 @@
+{
+    "source_code_info": {
+        "language": "Java",
+        "framework": "Java",
+        "dependencies": {
+            "pom.xml": "<project xmlns=\"http://maven.apache.org/POM/4.0.0\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"\n         xsi:schemaLocation=\"http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd\">\n    <modelVersion>4.0.0</modelVersion>\n\n    <groupId>org.tsdes.intro.exercises.quizgame.part07</groupId>\n    <artifactId>quiz-game-part07</artifactId>\n    <packaging>war</packaging>\n    <version>0.0.1-SNAPSHOT</version>\n\n\n    <parent>\n        <groupId>org.tsdes.intro.exercises.quizgame</groupId>\n        <artifactId>quiz-game-root</artifactId>\n        <version>0.0.1-SNAPSHOT</version>\n    </parent>\n\n    <dependencyManagement>\n        <dependencies>\n            <dependency>\n                <groupId>org.tsdes.intro</groupId>\n                <artifactId>jee-provided-dependencies</artifactId>\n                <version>${project.version}</version>\n                <scope>import</scope>\n                <type>pom</type>\n            </dependency>\n        </dependencies>\n    </dependencyManagement>\n\n    <dependencies>\n\n        <dependency>\n            <groupId>org.tsdes.intro.exercises.quizgame.part06</groupId>\n            <artifactId>quiz-game-part06</artifactId>\n            <version>${project.version}</version>\n        </dependency>\n\n\n        <dependency>\n            <groupId>org.hibernate</groupId>\n            <artifactId>hibernate-core</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.hibernate</groupId>\n            <artifactId>hibernate-validator</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.glassfish</groupId>\n            <artifactId>javax.el</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>javax</groupId>\n            <artifactId>javaee-api</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>com.h2database</groupId>\n            <artifactId>h2</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.wildfly.arquillian</groupId>\n            <artifactId>wildfly-arquillian-container-managed</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.jboss.arquillian.junit</groupId>\n            <artifactId>arquillian-junit-container</artifactId>\n        </dependency>\n        <dependency>\n            <groupId>org.jboss.arquillian.core</groupId>\n            <artifactId>arquillian-core-api</artifactId>\n        </dependency>\n\n    </dependencies>\n\n\n    <build>\n        <finalName>quizgame</finalName>\n    </build>\n\n</project>"
+        },
+        "database": null,
+        "build_system": "Maven",
+        "config_files": {
+            "intro/exercise-solutions/quiz-game/part-07/Dockerfile": "FROM jboss/wildfly:18.0.1.Final\n\n\nCOPY target/quizgame.war /opt/jboss/wildfly/standalone/deployments/\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "pom.xml"
+        ],
+        "folders": [
+            "src"
+        ]
+    }
+}

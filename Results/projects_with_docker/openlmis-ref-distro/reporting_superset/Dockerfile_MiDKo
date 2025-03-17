@@ -1,0 +1,40 @@
+# Base Image 
+FROM python:3.8.13
+
+# Build Arguments
+ARG SUPERSET_VERSION=1.5.2
+ARG SUPERSET_PATCHUP_VERSION=v0.5.1
+ARG APP_DIR=/usr/local/lib/python3.8/site-packages/superset
+
+# Environment Variables 
+ENV GUNICORN_BIND=0.0.0.0:8088 \
+ENV NVM_DIR=/usr/local/nvm
+ENV NODE_VERSION=v16.16.0
+ENV NODE_PATH=$NVM_DIR/versions/node/$NODE_VERSION/lib/node_modules
+ENV PATH=$NVM_DIR/versions/node/$NODE_VERSION/bin:$PATH
+
+# Setup 
+RUN useradd -U -m superset && \
+
+# Copying files over
+COPY requirements.txt requirements.txt
+WORKDIR $APP_DIR
+COPY app-customizations/$SUPERSET_VERSION $APP_DIR
+
+# Install requirements and dependencies
+RUN pip install --upgrade setuptools "pip<24.1" &&
+
+# Copying run commands over 
+COPY superset /usr/local/bin
+
+RUN \
+wget -P /tmp https://github.com/apache/superset/archive/${SUPERSET_VERSION}.zip \
+
+# Health checking 
+HEALTHCHECK CMD ["curl", "-f", "http://localhost:8088/health"]
+
+# Exposing ports
+EXPOSE 8088
+
+# Default execute command
+CMD ["gunicorn", "superset:app"]

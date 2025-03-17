@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: go-kratos-demo-b
+spec:
+  ports:
+  - name: http
+    nodePort: null
+    port: 80
+    protocol: TCP
+    targetPort: 80
+  - name: custom-service
+    nodePort: null
+    port: 9001
+    protocol: TCP
+    targetPort: 9001
+  selector:
+    app: go-kratos-demo-b
+  type: ClusterIP

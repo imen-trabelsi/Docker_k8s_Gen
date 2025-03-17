@@ -1,0 +1,34 @@
+# Base stage for Java/Maven
+FROM maven:3.6.3-jdk-11-slim AS build
+
+WORKDIR /lgd/sparqlify
+
+# Copy the pom.xml file and download the dependencies. This will be cached and only re-built if the pom.xml changes
+COPY pom.xml .
+RUN mvn dependency:go-offline
+
+# Copy the source code and build the application
+COPY src ./src
+RUN mvn clean package
+
+# Final stage, based on the base image specified by the user
+FROM lgd-build-nominatim:4.0.1
+
+# copy JAR into image
+
+# copy other necessary files
+COPY --from=sparqlify /app .
+COPY start.sh .
+COPY wait-for-postgres.sh .
+RUN chmod +x ./wait-for-postgres.sh ./start.sh
+
+# replace directory in jib-classpath-file and make necessary scripts executable
+RUN sed -Ei 's|/app/|/lgd/sparqlify/|g' jib-classpath-file
+RUN chmod +x ./wait-for-postgres.sh ./start.sh
+
+# expose port
+EXPOSE 7531
+
+# run the application
+ENTRYPOINT ["./wait-for-postgres.sh", "./start.sh"]
+CMD ["java", "-jar", "/app.jar"]

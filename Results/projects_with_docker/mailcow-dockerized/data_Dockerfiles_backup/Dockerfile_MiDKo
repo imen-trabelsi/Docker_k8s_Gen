@@ -1,0 +1,31 @@
+# Start from the Debian base image
+FROM debian:bookworm-slim
+
+# Update and install dependencies
+RUN apt-get update && apt-get install -y pigz --no-install-recommends \
+    && apt-get clean \
+
+# Install PHP and Composer
+RUN apt-get update && apt-get install -y php-composer php-curl \
+    # Cleaning up
+
+# Create a directory for our application
+RUN mkdir -p /var/www/app
+
+# Set the working directory
+WORKDIR /var/www/app
+
+# Copy the application source to the image
+COPY . /var/www/app
+
+# Install the PHP dependencies
+RUN composer install
+
+# Make the docker-entrypoint.sh script executable
+RUN chmod +x /docker-entrypoint.sh
+
+# Set the entry point script
+ENTRYPOINT ["/docker-entrypoint.sh"]
+
+# Provide default arguments to the entrypoint script
+CMD []

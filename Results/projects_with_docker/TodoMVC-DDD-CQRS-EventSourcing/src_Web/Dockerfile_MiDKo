@@ -1,0 +1,38 @@
+# Multi-stage build: Stage 1 (Build)
+FROM mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim AS build
+
+# Set Work directory
+WORKDIR /src
+
+# Install NodeJS , because it is needed for some part of the build
+RUN curl -fsSL https://deb.nodesource.com/setup_lts.x | bash -
+RUN apt-get install -y nodejs
+
+# Copy csproj and restore as distinct layers
+COPY /src/Web/Web.csproj .
+RUN dotnet restore "Web.csproj"
+
+# Copy everything else and build the project
+COPY . .
+
+# Build the project and publish it
+RUN dotnet build "Web.csproj" -c Release -o /app/build
+RUN dotnet publish "Web.csproj" -c Release -o /app/publish
+
+# Multi-stage build: Stage 2 (Setup for runtime)
+FROM mcr.microsoft.com/dotnet/sdk:6.0-bullseye-slim AS runtime
+
+# Set Work directory
+WORKDIR /app
+
+# Copy the app from the build stage
+
+# Set Environment Variable for URLs
+ENV ASPNETCORE_URLS=http://+
+
+# Expose ports 80 and 443
+EXPOSE 80
+EXPOSE 443
+
+# Set the ENTRYPOINT or the command that will be executed when the container starts
+ENTRYPOINT ["dotnet", "Web.dll"]

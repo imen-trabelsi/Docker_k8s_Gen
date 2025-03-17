@@ -1,0 +1,48 @@
+{
+    "docker_info": {
+        "base_image": "openjdk:8-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8080"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /opt/app",
+            "COPY target/event-sourcing-microservices-basics.jar event-sourcing-microservices-basics.jar"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"-jar\",",
+                    "\"event-sourcing-microservices-basics.jar\"]"
+                ]
+            },
+            {
+                "command": "entrypoint",
+                "arguments": [
+                    "[\"/usr/local/bin/dumb-init\",",
+                    "\"java\",",
+                    "\"-XX:+UnlockExperimentalVMOptions\",",
+                    "\"-XX:+UseCGroupMemoryLimitForHeap\",",
+                    "\"-Xmx256m\",",
+                    "\"-Djava.security.egd=file:/dev/urandom\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "wget -O /usr/local/bin/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_amd64 && \\",
+                "chmod 755 /usr/local/bin/dumb-init"
+            ],
+            [
+                "mkdir -p /opt/app",
+                ""
+            ]
+        ]
+    }
+}

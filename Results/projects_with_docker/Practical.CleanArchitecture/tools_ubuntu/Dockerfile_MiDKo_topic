@@ -1,0 +1,26 @@
+# Start from the Ubuntu base image
+FROM ubuntu:18.04
+
+# Install curl and netcat
+RUN apt-get update && apt-get install -y curl && apt-get install -y netcat
+
+# Node.js and NPM installation
+RUN apt-get install -y nodejs npm
+
+# Create app directory in docker image
+WORKDIR /usr/src/app
+
+# Copy package.json AND package-lock.json into root of app directory
+COPY package*.json ./
+
+# Install all dependenices
+RUN npm install
+
+# Bundle app source inside Docker image
+COPY . .
+
+# Expose ports (specified by user)
+EXPOSE 8080
+
+# Command to start an app
+CMD [ "npm", "start" ]

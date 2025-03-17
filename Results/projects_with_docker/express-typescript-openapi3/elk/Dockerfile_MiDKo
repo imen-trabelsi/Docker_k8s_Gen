@@ -1,0 +1,31 @@
+# Choose the base image
+FROM sebp/elk:701
+
+# Prepare container environment
+ENV ES_HOME /opt/elasticsearch
+WORKDIR ${ES_HOME}
+
+# Install plugins
+RUN yes | CONF_DIR=/etc/elasticsearch gosu elasticsearch bin/elasticsearch-plugin install -b analysis-smartcn
+RUN yes | CONF_DIR=/etc/elasticsearch gosu elasticsearch bin/elasticsearch-plugin install -b analysis-kuromoji
+
+# Copy necessary files 
+COPY package.json .
+
+# Install dependencies
+RUN npm install
+
+# Bundle application source
+COPY . .
+
+# Preparing health checks and exposed ports
+# No details are provided so these instructions are just placeholders
+# HEALTHCHECK CMD curl --fail http://localhost:<port number> || exit 1
+# EXPOSE <Port number>
+
+# Setup correct user
+# USER <user>
+
+# ENTRYPOINT or CMD
+# No details provided, assuming we just run node on the main .js file.
+# CMD [ "node", "<main .js file>" ]

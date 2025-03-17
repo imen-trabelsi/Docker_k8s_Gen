@@ -1,0 +1,28 @@
+{
+    "source_code_info": {
+        "language": "Python",
+        "framework": "Python",
+        "dependencies": {
+            "pyproject.toml": "[tool.black]\nline-length = 100\ntarget-version = ['py36']\ninclude = '''\n    exec.py\n  | /import_data/tasks/\n'''\n"
+        },
+        "database": null,
+        "build_system": "poetry",
+        "config_files": {
+            "docker-compose.yml": "version: '3'\n\nservices:\n  postgres:\n    # Custom image maintained by openmaptiles in https://github.com/openmaptiles/openmaptiles-tools\n    # Based on postgres:9.6 and includes PostGIS and osml10n extensions\n    image: openmaptiles/postgis:latest@sha256:dc9eb0a534366197b5f187771846aab3dae1368d44d77378cdd5f4412007f31c\n    volumes:\n      - \"pgdata:/var/lib/postgresql/data\"\n    ports:\n      - \"5632:5432\"\n    environment:\n     - POSTGRES_DB=gis\n     - POSTGRES_USER=gis\n     - POSTGRES_PASSWORD=gis\n\n  cassandra:\n    image: cassandra:3\n    volumes:\n     - \"cassandra_data:/var/lib/cassandra\"\n\n  tilerator:\n    build:\n      context: .\n      dockerfile: tilerator/Dockerfile\n    depends_on:\n      - cassandra\n      - postgres\n      - redis\n    environment:\n      - TILERATOR_MODE=api # This service will not process tiles\n    volumes:\n      - update_tiles_data:/data/update_tiles_data\n\n  tilerator-worker:\n    build:\n      context: .\n      dockerfile: tilerator/Dockerfile\n    environment:\n      - TILERATOR_NUM_WORKERS=ncpu # Number of workers (or ncpu by default)\n    depends_on:\n      - cassandra\n      - postgres\n      - redis\n\n  redis:\n    image: redis:latest\n    command: redis-server --appendonly yes # to enable persistence\n    volumes:\n      - \"redisdata:/data\"\n\n  load_db:\n    build:\n      context: .\n      dockerfile: load_db/Dockerfile\n    read_only: true\n    environment:\n      - INVOKE_GENERATED_FILES_DIR=/data/generated\n      - INVOKE_DATA_DIR=/data/input\n      - INVOKE_UPDATE_TILES_DIR=/data/update_tiles_data\n    tmpfs:\n      - /tmp\n    volumes:\n      - input_data:/data/input\n      - imposm_generated_data:/data/generated\n      - update_tiles_data:/data/update_tiles_data\n    depends_on:\n      - postgres\n\n  kartotherian:\n    build:\n      context: .\n      dockerfile: kartotherian/Dockerfile\n\n  telegraf:\n    build:\n      context: .\n      dockerfile: telegraf/Dockerfile\n\nvolumes:\n  pgdata:\n  cassandra_data:\n  redisdata:\n  input_data:\n  imposm_generated_data:\n  update_tiles_data:\n",
+            "tilerator/Dockerfile": "FROM node:14-buster-slim\n\nRUN apt-get update && \\\n    DEBIAN_FRONTEND=noninteractive apt-get install -y \\\n        git \\\n        unzip \\\n        curl \\\n        libpq-dev \\\n        libproj-dev \\\n        liblua5.2-dev \\\n        libgeos++-dev \\\n        nmap \\\n        netcat \\\n        redis-tools \\\n        python3-pip \\\n        locales \\\n        python3.6 \\\n        build-essential \\\n    && apt-get clean \\\n    && npm i npm@8.5.0 -g\n\nRUN git clone https://github.com/Qwant/kartotherian.git /opt/kartotherian \\\n    && cd /opt/kartotherian \\\n    && git checkout 46dedb6d0c46d0f1dbf6ad4e029d676c63fc5eab \\\n    && npm ci --production\n\n# install openmaptiles-tools\nRUN python3 -m pip install --upgrade pip \\\n    && python3 -m pip install git+https://github.com/openmaptiles/openmaptiles-tools@v0.12.0\n    \n# install openmaptiles\nCOPY openmaptiles /opt/openmaptiles\n# setup needed directories\nRUN mkdir -p /opt/config/imposm\nRUN mkdir -p /opt/config/tilerator\n# needed for sql script, else the BOM in the file makes the query impossible\nRUN locale-gen en_US.UTF-8\nENV LANG C.UTF-8\nENV LANGUAGE en_US:en\nENV LC_ALL C.UTF-8\n# generate config files\nRUN cd /opt/openmaptiles \\\n    && CONFIG_DIR=/opt/config make qwant\n\nRUN mkdir -p /etc/tilerator\nCOPY tilerator/config*.yaml /etc/tilerator/\nCOPY tilerator/gen_tiles.sh /gen_tiles.sh\n\nCOPY tilerator/sources.yaml /etc/tilerator/\nRUN ln -sf /opt/config/tilerator/data_tm2source_base.yml /etc/tilerator\nRUN ln -sf /opt/config/tilerator/data_tm2source_poi.yml /etc/tilerator\nRUN ln -sf /opt/config/tilerator/data_tm2source_lite.yml /etc/tilerator\n\nRUN chmod +x /gen_tiles.sh\n\nCOPY tilerator/runserver.sh /runserver.sh\nRUN chmod +x /runserver.sh\n\nRUN chown -R node:node /opt/kartotherian\n\nUSER node\n\nENV TILERATOR_PORT=80\nENV TILERATOR_OSMDB_HOST=postgres\nENV TILERATOR_OSMDB_USER=gis\nENV TILERATOR_OSMDB_PSWD=gis\nENV TILERATOR_OSMDB_DATABASE=gis\nENV TILERATOR_CASSANDRA_SERVERS=cassandra\nENV TILERATOR_CASSANDRA_USER=gis\nENV TILERATOR_CASSANDRA_PSWD=\nENV TILERATOR_REDIS_URL=redis://redis:6379\n\nCMD [\"/runserver.sh\"]\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "README.md",
+            "config.api.yaml",
+            "config.worker.yaml",
+            "gen_tiles.sh",
+            "runserver.sh",
+            "sources.yaml"
+        ],
+        "folders": []
+    }
+}

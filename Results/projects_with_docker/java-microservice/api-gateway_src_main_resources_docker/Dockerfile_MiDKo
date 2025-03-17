@@ -1,0 +1,30 @@
+# Base Image
+FROM openjdk:8
+
+# Environment Variables
+ENV REFRESHED_AT 2017-09-17
+ENV TERM xterm
+ENV JAVA_OPTS -Djava.security.egd=file:/dev/./urandom
+ENV FILEBEAT_VERSION=filebeat_1.2.3_amd64.deb
+
+# Run commands
+RUN apt-get update -qq \
+    && apt-get install -qqy curl wget \
+    && apt-get clean \
+    && touch /var/log/todo.log \
+    && chmod 666 /var/log/todo.log \
+    && bash -c 'chmod +x wait-for-it.sh' \
+    && curl -L -O https://download.elastic.co/beats/filebeat/${FILEBEAT_VERSION} \
+    && dpkg -i ${FILEBEAT_VERSION} \
+    && rm ${FILEBEAT_VERSION} \
+
+# Copy Instructions
+COPY application/lib/springboot-webapp.jar /app.jar
+ADD https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh wait-for-it.sh
+COPY filebeat.yml /etc/filebeat/filebeat.yml
+COPY logstash-beats.crt /etc/pki/tls/certs/logstash-beats.crt
+COPY ./start.sh /usr/local/bin/start.sh
+RUN chmod +x /usr/local/bin/start.sh
+
+# Command
+CMD [ "/usr/local/bin/start.sh" ]

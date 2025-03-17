@@ -1,0 +1,54 @@
+{
+    "docker_info": {
+        "base_image": "python:3.7-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8082"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV PORT='8082' \\",
+            "ENV PYTHONUNBUFFERED=TRUE"
+        ],
+        "copy_instructions": [
+            "WORKDIR /builder",
+            "COPY common/python/requirements.txt common/requirements.txt",
+            "COPY image-rec-master/requirements.txt .",
+            "COPY common/messages/imagery.proto \\",
+            "WORKDIR /app",
+            "COPY --from=builder /usr/local/lib/python3.7/site-packages \\",
+            "COPY --from=builder /builder/dist/messages messages",
+            "COPY common/python common",
+            "COPY image-rec-master/service service"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "python",
+                    "-m",
+                    "service"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "apk --no-cache add \\",
+                "gcc",
+                "musl-dev",
+                "protobuf"
+            ],
+            [
+                "pip install -r common/requirements.txt -r requirements.txt",
+                ""
+            ],
+            [
+                "mkdir dist && protoc --python_out=dist messages/*.proto",
+                ""
+            ]
+        ]
+    }
+}

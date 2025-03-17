@@ -1,0 +1,33 @@
+{
+    "docker_info": {
+        "base_image": "bde2020/hadoop-base:2.0.0-hadoop3.2.1-java8",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "8042"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [
+            "HEALTHCHECK CMD curl -f http://localhost:8042/ || exit 1"
+        ],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "ADD run.sh /run.sh"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"/run.sh\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "chmod a+x /run.sh",
+                ""
+            ]
+        ]
+    }
+}

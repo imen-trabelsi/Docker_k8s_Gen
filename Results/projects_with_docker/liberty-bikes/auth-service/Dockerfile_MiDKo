@@ -1,0 +1,19 @@
+# Use the official open-liberty base image
+FROM open-liberty:19.0.0.9-microProfile3-java11
+
+# Copy the source code and configuration files
+COPY --chown=1001:0 build/libs/auth-service.war /config/dropins
+COPY --chown=1001:0 src/main/liberty/config /config/
+
+# Set the working directory
+WORKDIR /config
+
+# Set environment variables and configurations
+RUN printf 'frontend_url=http://lb-frontend:12000/login\n\
+RUN printf 'httpPort=8082\n\
+
+# Expose the necessary ports
+EXPOSE 8082
+
+# Start the service
+ENTRYPOINT [ "sh", "-c", "java -jar /config/auth-service.war" ]

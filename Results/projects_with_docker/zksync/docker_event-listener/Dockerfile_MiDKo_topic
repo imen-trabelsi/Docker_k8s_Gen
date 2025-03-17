@@ -1,0 +1,30 @@
+# Define Base Image
+FROM rust:1.67 as builder
+
+# Define Working Directory
+WORKDIR /usr/src/zksync
+
+# Copy project files into container
+COPY . .
+
+# Setup Sccache for caching
+RUN --mount=type=cache,target=/usr/local/cargo/registry \
+    cargo install sccache && \
+    --mount=type=cache,target=/root/.cache/sccache \
+    RUSTC_WRAPPER=/usr/local/cargo/bin/sccache && \
+
+FROM rust:1.67
+
+# Define Working Directory
+WORKDIR /usr/src/zksync
+
+# Copy build result from previous layer
+
+# Install necessary dependencies
+RUN apt-get update && apt-get install -y openssl
+
+# Expose Correct Port
+EXPOSE 9977
+
+# Define Entry Point
+ENTRYPOINT [ "zksync_event_listener" ]

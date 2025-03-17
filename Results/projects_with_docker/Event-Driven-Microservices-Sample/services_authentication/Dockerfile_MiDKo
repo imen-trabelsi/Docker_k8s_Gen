@@ -1,0 +1,18 @@
+FROM node:11.2.0-alpine
+
+ENV HOME=/usr/app
+WORKDIR ${HOME} 
+
+COPY package.json ${HOME}/package.json
+COPY services/authentication/.env ${HOME}/services/authentication/.env
+COPY docker-compose.yml ${HOME}/docker-compose.yml
+COPY services/authentication/Dockerfile ${HOME}/services/authentication/Dockerfile
+
+COPY . ${HOME}/server
+WORKDIR ${HOME}/server
+
+RUN npm install
+
+EXPOSE 3000
+
+CMD ["node", "/server/src/server.js"]

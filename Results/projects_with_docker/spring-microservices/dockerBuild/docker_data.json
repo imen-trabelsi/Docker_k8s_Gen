@@ -1,0 +1,18 @@
+{
+    "docker_info": {
+        "base_image": "maven:3.6-jdk-8-slim",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /buildDir",
+            "ADD . /buildDir"
+        ],
+        "execution": [],
+        "run": []
+    }
+}

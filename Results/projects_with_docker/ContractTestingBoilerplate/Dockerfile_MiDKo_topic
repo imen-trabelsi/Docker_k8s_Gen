@@ -1,0 +1,46 @@
+# Use an official Java runtime as a parent image
+FROM openjdk:8-jdk-alpine AS builder
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Add Maven to the PATH
+ENV PATH=$PATH:/usr/local/maven/bin
+
+# Copy pom.xml to the container
+COPY ./pom.xml ./pom.xml
+
+# Install dependencies using Maven
+RUN mvn dependency:go-offline -B
+
+# Copy the current directory contents into the container
+COPY . .
+
+# Package application into a jar file
+RUN mvn package -DskipTests
+
+# Remove dev dependencies and clean caches to make image smaller
+RUN mvn dependency:purge-local-repository -DactTransitively=false -DreResolve=false
+
+# Start over with a second FROM statement to skip maven installed packages in the final image
+FROM openjdk:8-jdk-alpine
+
+# Add Java options
+ENV JAVA_OPTS="-Djenkins.install.runSetupWizard=false"
+
+LABEL git_commit=$GIT_COMMIT
+
+# Set the working directory in the container
+WORKDIR /app
+
+# Copy application jar from builder image to current image
+
+# Set the user to Jenkins
+USER jenkins
+
+# Expose port 8080
+EXPOSE 8080
+
+# Run the jar file
+ENTRYPOINT ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/app.jar"]
+

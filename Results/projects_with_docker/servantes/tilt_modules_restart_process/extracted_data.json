@@ -1,0 +1,27 @@
+{
+    "source_code_info": {
+        "language": "Go",
+        "framework": "Go",
+        "dependencies": {
+            "go.mod": "module github.com/tilt-dev/servantes/snack\n\ngo 1.17\n"
+        },
+        "database": null,
+        "build_system": "go mod",
+        "config_files": {
+            "docker-compose.yml": "version: '3'\nservices:\n  snack:\n    build: ./snack\n    command: /go/bin/snack\n    ports:\n      - \"8083:8083\"\n    environment:\n      - TEMPLATE_DIR=/go/src/github.com/tilt-dev/servantes/snack/web/templates\n  spoonerisms:\n    build:\n      context: ./spoonerisms\n      dockerfile: ../Dockerfile.js.base\n    command: sh -c \"yarn --cwd /app install && node /app/index.js\"\n    volumes:\n      - ./spoonerisms/src:/app\n      - ./spoonerisms/package.json:/app/package.json\n      - ./spoonerisms/yarn.lock:/app/yarn.lock\n    ports:\n      - \"9006:5000\"\n  vigoda:\n    image: vigoda_for_dc\n    ports:\n      - \"9007:8081\"\n    environment:\n      - TEMPLATE_DIR=/go/src/github.com/tilt-dev/servantes/vigoda/web/templates\n  fortune:\n    image: fortune_for_dc\n    ports:\n      - \"9008:8082\"\n    environment:\n      - TEMPLATE_DIR=/go/src/github.com/tilt-dev/servantes/fortune/web/templates\n",
+            "tilt_modules/restart_process/Dockerfile": "FROM alpine/git\n\nRUN apk update && apk add make\nRUN apk add build-base\n\nRUN git clone https://github.com/eradman/entr.git /entr\nWORKDIR /entr\nRUN git checkout c564e6bdca1dfe2177d1224363cad734158863ad\nRUN ./configure; CFLAGS=\"-static\" make install\n\nFROM scratch\n\nCOPY --from=0  /usr/local/bin/entr /\n\nADD tilt-restart-wrapper /\n",
+            ".circleci/config.yml": "version: 2.1\njobs:\n  build:\n    docker:\n      - image: tiltdev/tilt:latest\n    working_directory: /root/go/src/github.com/tilt-dev/servantes\n\n    steps:\n      - checkout\n      - setup_remote_docker:\n          version: 19.03.12\n      - run: apt update && apt install -y unzip time make wget m4 build-essential golang\n      - run: |\n          set -ex\n          export PROTOC_VERSION=\"3.5.1\"\n          wget https://github.com/google/protobuf/releases/download/v${PROTOC_VERSION}/protoc-${PROTOC_VERSION}-linux-x86_64.zip && \\\n            unzip protoc-${PROTOC_VERSION}-linux-x86_64.zip -d protoc && \\\n            mv protoc/bin/protoc /usr/bin/protoc\n\n      - run: echo 'export PATH=~/go/bin:$PATH' >> $BASH_ENV\n      - run: cd .. && go get github.com/golang/protobuf/protoc-gen-go\n      - run: make test\n          \n      - run: ctlptl create cluster kind --registry=ctlptl-registry && make integration\n"
+        },
+        "static_files": {}
+    },
+    "project_structure": {
+        "files": [
+            "Dockerfile",
+            "go.mod",
+            "main.go"
+        ],
+        "folders": [
+            "web"
+        ]
+    }
+}

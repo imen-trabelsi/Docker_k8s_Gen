@@ -1,0 +1,35 @@
+# Using the base image provided by user
+FROM aaronxsu/raster-vision-pytorch:latest
+
+# Updating system packages and installing necessary libraries required by PostgreSQL
+RUN apt-get update -y && apt-get install -y libpq-dev
+
+# Setting environment variable for CURL_CA_BUNDLE
+ENV CURL_CA_BUNDLE=/etc/ssl/certs/ca-certificates.crt
+
+# Copy commands provided by user
+COPY hitl/requirements.txt /tmp/
+COPY hitl/ /tmp/hitl/
+COPY completion.bash /tmp/hitl/completion.bash
+
+# Installing Python dependencies from the requirements file
+RUN pip3 install --no-cache-dir -r /tmp/requirements.txt
+
+# Installation command provided by user
+RUN (cat /tmp/hitl/completion.bash | tee -a /root/.bashrc && cd /tmp/hitl && python3 setup.py install)
+
+# Running the sbt assembly command and moving the resulting jar file from target/scala to /opt/container
+# Copying other config, static files and directories
+COPY build.sbt /app
+COPY docker-compose.yml /app
+COPY app-hitl/Dockerfile /app
+COPY Jenkinsfile /app
+COPY static/assets/favicon/browserconfig.xml /app/static/assets/favicon/
+COPY static/assets/favicon/manifest.json /app/static/assets/favicon/
+RUN cd /app && sbt assembly && mv target/scala*.jar /opt/container/
+
+# Exposing port for the application (assuming 8080, it can be replaced with the correct one)
+EXPOSE 8080
+
+# Running the Scala application using java -jar command
+CMD ["java", "-jar", "/opt/container/*.jar"]

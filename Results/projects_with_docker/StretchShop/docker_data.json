@@ -1,0 +1,41 @@
+{
+    "docker_info": {
+        "base_image": "node:20-alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV NODE_ENV=production"
+        ],
+        "copy_instructions": [
+            "COPY package.json .",
+            "COPY . ."
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[\"npm\",",
+                    "\"start\"]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "mkdir /app",
+                "WORKDIR /app"
+            ],
+            [
+                "npm install npm@latest",
+                ""
+            ],
+            [
+                "npm install --silent --progress=false --production --ignore-scripts",
+                ""
+            ]
+        ]
+    }
+}

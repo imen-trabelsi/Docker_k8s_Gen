@@ -1,0 +1,51 @@
+{
+    "docker_info": {
+        "base_image": "$REPOSITORY/gs-cloud-base-jre:$TAG",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "REPOSITORY=geoservercloud",
+            "TAG=latest",
+            "JAR_FILE=target/gs-cloud-*-bin.jar"
+        ],
+        "envs": [
+            "ENV SPRING_PROFILES_ACTIVE=native,standalone",
+            "ENV CONFIG_NATIVE_PATH=/etc/geoserver",
+            "ENV CONFIG_GIT_URI: https://github.com/geoserver/geoserver-cloud-config.git",
+            "ENV SPRING_CLOUD_CONFIG_SERVER_GIT_DEFAULT_LABEL: master",
+            "ENV CONFIG_GIT_BASEDIR: /tmp/git_config",
+            "ENV XDG_CONFIG_HOME: /tmp",
+            "ENV JAVA_TOOL_OPTIONS=\"${DEFAULT_JAVA_TOOL_OPTIONS} -XX:SharedArchiveFile=application.jsa\""
+        ],
+        "copy_instructions": [
+            "COPY ${JAR_FILE} application.jar",
+            "COPY --from=builder dependencies/ ./",
+            "COPY --from=builder snapshot-dependencies/ ./",
+            "COPY --from=builder spring-boot-loader/ ./"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "java -Djarmode=layertools -jar application.jar extract",
+                ""
+            ],
+            [
+                "true",
+                "COPY --from=builder application/ ./"
+            ],
+            [
+                "java -XX:ArchiveClassesAtExit=application.jsa \\",
+                "-Dspring.context.exit=onRefreshed",
+                "-Dserver.port=0 -Dmanagement.server.port=0",
+                "org.springframework.boot.loader.JarLauncher"
+            ],
+            [
+                "rm -rf /tmp/*",
+                ""
+            ]
+        ]
+    }
+}

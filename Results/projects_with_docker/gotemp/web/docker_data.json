@@ -1,0 +1,43 @@
+{
+    "docker_info": {
+        "base_image": "node:alpine",
+        "multi_stage_build": false,
+        "exposed_ports": [
+            "3000",
+            "10000"
+        ],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [
+            "ENV HOST=0.0.0.0"
+        ],
+        "copy_instructions": [
+            "WORKDIR /goTemp/web/sapper",
+            "COPY ./sapper/package*.json ./"
+        ],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"npm\",",
+                    "\"run\",",
+                    "\"dev\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": [
+            [
+                "npm install",
+                "COPY ./sapper ."
+            ],
+            [
+                "npm run build",
+                "CMD [\"npm\", \"run\", \"start\"]"
+            ]
+        ]
+    }
+}

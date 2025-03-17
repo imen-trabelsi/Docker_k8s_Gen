@@ -1,0 +1,24 @@
+{
+    "docker_info": {
+        "base_image": "python:3.11-slim-bullseye",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [
+            {
+                "command": "cmd",
+                "arguments": [
+                    "[",
+                    "\"python\"",
+                    "]"
+                ]
+            }
+        ],
+        "run": []
+    }
+}

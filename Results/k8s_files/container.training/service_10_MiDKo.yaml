@@ -1,0 +1,14 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: elastic-webhook-server
+  name: elastic-webhook-server
+spec:
+  ports:
+  - port: 443
+    protocol: TCP
+    targetPort: 443
+  selector:
+    app: elastic-webhook-server
+  type: ClusterIP

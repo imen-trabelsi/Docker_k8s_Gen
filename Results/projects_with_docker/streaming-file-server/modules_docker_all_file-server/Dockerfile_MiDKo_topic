@@ -1,0 +1,27 @@
+# Use the provided base image
+FROM docker_base-streaming-file-server:latest
+
+# Environment Variables
+ENV APP_UPLOAD_PATH="${APP_UPLOAD_PATH_ARG}"
+
+# Create App Directory and set appuser as the owner
+RUN mkdir -p ${APP_UPLOAD_PATH} \
+
+# Copy the app jar and necessary files into the properly directories
+COPY --chown=appuser ./modules/apps/file-server/build/libs/*.jar ./app.jar
+COPY --chown=appuser ./.env ./.env
+COPY --chown=appuser ./modules/docker/all/docker-compose.yml ./docker-compose.yml
+COPY --chown=appuser ./modules/docker/all/file-server/Dockerfile ./Dockerfile
+
+# Use maven wrapper to build the application
+RUN mvn clean install
+
+# Expose necessary port for application
+EXPOSE 8002
+
+# Set the entrypoint
+ENTRYPOINT ["java", "${JAVA_OPTS}", "-jar", "./app.jar", "--spring.profiles.active=db-pg"]
+CMD ["wget", "--quiet", "--tries=1", "--spider", "http://127.0.0.1:8002/actuator/health", "||", "exit", "1"]
+
+# Healthchecks configuration
+HEALTHCHECK --retries=33 CMD wget --quiet --tries=1 --spider http://127.0.0.1:8002/actuator/health || exit 1

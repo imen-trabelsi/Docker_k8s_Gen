@@ -1,0 +1,29 @@
+# Set Base Image
+FROM openjdk:17-alpine
+
+# Set Maintainer Information
+LABEL maintainer="maintainer@email.com"
+
+# Set Working Directory
+WORKDIR /usr/share/myservice
+
+# Copy Project Files to Docker Image
+COPY ./pom.xml ./
+COPY ./src ./src
+
+# Maven Build
+RUN apk add --no-cache maven && mvn clean install -DskipTests
+
+# Copy the Jar File From Build to Docker Image
+ARG JAR_FILE
+COPY target/${JAR_FILE} /usr/share/myservice/myservice.jar
+
+# Security Settings
+RUN addgroup -S spring && adduser -S spring -G spring
+USER spring:spring
+
+# Expose the Ports
+EXPOSE 8080
+
+# Execute the Jar
+CMD [ "java", "-jar", "/usr/share/myservice/myservice.jar" ]

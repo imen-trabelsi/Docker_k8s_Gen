@@ -1,0 +1,32 @@
+# Start with the base image
+FROM microsoft/dotnet:2.1-sdk AS build
+
+# Set the working directory
+WORKDIR /app
+
+# Copy csproj and restore as distinct layers
+COPY *.csproj ./
+RUN dotnet restore
+
+# Copy the application files to the work dir
+COPY . ./
+
+# Publish the application
+RUN dotnet publish -c Release -o output
+
+# Set the final image
+FROM microsoft/dotnet:2.1-sdk AS final
+
+# Set Environment variable
+ENV ASPNETCORE_ENVIRONMENT=production
+
+# Set the working directory
+WORKDIR /app
+
+# Copy the app output from build image to final image
+
+# Open up port
+EXPOSE 80
+
+# Set entry point to start the app
+ENTRYPOINT ["dotnet", "app.dll"]

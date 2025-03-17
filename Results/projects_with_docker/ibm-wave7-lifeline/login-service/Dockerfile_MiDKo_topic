@@ -1,0 +1,28 @@
+# Base image
+FROM openjdk:11 AS BUILD_IMAGE
+
+# Set the user directory
+WORKDIR /usr/src/app
+
+# Coping pom.xml and source code to the container
+COPY pom.xml .
+COPY src src
+
+# Package the application 
+RUN mvn clean package
+
+# Implementing builder pattern to reduce size
+FROM openjdk:11-jre-slim as DEPLOYMENT_IMAGE
+
+ENV APP_HOME=/usr/app/
+
+# Creating an APP_HOME where our app will reside
+WORKDIR $APP_HOME 
+
+# Copying JAR file to the deployment stage
+
+# Expose the application port
+EXPOSE 8080
+
+# Provide the entrypoint command
+ENTRYPOINT ["java","-jar","login-service-0.0.1-SNAPSHOT.jar"]

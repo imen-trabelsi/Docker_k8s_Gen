@@ -1,0 +1,29 @@
+{
+    "docker_info": {
+        "base_image": "beevelop/ionic",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [],
+        "envs": [],
+        "copy_instructions": [
+            "WORKDIR /usr/src/app",
+            "COPY package*.json ./",
+            "COPY . .",
+            "COPY --from=ionic  /usr/src/app/www /usr/share/nginx/html"
+        ],
+        "execution": [],
+        "run": [
+            [
+                "npm ci",
+                ""
+            ],
+            [
+                "ionic build",
+                ""
+            ]
+        ]
+    }
+}

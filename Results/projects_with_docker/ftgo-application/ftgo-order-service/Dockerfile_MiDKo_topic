@@ -1,0 +1,23 @@
+# Use base image
+FROM eventuateio/eventuate-examples-docker-images-spring-example-base-image:${baseImageVersion}
+
+# Create a directory in the container where the app will be placed
+RUN mkdir /app
+
+# Change to that directory
+WORKDIR /app
+
+# Create user 
+RUN adduser -D myuser
+
+# Change to non-root privilege
+USER myuser
+
+# Copy the executable jar file from the host machine to the Docker container
+COPY build/libs/ftgo-order-service.jar service.jar
+
+# Expose the port the app runs in
+EXPOSE 8080
+
+# Specify the command to run on launch
+CMD java -jar service.jar

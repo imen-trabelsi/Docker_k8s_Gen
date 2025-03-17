@@ -1,0 +1,30 @@
+# Base Image
+FROM node:12-alpine
+
+# Set working directory in the container
+WORKDIR /nest
+
+# Copying application files
+COPY . .
+
+# Install global dependencies
+RUN yarn global add @nestjs/cli
+
+# Install App dependencies by reading package.json
+RUN yarn install --production=false
+
+# Build the application
+RUN nest build proto-schema
+RUN nest build service-billing
+
+# Set environment variables
+ENV NODE_ENV=production
+
+# Expose the port
+EXPOSE 50067 
+
+# Set user to use when running this image
+USER node
+
+# Command that will be executed when the container starts
+CMD ["node", "dist/apps/service-billing/main.js"]

@@ -1,0 +1,26 @@
+# Use the appropriate base image
+ARG ELK_VERSION
+FROM docker.elastic.co/beats/filebeat:${ELK_VERSION}
+
+# Install dependencies
+COPY build.sbt /app/
+WORKDIR /app
+RUN sbt update
+
+# Set environment variable(s)
+ENV ELK_VERSION=${ELK_VERSION}
+
+# Copy configuration file(s)
+COPY .env docker-compose.yml scripts/logging_aggregator/dev/filebeat/Dockerfile /app/
+
+# Adding healthcheck, change according to your application
+HEALTHCHECK --interval=60s --timeout=3s --retries=3 CMD curl --fail http://localhost:8080/actuator/health || exit 1
+
+# Copy source code and static files
+COPY . /app
+
+# Expose necessary ports
+EXPOSE 8080
+
+# Start the micro service
+CMD ["sbt", "run"]

@@ -1,0 +1,30 @@
+# Choose the correct base image
+FROM bcgovimages/von-image:py36-1.9-0
+
+# Env Variables
+ENV HOST_IP 0.0.0.0
+ENV HOST_PORT 8000
+ENV INDY_GENESIS_PATH "${HOME}/genesis"
+ENV ENTRYPOINT "${HOME}/docker-entrypoint.sh"
+
+# Working Directory
+WORKDIR $HOME
+
+# Add app to the image
+COPY . $HOME
+
+# Change to app directory
+WORKDIR $HOME/src
+
+# Package and install application
+RUN pip3 install --no-cache-dir -r requirements.txt
+
+# User permissions and exposing the necessary ports
+RUN usermod -a -G root indy \
+    && chown -R indy:root "${HOME}" \
+    && chmod -R ug+rw "${HOME}" \
+    && chmod ug+x "${entrypoint}" \
+EXPOSE 8000
+
+# Startup command
+ENTRYPOINT ["bash", "../docker-entrypoint.sh"]

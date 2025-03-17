@@ -1,0 +1,27 @@
+# Set the base image
+FROM node:10.20.1-slim@sha256:79809f748c1de29269f1fffc212486a758412e4f0f0c79eaf99408245156a042
+
+# Set the working directory
+WORKDIR /app
+
+# Copy package.json and package-lock.json to the container
+COPY ./package*.json ./
+
+# Install necessary dependencies and clean the apt cache to reduce image size
+RUN apt-get update && apt-get install -y wget gnupg ca-certificates \
+&& wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+&& sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' \
+&& apt-get update \
+&& apt-get clean \
+
+# Install npm packages
+RUN npm install
+
+# Copy the source code into the container
+COPY . .
+
+# Expose port 8080
+EXPOSE 8080
+
+# Set the command to run your app
+CMD [ "npm", "start" ]

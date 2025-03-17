@@ -1,0 +1,28 @@
+# Use an official Python runtime as a base image
+FROM ubuntu:22.04
+
+# Set the correct environment variables
+ENV DEBIAN_FRONTEND=noninteractive
+ENV VIRTUAL_ENV=/opt/venv
+ENV PYTHONUNBUFFERED=1
+ENV C_FORCE_ROOT=False
+ENV CELERYBEAT_SCHEDULE_FILENAME=/tmp/celerybeatschedule.db
+ENV TZ=Europe/Prague
+
+# Install necessary packages and dependencies
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    python3 python3-dev python3-pip python3-venv git gcc curl \ 
+    && python3 -m venv "$VIRTUAL_ENV" \ 
+    && ENV PATH="$VIRTUAL_ENV/bin:$PATH" \
+    && python3 -m pip install -U pip wheel setuptools \
+
+# Set the working directory in the container
+WORKDIR /opt/superdesk/
+
+# Copy the current directory contents into the container at /app
+COPY requirements.txt .
+COPY . .
+
+# Run the command to start the application
+ENTRYPOINT ["/opt/superdesk/docker/start.sh"]
+CMD ["honcho", "start"]

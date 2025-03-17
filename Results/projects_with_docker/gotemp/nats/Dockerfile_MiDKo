@@ -1,0 +1,21 @@
+FROM nats
+
+WORKDIR /app
+
+COPY go.mod .
+RUN go mod download
+
+COPY . .
+
+RUN go build -o main .
+
+RUN addgroup appgroup && adduser --ingroup appgroup appuser
+USER appuser
+
+ENV DATABASE_URL=postgresql://dbuser:dbpass@localhost:5432/dbname?sslmode=disable
+
+EXPOSE 8000
+
+COPY nats-server.conf /nats-server.conf
+
+CMD ["./main"]

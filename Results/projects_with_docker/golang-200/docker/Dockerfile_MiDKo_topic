@@ -1,0 +1,29 @@
+# Use golang:1.10-alpine image as a base
+FROM golang:1.10-alpine as builder
+
+# Add make and git packages
+RUN apk add -U make git
+
+# Set Working directory
+WORKDIR $GOPATH/src/github.com/Sfeir/golang-200
+
+# Copy source code
+COPY . $GOPATH/src/github.com/Sfeir/golang-200
+
+# Build Application
+RUN make all
+
+# Clean Up
+RUN apk del make git && \
+rm -rf /gopath/pkg && \
+rm -rf /gopath/src && \
+
+FROM alpine:3.7
+
+# Copy the Pre-built binary file from the previous stage
+
+# Expose port 8020 to the outside world
+EXPOSE 8020
+
+# Command to run the executable
+ENTRYPOINT ["/go/bin/todolist"]

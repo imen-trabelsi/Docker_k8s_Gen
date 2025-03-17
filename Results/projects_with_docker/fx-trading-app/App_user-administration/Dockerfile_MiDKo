@@ -1,0 +1,20 @@
+# Use the maven:3.6.2-jdk-11-slim as base image
+FROM maven:3.6.2-jdk-11-slim AS BUILD
+
+# Copy the pom.xml file to /tmp directory in the container
+COPY pom.xml /tmp/
+
+# Copy source code to /tmp/src/ in the container
+COPY src /tmp/src/
+
+# Set the working directory to /tmp/
+WORKDIR /tmp/
+
+# Run the mvn package -Pprod -DskipTests command to build the application
+RUN mvn package -Pprod -DskipTests
+
+# Copy the compiled jar file to /user-admin.jar
+
+# Set the ENTRYPOINT to execute the java command to run the application
+ENTRYPOINT ["/usr/local/openjdk-11/bin/java", "-Dapplication-secret=secret", "-jar", "/user-admin.jar"]
+

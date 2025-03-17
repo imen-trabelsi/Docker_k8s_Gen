@@ -1,0 +1,23 @@
+{
+    "docker_info": {
+        "base_image": "mcr.microsoft.com/vscode/devcontainers/rust:1-${VARIANT}",
+        "multi_stage_build": false,
+        "exposed_ports": [],
+        "user": [],
+        "labels": [],
+        "health_checks": [],
+        "build_args": [
+            "VARIANT=\"bullseye\""
+        ],
+        "envs": [],
+        "copy_instructions": [],
+        "execution": [],
+        "run": [
+            [
+                "apt-get update && export DEBIAN_FRONTEND=noninteractive \\",
+                "&& apt-get -y install clang lld jq",
+                "&& apt-get autoremove -y && apt-get clean -y"
+            ]
+        ]
+    }
+}
