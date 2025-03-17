@@ -17,4 +17,3 @@ This folder contains the outputs of the approach
 The **Evaluation** folder includes:
 - **Jupyter Notebooks for Quantitative Evaluation**: Scripts to assess precision, recall, and other syntax.
 - **Survey Raw Data**: Results of our survey.
-- **Case Study**: An example demonstrating the funtional aspect of the results.
